@@ -118,6 +118,12 @@ MODULES		+= lib/geo
 MODULES		+= lib/conversion
 
 #
+# UNIBO apps
+#
+MODULES		+= modules/simple_test_app
+MODULES		+= modules/unibo_control
+
+#
 # Demo apps
 #
 #MODULES		+= examples/math_demo
