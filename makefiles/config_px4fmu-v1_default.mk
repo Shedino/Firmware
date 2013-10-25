@@ -121,7 +121,8 @@ MODULES		+= lib/conversion
 # UNIBO apps
 #
 MODULES		+= modules/simple_test_app
-MODULES		+= modules/unibo_control
+MODULES		+= modules/unibo_motor_output
+#MODULES		+= modules/unibo_control
 
 #
 # Demo apps

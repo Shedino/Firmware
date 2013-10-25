@@ -22,7 +22,7 @@
 // lunghezza array AckDiff e imuTime
 #define ACKDLEN 100
 
-#include <common/mavlink.h>
+//#include <common/mavlink.h>
 #include <iostream>
 #include <inttypes.h>
 #include <fstream>
@@ -39,16 +39,11 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
-#include <netdb.h>
+//#include <netdb.h>
 #include <cerrno>
 #include <csignal>
 #include <termios.h>
 #include <sys/mman.h>
-#include <rtai.h>
-#include <rtai_sched.h>
-#include <rtai_lxrt.h>
-#include <rtai_math.h>
-#include <rtai_fifos.h>
 #include <sys/time.h>
 
 #ifndef EXTERNALFUNCTION_H
