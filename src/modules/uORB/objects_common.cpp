@@ -193,3 +193,8 @@ ORB_DEFINE(navigation_capabilities, struct navigation_capabilities_s);
 
 #include "topics/esc_status.h"
 ORB_DEFINE(esc_status, struct esc_status_s);
+
+//Custom topics
+#include "topics/motor_output.h"
+ORB_DEFINE(motor_output, struct motor_output_s);
+

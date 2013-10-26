@@ -67,6 +67,12 @@ __EXPORT int simple_test_app_main(int argc, char *argv[]);
  */
 int simple_test_thread_main(int argc, char *argv[]);
 
+
+/* create custom topic metadata */
+//ORB_DEFINE(motor_output, struct motor_output_s);
+//topic definito nel file objects_common.cpp (assieme agli altri)
+
+
 /**
  * Print the correct usage.
  */
