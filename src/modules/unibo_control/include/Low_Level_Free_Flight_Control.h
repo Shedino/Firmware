@@ -17,7 +17,7 @@
 #endif
 #ifndef CINPUTS_H
 #define CINPUTS_H
-#include <CInputs.h>
+#include "../include/CInputs.h"
 #endif
 
 class Low_Level_Free_Flight_Control {

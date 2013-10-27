@@ -7,7 +7,7 @@
 #include "../LowLevel/Model_GS.h"
 #endif
 
-#include "common/mavlink.h"
+//#include "common/mavlink.h"
 
 class PacketIMU {
 

@@ -22,29 +22,42 @@
 // lunghezza array AckDiff e imuTime
 #define ACKDLEN 100
 
+#define RT //Realtime configuration for matlab generated files
+
 //#include <common/mavlink.h>
-#include <iostream>
+//#include <iostream>
 #include <inttypes.h>
-#include <fstream>
-#ifdef __linux
-#include <sys/ioctl.h>
-#endif
+//#include <fstream>
+//#ifdef __linux
+//#include <sys/ioctl.h>
+//#endif
 #include <time.h>
 
-#include <cstdio>
+//#include <cstdio>
 #include <fcntl.h>
-#include <cstdlib>
+//#include <cstdlib>
 #include <unistd.h>
-#include <cstring>
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
+//#include <cstring>
+//#include <sys/types.h>
+//#include <sys/socket.h>
+//#include <netinet/in.h>
 //#include <netdb.h>
-#include <cerrno>
-#include <csignal>
-#include <termios.h>
+
+//#include <cerrno>
+//#include <csignal>
+
+//#include <termios.h>
 #include <sys/mman.h>
 #include <sys/time.h>
+
+/* Deamon libraries? */
+#include <systemlib/systemlib.h>
+#include <systemlib/err.h>
+
+
+
+
+/* Packets includes */
 
 #ifndef EXTERNALFUNCTION_H
 #define EXTERNALFUNCTION_H
@@ -52,49 +65,49 @@
 #endif
 #ifndef MODEL_GS_H
 #define MODEL_GS_H
-#include "../LowLevel/Model_GS.h"
+#include "./LowLevel/Model_GS.h"
 #endif
 
 //INFRASTRUCTURE
 #ifndef LOW_LEVEL_FREE_FLIGHT_CONTROL_H
 #define LOW_LEVEL_FREE_FLIGHT_CONTROL_H
-#include <Low_Level_Free_Flight_Control.h>
+#include "./include/Low_Level_Free_Flight_Control.h"
 #endif
 #ifndef CINPUTS_H
 #define CINPUTS_H
-#include <CInputs.h>
+#include "./include/CInputs.h"
 #endif
 #ifndef PACKETREFERENCES_H
 #define PACKETREFERENCES_H
-#include <PacketREFERENCES.h>
+#include "./include/PacketREFERENCES.h"
 #endif
 #ifndef PACKETIMU_H
 #define PACKETIMU_H
-#include <PacketIMU.h>
+#include "./include/PacketIMU.h"
 #endif
 #ifndef PACKETPARAMETERS_H
 #define PACKETPARAMETERS_H
-#include <PacketPARAMETERS.h>
+#include "./include/PacketPARAMETERS.h"
 #endif
 #ifndef PACKETTELEMETRY_H
 #define PACKETTELEMETRY_H
-#include <PacketTELEMETRY.h>
+#include "./include/PacketTELEMETRY.h"
 #endif
 #ifndef PACKETOFLOW_H
 #define PACKETOFLOW_H
-#include <PacketOFLOW.h>
+#include "./include/PacketOFLOW.h"
 #endif
 #ifndef PACKETSTATE_H
 #define PACKETSTATE_H
-#include <PacketSTATE.h>
+#include "./include/PacketSTATE.h"
 #endif
 #ifndef PACKETACK_H
 #define PACKETACK_H
-#include <PacketACK.h>
+#include "./include/PacketACK.h"
 #endif
 #ifndef PACKETOPTITRACK_H
 #define PACKETOPTITRACK_H
-#include <PacketOPTITRACK.h>
+#include "./include/PacketOPTITRACK.h"
 #endif
 
 //DEFINITIONS
