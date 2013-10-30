@@ -7,16 +7,8 @@
 #include "../LowLevel/Model_GS.h"
 #endif
 
-class PacketTELEMETRY {
+struct PacketTELEMETRY_struct {
 
-public:
-		PacketTELEMETRY();
-		void readPacketTELEMETRY(char*);
-		void loadPacketTELEMETRY();
-		char* toString();
-		bool isValid();
-
-private:
 		char header;
 		int len;
 		int type;
@@ -25,3 +17,12 @@ private:
 
 		bool valid;
 };
+#define PacketTELEMETRY_s struct PacketTELEMETRY_struct
+//
+
+extern void initPacketTELEMETRY(PacketTELEMETRY_s* obj);
+extern void PacketTELEMETRY_readPacketTELEMETRY(PacketTELEMETRY_s* obj, char* val);
+extern void PacketTELEMETRY_loadPacketTELEMETRY(PacketTELEMETRY_s* obj);
+extern char* PacketTELEMETRY_toString(PacketTELEMETRY_s* obj);
+extern bool PacketTELEMETRY_isValid(PacketTELEMETRY_s* obj);
+

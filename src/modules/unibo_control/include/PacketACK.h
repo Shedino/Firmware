@@ -7,16 +7,8 @@
 #include "../LowLevel/Model_GS.h"
 #endif
 
-class PacketACK {
+struct PacketACK_struct {
 
-public:
-		PacketACK();
-		void readPacketACK(char*);
-		char* toString();
-		bool isValid();
-		int getTstamp();
-
-private:
 		char header;
 		int len;
 		int type;
@@ -25,3 +17,11 @@ private:
 
 		bool valid;
 };
+#define PacketACK_s struct PacketACK_struct
+//PacketACK_s PacketACK_instance;
+
+extern void initPacketACK(PacketACK_s* obj);
+extern void PacketACK_readPacketACK(PacketACK_s* obj, char* val);
+extern char* PacketACK_toString(PacketACK_s* obj);
+extern bool PacketACK_isValid(PacketACK_s* obj);
+extern int PacketACK_getTstamp(PacketACK_s* obj);

@@ -7,16 +7,8 @@
 #include "../LowLevel/Model_GS.h"
 #endif
 
-class PacketOFLOW {
+struct PacketOFLOW_struct {
 
-public:
-		PacketOFLOW();
-		void readPacketOFLOW(char*);
-		void loadPacketOFLOW();
-		char* toString();
-		bool isValid();
-
-private:
 		char header;
 		int len;
 		int type;
@@ -26,3 +18,11 @@ private:
 
 		bool valid;
 };
+#define PacketOFLOW_s struct PacketOFLOW_struct
+//
+
+extern void initPacketOFLOW(PacketOFLOW_s* obj);
+extern void PacketOFLOW_readPacketOFLOW(PacketOFLOW_s* obj, char* val);
+extern void PacketOFLOW_loadPacketOFLOW(PacketOFLOW_s* obj);
+extern char* PacketOFLOW_toString(PacketOFLOW_s* obj);
+extern bool PacketOFLOW_isValid(PacketOFLOW_s* obj);

@@ -20,14 +20,14 @@
 #include "../include/CInputs.h"
 #endif
 
-class Low_Level_Free_Flight_Control {
-public:
+//struct Low_Level_Free_Flight_Control {
+//public:
 
-	static void control();
-	static void evaluate(char*);
-	static void start();
-	static void updateModelAtomTime(unsigned long int);
+extern void LLFFC_control(void);
+extern void LLFFC_evaluate(char* val);
+extern void LLFFC_start(void);
+extern void LLFFC_updateModelAtomTime(unsigned long int val);
 
-};
+//};
 
 

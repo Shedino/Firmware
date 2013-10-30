@@ -14,40 +14,7 @@
 #include "../LowLevel/Model_GS.h"
 #endif
 
-
-
-class CInputs {
-public:
-
-	CInputs();
-
-	void readCInputs();
-
-	uint16_T* getU();
-	void setU(uint16_T*);
-
-	uint16_T getU0();
-	void setU0(uint16_T);
-
-	uint16_T getU1();
-	void setU1(uint16_T);
-
-	uint16_T getU2();
-	void setU2(uint16_T);
-
-	uint16_T getU3();
-	void setU3(uint16_T);
-
-	void display_CInputs();
-
-	char* toString();
-
-	char* toString_GS();
-
-	void reset_CInputs();
-
-
-private:
+struct cInputs_struct{
 		uint16_T* u;
 		uint16_T header1;
 		uint16_T header2;
@@ -58,5 +25,35 @@ private:
 		uint16_T crc;
 		uint16_T footer;
 
-} ;
+};
+
+#define cInputs_s struct cInputs_struct
+cInputs_s cInputs_instance;
+
+extern void initCInputs(cInputs_s* obj);
+extern void freeCInputs(cInputs_s* obj);
+
+extern void CInputs_readCInputs(cInputs_s* obj);
+
+extern uint16_T* CInputs_getU(cInputs_s* obj);
+extern void CInputs_setU(cInputs_s* obj, uint16_T* val);
+
+extern uint16_T CInputs_getU0(cInputs_s* obj);
+extern void CInputs_setU0(cInputs_s* obj, uint16_T val);
+
+extern uint16_T CInputs_getU1(cInputs_s* obj);
+extern void CInputs_setU1(cInputs_s* obj, uint16_T val);
+
+extern uint16_T CInputs_getU2(cInputs_s* obj);
+extern void CInputs_setU2(cInputs_s* obj, uint16_T val) ;
+
+extern uint16_T CInputs_getU3(cInputs_s* obj);
+extern void CInputs_setU3(cInputs_s* obj, uint16_T val);
+
+extern void CInputs_display_CInputs(cInputs_s* obj);
+extern char* CInputs_toString(cInputs_s* obj);
+extern char* CInputs_toString_GS(cInputs_s* obj);
+extern void CInputs_reset_CInputs(cInputs_s* obj);
+
+
 

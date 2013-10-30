@@ -7,17 +7,8 @@
 #endif
 
 
-class PacketPARAMETERS {
+struct PacketPARAMETERS_struct {
 
-
-public:
-		PacketPARAMETERS();
-		void readPacketPARAMETERS(char*);
-		void loadPacketPARAMETERS();
-		char* toString();
-
-
-private:
 		char header;
 		long length;
 		long type;
@@ -49,5 +40,12 @@ private:
 		long crc;
 		char footer;
 };
+#define PacketPARAMETERS_s struct PacketPARAMETERS_struct
+//
+
+extern void initPacketPARAMETERS(PacketPARAMETERS_s* obj);
+extern void PacketPARAMETERS_readPacketPARAMETERS(PacketPARAMETERS_s* obj, char* val);
+extern void PacketPARAMETERS_loadPacketPARAMETERS(PacketPARAMETERS_s* obj);
+extern char* PacketPARAMETERS_toString(PacketPARAMETERS_s* obj);
 
 

@@ -9,18 +9,8 @@
 
 //#include "common/mavlink.h"
 
-class PacketIMU {
+struct PacketIMU_struct {
 
-public:
-		PacketIMU();
-		void readPacketIMU(mavlink_highres_imu_t*);
-		void loadPacketIMU();
-		void newPacketIMUArrived();
-		void resetPacketIMUArrivedStatus();
-		char* toString();
-		bool isValid();
-
-private:
 		char header;
 		int length;
 		int type;
@@ -41,5 +31,13 @@ private:
 
 		bool valid;
 };
+#define PacketIMU_s struct PacketIMU_struct
 
+extern void initPacketIMU(PacketIMU_s* obj);
+//extern void PacketIMU_readPacketIMU(PacketIMU_s* obj, mavlink_highres_imu_t* val);
+extern void PacketIMU_loadPacketIMU(PacketIMU_s* obj);
+extern void PacketIMU_newPacketIMUArrived(PacketIMU_s* obj);
+extern void PacketIMU_resetPacketIMUArrivedStatus(PacketIMU_s* obj);
+extern char* PacketIMU_toString(PacketIMU_s* obj);
+extern bool PacketIMU_isValid(PacketIMU_s* obj);
 

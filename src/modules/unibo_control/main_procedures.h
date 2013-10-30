@@ -23,7 +23,8 @@ void flush_udp(int udp_port);
 void cleanup_termios(int signal);
 
 // riempie il pacchetto mavlink SERVO_OUTPUT_RAW con i valori ottenuti da cinputs, scalati correttamente in micros pwm
-void scale_cinputs_to_px4pwm(mavlink_servo_output_raw_t* px4_output, CInputs & cinputs);
+//void scale_cinputs_to_px4pwm(mavlink_servo_output_raw_t* px4_output, CInputs & cinputs);
+//void scale_cinputs_to_px4pwm(mavlink_servo_output_raw_t* px4_output, cInputs_s* cinputs);
 
 // funzione di inizializzazione generale (molto lunga)
 void init(int argc, char* argv[]);

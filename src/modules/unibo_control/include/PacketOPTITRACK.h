@@ -6,16 +6,8 @@
 #include "../LowLevel/Model_GS.h"
 #endif
 
-class PacketOPTITRACK {
+struct PacketOPTITRACK_struct {
 
-public:
-	PacketOPTITRACK();
-	void readPacketOPTITRACK(char*);
-	void loadPacketOPTITRACK();
-	char* toString();
-	bool isValid();
-
-private:
 	char header;
 	int len;
 	int type;
@@ -33,4 +25,11 @@ private:
 
 	bool valid;
 };
+#define PacketOPTITRACK_s struct PacketOPTITRACK_struct
+
+extern void initPacketOPTITRACK(PacketOPTITRACK_s* obj);
+extern void PacketOPTITRACK_readPacketOPTITRACK(PacketOPTITRACK_s* obj, char* val);
+extern void PacketOPTITRACK_loadPacketOPTITRACK(PacketOPTITRACK_s* obj);
+extern char* PacketOPTITRACK_toString(PacketOPTITRACK_s* obj);
+extern bool PacketOPTITRACK_isValid(PacketOPTITRACK_s* obj);
 

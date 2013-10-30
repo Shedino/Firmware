@@ -88,7 +88,7 @@ int sdParameters, sdCINPUTS, sdOptitrack, sdGS, sdIMU;
 struct timeval tv;
 //struct sigaction sact;
 //timeval cTime;
-RT_MODEL_Model_GS* model = Model_GS();
+RT_MODEL_Model_GS* model;
 
 
 
@@ -165,6 +165,7 @@ int unibo_control_thread_main(int argc, char *argv[])
 	thread_running = true;
 
 	warnx("Hello Sky!\n");
+	model = Model_GS(); //Init model!
 
 	/* subscribe to sensor_combined topic */
 	int sensor_sub_fd = orb_subscribe(ORB_ID(sensor_combined));
@@ -205,20 +206,21 @@ int unibo_control_thread_main(int argc, char *argv[])
 	init(argc, argv);
 
 	// inizializzazione middle-layer
-	PacketREFERENCES pkgRef;
-	PacketIMU pkgIMU;
-	PacketPARAMETERS pkgPar;
-	PacketTELEMETRY pkgTel;
-	PacketOFLOW pkgOflow;
-	PacketSTATE pkgState;
-	PacketACK pkgAck;
-	PacketOPTITRACK pkgOpti;
+	PacketREFERENCES_s pkgRef;
+	PacketIMU_s pkgIMU;
+	PacketPARAMETERS_s pkgPar;
+	PacketTELEMETRY_s pkgTel;
+	PacketOFLOW_s pkgOflow;
+	PacketSTATE_s pkgState;
+	PacketACK_s pkgAck;
+	PacketOPTITRACK_s pkgOpti;
 
-	CInputs cinputs;
+	cInputs_s cinputs;
 
 	printf("STARTING...\n");
-	Low_Level_Free_Flight_Control::start();
-	pkgIMU.loadPacketIMU();
+	LLFFC_start();
+	PacketIMU_loadPacketIMU(&pkgIMU);
+	//pkgIMU.loadPacketIMU();
 	pkgRef.loadPacketREFERENCES();
 	pkgPar.loadPacketPARAMETERS();
 	pkgTel.loadPacketTELEMETRY();
@@ -439,19 +441,6 @@ int unibo_control_thread_main(int argc, char *argv[])
 								printf("\t altitude: \t %f (m)\n", px4_imu.pressure_alt);
 								printf("\t temperature: \t %f C\n", px4_imu.temperature);
 								printf("\n");
-							}
-
-							// DEBUG MODE A 8 ARGOMENTI: NEL CASO INVIO A SIMULINK I DATI IMU RICEVUTI
-							if(argc == 8)
-							{
-								static char *p;
-								p = pkgIMU.toString();
-								if(sendto(sdIMU,p,strlen(p),0,(struct sockaddr *) &servaddrIMU, len)<0)
-								{
-									perror("error sendto IMU");
-								}
-								printf("%s\n", "IMU!");
-								fflush(stdout);
 							}
 
 							// gestione pacchetto REFERENCES ricevuto da Xbee, nel caso sia arrivato nel frattempo

@@ -6,16 +6,8 @@
 #include "../LowLevel/Model_GS.h"
 #endif
 
-class PacketREFERENCES {
+struct PacketREFERENCES_struct {
 
-public:
-		PacketREFERENCES();
-		void readPacketREFERENCES(char*);
-		void loadPacketREFERENCES();
-		char* toString();
-		bool isValid();
-
-private:
 		char header;
 		int length;
 		int type;
@@ -39,5 +31,12 @@ private:
 
 		bool valid;
 };
+#define PacketREFERENCES_s struct PacketREFERENCES_struct
+//
 
+extern void initPacketREFERENCES(PacketREFERENCES_s* obj);
+extern void PacketREFERENCES_readPacketREFERENCES(PacketREFERENCES_s* obj, char* val);
+extern void PacketREFERENCES_loadPacketREFERENCES(PacketREFERENCES_s* obj);
+extern char* PacketREFERENCES_toString(PacketREFERENCES_s* obj);
+extern bool PacketREFERENCES_isValid(PacketREFERENCES_s* obj);
 
