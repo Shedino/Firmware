@@ -8,6 +8,7 @@
 #endif
 
 //#include "common/mavlink.h"
+#include <uORB/topics/sensor_combined.h>
 
 struct PacketIMU_struct {
 
@@ -34,7 +35,7 @@ struct PacketIMU_struct {
 #define PacketIMU_s struct PacketIMU_struct
 
 extern void initPacketIMU(PacketIMU_s* obj);
-//extern void PacketIMU_readPacketIMU(PacketIMU_s* obj, mavlink_highres_imu_t* val);
+extern void PacketIMU_readPacketIMU(PacketIMU_s* obj, struct sensor_combined_s* imu);
 extern void PacketIMU_loadPacketIMU(PacketIMU_s* obj);
 extern void PacketIMU_newPacketIMUArrived(PacketIMU_s* obj);
 extern void PacketIMU_resetPacketIMUArrivedStatus(PacketIMU_s* obj);

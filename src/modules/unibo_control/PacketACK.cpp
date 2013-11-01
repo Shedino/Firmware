@@ -4,43 +4,43 @@
 #include <PacketACK.h>
 
 
-PacketACK::PacketACK(){
-	this->header = HEADER;
-	this->len = -1;
-	this->type = -1;
-	this->tstamp = -1;
-	this->footer = FOOTER;
+void initPacketACK(PacketACK_s* obj){
+	obj->header = HEADER;
+	obj->len = -1;
+	obj->type = -1;
+	obj->tstamp = -1;
+	obj->footer = FOOTER;
 }
 
 
-void PacketACK::readPacketACK(char *s){
+void PacketACK_readPacketACK(PacketACK_s* obj, char *s){
 
-	this->header = HEADER;
-	this->footer = FOOTER;
+	obj->header = HEADER;
+	obj->footer = FOOTER;
 
-	this->valid = false;
+	obj->valid = false;
 
-	sscanf(s, "S %d %d %d E", &this->len, &this->type, &this->tstamp);
+	sscanf(s, "S %d %d %d E", &obj->len, &obj->type, &obj->tstamp);
 
-	if (this->len == strlen(s)){
-				this->valid = true;
+	if (obj->len == strlen(s)){
+				obj->valid = true;
 	}
 }
 
 
-char* PacketACK::toString() {
+char* PacketACK_toString(PacketACK_s* obj) {
 
 	static char string[256];
 	sprintf(string, "%c %d %d %d %c",
-			this->header, this->len, this->type, this->tstamp,
-			this->footer);
+			obj->header, obj->len, obj->type, obj->tstamp,
+			obj->footer);
 	return string;
 }
 
-bool PacketACK::isValid(){
-	return this->valid;
+bool PacketACK_isValid(PacketACK_s* obj){
+	return obj->valid;
 }
-int PacketACK::getTstamp(){
-	return this->tstamp;
+int PacketACK_getTstamp(PacketACK_s* obj){
+	return obj->tstamp;
 }
 

@@ -4,46 +4,46 @@
 #include <PacketTELEMETRY.h>
 
 
-PacketTELEMETRY::PacketTELEMETRY(){
-	this->header = HEADER;
-	this->len = -1;
-	this->type = -1;
-	this->sonar = -1;
-	this->footer = FOOTER;
+void initPacketTELEMETRY(PacketTELEMETRY_s* obj){
+	obj->header = HEADER;
+	obj->len = -1;
+	obj->type = -1;
+	obj->sonar = -1;
+	obj->footer = FOOTER;
 }
 
 
-void PacketTELEMETRY::readPacketTELEMETRY(char *s){
+void PacketTELEMETRY_readPacketTELEMETRY(PacketTELEMETRY_s* obj, char *s){
 
-	this->header = HEADER;
-	this->footer = FOOTER;
+	obj->header = HEADER;
+	obj->footer = FOOTER;
 
-	this->valid = false;
+	obj->valid = false;
 
-	sscanf(s, "S %d %d %d E", &this->len, &this->type, &this->sonar);
+	sscanf(s, "S %d %d %d E", &obj->len, &obj->type, &obj->sonar);
 
-	if (this->len == strlen(s)){
-				this->valid = true;
+	if (obj->len == strlen(s)){
+				obj->valid = true;
 	}
 }
 
-void PacketTELEMETRY::loadPacketTELEMETRY(){
+void PacketTELEMETRY_loadPacketTELEMETRY(PacketTELEMETRY_s* obj){
 
-	Model_GS_U.LLS[0] = this->len;
-	Model_GS_U.LLS[1] = this->type;
-	Model_GS_U.LLS[2] = this->sonar;
+	Model_GS_U.LLS[0] = obj->len;
+	Model_GS_U.LLS[1] = obj->type;
+	Model_GS_U.LLS[2] = obj->sonar;
 }
 
 
-char* PacketTELEMETRY::toString() {
+char* PacketTELEMETRY_toString(PacketTELEMETRY_s* obj) {
 
 	static char string[256];
 	sprintf(string, "%c %d %d %d %c",
-			this->header, this->len, this->type, this->sonar, this->footer);
+			obj->header, obj->len, obj->type, obj->sonar, obj->footer);
 	return string;
 }
 
-bool PacketTELEMETRY::isValid(){
-	return this->valid;
+bool PacketTELEMETRY_isValid(PacketTELEMETRY_s* obj){
+	return obj->valid;
 }
 

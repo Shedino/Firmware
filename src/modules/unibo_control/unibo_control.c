@@ -57,6 +57,11 @@ static bool thread_should_exit = false;		/**< daemon exit flag */
 static bool thread_running = false;		/**< daemon status flag */
 static int daemon_task;				/**< Handle of daemon task / thread */
 
+
+//#include <mavlink\mavlink_bridge_header.h>
+//#include <mavlink_onboard\mavlink_bridge_header.h>
+//#include <uORB/topics/sensor_combined.h>
+
 /**
  * daemon management function.
  */
@@ -170,7 +175,7 @@ int unibo_control_thread_main(int argc, char *argv[])
 	/* subscribe to sensor_combined topic */
 	int sensor_sub_fd = orb_subscribe(ORB_ID(sensor_combined));
 	/* set data to 1Hz */
-	orb_set_interval(sensor_sub_fd, 1000);
+	orb_set_interval(sensor_sub_fd, 2); //1000 = 1Hz (ms)
 
 	/* advertise attitude topic */
 	struct vehicle_attitude_s att;
@@ -221,12 +226,12 @@ int unibo_control_thread_main(int argc, char *argv[])
 	LLFFC_start();
 	PacketIMU_loadPacketIMU(&pkgIMU);
 	//pkgIMU.loadPacketIMU();
-	pkgRef.loadPacketREFERENCES();
-	pkgPar.loadPacketPARAMETERS();
-	pkgTel.loadPacketTELEMETRY();
-	pkgOflow.loadPacketOFLOW();
-	pkgOpti.loadPacketOPTITRACK();
-	Low_Level_Free_Flight_Control::control();
+	PacketREFERENCES_loadPacketREFERENCES(&pkgRef);
+	PacketPARAMETERS_loadPacketPARAMETERS(&pkgPar);
+	PacketTELEMETRY_loadPacketTELEMETRY(&pkgTel);
+	PacketOFLOW_loadPacketOFLOW(&pkgOflow);
+	PacketOPTITRACK_loadPacketOPTITRACK(&pkgOpti);
+	LLFFC_control();
 
 	int optitrack_counter = 0;
 	int parameters_counter = 0;
@@ -234,25 +239,25 @@ int unibo_control_thread_main(int argc, char *argv[])
 	int print_counter2 = 0;
 	int gs_counter = 0;
 	int log_counter = 0;
-	len = sizeof(struct sockaddr_in);
+	//len = sizeof(struct sockaddr_in);
 	int writtenChars = 0;
 	unsigned long int tAtom = 0;
 	unsigned long int tTime = 0;
 	int count_missed = 0;
 
 	// variabili input serial PX4
-	mavlink_status_t px4_lastStatus;
-	px4_lastStatus.packet_rx_drop_count = 0;
-	uint8_t px4_input_char;
-	mavlink_message_t px4_input_message;
-	mavlink_status_t px4_input_status;
-	uint8_t px4_msgReceived = false;
+	//mavlink_status_t px4_lastStatus;
+	//px4_lastStatus.packet_rx_drop_count = 0;
+	//uint8_t px4_input_char;
+	//mavlink_message_t px4_input_message;
+	//mavlink_status_t px4_input_status;
+	//uint8_t px4_msgReceived = false;
 
 	// variabili output serial PX4
-	mavlink_message_t px4_output_message;
-	mavlink_servo_output_raw_t px4_output;
-	unsigned px4_output_len;
-	char px4_output_buffer[300];
+	//mavlink_message_t px4_output_message;
+	//mavlink_servo_output_raw_t px4_output;
+	//unsigned px4_output_len;
+	//char px4_output_buffer[300];
 
 	// Round Buffer for REF packet
 	char round_buffer_REF[LENGTH*4];
@@ -292,14 +297,21 @@ int unibo_control_thread_main(int argc, char *argv[])
 
 	while (!thread_should_exit) {
 		/* wait for sensor update of 1 file descriptor for 1000 ms (1 second) */
-		int poll_ret = poll(fds, 1, 1000); //filedescr, number of file descriptor to wait for, timeout in ms
+		//Imposto solo 10 ms
+		int poll_ret = poll(fds, 1, 10); //filedescr, number of file descriptor to wait for, timeout in ms
 
 		//TODO: INSERIRE QUI INIZIALIZZAZIONI PRE-LOOP AD OGNI LOOP
+		// XBee: packet_REF viene riempito con i dati da xbee
+		readAndParseSerial(serial_XBee, round_buffer_REF, sizeof(round_buffer_REF), packet_REF, &pos_REF, &start_REF, &lastSidx_REF, &REF_packet_ready);
+
+		// resetto lo stato che informa il controllo se sono arrivati nuovi pacchetti IMU
+		PacketIMU_resetPacketIMUArrivedStatus(&pkgIMU);
+
 
 		/* handle the poll result */
 		if (poll_ret == 0) {
 			/* this means none of our providers is giving us data */
-			warnx("[unibo_control_thread] Got no data within a second\n");
+			warnx("[unibo_control_thread] Got no data within 10ms\n"); //i 10 ms impostati poco sopra, il topic cmq dovrebbe arrivare a 500hz (2ms)
 		} else if (poll_ret < 0) {
 			/* this is seriously bad - should be an emergency */
 			if (error_counter < 10 || error_counter % 50 == 0) {
@@ -311,6 +323,8 @@ int unibo_control_thread_main(int argc, char *argv[])
 		} else {
 
 			if (fds[0].revents & POLLIN) {
+				//TECNICAMENTE SIAMO GIA' A 500HZ
+
 				/* obtained data for the first file descriptor */
 				struct sensor_combined_s raw;
 				/* copy sensors raw data into local buffer */
@@ -347,292 +361,231 @@ int unibo_control_thread_main(int argc, char *argv[])
 				}
 				tTime = getMyTime();
 				tAtom = tTime/1000 % 30000;
-				Low_Level_Free_Flight_Control::updateModelAtomTime(tAtom);
+				LLFFC_updateModelAtomTime(tAtom);
 				// XXX FINE copiate
 
-				// PX4: lettura char by char non bloccante
-				px4_msgReceived = false;
-				while ( read(serial_PX4, &px4_input_char, 1) > 0 )
+				if (FirstFlg)
 				{
-					// parsing del messaggio, nel caso sia arrivato tutto setta msgReceived a true
-					px4_msgReceived = mavlink_parse_char(MAVLINK_COMM_1, px4_input_char, &px4_input_message, &px4_input_status);
-					//if (/* DEBUG_MODE && */ (px4_lastStatus.packet_rx_drop_count != px4_input_status.packet_rx_drop_count))
-					/*
-					if (DEBUG_MODE && px4_input_status.packet_rx_drop_count > 0)
+					printf("START.\n");
+					FirstFlg = false;
+				}
+
+				// TODO eventuali benchmark di tempo
+
+				// se viene stampato un messaggio circa ogni secondo vuol dire che va tutto bene
+				if (print_counter++ >= 500)
+				{
+					//printf("pkgimu (length, type, gyro xyz, acc xyz, mag xyz, deltat, time, crc):\n %s\n", pkgIMU.toString());
+					//printf("%s\n", pkgIMU.toString());
+					//printf();
+					//printf("cinputs: %d %d %d %d %d %d %d %d %d %d %d\n", cinputs.getU0(), cinputs.getU1(), cinputs.getU2(), cinputs.getU3(), cinputs.getU4(), cinputs.getU5(), cinputs.getU6(), cinputs.getU7(), cinputs.getU8(), cinputs.getU9(), cinputs.getU10());
+					//printf("cinputs: %s\n", cinputs.toString());
+					//printf("servo: %d %d %d %d %d %d %d %d\n\n", px4_output.servo1_raw, px4_output.servo2_raw, px4_output.servo3_raw, px4_output.servo4_raw, px4_output.servo5_raw, px4_output.servo6_raw, px4_output.servo7_raw,  px4_output.servo8_raw);
+					fflush(stdout);
+					print_counter = 0;
+				}
+
+				// decodifica pacchetto mavlink
+				mavlink_highres_imu_t px4_imu;
+				mavlink_msg_highres_imu_decode(&px4_input_message, &px4_imu);
+
+				// ---- riempimento oggetto pkgIMU con i valori imu ricevuti ----
+				// readPacketIMU contiene anche gli algoritmi di conversione da unita' del SI
+				// (come arrivano da mavlink) a valori pkgIMU valutabili dal controllo
+				PacketIMU_readPacketIMU(&pkgIMU, &px4_imu);
+
+				// confermo al modello che sono arrivati dati IMU e li carico
+				PacketIMU_newPacketIMUArrived(&pkgIMU);
+				PacketIMU_loadPacketIMU(&pkgIMU);
+
+				if(DEBUG_MODE) // TODO sistemare
+				{
+					// clear console output
+					system("clear");
+
+					printf("Got message HIGHRES_IMU\n");
+					printf("\t time: %llu\n", px4_imu.time_usec);
+					printf("\t acc  (NED):\t% f\t% f\t% f (m/s^2)\n", px4_imu.xacc, px4_imu.yacc, px4_imu.zacc);
+					printf("\t gyro (NED):\t% f\t% f\t% f (rad/s)\n", px4_imu.xgyro, px4_imu.ygyro, px4_imu.zgyro);
+					printf("\t mag  (NED):\t% f\t% f\t% f (Ga)\n", px4_imu.xmag, px4_imu.ymag, px4_imu.zmag);
+					printf("\t baro: \t %f (mBar)\n", px4_imu.abs_pressure);
+					printf("\t altitude: \t %f (m)\n", px4_imu.pressure_alt);
+					printf("\t temperature: \t %f C\n", px4_imu.temperature);
+					printf("\n");
+				}
+
+				// gestione pacchetto REFERENCES ricevuto da Xbee, nel caso sia arrivato nel frattempo
+				if(REF_packet_ready)
+				{
+					PacketREFERENCES_readPacketREFERENCES(&pkgRef, packet_REF);
+					memset(packet_REF,0,LENGTH);
+					if (PacketREFERENCES_isValid(&pkgRef))
 					{
-						printf("ERROR: DROPPED %d PACKETS\n", px4_input_status.packet_rx_drop_count);
-						unsigned char v=px4_input_char;
-						fprintf(stderr,"%02x ", v);
+						PacketREFERENCES_loadPacketREFERENCES(&pkgRef);
+						REF_packet_ready = false;
 					}
-					px4_lastStatus = px4_input_status;
-					*/
-					if (px4_msgReceived){
-						break;
+					else
+					{
+						count_missed++;
+						printf("WARNING %d\n", count_missed);
 					}
 				}
-				// nel caso la lettura non bloccante non abbia riportato nessun risultato, sicuramente non ho ricevuto un messaggio completo
-				//else
-				//{
-				//
-				//}
 
-				// XBee: packet_REF viene riempito con i dati da xbee
-				readAndParseSerial(serial_XBee, round_buffer_REF, sizeof(round_buffer_REF), packet_REF, &pos_REF, &start_REF, &lastSidx_REF, &REF_packet_ready);
+				// aumento dei contatori che gestiranno lo scheduling del reset, della ricezione
+				// dei pacchetti OPTITRACK e PARAMETERS e della scrittura scrittura alla GS
+				resetTimeCounter++;
+				optitrack_counter++;
+				parameters_counter++;
+				gs_counter++;
+				log_counter++;
 
-				// resetto lo stato che informa il controllo se sono arrivati nuovi pacchetti IMU
-				pkgIMU.resetPacketIMUArrivedStatus();
-
-				// PX4: nel caso sia arrivato un messaggio mavlink completo (di qualsiasi tipo), viene gestito.
-				//		se si tratta di un pacchetto IMU, vengono gestiti eventuali altri pacchetti arrivati da altre interfacce,
-				//		viene eseguito l'algoritmo di controllo e inviato l'output pwm a PX4 (seguendo la stessa architettura del vecchio loop)
-				if(px4_msgReceived)
+				/*
+				// scheduling OPTITRACK
+				if (optitrack_counter >= 2)
 				{
-					// switch in base al tipo di messaggio ricevuto
-					switch (px4_input_message.msgid)
+					memset(udp_receive_buffer,0,LENGTH);
+					while(recvfrom(sdOptitrack,&udp_receive_buffer,sizeof(char)*LENGTH,0,(struct sockaddr *)&clientaddr, (socklen_t*) &len) >= 0)
 					{
-						// messaggio imu (500 hz) --> esecuzione controllo e scrittura in output
-						case MAVLINK_MSG_ID_HIGHRES_IMU:
-						{
-							if (FirstFlg)
-							{
-								printf("START.\n");
-								FirstFlg = false;
-							}
-
-							// TODO eventuali benchmark di tempo
-
-							// se viene stampato un messaggio circa ogni secondo vuol dire che va tutto bene
-							if (print_counter++ >= 500)
-							{
-								//printf("pkgimu (length, type, gyro xyz, acc xyz, mag xyz, deltat, time, crc):\n %s\n", pkgIMU.toString());
-								//printf("%s\n", pkgIMU.toString());
-								//printf();
-								//printf("cinputs: %d %d %d %d %d %d %d %d %d %d %d\n", cinputs.getU0(), cinputs.getU1(), cinputs.getU2(), cinputs.getU3(), cinputs.getU4(), cinputs.getU5(), cinputs.getU6(), cinputs.getU7(), cinputs.getU8(), cinputs.getU9(), cinputs.getU10());
-								//printf("cinputs: %s\n", cinputs.toString());
-								//printf("servo: %d %d %d %d %d %d %d %d\n\n", px4_output.servo1_raw, px4_output.servo2_raw, px4_output.servo3_raw, px4_output.servo4_raw, px4_output.servo5_raw, px4_output.servo6_raw, px4_output.servo7_raw,  px4_output.servo8_raw);
-								fflush(stdout);
-								print_counter = 0;
-							}
-
-							// decodifica pacchetto mavlink
-							mavlink_highres_imu_t px4_imu;
-							mavlink_msg_highres_imu_decode(&px4_input_message, &px4_imu);
-
-							// ---- riempimento oggetto pkgIMU con i valori imu ricevuti ----
-							// readPacketIMU contiene anche gli algoritmi di conversione da unita' del SI
-							// (come arrivano da mavlink) a valori pkgIMU valutabili dal controllo
-							pkgIMU.readPacketIMU(&px4_imu);
-
-							// confermo al modello che sono arrivati dati IMU e li carico
-							pkgIMU.newPacketIMUArrived();
-							pkgIMU.loadPacketIMU();
-
-							if(DEBUG_MODE) // TODO sistemare
-							{
-								// clear console output
-								system("clear");
-
-								printf("Got message HIGHRES_IMU\n");
-								printf("\t time: %llu\n", px4_imu.time_usec);
-								printf("\t acc  (NED):\t% f\t% f\t% f (m/s^2)\n", px4_imu.xacc, px4_imu.yacc, px4_imu.zacc);
-								printf("\t gyro (NED):\t% f\t% f\t% f (rad/s)\n", px4_imu.xgyro, px4_imu.ygyro, px4_imu.zgyro);
-								printf("\t mag  (NED):\t% f\t% f\t% f (Ga)\n", px4_imu.xmag, px4_imu.ymag, px4_imu.zmag);
-								printf("\t baro: \t %f (mBar)\n", px4_imu.abs_pressure);
-								printf("\t altitude: \t %f (m)\n", px4_imu.pressure_alt);
-								printf("\t temperature: \t %f C\n", px4_imu.temperature);
-								printf("\n");
-							}
-
-							// gestione pacchetto REFERENCES ricevuto da Xbee, nel caso sia arrivato nel frattempo
-							if(REF_packet_ready)
-							{
-								pkgRef.readPacketREFERENCES(packet_REF);
-								memset(packet_REF,0,LENGTH);
-								if (pkgRef.isValid())
-								{
-									pkgRef.loadPacketREFERENCES();
-									REF_packet_ready = false;
-								}
-								else
-								{
-									count_missed++;
-									printf("WARNING %d\n", count_missed);
-								}
-							}
-
-							// aumento dei contatori che gestiranno lo scheduling del reset, della ricezione
-							// dei pacchetti OPTITRACK e PARAMETERS e della scrittura scrittura alla GS
-							resetTimeCounter++;
-							optitrack_counter++;
-							parameters_counter++;
-							gs_counter++;
-							log_counter++;
-
-							// scheduling OPTITRACK
-							if (optitrack_counter >= 2)
-							{
-								memset(udp_receive_buffer,0,LENGTH);
-								while(recvfrom(sdOptitrack,&udp_receive_buffer,sizeof(char)*LENGTH,0,(struct sockaddr *)&clientaddr, (socklen_t*) &len) >= 0)
-								{
-									pkgOpti.readPacketOPTITRACK(udp_receive_buffer);
-									pkgOpti.loadPacketOPTITRACK();
-								}
-								optitrack_counter = 0;
-							}
-
-							// scheduling PARAMETERS
-							if (parameters_counter >= 500)
-							{
-								memset(udp_receive_buffer,0,LENGTH);
-								while(recvfrom(sdParameters,&udp_receive_buffer,sizeof(char)*LENGTH,0,(struct sockaddr *)&clientaddr, (socklen_t*) &len) >= 0)
-								{
-									pkgPar.readPacketPARAMETERS(udp_receive_buffer);
-									pkgPar.loadPacketPARAMETERS();
-								}
-								parameters_counter = 0;
-							}
-
-							// ---- CONTROLLO ----
-							Low_Level_Free_Flight_Control::control();
-
-							// ---- Riempio oggetto CInputs con i valori generati in output dal controllo ----
-							cinputs.readCInputs();
-
-							/*
-							if (print_counter % 100 == 0)
-							{
-								printf("cinputs: %s\n", cinputs.toString());
-								fflush(stdout);
-							}
-							*/
-
-							// riempimento del pacchetto mavlink servo_output_raw a partire dall'output del controllo (cinputs)
-							// la funzione comprende anche la scalatura dal range 0..4095 di cinputs a 900..2100 dei microsecondi pwm (usati da px4)
-							scale_cinputs_to_px4pwm(&px4_output, cinputs);
-
-							// ---- INVIO OUTPUTS ----
-							// codifica e invio del pacchetto mavlink
-							mavlink_msg_servo_output_raw_encode(200, 0, &px4_output_message, &px4_output);
-							px4_output_len = mavlink_msg_to_send_buffer((uint8_t*)px4_output_buffer, &px4_output_message);
-							write(serial_PX4, px4_output_buffer, px4_output_len);
-							tcflush(serial_PX4, TCOFLUSH);
-
-							// invio alla groundstation (UDP)
-							if (gs_counter >= 50)
-							{
-								static char *p;
-								p = cinputs.toString_GS();
-								if(sendto(sdCINPUTS,p,strlen(p),0,(struct sockaddr *) &servaddrCINPUTS, len)<0)
-								{
-									perror("error sendto CINPUTS");
-								}
-								pkgState.readPacketSTATE();
-								writtenChars = write(serial_XBee, pkgState.toString(), strlen(pkgState.toString()));
-								gs_counter = 0;
-
-								#ifdef GSEXT
-									p = pkgState.toString();
-									if(sendto(sdGS,p,strlen(p),0,(struct sockaddr *) &servaddrGS, len)<0)
-									{
-										perror("error sendto GS_STATE");
-									}
-								#endif
-							}
-							if (log_counter>=500){
-								//printf("TORQUES: %f %f %f\n", Model_GS_Y.C_TORQUES[0], Model_GS_Y.C_TORQUES[1], Model_GS_Y.C_TORQUES[2]);
-								//printf("Q: %f %f %f %f - QC: %f %f %f %f\n", Model_GS_Y.C_Q[0], Model_GS_Y.C_Q[1], Model_GS_Y.C_Q[2], Model_GS_Y.C_Q[3], Model_GS_Y.C_QC[0], Model_GS_Y.C_QC[1], Model_GS_Y.C_QC[2], Model_GS_Y.C_QC[3]);
-								printf("Thrust: %f\n", Model_GS_Y.C_THRUST);
-								log_counter=0;
-							}
-
-						}
-						break;
-
-						/*
-						QUI DA IMPLEMENTARE EVENTUALI ALTRI CASE PER I SEGUENTI PACCHETTI (che arriveranno da PX4 via mavlink):
-
-						//  LLSENSORS
-						Model_GS_U.LLSenable = 0;
-						if (TELE_packet_ready) {
-							pkgTel.readPacketTELEMETRY(packet_TELE);
-							memset(packet_TELE,0,LENGTH);
-							if(pkgTel.isValid()){
-								Model_GS_U.LLSenable = 1;
-								pkgTel.loadPacketTELEMETRY();
-								TELE_packet_ready = false;
-							}
-						}
-
-						//  OPTICALFLOW
-						if (OFLOW_packet_ready) {
-							pkgOflow.readPacketOFLOW(packet_OFLOW);
-							memset(packet_OFLOW,0,LENGTH);
-							if(pkgOflow.isValid()){
-								pkgOflow.loadPacketOFLOW();
-								OFLOW_packet_ready = false;
-							}
-						}
-
-						//  ACK
-						if (ACK_packet_ready) {
-							pkgAck.readPacketACK(packet_ACK);
-							memset(packet_ACK,0,LENGTH);
-							if(pkgAck.isValid()){
-								//TODP: CAlcolo il tempo
-								long diff = tAtom-pkgAck.getTstamp();
-			//					printf("DIFF: %d %d %d \n", tAtom, pkgAck.getTstamp(), diff);
-								if (diff>0){
-									if (AckDiffMax<diff){
-										AckDiffMax=diff;
-									}
-									if (AckDiffMin>diff){
-										AckDiffMin=diff;
-									}
-									AckDiff[ackbcount] = diff;
-									ackbcount++;
-									if (ackbcount==ACKDLEN){
-										//Calcolo la media
-										unsigned long mean = 0;
-										for (int meani= 0; meani<ACKDLEN; meani++){
-											mean += AckDiff[meani];
-										}
-										mean = mean / ACKDLEN;
-			//							printf("TEMPO: %ld %ld %ld %ld \n", AckDiffMin, AckDiffMax, mean, loopMaxTime);
-										ackbcount = 0;
-									}
-								}
-								ACK_packet_ready = false;
-							}
-						}
-
-						*/
-
-					} // switch
-				} // if msgReceived
-
-				#ifdef RTAI
-					rt_task_wait_period();
-				#else
-					if(print_counter2 >= 1)
-					{
-						usleep(200);
-						print_counter2 = 0;
+						PacketOPTITRACK_readPacketOPTITRACK(&pkgOpti, udp_receive_buffer);
+						PacketOPTITRACK_loadPacketOPTITRACK(&pkgOpti);
 					}
-				#endif
+					optitrack_counter = 0;
+				}
+
+				// scheduling PARAMETERS
+				if (parameters_counter >= 500)
+				{
+					memset(udp_receive_buffer,0,LENGTH);
+					while(recvfrom(sdParameters,&udp_receive_buffer,sizeof(char)*LENGTH,0,(struct sockaddr *)&clientaddr, (socklen_t*) &len) >= 0)
+					{
+						PacketPARAMETERS_readPacketPARAMETERS(&pkgPar,udp_receive_buffer);
+						PacketPARAMETERS_loadPacketPARAMETERS(&pkgPar);
+					}
+					parameters_counter = 0;
+				}
+				*/
+				// ---- CONTROLLO ----
+				LLFFC_control();
+
+				// ---- Riempio oggetto CInputs con i valori generati in output dal controllo ----
+				CInputs_readCInputs(&cinputs);
+
+				/*
+				if (print_counter % 100 == 0)
+				{
+					printf("cinputs: %s\n", cinputs.toString());
+					fflush(stdout);
+				}
+				*/
+
+				// riempimento del pacchetto mavlink servo_output_raw a partire dall'output del controllo (cinputs)
+				// la funzione comprende anche la scalatura dal range 0..4095 di cinputs a 900..2100 dei microsecondi pwm (usati da px4)
+				scale_cinputs_to_px4pwm(&px4_output, cinputs);
+
+				// ---- INVIO OUTPUTS ----
+				// codifica e invio del pacchetto mavlink
+				mavlink_msg_servo_output_raw_encode(200, 0, &px4_output_message, &px4_output);
+				px4_output_len = mavlink_msg_to_send_buffer((uint8_t*)px4_output_buffer, &px4_output_message);
+				write(serial_PX4, px4_output_buffer, px4_output_len);
+				//tcflush(serial_PX4, TCOFLUSH);
+
+				// invio alla groundstation (UDP)
+				if (gs_counter >= 50)
+				{
+					static char *p;
+					p = CInputs_toString_GS(&cinputs);
+					//if(sendto(sdCINPUTS,p,strlen(p),0,(struct sockaddr *) &servaddrCINPUTS, len)<0)
+					//{
+					//	perror("error sendto CINPUTS");
+					//}
+					PacketSTATE_readPacketSTATE(&pkgState);
+					writtenChars = write(serial_XBee, PacketSTATE_toString(&pkgState), strlen(PacketSTATE_toString(&pkgState)));
+					gs_counter = 0;
+
+					#ifdef GSEXT
+						p = pkgState.toString();
+						if(sendto(sdGS,p,strlen(p),0,(struct sockaddr *) &servaddrGS, len)<0)
+						{
+							perror("error sendto GS_STATE");
+						}
+					#endif
+				}
+				if (log_counter>=500){
+					//printf("TORQUES: %f %f %f\n", Model_GS_Y.C_TORQUES[0], Model_GS_Y.C_TORQUES[1], Model_GS_Y.C_TORQUES[2]);
+					//printf("Q: %f %f %f %f - QC: %f %f %f %f\n", Model_GS_Y.C_Q[0], Model_GS_Y.C_Q[1], Model_GS_Y.C_Q[2], Model_GS_Y.C_Q[3], Model_GS_Y.C_QC[0], Model_GS_Y.C_QC[1], Model_GS_Y.C_QC[2], Model_GS_Y.C_QC[3]);
+					printf("Thrust: %f\n", Model_GS_Y.C_THRUST);
+					log_counter=0;
+				}
 
 
+				/*
+				QUI DA IMPLEMENTARE EVENTUALI ALTRI CASE PER I SEGUENTI PACCHETTI (che arriveranno da PX4 via mavlink):
+
+				//  LLSENSORS
+				Model_GS_U.LLSenable = 0;
+				if (TELE_packet_ready) {
+					pkgTel.readPacketTELEMETRY(packet_TELE);
+					memset(packet_TELE,0,LENGTH);
+					if(pkgTel.isValid()){
+						Model_GS_U.LLSenable = 1;
+						pkgTel.loadPacketTELEMETRY();
+						TELE_packet_ready = false;
+					}
+				}
+
+				//  OPTICALFLOW
+				if (OFLOW_packet_ready) {
+					pkgOflow.readPacketOFLOW(packet_OFLOW);
+					memset(packet_OFLOW,0,LENGTH);
+					if(pkgOflow.isValid()){
+						pkgOflow.loadPacketOFLOW();
+						OFLOW_packet_ready = false;
+					}
+				}
+
+				//  ACK
+				if (ACK_packet_ready) {
+					pkgAck.readPacketACK(packet_ACK);
+					memset(packet_ACK,0,LENGTH);
+					if(pkgAck.isValid()){
+						//TODP: CAlcolo il tempo
+						long diff = tAtom-pkgAck.getTstamp();
+	//					printf("DIFF: %d %d %d \n", tAtom, pkgAck.getTstamp(), diff);
+						if (diff>0){
+							if (AckDiffMax<diff){
+								AckDiffMax=diff;
+							}
+							if (AckDiffMin>diff){
+								AckDiffMin=diff;
+							}
+							AckDiff[ackbcount] = diff;
+							ackbcount++;
+							if (ackbcount==ACKDLEN){
+								//Calcolo la media
+								unsigned long mean = 0;
+								for (int meani= 0; meani<ACKDLEN; meani++){
+									mean += AckDiff[meani];
+								}
+								mean = mean / ACKDLEN;
+	//							printf("TEMPO: %ld %ld %ld %ld \n", AckDiffMin, AckDiffMax, mean, loopMaxTime);
+								ackbcount = 0;
+							}
+						}
+						ACK_packet_ready = false;
+					}
+				}
+
+				*/
+
+				if(print_counter2 >= 1)
+				{
+					usleep(200);
+					print_counter2 = 0;
+				}
+
+			} //End of file descriptor [SENSOR COMBINED id=1]
 
 
-
-
-
-				/* set att and publish this information for other apps */
-				//att.roll = raw.accelerometer_m_s2[0];
-				//att.pitch = raw.accelerometer_m_s2[1];
-				//att.yaw = raw.accelerometer_m_s2[2];
-				//orb_publish(ORB_ID(vehicle_attitude), att_pub_fd, &att);
-
-			}
 			/* there could be more file descriptors here, in the form like:
 			 * if (fds[1..n].revents & POLLIN) {}
 			 */

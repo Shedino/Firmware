@@ -4,46 +4,46 @@
 #include <PacketSTATE.h>
 
 
-PacketSTATE::PacketSTATE(){
+void initPacketSTATE(PacketSTATE_s* obj){
 
-	this->header = HEADER;
-	this->x = -1;
-	this->y = -1;
-	this->z = -1;
-	this->dx = -1;
-	this->dy = -1;
-	this->dz = -1;
-	this->phi = -1;
-	this->theta = -1;
-	this->psi = -1;
-	this->wx = -1;
-	this->wy = -1;
-	this->wz = -1;
-	this->footer = FOOTER;
+	obj->header = HEADER;
+	obj->x = -1;
+	obj->y = -1;
+	obj->z = -1;
+	obj->dx = -1;
+	obj->dy = -1;
+	obj->dz = -1;
+	obj->phi = -1;
+	obj->theta = -1;
+	obj->psi = -1;
+	obj->wx = -1;
+	obj->wy = -1;
+	obj->wz = -1;
+	obj->footer = FOOTER;
 }
 
-void PacketSTATE::readPacketSTATE(){
+void PacketSTATE_readPacketSTATE(PacketSTATE_s* obj){
 
-	this->x = Model_GS_Y.STATE[0];
-	this->y = Model_GS_Y.STATE[1];
-	this->z = Model_GS_Y.STATE[2];
-	this->dx = Model_GS_Y.STATE[3];
-	this->dy = Model_GS_Y.STATE[4];
-	this->dz = Model_GS_Y.STATE[5];
-	this->phi = Model_GS_Y.STATE[6];
-	this->theta = Model_GS_Y.STATE[7];
-	this->psi = Model_GS_Y.STATE[8];
-	this->wx = Model_GS_Y.STATE[9];
-	this->wy = Model_GS_Y.STATE[10];
-	this->wz = Model_GS_Y.STATE[11];
+	obj->x = Model_GS_Y.STATE[0];
+	obj->y = Model_GS_Y.STATE[1];
+	obj->z = Model_GS_Y.STATE[2];
+	obj->dx = Model_GS_Y.STATE[3];
+	obj->dy = Model_GS_Y.STATE[4];
+	obj->dz = Model_GS_Y.STATE[5];
+	obj->phi = Model_GS_Y.STATE[6];
+	obj->theta = Model_GS_Y.STATE[7];
+	obj->psi = Model_GS_Y.STATE[8];
+	obj->wx = Model_GS_Y.STATE[9];
+	obj->wy = Model_GS_Y.STATE[10];
+	obj->wz = Model_GS_Y.STATE[11];
 }
 
-char* PacketSTATE::toString() {
+char* PacketSTATE_toString(PacketSTATE_s* obj) {
 
 	static char string[256];
 	sprintf(string, "%c %d %d %d %d %d %d %d %d %d %d %d %d %c",
-			this->header, this->x, this->y, this->z, this->dx, this->dy, this->dz,
-			this->phi, this->theta, this->psi, this->wx, this->wy, this->wz, this->footer);
+			obj->header, obj->x, obj->y, obj->z, obj->dx, obj->dy, obj->dz,
+			obj->phi, obj->theta, obj->psi, obj->wx, obj->wy, obj->wz, obj->footer);
 	return string;
 }
 

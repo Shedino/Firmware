@@ -1,4 +1,6 @@
 #include <stdlib.h>
+
+/*
 #include <string.h>
 #include <unistd.h>
 #include <sys/select.h>
@@ -15,11 +17,11 @@ void set_conio_terminal_mode()
 {
     struct termios new_termios;
 
-    /* take two copies - one for now, one for later */
+    // take two copies - one for now, one for later
     tcgetattr(0, &orig_termios);
     memcpy(&new_termios, &orig_termios, sizeof(new_termios));
 
-    /* register cleanup handler, and set the new terminal mode */
+    // register cleanup handler, and set the new terminal mode
     atexit(reset_terminal_mode);
     cfmakeraw(&new_termios);
     tcsetattr(0, TCSANOW, &new_termios);
@@ -44,4 +46,4 @@ int getch()
         return c;
     }
 }
-
+*/

@@ -4,49 +4,49 @@
 #include <PacketOFLOW.h>
 
 
-PacketOFLOW::PacketOFLOW(){
-	this->header = HEADER;
-	this->len = -1;
-	this->type = -1;
-	this->dx = -1;
-	this->dy = -1;
-	this->footer = FOOTER;
+void initPacketOFLOW(PacketOFLOW_s* obj){
+	obj->header = HEADER;
+	obj->len = -1;
+	obj->type = -1;
+	obj->dx = -1;
+	obj->dy = -1;
+	obj->footer = FOOTER;
 }
 
 
-void PacketOFLOW::readPacketOFLOW(char *s){
+void PacketOFLOW_readPacketOFLOW(PacketOFLOW_s* obj, char *s){
 
-	this->header = HEADER;
-	this->footer = FOOTER;
+	obj->header = HEADER;
+	obj->footer = FOOTER;
 
-	this->valid = false;
+	obj->valid = false;
 
-	sscanf(s, "S %d %d %d %d E", &this->len, &this->type, &this->dx, &this->dy);
+	sscanf(s, "S %d %d %d %d E", &obj->len, &obj->type, &obj->dx, &obj->dy);
 
-	if (this->len == strlen(s)){
-				this->valid = true;
+	if (obj->len == strlen(s)){
+				obj->valid = true;
 	}
 }
 
-void PacketOFLOW::loadPacketOFLOW(){
+void PacketOFLOW_loadPacketOFLOW(PacketOFLOW_s* obj){
 
-	Model_GS_U.OFLOW[0] = this->len;
-	Model_GS_U.OFLOW[1] = this->type;
-	Model_GS_U.OFLOW[2] = this->dx;
-	Model_GS_U.OFLOW[3] = this->dy;
+	Model_GS_U.OFLOW[0] = obj->len;
+	Model_GS_U.OFLOW[1] = obj->type;
+	Model_GS_U.OFLOW[2] = obj->dx;
+	Model_GS_U.OFLOW[3] = obj->dy;
 }
 
 
-char* PacketOFLOW::toString() {
+char* PacketOFLOW_toString(PacketOFLOW_s* obj) {
 
 	static char string[256];
 	sprintf(string, "%c %d %d %d %d %c",
-			this->header, this->len, this->type, this->dx, this->dy,
-			this->footer);
+			obj->header, obj->len, obj->type, obj->dx, obj->dy,
+			obj->footer);
 	return string;
 }
 
-bool PacketOFLOW::isValid(){
-	return this->valid;
+bool PacketOFLOW_isValid(PacketOFLOW_s* obj){
+	return obj->valid;
 }
 

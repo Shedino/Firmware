@@ -4,86 +4,86 @@
 #include <PacketREFERENCES.h>
 
 
-PacketREFERENCES::PacketREFERENCES(){
+void initPacketREFERENCES(PacketREFERENCES_s* obj){
 
-	this->header = HEADER;
-	this->length = 0;
-	this->type = 0;
-	this->x_ref = 0;
-	this->y_ref = 0;
-	this->z_ref = 0;
-	this->dot_x_ref = 0;
-	this->dot_y_ref = 0;
-	this->dot_z_ref = 0;
-	this->dot2_x_ref = 0;
-	this->dot2_y_ref = 0;
-	this->dot2_z_ref = 0;
-	this->psi_ref = 0;
-	this->dot_psi_ref = 0;
-	this->dot2_psi_ref = 0;
-	this->q = 0;
-	this->BUTTONS = 0;
-	this->timestamp = 0;
-	this->CRC = 0;
-	this->footer = FOOTER;
+	obj->header = HEADER;
+	obj->length = 0;
+	obj->type = 0;
+	obj->x_ref = 0;
+	obj->y_ref = 0;
+	obj->z_ref = 0;
+	obj->dot_x_ref = 0;
+	obj->dot_y_ref = 0;
+	obj->dot_z_ref = 0;
+	obj->dot2_x_ref = 0;
+	obj->dot2_y_ref = 0;
+	obj->dot2_z_ref = 0;
+	obj->psi_ref = 0;
+	obj->dot_psi_ref = 0;
+	obj->dot2_psi_ref = 0;
+	obj->q = 0;
+	obj->BUTTONS = 0;
+	obj->timestamp = 0;
+	obj->CRC = 0;
+	obj->footer = FOOTER;
 }
 
-void PacketREFERENCES::readPacketREFERENCES(char *s){
+void PacketREFERENCES_readPacketREFERENCES(PacketREFERENCES_s* obj, char *s){
 
 	int temp = 0;
-	this->valid = false;
+	obj->valid = false;
 
 	sscanf(s,"S %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d E",
-			&this->length, &this->type, &this->x_ref, &this->y_ref,
-			&this->z_ref, &this->dot_x_ref, &this->dot_y_ref, &this->dot_z_ref, &this->dot2_x_ref,
-			&this->dot2_y_ref, &this->dot2_z_ref, &this->psi_ref, &this->dot_psi_ref, &this->dot2_psi_ref,
-			&this->q, &this->BUTTONS, &this->timestamp, &this->CRC);
+			&obj->length, &obj->type, &obj->x_ref, &obj->y_ref,
+			&obj->z_ref, &obj->dot_x_ref, &obj->dot_y_ref, &obj->dot_z_ref, &obj->dot2_x_ref,
+			&obj->dot2_y_ref, &obj->dot2_z_ref, &obj->psi_ref, &obj->dot_psi_ref, &obj->dot2_psi_ref,
+			&obj->q, &obj->BUTTONS, &obj->timestamp, &obj->CRC);
 
-	temp = this->length + this->type + this->x_ref + this->y_ref + this->z_ref +
-		   this->dot_x_ref + this->dot_y_ref + this->dot_z_ref + this->dot2_x_ref + this->dot2_y_ref + this->dot2_z_ref +
-		   this->psi_ref + this->dot_psi_ref + this->dot2_psi_ref + this->q + this->BUTTONS + this->timestamp;
+	temp = obj->length + obj->type + obj->x_ref + obj->y_ref + obj->z_ref +
+		   obj->dot_x_ref + obj->dot_y_ref + obj->dot_z_ref + obj->dot2_x_ref + obj->dot2_y_ref + obj->dot2_z_ref +
+		   obj->psi_ref + obj->dot_psi_ref + obj->dot2_psi_ref + obj->q + obj->BUTTONS + obj->timestamp;
 	if (temp < 0){
 		temp = -temp;
 	}
-	if (this->CRC == temp%97){
-		this->valid = true;
+	if (obj->CRC == temp%97){
+		obj->valid = true;
 	}
 }
 
-void PacketREFERENCES::loadPacketREFERENCES(){
+void PacketREFERENCES_loadPacketREFERENCES(PacketREFERENCES_s* obj){
 
-	Model_GS_U.REF_TIME[0] = this->length;
-	Model_GS_U.REF_TIME[1] = this->type;
-	Model_GS_U.REF_TIME[2] = this->x_ref;
-	Model_GS_U.REF_TIME[3] = this->y_ref;
-	Model_GS_U.REF_TIME[4] = this->z_ref;
-	Model_GS_U.REF_TIME[5] = this->dot_x_ref;
-	Model_GS_U.REF_TIME[6] = this->dot_y_ref;
-	Model_GS_U.REF_TIME[7] = this->dot_z_ref;
-	Model_GS_U.REF_TIME[8] = this->dot2_x_ref;
-	Model_GS_U.REF_TIME[9] = this->dot2_y_ref;
-	Model_GS_U.REF_TIME[10] = this->dot2_z_ref;
-	Model_GS_U.REF_TIME[11] = this->psi_ref;
-	Model_GS_U.REF_TIME[12] = this->dot_psi_ref;
-	Model_GS_U.REF_TIME[13] = this->dot2_psi_ref;
-	Model_GS_U.REF_TIME[14] = this->q;
-	Model_GS_U.REF_TIME[15] = this->BUTTONS;
-	Model_GS_U.REF_TIME[16] = this->timestamp;
-	Model_GS_U.REF_TIME[17] = this->CRC;
+	Model_GS_U.REF_TIME[0] = obj->length;
+	Model_GS_U.REF_TIME[1] = obj->type;
+	Model_GS_U.REF_TIME[2] = obj->x_ref;
+	Model_GS_U.REF_TIME[3] = obj->y_ref;
+	Model_GS_U.REF_TIME[4] = obj->z_ref;
+	Model_GS_U.REF_TIME[5] = obj->dot_x_ref;
+	Model_GS_U.REF_TIME[6] = obj->dot_y_ref;
+	Model_GS_U.REF_TIME[7] = obj->dot_z_ref;
+	Model_GS_U.REF_TIME[8] = obj->dot2_x_ref;
+	Model_GS_U.REF_TIME[9] = obj->dot2_y_ref;
+	Model_GS_U.REF_TIME[10] = obj->dot2_z_ref;
+	Model_GS_U.REF_TIME[11] = obj->psi_ref;
+	Model_GS_U.REF_TIME[12] = obj->dot_psi_ref;
+	Model_GS_U.REF_TIME[13] = obj->dot2_psi_ref;
+	Model_GS_U.REF_TIME[14] = obj->q;
+	Model_GS_U.REF_TIME[15] = obj->BUTTONS;
+	Model_GS_U.REF_TIME[16] = obj->timestamp;
+	Model_GS_U.REF_TIME[17] = obj->CRC;
 }
 
-char* PacketREFERENCES::toString() {
+char* PacketREFERENCES_toString(PacketREFERENCES_s* obj) {
 
 	static char string[256];
 	sprintf(string, "S %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d E",
-			this->length, this->type, this->x_ref, this->y_ref, this->z_ref,
-			this->dot_x_ref, this->dot_y_ref, this->dot_z_ref, this->dot2_x_ref, this->dot2_y_ref,
-			this->dot2_z_ref, this->psi_ref, this->dot_psi_ref, this->dot2_psi_ref, this->q, this->BUTTONS,
-			this->timestamp, this->CRC);
+			obj->length, obj->type, obj->x_ref, obj->y_ref, obj->z_ref,
+			obj->dot_x_ref, obj->dot_y_ref, obj->dot_z_ref, obj->dot2_x_ref, obj->dot2_y_ref,
+			obj->dot2_z_ref, obj->psi_ref, obj->dot_psi_ref, obj->dot2_psi_ref, obj->q, obj->BUTTONS,
+			obj->timestamp, obj->CRC);
 	return string;
 }
 
-bool PacketREFERENCES::isValid(){
-	return this->valid;
+bool PacketREFERENCES_isValid(PacketREFERENCES_s* obj){
+	return obj->valid;
 }
 

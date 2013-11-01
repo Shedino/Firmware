@@ -10,10 +10,10 @@
 
 #include <Low_Level_Free_Flight_Control.h>
 #include <iostream>
-using std::cout;
+//using std::cout;
 
 
-void Low_Level_Free_Flight_Control::control() {
+void LLFFC_control() {
 
 	MdlInitializeSampleTimes();
 	MdlUpdate(1);
@@ -21,11 +21,11 @@ void Low_Level_Free_Flight_Control::control() {
 
 }
 
-void Low_Level_Free_Flight_Control::start(){
+void LLFFC_start(){
 	MdlStart();
 }
 
-void Low_Level_Free_Flight_Control::updateModelAtomTime(unsigned long int tAtom)
+void LLFFC_updateModelAtomTime(unsigned long int tAtom)
 {
 	Model_GS_U.TIME_ATOM = (int16_T)tAtom;
 }

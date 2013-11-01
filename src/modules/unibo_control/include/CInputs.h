@@ -50,7 +50,6 @@ extern void CInputs_setU2(cInputs_s* obj, uint16_T val) ;
 extern uint16_T CInputs_getU3(cInputs_s* obj);
 extern void CInputs_setU3(cInputs_s* obj, uint16_T val);
 
-extern void CInputs_display_CInputs(cInputs_s* obj);
 extern char* CInputs_toString(cInputs_s* obj);
 extern char* CInputs_toString_GS(cInputs_s* obj);
 extern void CInputs_reset_CInputs(cInputs_s* obj);
