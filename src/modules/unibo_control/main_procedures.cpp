@@ -9,6 +9,7 @@
  */
 
 #include "main_includes.h"
+#include <uORB/topics/motor_output.h>
 
 // Variabili globali dichiarate nel main ed usate anche dalle procedure
 //extern struct termios oldOptions;
@@ -19,9 +20,9 @@ extern struct timeval tv;
 extern struct sigaction sact;
 extern timeval cTime;
 
-extern readAndParseSerial(int serial_port, char* buff, int bsize, char* frame, int* p, int* s, int* lsi, bool* packet_ready);
-extern unsigned long int getMyTime();
-extern void scale_cinputs_to_px4pwm(mavlink_servo_output_raw_t* px4_output, CInputs &cinputs);
+extern void readAndParseSerial(int serial_port, char* buff, int bsize, char* frame, int* p, int* s, int* lsi, bool* packet_ready);
+extern unsigned long int getMyTime(void);
+extern void scale_cinputs_to_px4pwm(struct motor_output_s* px4_output, cInputs_s* cinputs);
 extern void init(int argc, char* argv[]);
 
 void readAndParseSerial(int serial_port, char* buff, int bsize, char* frame, int* p, int* s, int* lsi, bool* packet_ready)
@@ -107,31 +108,31 @@ unsigned long int getMyTime()
 }
 
 
-void scale_cinputs_to_px4pwm(mavlink_servo_output_raw_t* px4_output, CInputs &cinputs)
+void scale_cinputs_to_px4pwm(struct motor_output_s* px4_output, cInputs_s* cinputs)
 {
 	double pwm_min = 1100;
 	double pwm_size = 1000;
 	double cinputs_size = 1000;
 	// variabili temporanee piu' grandi per evitare calcoli errati da overflow
-	uint16_t servo1_scaled = (cinputs.getU0() * (pwm_size / cinputs_size)) + pwm_min;
-	uint16_t servo2_scaled = (cinputs.getU1() * (pwm_size / cinputs_size)) + pwm_min;
-	uint16_t servo3_scaled = (cinputs.getU2() * (pwm_size / cinputs_size)) + pwm_min;
-	uint16_t servo4_scaled = (cinputs.getU3() * (pwm_size / cinputs_size)) + pwm_min;
-	uint16_t servo5_scaled = (cinputs.getU0() * (pwm_size / cinputs_size)) + pwm_min; //pwm_min; //(cinputs.getU4() * pwm_size / cinputs_size) + pwm_min;
-	uint16_t servo6_scaled = (cinputs.getU1() * (pwm_size / cinputs_size)) + pwm_min; //pwm_min; //(cinputs.getU5() * pwm_size / cinputs_size) + pwm_min;
-	uint16_t servo7_scaled = (cinputs.getU2() * (pwm_size / cinputs_size)) + pwm_min; //pwm_min; //(cinputs.getU6() * pwm_size / cinputs_size) + pwm_min;
-	uint16_t servo8_scaled = (cinputs.getU3() * (pwm_size / cinputs_size)) + pwm_min; //pwm_min; //(cinputs.getU7() * pwm_size / cinputs_size) + pwm_min;
+	uint16_t servo1_scaled = (CInputs_getU0(cinputs) * (pwm_size / cinputs_size)) + pwm_min;
+	uint16_t servo2_scaled = (CInputs_getU1(cinputs) * (pwm_size / cinputs_size)) + pwm_min;
+	uint16_t servo3_scaled = (CInputs_getU2(cinputs) * (pwm_size / cinputs_size)) + pwm_min;
+	uint16_t servo4_scaled = (CInputs_getU3(cinputs) * (pwm_size / cinputs_size)) + pwm_min;
+	uint16_t servo5_scaled = (CInputs_getU0(cinputs) * (pwm_size / cinputs_size)) + pwm_min; //pwm_min; //(cinputs.getU4() * pwm_size / cinputs_size) + pwm_min;
+	uint16_t servo6_scaled = (CInputs_getU1(cinputs) * (pwm_size / cinputs_size)) + pwm_min; //pwm_min; //(cinputs.getU5() * pwm_size / cinputs_size) + pwm_min;
+	uint16_t servo7_scaled = (CInputs_getU2(cinputs) * (pwm_size / cinputs_size)) + pwm_min; //pwm_min; //(cinputs.getU6() * pwm_size / cinputs_size) + pwm_min;
+	uint16_t servo8_scaled = (CInputs_getU3(cinputs) * (pwm_size / cinputs_size)) + pwm_min; //pwm_min; //(cinputs.getU7() * pwm_size / cinputs_size) + pwm_min;
 
-	px4_output->port = 0; // non usato
-	px4_output->time_usec = 0; // non usato
-	px4_output->servo1_raw = servo1_scaled;
-	px4_output->servo2_raw = servo2_scaled;
-	px4_output->servo3_raw = servo3_scaled;
-	px4_output->servo4_raw = servo4_scaled;
-	px4_output->servo5_raw = servo5_scaled;
-	px4_output->servo6_raw = servo6_scaled;
-	px4_output->servo7_raw = servo7_scaled;
-	px4_output->servo8_raw = servo8_scaled;
+	//px4_output->port = 0; // non usato
+	//px4_output->time_usec = 0; // non usato
+	px4_output->outputs[0] = servo1_scaled;
+	px4_output->outputs[1] = servo2_scaled;
+	px4_output->outputs[2] = servo3_scaled;
+	px4_output->outputs[3] = servo4_scaled;
+	px4_output->outputs[4] = servo5_scaled;
+	px4_output->outputs[5] = servo6_scaled;
+	px4_output->outputs[6] = servo7_scaled;
+	px4_output->outputs[7] = servo8_scaled;
 }
 
 void init(int argc, char* argv[])

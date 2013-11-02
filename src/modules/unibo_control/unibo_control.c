@@ -284,8 +284,8 @@ int unibo_control_thread_main(int argc, char *argv[])
 	long imuTimeMin = 1000000000L;
 	long imuTimeMax = 0;
 
-	printf("READY\n\n");
-	rt_printk("READY");
+	//printf("READY\n\n");
+	warnx("READY");
 
 	bool FirstFlg = true;
 
@@ -326,13 +326,13 @@ int unibo_control_thread_main(int argc, char *argv[])
 				//TECNICAMENTE SIAMO GIA' A 500HZ
 
 				/* obtained data for the first file descriptor */
-				struct sensor_combined_s raw;
+				struct sensor_combined_s rawIMU;
 				/* copy sensors raw data into local buffer */
-				orb_copy(ORB_ID(sensor_combined), sensor_sub_fd, &raw);
-				warnx("[unibo_control_thread] Accelerometer:\t%8.4f\t%8.4f\t%8.4f\n",
-					(double)raw.accelerometer_m_s2[0],
-					(double)raw.accelerometer_m_s2[1],
-					(double)raw.accelerometer_m_s2[2]);
+				orb_copy(ORB_ID(sensor_combined), sensor_sub_fd, &rawIMU);
+				//warnx("[unibo_control_thread] Accelerometer:\t%8.4f\t%8.4f\t%8.4f\n",
+				//	(double)rawIMU.accelerometer_m_s2[0],
+				//	(double)rawIMU.accelerometer_m_s2[1],
+				//	(double)rawIMU.accelerometer_m_s2[2]);
 
 				/*
 				 * |-----------------------------------------------------|
@@ -375,24 +375,24 @@ int unibo_control_thread_main(int argc, char *argv[])
 				// se viene stampato un messaggio circa ogni secondo vuol dire che va tutto bene
 				if (print_counter++ >= 500)
 				{
-					//printf("pkgimu (length, type, gyro xyz, acc xyz, mag xyz, deltat, time, crc):\n %s\n", pkgIMU.toString());
-					//printf("%s\n", pkgIMU.toString());
+					warnx("pkgimu (length, type, gyro xyz, acc xyz, mag xyz, deltat, time, crc):\n %s\n", PacketIMU_toString(&pkgIMU));
+					//warnx("%s\n", PacketIMU_toString(&pkgIMU));
 					//printf();
 					//printf("cinputs: %d %d %d %d %d %d %d %d %d %d %d\n", cinputs.getU0(), cinputs.getU1(), cinputs.getU2(), cinputs.getU3(), cinputs.getU4(), cinputs.getU5(), cinputs.getU6(), cinputs.getU7(), cinputs.getU8(), cinputs.getU9(), cinputs.getU10());
 					//printf("cinputs: %s\n", cinputs.toString());
 					//printf("servo: %d %d %d %d %d %d %d %d\n\n", px4_output.servo1_raw, px4_output.servo2_raw, px4_output.servo3_raw, px4_output.servo4_raw, px4_output.servo5_raw, px4_output.servo6_raw, px4_output.servo7_raw,  px4_output.servo8_raw);
-					fflush(stdout);
+					//fflush(stdout);
 					print_counter = 0;
 				}
 
 				// decodifica pacchetto mavlink
-				mavlink_highres_imu_t px4_imu;
-				mavlink_msg_highres_imu_decode(&px4_input_message, &px4_imu);
+				//mavlink_highres_imu_t px4_imu;
+				//mavlink_msg_highres_imu_decode(&px4_input_message, &px4_imu);
 
 				// ---- riempimento oggetto pkgIMU con i valori imu ricevuti ----
 				// readPacketIMU contiene anche gli algoritmi di conversione da unita' del SI
 				// (come arrivano da mavlink) a valori pkgIMU valutabili dal controllo
-				PacketIMU_readPacketIMU(&pkgIMU, &px4_imu);
+				PacketIMU_readPacketIMU(&pkgIMU, &rawIMU);
 
 				// confermo al modello che sono arrivati dati IMU e li carico
 				PacketIMU_newPacketIMUArrived(&pkgIMU);
@@ -401,9 +401,10 @@ int unibo_control_thread_main(int argc, char *argv[])
 				if(DEBUG_MODE) // TODO sistemare
 				{
 					// clear console output
-					system("clear");
+					//system("clear");
 
 					printf("Got message HIGHRES_IMU\n");
+					/*
 					printf("\t time: %llu\n", px4_imu.time_usec);
 					printf("\t acc  (NED):\t% f\t% f\t% f (m/s^2)\n", px4_imu.xacc, px4_imu.yacc, px4_imu.zacc);
 					printf("\t gyro (NED):\t% f\t% f\t% f (rad/s)\n", px4_imu.xgyro, px4_imu.ygyro, px4_imu.zgyro);
@@ -412,6 +413,7 @@ int unibo_control_thread_main(int argc, char *argv[])
 					printf("\t altitude: \t %f (m)\n", px4_imu.pressure_alt);
 					printf("\t temperature: \t %f C\n", px4_imu.temperature);
 					printf("\n");
+					*/
 				}
 
 				// gestione pacchetto REFERENCES ricevuto da Xbee, nel caso sia arrivato nel frattempo
@@ -480,13 +482,18 @@ int unibo_control_thread_main(int argc, char *argv[])
 
 				// riempimento del pacchetto mavlink servo_output_raw a partire dall'output del controllo (cinputs)
 				// la funzione comprende anche la scalatura dal range 0..4095 di cinputs a 900..2100 dei microsecondi pwm (usati da px4)
-				scale_cinputs_to_px4pwm(&px4_output, cinputs);
+				scale_cinputs_to_px4pwm(&mout, &cinputs);
 
 				// ---- INVIO OUTPUTS ----
 				// codifica e invio del pacchetto mavlink
-				mavlink_msg_servo_output_raw_encode(200, 0, &px4_output_message, &px4_output);
-				px4_output_len = mavlink_msg_to_send_buffer((uint8_t*)px4_output_buffer, &px4_output_message);
-				write(serial_PX4, px4_output_buffer, px4_output_len);
+				//mavlink_msg_servo_output_raw_encode(200, 0, &px4_output_message, &px4_output);
+				//px4_output_len = mavlink_msg_to_send_buffer((uint8_t*)px4_output_buffer, &px4_output_message);
+				//write(serial_PX4, px4_output_buffer, px4_output_len);
+				//Invio topic orb motor_output!
+				/* set att and publish this information for other apps */
+				//mout.outputs = cinputs.u; --> Imposto i valori di mout dentro la funzione di scale!
+				orb_publish(ORB_ID(motor_output), mout_pub_fd, &mout);
+
 				//tcflush(serial_PX4, TCOFLUSH);
 
 				// invio alla groundstation (UDP)

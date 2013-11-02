@@ -8,12 +8,12 @@
  *  	Author: Paolo Di Febbo
  */
 
-#include <CInputs.h>
+#include "../include/CInputs.h"
 #include <iostream>
 #include <stdlib.h>
 #include <stdio.h>
-using std_cout;
-using std_endl;
+//using std_cout;
+//using std_endl;
 
 
 void initCInputs(cInputs_s* obj)

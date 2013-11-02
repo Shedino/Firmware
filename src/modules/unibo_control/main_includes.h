@@ -22,7 +22,8 @@
 // lunghezza array AckDiff e imuTime
 #define ACKDLEN 100
 
-#define RT //Realtime configuration for matlab generated files
+//#define RT //Realtime configuration for matlab generated files
+//--> Inserito nel makefile!
 
 //#include <common/mavlink.h>
 //#include <iostream>
@@ -113,3 +114,4 @@
 //DEFINITIONS
 #define max(a,b) ((a) > (b) ? (a) : (b))
 #define LENGTH 256
+
