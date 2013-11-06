@@ -9,9 +9,9 @@
  */
 
 #include "../include/CInputs.h"
-#include <iostream>
-#include <stdlib.h>
-#include <stdio.h>
+//#include <iostream>
+//#include <stdlib.h>
+//#include <stdio.h>
 //using std_cout;
 //using std_endl;
 

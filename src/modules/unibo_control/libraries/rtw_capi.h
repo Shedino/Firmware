@@ -13,8 +13,7 @@
 #ifndef _RTW_CAPI_H_  
 # define _RTW_CAPI_H_
 
-//UNIBO: Include modificati
-#include "rtwtypes.h"
+#include <rtwtypes.h>
 
 #define SS_ENUM_TYPE (MAX_uint8_T-1)
 #define SS_STRUCT    (MAX_uint8_T)

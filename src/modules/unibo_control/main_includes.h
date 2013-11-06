@@ -22,38 +22,19 @@
 // lunghezza array AckDiff e imuTime
 #define ACKDLEN 100
 
-//#define RT //Realtime configuration for matlab generated files
-//--> Inserito nel makefile!
-
-//#include <common/mavlink.h>
-//#include <iostream>
-#include <inttypes.h>
-//#include <fstream>
-//#ifdef __linux
-//#include <sys/ioctl.h>
-//#endif
+//#include <inttypes.h>
 #include <time.h>
 
 //#include <cstdio>
-#include <fcntl.h>
-//#include <cstdlib>
-#include <unistd.h>
-//#include <cstring>
-//#include <sys/types.h>
-//#include <sys/socket.h>
-//#include <netinet/in.h>
-//#include <netdb.h>
+//#include <fcntl.h>
+//#include <unistd.h>
 
-//#include <cerrno>
-//#include <csignal>
-
-//#include <termios.h>
 #include <sys/mman.h>
 #include <sys/time.h>
 
 /* Deamon libraries? */
-#include <systemlib/systemlib.h>
-#include <systemlib/err.h>
+//#include <systemlib/systemlib.h>
+//#include <systemlib/err.h>
 
 
 

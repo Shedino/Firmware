@@ -28,7 +28,7 @@ struct cInputs_struct{
 };
 
 #define cInputs_s struct cInputs_struct
-cInputs_s cInputs_instance;
+//cInputs_s cInputs_instance;
 
 extern void initCInputs(cInputs_s* obj);
 extern void freeCInputs(cInputs_s* obj);

@@ -11,7 +11,7 @@ extern void MdlUpdate(int_T tid);
 extern void MdlInitializeSampleTimes(void);
 extern void MdlInitializeSizes(void);
 
-extern RT_MODEL_Model_GS *Model_GS(void);
+extern RT_MODEL_Model_GS* Model_GS(void);
 
 
 //Defines to handle simulink types

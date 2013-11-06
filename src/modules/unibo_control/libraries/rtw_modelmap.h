@@ -30,10 +30,9 @@
 
 #endif
 
-//UNIBO: Include modificati
-#include "rtwtypes.h"
-#include "rtw_capi.h"
-#include "rtw_modelmap_logging.h"
+#include <rtwtypes.h>
+#include <rtw_capi.h>
+#include <rtw_modelmap_logging.h>
 
 typedef struct rtwCAPI_ModelMappingInfo_tag rtwCAPI_ModelMappingInfo;
 typedef struct rtwCAPI_ModelMappingStaticInfo_tag rtwCAPI_ModelMappingStaticInfo;

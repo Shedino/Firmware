@@ -18,7 +18,7 @@ extern int serial_PX4, serial_XBee;
 extern int sdParameters, sdCINPUTS, sdOptitrack, sdGS, sdIMU;
 extern struct timeval tv;
 extern struct sigaction sact;
-extern timeval cTime;
+//extern timeval cTime;
 
 extern void readAndParseSerial(int serial_port, char* buff, int bsize, char* frame, int* p, int* s, int* lsi, bool* packet_ready);
 extern unsigned long int getMyTime(void);
@@ -98,13 +98,15 @@ void readAndParseSerial(int serial_port, char* buff, int bsize, char* frame, int
 
 unsigned long int getMyTime()
 {
-	timeval cTime;
-	unsigned long int retVal=0;
-
-	gettimeofday(&cTime, NULL);
-//	retVal = cTime.tv_sec*1000+cTime.tv_usec/1000;
-	retVal = cTime.tv_usec;
-	return retVal;
+	//TODO: MICROSECONDI TIME!
+//	timeval cTime;
+//	unsigned long int retVal=0;
+//
+//	gettimeofday(&cTime, NULL);
+////	retVal = cTime.tv_sec*1000+cTime.tv_usec/1000;
+//	retVal = cTime.tv_usec;
+//	return retVal;
+	return 0;
 }
 
 
@@ -144,24 +146,24 @@ void init(int argc, char* argv[])
 
 	// ---- SERIAL PX4 ----
 
-	printf("[serial px4] Trying to connect to %s.. ", argv[1]);
-	fflush(stdout);
+	warnx("[serial px4] Trying to connect to %s.. ", argv[1]);
+	//fflush(stdout);
 
 	//serial_PX4 = open(argv[1], O_RDWR | O_NOCTTY | O_NDELAY);
 	//fcntl(serial_PX4, F_SETFL, FNDELAY); // non blocking I/0
 
 	if (serial_PX4 < 0)
 	{
-		printf("failure, could not open port.\n");
+		warnx("failure, could not open port.\n");
 		//exit(EXIT_FAILURE);
 		//return -1;
 	}
 	else
 	{
-		printf("success.\n");
+		warnx("success.\n");
 	}
 
-	printf("[serial px4] Trying to configure %s.. \n", argv[1]);
+	warnx("[serial px4] Trying to configure %s.. \n", argv[1]);
 
 	//oldOptions = actualOptions;
 

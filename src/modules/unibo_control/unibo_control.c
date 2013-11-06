@@ -65,7 +65,7 @@ static int daemon_task;				/**< Handle of daemon task / thread */
 /**
  * daemon management function.
  */
-__EXPORT int unibo_control_app_main(int argc, char *argv[]);
+__EXPORT int unibo_control_main(int argc, char *argv[]);
 
 /**
  * Mainloop of daemon.
@@ -118,7 +118,7 @@ usage(const char *reason)
  * The actual stack size should be set in the call
  * to task_create().
  */
-int unibo_control_app_main(int argc, char *argv[])
+int unibo_control_main(int argc, char *argv[])
 {
 	if (argc < 1)
 		usage("missing command");
