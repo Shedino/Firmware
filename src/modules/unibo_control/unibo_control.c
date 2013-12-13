@@ -134,7 +134,8 @@ int unibo_control_main(int argc, char *argv[])
 		thread_should_exit = false;
 		daemon_task = task_spawn_cmd("unibo_control_daemon",
 					 SCHED_DEFAULT,
-					 SCHED_PRIORITY_DEFAULT,
+					 //SCHED_PRIORITY_DEFAULT,
+					 SCHED_PRIORITY_MAX - 15,
 					 4096,
 					 unibo_control_thread_main,
 					 (argv) ? (const char **)&argv[2] : (const char **)NULL);
@@ -403,7 +404,7 @@ int unibo_control_thread_main(int argc, char *argv[])
 					// clear console output
 					//system("clear");
 
-					printf("Got message HIGHRES_IMU\n");
+					warnx("Got message HIGHRES_IMU\n");
 					/*
 					printf("\t time: %llu\n", px4_imu.time_usec);
 					printf("\t acc  (NED):\t% f\t% f\t% f (m/s^2)\n", px4_imu.xacc, px4_imu.yacc, px4_imu.zacc);
@@ -417,8 +418,11 @@ int unibo_control_thread_main(int argc, char *argv[])
 				}
 
 				// gestione pacchetto REFERENCES ricevuto da Xbee, nel caso sia arrivato nel frattempo
+				REF_packet_ready = true;
 				if(REF_packet_ready)
 				{
+					strcpy(packet_REF, "S 0 7 166 -52 -22 0 0 0 0 0 0 8 0 0 0 0 0 10 E");
+					//packet_REF = "S 0 7 166 -52 -22 0 0 0 0 0 0 8 0 0 0 0 0 10 E";
 					PacketREFERENCES_readPacketREFERENCES(&pkgRef, packet_REF);
 					memset(packet_REF,0,LENGTH);
 					if (PacketREFERENCES_isValid(&pkgRef))
@@ -441,31 +445,35 @@ int unibo_control_thread_main(int argc, char *argv[])
 				gs_counter++;
 				log_counter++;
 
-				/*
+
 				// scheduling OPTITRACK
 				if (optitrack_counter >= 2)
 				{
-					memset(udp_receive_buffer,0,LENGTH);
-					while(recvfrom(sdOptitrack,&udp_receive_buffer,sizeof(char)*LENGTH,0,(struct sockaddr *)&clientaddr, (socklen_t*) &len) >= 0)
-					{
+					//memset(udp_receive_buffer,0,LENGTH);
+					strcpy(udp_receive_buffer, "S 49 5 166 -52 -22 9999 -21 102 39 0 12382 3339 E");
+					//udp_receive_buffer = "S 49 5 166 -52 -22 9999 -21 102 39 0 12382 3339 E";
+					//while(recvfrom(sdOptitrack,&udp_receive_buffer,sizeof(char)*LENGTH,0,(struct sockaddr *)&clientaddr, (socklen_t*) &len) >= 0)
+					//{
 						PacketOPTITRACK_readPacketOPTITRACK(&pkgOpti, udp_receive_buffer);
 						PacketOPTITRACK_loadPacketOPTITRACK(&pkgOpti);
-					}
+					//}
 					optitrack_counter = 0;
 				}
 
 				// scheduling PARAMETERS
 				if (parameters_counter >= 500)
 				{
-					memset(udp_receive_buffer,0,LENGTH);
-					while(recvfrom(sdParameters,&udp_receive_buffer,sizeof(char)*LENGTH,0,(struct sockaddr *)&clientaddr, (socklen_t*) &len) >= 0)
-					{
+					//memset(udp_receive_buffer,0,LENGTH);
+					strcpy(udp_receive_buffer, "S 0 118 -4000 1000 100 3000 4800 20 50000 130000 200 1810 1810 1340 135 135 120 0 0 0 0 60 1000 0 0 0 0 0 E");
+					//udp_receive_buffer = "S 0 118 -4000 1000 100 3000 4800 20 50000 130000 200 1810 1810 1340 135 135 120 0 0 0 0 60 1000 0 0 0 0 0 E";
+					//while(recvfrom(sdParameters,&udp_receive_buffer,sizeof(char)*LENGTH,0,(struct sockaddr *)&clientaddr, (socklen_t*) &len) >= 0)
+					//{
 						PacketPARAMETERS_readPacketPARAMETERS(&pkgPar,udp_receive_buffer);
 						PacketPARAMETERS_loadPacketPARAMETERS(&pkgPar);
-					}
+					//}
 					parameters_counter = 0;
 				}
-				*/
+
 				// ---- CONTROLLO ----
 				LLFFC_control();
 
