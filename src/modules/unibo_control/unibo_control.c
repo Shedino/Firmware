@@ -174,14 +174,14 @@ int unibo_control_thread_main(int argc, char *argv[])
 	model = Model_GS(); //Init model!
 
 	/* subscribe to sensor_combined topic */
-	int sensor_sub_fd = orb_subscribe(ORB_ID(sensor_combined));
+	int sensor_sub_fd = orb_subscribe(ORB_ID(vehicle_attitude));
 	/* set data to 1Hz */
-	orb_set_interval(sensor_sub_fd, 2); //1000 = 1Hz (ms)
+	orb_set_interval(sensor_sub_fd, 3); //1000 = 1Hz (ms)
 
 	/* advertise attitude topic */
-	struct vehicle_attitude_s att;
-	memset(&att, 0, sizeof(att));
-	int att_pub_fd = orb_advertise(ORB_ID(vehicle_attitude), &att);
+//	struct vehicle_attitude_s att;
+//	memset(&att, 0, sizeof(att));
+//	int att_pub_fd = orb_advertise(ORB_ID(vehicle_attitude), &att);
 
 	/* advertise motor output topic */
 	struct motor_output_s mout;
