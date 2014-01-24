@@ -3,9 +3,9 @@
  *
  * Code generation for model "Model_GS".
  *
- * Model version              : 1.2333
+ * Model version              : 1.2353
  * Simulink Coder version : 8.3 (R2012b) 20-Jul-2012
- * C source code generated on : Tue Jan 21 16:23:36 2014
+ * C source code generated on : Fri Jan 24 15:01:02 2014
  *
  * Target selection: grt.tlc
  * Note: GRT includes extra infrastructure and instrumentation for prototyping
@@ -35,10 +35,6 @@
 #endif                                 /* __RTWTYPES_H__ */
 
 extern real_T rt_roundd(real_T u);
-extern real32_T rt_roundf(real32_T u);
 
 /* Exported functions */
-extern void Model_GS_Eulersbackwardmetohd(rtB_Eulersbackwardmetohd_Model_
-  *localB);
-
 #endif                                 /* RTW_HEADER_Model_GS_private_h_ */

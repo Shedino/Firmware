@@ -29,11 +29,12 @@ void PacketOFLOW_readPacketOFLOW(PacketOFLOW_s* obj, char *s){
 }
 
 void PacketOFLOW_loadPacketOFLOW(PacketOFLOW_s* obj){
-
+	/*
 	Model_GS_U.OFLOW[0] = obj->len;
 	Model_GS_U.OFLOW[1] = obj->type;
 	Model_GS_U.OFLOW[2] = obj->dx;
 	Model_GS_U.OFLOW[3] = obj->dy;
+	*/
 }
 
 

@@ -107,7 +107,7 @@ usage(const char *reason)
 {
 	if (reason)
 		warnx("%s\n", reason);
-	errx(1, "usage: unibo_control_daemon {start|stop|status} [-p <additional params>]\n\n");
+	errx(1, "usage: unibo_control {start|stop|status} [-p <additional params>]\n\n");
 }
 
 /**
@@ -132,7 +132,7 @@ int unibo_control_main(int argc, char *argv[])
 		}
 
 		thread_should_exit = false;
-		daemon_task = task_spawn_cmd("unibo_control_daemon",
+		daemon_task = task_spawn_cmd("unibo_control",
 					 SCHED_DEFAULT,
 					 //SCHED_PRIORITY_DEFAULT,
 					 SCHED_PRIORITY_MAX - 15,
@@ -166,7 +166,7 @@ int unibo_control_main(int argc, char *argv[])
 int unibo_control_thread_main(int argc, char *argv[])
 //int simple_test_app_main(int argc, char *argv[])
 {
-	warnx("[unibo_control_daemon] starting\n");
+	warnx("[unibo_control] starting\n");
 
 	thread_running = true;
 
@@ -212,40 +212,44 @@ int unibo_control_thread_main(int argc, char *argv[])
 	init(argc, argv);
 
 	// inizializzazione middle-layer
-	PacketREFERENCES_s pkgRef;
-	PacketIMU_s pkgIMU;
-	PacketPARAMETERS_s pkgPar;
-	PacketTELEMETRY_s pkgTel;
-	PacketOFLOW_s pkgOflow;
-	PacketSTATE_s pkgState;
-	PacketACK_s pkgAck;
-	PacketOPTITRACK_s pkgOpti;
+	static PacketREFERENCES_s pkgRef;
+	//PacketIMU_s pkgIMU;
+	static struct vehicle_attitude_s ahrs;
+	static PacketPARAMETERS_s pkgPar;
+	static PacketTELEMETRY_s pkgTel;
+	static PacketOFLOW_s pkgOflow;
+	static PacketSTATE_s pkgState;
+	static PacketACK_s pkgAck;
+	static PacketOPTITRACK_s pkgOpti;
 
 	cInputs_s cinputs;
 
 	printf("STARTING...\n");
 	LLFFC_start();
-	PacketIMU_loadPacketIMU(&pkgIMU);
+	//PacketIMU_loadPacketIMU(&pkgIMU);
+	utils_loadAHRSPacket(ahrs);
 	//pkgIMU.loadPacketIMU();
 	PacketREFERENCES_loadPacketREFERENCES(&pkgRef);
 	PacketPARAMETERS_loadPacketPARAMETERS(&pkgPar);
 	PacketTELEMETRY_loadPacketTELEMETRY(&pkgTel);
 	PacketOFLOW_loadPacketOFLOW(&pkgOflow);
 	PacketOPTITRACK_loadPacketOPTITRACK(&pkgOpti);
-	//LLFFC_control();
+	LLFFC_control();
 
 
-	int optitrack_counter = 0;
-	int parameters_counter = 0;
-	int print_counter = 0;
-	int print_counter2 = 0;
-	int gs_counter = 0;
-	int log_counter = 0;
+	static int optitrack_counter = 0;
+	static int parameters_counter = 0;
+	static int print_counter = 0;
+	static int print_counter2 = 0;
+	static int gs_counter = 0;
+	static int log_counter = 0;
 	//len = sizeof(struct sockaddr_in);
-	int writtenChars = 0;
-	unsigned long int tAtom = 0;
-	unsigned long int tTime = 0;
-	int count_missed = 0;
+	static int writtenChars = 0;
+	static unsigned long tAtom = 0;
+	static unsigned long tTime = 0;
+	static unsigned long tTimeOld = 0;
+	static unsigned long tTimeDiff = 0;
+	static int count_missed = 0;
 
 	// variabili input serial PX4
 	//mavlink_status_t px4_lastStatus;
@@ -262,40 +266,43 @@ int unibo_control_thread_main(int argc, char *argv[])
 	//char px4_output_buffer[300];
 
 	// Round Buffer for REF packet
-	char round_buffer_REF[LENGTH*4];
-	char packet_REF[LENGTH];
-	int pos_REF=0;
-	int start_REF=0;
-	int lastSidx_REF = -1;
-	bool REF_packet_ready = false;
+	static char round_buffer_REF[LENGTH*4];
+	static char packet_REF[LENGTH];
+	static int pos_REF=0;
+	static int start_REF=0;
+	static int lastSidx_REF = -1;
+	static bool REF_packet_ready = false;
 
 	memset(round_buffer_REF,0,sizeof(round_buffer_REF));
 	memset(packet_REF,0,LENGTH);
 
-	long AckDiff[ACKDLEN];
+	static long AckDiff[ACKDLEN];
 	memset(AckDiff,0,sizeof(AckDiff));
-	long AckDiffMin = 1000000000L;
-	long AckDiffMax = 0;
+	static long AckDiffMin = 1000000000L;
+	static long AckDiffMax = 0;
 	// int ackbcount = 0; TODO usata da ACK
 
-	unsigned long loopMaxTime = 0;
-	int resetTimeCounter = 0;
+	static unsigned long loopMaxTime = 0;
+	static int resetTimeCounter = 0;
 
-	long imuTime[ACKDLEN];
+	static long imuTime[ACKDLEN];
 	memset(imuTime,0,sizeof(imuTime));
-	long imuTimeMin = 1000000000L;
-	long imuTimeMax = 0;
+	static long imuTimeMin = 1000000000L;
+	static long imuTimeMax = 0;
 
 	//printf("READY\n\n");
 	warnx("READY");
 
-	bool FirstFlg = true;
+	static bool FirstFlg = true;
 
 	/*
 	 * |-----------------------------------------------------|
 	 * |                MAIN THREAD LOOP!                    |
 	 * |-----------------------------------------------------|
 	 */
+
+
+	int txtcounter = 0;
 
 	while (!thread_should_exit) {
 		/* wait for sensor update of 1 file descriptor for 1000 ms (1 second) */
@@ -305,9 +312,6 @@ int unibo_control_thread_main(int argc, char *argv[])
 		// XBee: packet_REF viene riempito con i dati da xbee
 		strcpy(packet_REF, "S 0 7 166 -52 -22 0 0 0 0 0 0 8 0 0 0 0 0 10 E");  //rimettere quella sotto poi!!!!!!!!
 		//readAndParseSerial(serial_XBee, round_buffer_REF, sizeof(round_buffer_REF), packet_REF, &pos_REF, &start_REF, &lastSidx_REF, &REF_packet_ready);
-		// resetto lo stato che informa il controllo se sono arrivati nuovi pacchetti IMU
-		PacketIMU_resetPacketIMUArrivedStatus(&pkgIMU);
-
 
 		/* handle the poll result */
 		if (poll_ret == 0) {
@@ -324,15 +328,21 @@ int unibo_control_thread_main(int argc, char *argv[])
 		} else {
 			if (fds[0].revents & POLLIN) {
 				//TECNICAMENTE SIAMO GIA' A 500HZ
+				txtcounter++;
 
-				/* obtained data for the first file descriptor */
-				struct sensor_combined_s rawIMU;
 				/* copy sensors raw data into local buffer */
-				orb_copy(ORB_ID(sensor_combined), sensor_sub_fd, &rawIMU);
-				//warnx("[unibo_control_thread] Accelerometer:\t%8.4f\t%8.4f\t%8.4f\n",
-				//	(double)rawIMU.accelerometer_m_s2[0],
-				//	(double)rawIMU.accelerometer_m_s2[1],
-				//	(double)rawIMU.accelerometer_m_s2[2]);
+				orb_copy(ORB_ID(vehicle_attitude), sensor_sub_fd, &ahrs);
+				if (txtcounter>500){
+					warnx("RPY:\t%1.4f %1.4f %1.4f - %1.4f %1.4f %1.4f %1.4f\n",
+						(double)ahrs.roll,
+						(double)ahrs.pitch,
+						(double)ahrs.yaw,
+						(double)ahrs.q[0],
+						(double)ahrs.q[1],
+						(double)ahrs.q[2],
+						(double)ahrs.q[3]);
+					txtcounter = 0;
+				}
 
 				/*
 				 * |-----------------------------------------------------|
@@ -352,14 +362,18 @@ int unibo_control_thread_main(int argc, char *argv[])
 					resetTimeCounter = 0;
 				}
 				//		printf("LOOP TIME = %ld\n", getMyTime() - tTime);
-				if (tTime > 0){
-					unsigned long int ltime = getMyTime() - tTime;
-					if (ltime > 0 && ltime > loopMaxTime){
-						loopMaxTime = ltime;
-					}
-				}
-				tTime = getMyTime();
-				tAtom = tTime/1000 % 30000;
+//				if (tTime > 0){
+//					unsigned long int ltime = getMyTime() - tTime;
+//					if (ltime > 0 && ltime > loopMaxTime){
+//						loopMaxTime = ltime;
+//					}
+//				}
+//				tTime = getMyTime();
+//				tAtom = tTime/1000 % 30000;
+//				LLFFC_updateModelAtomTime(tAtom);
+				tTime=utils_getCurrentTime();
+				tTimeDiff = tTime - tTimeOld;
+				tTimeOld = tTime;
 				LLFFC_updateModelAtomTime(tAtom);
 				// XXX FINE copiate
 
@@ -374,8 +388,8 @@ int unibo_control_thread_main(int argc, char *argv[])
 				// se viene stampato un messaggio circa ogni secondo vuol dire che va tutto bene
 				if (print_counter++ >= 500)
 				{
-					warnx("pkgimu (length, type, gyro xyz, acc xyz, mag xyz, deltat, time, crc):\n %s\n", PacketIMU_toString(&pkgIMU));
-					//warnx("%s\n", PacketIMU_toString(&pkgIMU));
+					//warnx("pkgimu (length, type, gyro xyz, acc xyz, mag xyz, deltat, time, crc):\n %s\n", PacketIMU_toString(&pkgIMU));
+					warnx("%lu\n", tTimeDiff);
 					//printf();
 					//printf("cinputs: %d %d %d %d %d %d %d %d %d %d %d\n", cinputs.getU0(), cinputs.getU1(), cinputs.getU2(), cinputs.getU3(), cinputs.getU4(), cinputs.getU5(), cinputs.getU6(), cinputs.getU7(), cinputs.getU8(), cinputs.getU9(), cinputs.getU10());
 					//printf("cinputs: %s\n", cinputs.toString());
@@ -391,11 +405,12 @@ int unibo_control_thread_main(int argc, char *argv[])
 				// ---- riempimento oggetto pkgIMU con i valori imu ricevuti ----
 				// readPacketIMU contiene anche gli algoritmi di conversione da unita' del SI
 				// (come arrivano da mavlink) a valori pkgIMU valutabili dal controllo
-				PacketIMU_readPacketIMU(&pkgIMU, &rawIMU);
+				////PacketIMU_readPacketIMU(&pkgIMU, &rawIMU);
 
 				// confermo al modello che sono arrivati dati IMU e li carico
-				PacketIMU_newPacketIMUArrived(&pkgIMU);
-				PacketIMU_loadPacketIMU(&pkgIMU);
+				////PacketIMU_newPacketIMUArrived(&pkgIMU);
+				//PacketIMU_loadPacketIMU(&pkgIMU);
+				utils_loadAHRSPacket(&ahrs);
 
 				if(DEBUG_MODE) // TODO sistemare
 				{

@@ -63,10 +63,6 @@
 #define PACKETREFERENCES_H
 #include "./include/PacketREFERENCES.h"
 #endif
-#ifndef PACKETIMU_H
-#define PACKETIMU_H
-#include "./include/PacketIMU.h"
-#endif
 #ifndef PACKETPARAMETERS_H
 #define PACKETPARAMETERS_H
 #include "./include/PacketPARAMETERS.h"

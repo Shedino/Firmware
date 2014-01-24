@@ -28,10 +28,11 @@ void PacketTELEMETRY_readPacketTELEMETRY(PacketTELEMETRY_s* obj, char *s){
 }
 
 void PacketTELEMETRY_loadPacketTELEMETRY(PacketTELEMETRY_s* obj){
-
+	/*
 	Model_GS_U.LLS[0] = obj->len;
 	Model_GS_U.LLS[1] = obj->type;
 	Model_GS_U.LLS[2] = obj->sonar;
+	*/
 }
 
 

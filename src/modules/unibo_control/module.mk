@@ -11,7 +11,6 @@ SRCS				= 	unibo_control.c \
 			   			Infrastructure/CInputs.c \
 			   			Infrastructure/Low_Level_Free_Flight_Control.c \
 			   			PacketACK.c \
-			   			PacketIMU.c \
 			   			PacketOFLOW.c \
 			   			PacketOPTITRACK.c \
 			   			PacketPARAMETERS.c \
