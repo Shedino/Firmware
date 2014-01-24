@@ -47,6 +47,7 @@
 #include <drivers/drv_pwm_output.h>
 #include <drivers/drv_hrt.h>
 
+#include <systemlib/pwm_limit/pwm_limit.h>
 #include <systemlib/mixer/mixer.h>
 
 extern "C" {
@@ -59,12 +60,6 @@ extern "C" {
  */
 #define FMU_INPUT_DROP_LIMIT_US		200000
 
-/*
- * Time that the ESCs need to initialize
- */
- #define ESC_INIT_TIME_US		1000000
- #define ESC_RAMP_TIME_US		2000000
-
 /* XXX need to move the RC_CHANNEL_FUNCTION out of rc_channels.h and into systemlib */
 #define ROLL     0
 #define PITCH    1
@@ -76,22 +71,14 @@ extern "C" {
 static bool mixer_servos_armed = false;
 static bool should_arm = false;
 static bool should_always_enable_pwm = false;
-static uint64_t esc_init_time;
-
-enum esc_state_e {
-	ESC_OFF,
-	ESC_INIT,
-	ESC_RAMP,
-	ESC_ON
-};
-static esc_state_e esc_state;
 
 /* selected control values and count for mixing */
 enum mixer_source {
 	MIX_NONE,
 	MIX_FMU,
 	MIX_OVERRIDE,
-	MIX_FAILSAFE
+	MIX_FAILSAFE,
+	MIX_OVERRIDE_FMU_OK
 };
 static mixer_source source;
 
@@ -149,10 +136,19 @@ mixer_tick(void)
 		if ( (r_status_flags & PX4IO_P_STATUS_FLAGS_OVERRIDE) &&
 		     (r_status_flags & PX4IO_P_STATUS_FLAGS_RC_OK) &&
 		     (r_status_flags & PX4IO_P_STATUS_FLAGS_MIXER_OK) &&
-		     !(r_setup_arming & PX4IO_P_SETUP_ARMING_RC_HANDLING_DISABLED)) {
+		     !(r_setup_arming & PX4IO_P_SETUP_ARMING_RC_HANDLING_DISABLED) &&
+		     !(r_status_flags & PX4IO_P_STATUS_FLAGS_FMU_OK)) {
 
 		 	/* if allowed, mix from RC inputs directly */
 			source = MIX_OVERRIDE;
+		} else 	if ( (r_status_flags & PX4IO_P_STATUS_FLAGS_OVERRIDE) &&
+		     (r_status_flags & PX4IO_P_STATUS_FLAGS_RC_OK) &&
+		     (r_status_flags & PX4IO_P_STATUS_FLAGS_MIXER_OK) &&
+		     !(r_setup_arming & PX4IO_P_SETUP_ARMING_RC_HANDLING_DISABLED) &&
+		     (r_status_flags & PX4IO_P_STATUS_FLAGS_FMU_OK)) {
+
+			/* if allowed, mix from RC inputs directly up to available rc channels */
+			source = MIX_OVERRIDE_FMU_OK;
 		}
 	}
 
@@ -163,102 +159,6 @@ mixer_tick(void)
 		r_status_flags |= PX4IO_P_STATUS_FLAGS_FAILSAFE;
 	} else {
 		r_status_flags &= ~(PX4IO_P_STATUS_FLAGS_FAILSAFE);
-	}
-
-	/*
-	 * Run the mixers.
-	 */
-	if (source == MIX_FAILSAFE) {
-
-		/* copy failsafe values to the servo outputs */
-		for (unsigned i = 0; i < PX4IO_SERVO_COUNT; i++) {
-			r_page_servos[i] = r_page_servo_failsafe[i];
-
-			/* safe actuators for FMU feedback */
-			r_page_actuators[i] = (r_page_servos[i] - 1500) / 600.0f;
-		}
-
-
-	} else if (source != MIX_NONE) {
-
-		float	outputs[PX4IO_SERVO_COUNT];
-		unsigned mixed;
-
-		uint16_t ramp_promille;
-
-		/* update esc init state, but only if we are truely armed and not just PWM enabled */
-		if (mixer_servos_armed && should_arm) {
-
-			switch (esc_state) {
-
-				/* after arming, some ESCs need an initalization period, count the time from here */
-				case ESC_OFF:
-					esc_init_time = hrt_absolute_time();
-					esc_state = ESC_INIT;
-				break;
-
-				/* after waiting long enough for the ESC initialization, we can start with the ramp to start the ESCs */
-				case ESC_INIT:
-					if (hrt_elapsed_time(&esc_init_time) > ESC_INIT_TIME_US) {
-						esc_state = ESC_RAMP;
-					}
-				break;
-
-				/* then ramp until the min speed is reached */
-				case ESC_RAMP:
-					if (hrt_elapsed_time(&esc_init_time) > (ESC_INIT_TIME_US + ESC_RAMP_TIME_US)) {
-						esc_state = ESC_ON;
-					}
-				break;
-
-				case ESC_ON:
-				default:
-
-				break;
-			}
-		} else {
-			esc_state = ESC_OFF;
-		}
-
-		/* do the calculations during the ramp for all at once */
-		if (esc_state == ESC_RAMP) {
-			ramp_promille = (1000*(hrt_elapsed_time(&esc_init_time)-ESC_INIT_TIME_US))/ESC_RAMP_TIME_US;
-		}
-
-
-		/* mix */
-		mixed = mixer_group.mix(&outputs[0], PX4IO_SERVO_COUNT);
-
-		/* scale to PWM and update the servo outputs as required */
-		for (unsigned i = 0; i < mixed; i++) {
-
-			/* save actuator values for FMU readback */
-			r_page_actuators[i] = FLOAT_TO_REG(outputs[i]);
-
-			switch (esc_state) {
-				case ESC_INIT:
-					r_page_servos[i] = (outputs[i] * 600 + 1500);
-				break;
-
-				case ESC_RAMP:
-					r_page_servos[i] = (outputs[i]
-					 * (ramp_promille*r_page_servo_control_max[i] + (1000-ramp_promille)*2100 - ramp_promille*r_page_servo_control_min[i] - (1000-ramp_promille)*900)/2/1000
-					 + (ramp_promille*r_page_servo_control_max[i] + (1000-ramp_promille)*2100 + ramp_promille*r_page_servo_control_min[i] + (1000-ramp_promille)*900)/2/1000);
-				break;
-
-				case ESC_ON:
-					r_page_servos[i] = (outputs[i]
-					 * (r_page_servo_control_max[i] - r_page_servo_control_min[i])/2
-					 + (r_page_servo_control_max[i] + r_page_servo_control_min[i])/2);
-				break;
-
-				case ESC_OFF:
-				default:
-				break;
-			}
-		}
-		for (unsigned i = mixed; i < PX4IO_SERVO_COUNT; i++)
-			r_page_servos[i] = 0;
 	}
 
 	/*
@@ -285,6 +185,38 @@ mixer_tick(void)
 						&& (r_status_flags & PX4IO_P_STATUS_FLAGS_INIT_OK)
 						&& (r_status_flags & PX4IO_P_STATUS_FLAGS_FMU_OK);
 
+	/*
+	 * Run the mixers.
+	 */
+	if (source == MIX_FAILSAFE) {
+
+		/* copy failsafe values to the servo outputs */
+		for (unsigned i = 0; i < PX4IO_SERVO_COUNT; i++) {
+			r_page_servos[i] = r_page_servo_failsafe[i];
+
+			/* safe actuators for FMU feedback */
+			r_page_actuators[i] = FLOAT_TO_REG((r_page_servos[i] - 1500) / 600.0f);
+		}
+
+
+	} else if (source != MIX_NONE) {
+
+		float	outputs[PX4IO_SERVO_COUNT];
+		unsigned mixed;
+
+		/* mix */
+		mixed = mixer_group.mix(&outputs[0], PX4IO_SERVO_COUNT);
+
+		pwm_limit_calc(should_arm, mixed, r_page_servo_disarmed, r_page_servo_control_min, r_page_servo_control_max, outputs, r_page_servos, &pwm_limit);
+
+		for (unsigned i = mixed; i < PX4IO_SERVO_COUNT; i++)
+			r_page_servos[i] = 0;
+
+		for (unsigned i = 0; i < PX4IO_SERVO_COUNT; i++) {
+			r_page_actuators[i] = FLOAT_TO_REG(outputs[i]);
+		}
+	}
+
 	if ((should_arm || should_always_enable_pwm) && !mixer_servos_armed) {
 		/* need to arm, but not armed */
 		up_pwm_servo_arm(true);
@@ -298,7 +230,6 @@ mixer_tick(void)
 		mixer_servos_armed = false;
 		r_status_flags &= ~(PX4IO_P_STATUS_FLAGS_OUTPUTS_ARMED);
 		isr_debug(5, "> PWM disabled");
-
 	}
 
 	if (mixer_servos_armed && should_arm) {
@@ -307,9 +238,9 @@ mixer_tick(void)
 			up_pwm_servo_set(i, r_page_servos[i]);
 
 	} else if (mixer_servos_armed && should_always_enable_pwm) {
-		/* set the idle servo outputs. */
+		/* set the disarmed servo outputs. */
 		for (unsigned i = 0; i < PX4IO_SERVO_COUNT; i++)
-			up_pwm_servo_set(i, r_page_servo_idle[i]);
+			up_pwm_servo_set(i, r_page_servo_disarmed[i]);
 	}
 }
 
@@ -319,20 +250,31 @@ mixer_callback(uintptr_t handle,
 	       uint8_t control_index,
 	       float &control)
 {
-	if (control_group != 0)
+	if (control_group > 3)
 		return -1;
 
 	switch (source) {
 	case MIX_FMU:
-		if (control_index < PX4IO_CONTROL_CHANNELS) {
-			control = REG_TO_FLOAT(r_page_controls[control_index]);
+		if (control_index < PX4IO_CONTROL_CHANNELS && control_group < PX4IO_CONTROL_GROUPS ) {
+			control = REG_TO_FLOAT(r_page_controls[CONTROL_PAGE_INDEX(control_group, control_index)]);
 			break;
 		}
 		return -1;
 
 	case MIX_OVERRIDE:
-		if (r_page_rc_input[PX4IO_P_RC_VALID] & (1 << control_index)) {
+		if (r_page_rc_input[PX4IO_P_RC_VALID] & (1 << CONTROL_PAGE_INDEX(control_group, control_index))) {
 			control = REG_TO_FLOAT(r_page_rc_input[PX4IO_P_RC_BASE + control_index]);
+			break;
+		}
+		return -1;
+
+	case MIX_OVERRIDE_FMU_OK:
+		/* FMU is ok but we are in override mode, use direct rc control for the available rc channels. The remaining channels are still controlled by the fmu */
+		if (r_page_rc_input[PX4IO_P_RC_VALID] & (1 << CONTROL_PAGE_INDEX(control_group, control_index))) {
+			control = REG_TO_FLOAT(r_page_rc_input[PX4IO_P_RC_BASE + control_index]);
+			break;
+		} else if (control_index < PX4IO_CONTROL_CHANNELS && control_group < PX4IO_CONTROL_GROUPS) {
+			control = REG_TO_FLOAT(r_page_controls[CONTROL_PAGE_INDEX(control_group, control_index)]);
 			break;
 		}
 		return -1;

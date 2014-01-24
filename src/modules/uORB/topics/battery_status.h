@@ -56,6 +56,7 @@ struct battery_status_s {
 	float   	voltage_v;		/**< Battery voltage in volts, filtered           	 */
 	float		current_a;		/**< Battery current in amperes, filtered, -1 if unknown */
 	float		discharged_mah;		/**< Discharged amount in mAh, filtered, -1 if unknown	 */
+	float   	voltage_filtered_v;		/**< Battery voltage in volts, filtered - TOREMOVE 	 */
 };
 
 /**

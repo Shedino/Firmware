@@ -46,12 +46,16 @@
 
 #include "protocol.h"
 
+#include <systemlib/pwm_limit/pwm_limit.h>
+
 /*
  * Constants and limits.
  */
 #define PX4IO_SERVO_COUNT		8
 #define PX4IO_CONTROL_CHANNELS		8
-#define PX4IO_INPUT_CHANNELS		8 // XXX this should be 18 channels
+#define PX4IO_CONTROL_GROUPS		2
+#define PX4IO_RC_INPUT_CHANNELS		18
+#define PX4IO_RC_MAPPED_CONTROL_CHANNELS		8 /**< This is the maximum number of channels mapped/used */
 
 /*
  * Debug logging
@@ -80,7 +84,7 @@ extern uint16_t			r_page_rc_input_config[]; /* PX4IO_PAGE_RC_INPUT_CONFIG */
 extern uint16_t			r_page_servo_failsafe[]; /* PX4IO_PAGE_FAILSAFE_PWM */
 extern uint16_t			r_page_servo_control_min[]; /* PX4IO_PAGE_CONTROL_MIN_PWM */
 extern uint16_t			r_page_servo_control_max[]; /* PX4IO_PAGE_CONTROL_MAX_PWM */
-extern uint16_t			r_page_servo_idle[];	/* PX4IO_PAGE_IDLE_PWM */
+extern uint16_t			r_page_servo_disarmed[];	/* PX4IO_PAGE_DISARMED_PWM */
 
 /*
  * Register aliases.
@@ -123,6 +127,11 @@ struct sys_state_s {
 extern struct sys_state_s system_state;
 
 /*
+ * PWM limit structure
+ */
+extern pwm_limit_t pwm_limit;
+
+/*
  * GPIO handling.
  */
 #define LED_BLUE(_s)			stm32_gpiowrite(GPIO_LED1, !(_s))
@@ -151,6 +160,7 @@ extern struct sys_state_s system_state;
 
 # define PX4IO_RELAY_CHANNELS		0
 # define POWER_SPEKTRUM(_s)		stm32_gpiowrite(GPIO_SPEKTRUM_PWR_EN, (_s))
+# define ENABLE_SBUS_OUT(_s)		stm32_gpiowrite(GPIO_SBUS_OENABLE, !(_s))
 
 # define VDD_SERVO_FAULT		(!stm32_gpioread(GPIO_SERVO_FAULT_DETECT))
 
@@ -162,6 +172,8 @@ extern struct sys_state_s system_state;
 
 #define BUTTON_SAFETY		stm32_gpioread(GPIO_BTN_SAFETY)
 
+#define CONTROL_PAGE_INDEX(_group, _channel) (_group * PX4IO_CONTROL_CHANNELS + _channel)
+
 /*
  * Mixer
  */
@@ -172,6 +184,7 @@ extern void	mixer_handle_text(const void *buffer, size_t length);
  * Safety switch/LED.
  */
 extern void	safety_init(void);
+extern void	failsafe_led_init(void);
 
 /**
  * FMU communications
@@ -202,10 +215,14 @@ extern int	dsm_init(const char *device);
 extern bool	dsm_input(uint16_t *values, uint16_t *num_values);
 extern void	dsm_bind(uint16_t cmd, int pulses);
 extern int	sbus_init(const char *device);
-extern bool	sbus_input(uint16_t *values, uint16_t *num_values, uint16_t max_channels);
+extern bool	sbus_input(uint16_t *values, uint16_t *num_values, uint16_t *rssi, uint16_t max_channels);
 
 /** global debug level for isr_debug() */
 extern volatile uint8_t debug_level;
 
 /** send a debug message to the console */
 extern void	isr_debug(uint8_t level, const char *fmt, ...);
+
+/** schedule a reboot */
+extern void schedule_reboot(uint32_t time_delta_usec);
+

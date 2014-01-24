@@ -232,7 +232,8 @@ int unibo_control_thread_main(int argc, char *argv[])
 	PacketTELEMETRY_loadPacketTELEMETRY(&pkgTel);
 	PacketOFLOW_loadPacketOFLOW(&pkgOflow);
 	PacketOPTITRACK_loadPacketOPTITRACK(&pkgOpti);
-	LLFFC_control();
+	//LLFFC_control();
+
 
 	int optitrack_counter = 0;
 	int parameters_counter = 0;
@@ -300,11 +301,10 @@ int unibo_control_thread_main(int argc, char *argv[])
 		/* wait for sensor update of 1 file descriptor for 1000 ms (1 second) */
 		//Imposto solo 10 ms
 		int poll_ret = poll(fds, 1, 10); //filedescr, number of file descriptor to wait for, timeout in ms
-
 		//TODO: INSERIRE QUI INIZIALIZZAZIONI PRE-LOOP AD OGNI LOOP
 		// XBee: packet_REF viene riempito con i dati da xbee
-		readAndParseSerial(serial_XBee, round_buffer_REF, sizeof(round_buffer_REF), packet_REF, &pos_REF, &start_REF, &lastSidx_REF, &REF_packet_ready);
-
+		strcpy(packet_REF, "S 0 7 166 -52 -22 0 0 0 0 0 0 8 0 0 0 0 0 10 E");  //rimettere quella sotto poi!!!!!!!!
+		//readAndParseSerial(serial_XBee, round_buffer_REF, sizeof(round_buffer_REF), packet_REF, &pos_REF, &start_REF, &lastSidx_REF, &REF_packet_ready);
 		// resetto lo stato che informa il controllo se sono arrivati nuovi pacchetti IMU
 		PacketIMU_resetPacketIMUArrivedStatus(&pkgIMU);
 
@@ -322,7 +322,6 @@ int unibo_control_thread_main(int argc, char *argv[])
 			}
 			error_counter++;
 		} else {
-
 			if (fds[0].revents & POLLIN) {
 				//TECNICAMENTE SIAMO GIA' A 500HZ
 
@@ -342,7 +341,6 @@ int unibo_control_thread_main(int argc, char *argv[])
 				 */
 
 				print_counter2++;
-
 				// XXX copiate
 				if (resetTimeCounter > RST_TCOUNT){
 					AckDiffMin = 1000000000L;
@@ -367,7 +365,7 @@ int unibo_control_thread_main(int argc, char *argv[])
 
 				if (FirstFlg)
 				{
-					printf("START.\n");
+					warnx("START.\n");
 					FirstFlg = false;
 				}
 
@@ -433,7 +431,7 @@ int unibo_control_thread_main(int argc, char *argv[])
 					else
 					{
 						count_missed++;
-						printf("WARNING %d\n", count_missed);
+						warnx("WARNING %d\n", count_missed);
 					}
 				}
 
@@ -474,7 +472,7 @@ int unibo_control_thread_main(int argc, char *argv[])
 					parameters_counter = 0;
 				}
 
-				// ---- CONTROLLO ----
+				// ----------- CONTROLLO -----------
 				LLFFC_control();
 
 				// ---- Riempio oggetto CInputs con i valori generati in output dal controllo ----
@@ -504,8 +502,8 @@ int unibo_control_thread_main(int argc, char *argv[])
 
 				//tcflush(serial_PX4, TCOFLUSH);
 
-				// invio alla groundstation (UDP)
-				if (gs_counter >= 50)
+				// invio alla groundstation (UDP)                  RIMETTEREEEEEEEEEEEEEE
+				/*if (gs_counter >= 50)
 				{
 					static char *p;
 					p = CInputs_toString_GS(&cinputs);
@@ -524,11 +522,11 @@ int unibo_control_thread_main(int argc, char *argv[])
 							perror("error sendto GS_STATE");
 						}
 					#endif
-				}
+				}*/
 				if (log_counter>=500){
 					//printf("TORQUES: %f %f %f\n", Model_GS_Y.C_TORQUES[0], Model_GS_Y.C_TORQUES[1], Model_GS_Y.C_TORQUES[2]);
 					//printf("Q: %f %f %f %f - QC: %f %f %f %f\n", Model_GS_Y.C_Q[0], Model_GS_Y.C_Q[1], Model_GS_Y.C_Q[2], Model_GS_Y.C_Q[3], Model_GS_Y.C_QC[0], Model_GS_Y.C_QC[1], Model_GS_Y.C_QC[2], Model_GS_Y.C_QC[3]);
-					printf("Thrust: %f\n", Model_GS_Y.C_THRUST);
+					warnx("Thrust: %f\n", Model_GS_Y.C_THRUST);
 					log_counter=0;
 				}
 

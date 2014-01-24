@@ -17,6 +17,7 @@ void LLFFC_control() {
 
 	MdlInitializeSampleTimes();
 	MdlUpdate(1);
+	//warnx("PostUpdate\n");
 	MdlOutputs(1);
 
 }

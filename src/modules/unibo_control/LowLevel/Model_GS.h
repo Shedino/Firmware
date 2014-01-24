@@ -3,9 +3,9 @@
  *
  * Code generation for model "Model_GS".
  *
- * Model version              : 1.2241
+ * Model version              : 1.2333
  * Simulink Coder version : 8.3 (R2012b) 20-Jul-2012
- * C source code generated on : Fri Oct 11 18:08:22 2013
+ * C source code generated on : Tue Jan 21 16:23:36 2014
  *
  * Target selection: grt.tlc
  * Note: GRT includes extra infrastructure and instrumentation for prototyping
@@ -766,107 +766,73 @@
 /* Definition for use in the target main file */
 #define Model_GS_rtModel               RT_MODEL_Model_GS
 
-/* Block signals for system '<S51>/Euler's backward metohd' */
+/* Block signals for system '<S50>/Euler's backward metohd' */
 typedef struct {
-  real_T a;                            /* '<S51>/Euler's backward metohd' */
+  real_T a;                            /* '<S50>/Euler's backward metohd' */
 } rtB_Eulersbackwardmetohd_Model_;
-
-/* Block signals for system '<S72>/Embedded MATLAB Function' */
-typedef struct {
-  real_T y;                            /* '<S72>/Embedded MATLAB Function' */
-} rtB_EmbeddedMATLABFunction_Mode;
 
 /* Block signals (auto storage) */
 typedef struct {
-  real_T Sum3;                         /* '<S59>/Sum3' */
-  real_T Sum[3];                       /* '<S8>/Sum' */
-  real_T BesselLPFZ;                   /* '<S66>/Bessel LPF Z' */
-  real_T Xnew;                         /* '<S79>/Reset' */
-  real_T Xnew_n;                       /* '<S80>/Reset' */
-  real_T Xnew_o;                       /* '<S81>/Reset' */
-  real_T Xnew_i;                       /* '<S82>/Reset' */
-  real_T p[3];                         /* '<S33>/parser' */
-  real_T q[4];                         /* '<S33>/parser' */
-  real_T Tstamp;                       /* '<S33>/parser' */
-  real_T normaP;                       /* '<S33>/parser' */
-  real_T dx1hat[3];                    /* '<S85>/High-Gain Observer' */
-  real_T dx2hat[3];                    /* '<S85>/High-Gain Observer' */
-  real_T dp[3];                        /* '<S33>/VELOCITY' */
-  real_T dx1hat_k[3];                  /* '<S71>/High-Gain Observer' */
-  real_T dx2hat_m[3];                  /* '<S71>/High-Gain Observer' */
-  real_T h;                            /* '<S32>/SONAR' */
-  real_T P[2];                         /* '<S32>/OPTICALFLOW' */
-  real_T att[3];                       /* '<S31>/z rotation' */
-  real_T MAG_comp[3];                  /* '<S63>/MAG Compensation' */
-  real_T Sum_m[3];                     /* '<S51>/Sum' */
-  real_T Sum_g[3];                     /* '<S52>/Sum' */
-  real_T Sum_c[3];                     /* '<S48>/Sum' */
-  real_T EN;                           /* '<S39>/Enable' */
-  real_T u0[3];                        /* '<S39>/Enable' */
-  real_T xk_pri[10];                   /* '<S38>/Mechanization' */
-  real_T w[3];                         /* '<S38>/Mechanization' */
-  real_T xk_post[10];                  /* '<S40>/State Update' */
-  real_T Pkp1_pri[81];                 /* '<S40>/Kalman Gain' */
+  real_T Sum3;                         /* '<S58>/Sum3' */
+  real_T Sum[3];                       /* '<S47>/Sum' */
+  real_T EN;                           /* '<S38>/Enable' */
+  real_T u0[3];                        /* '<S38>/Enable' */
   real_T nextState;                    /* '<S29>/STATE TRANSITIONS' */
   real_T nextResetState;               /* '<S29>/STATE TRANSITIONS' */
   real_T countNew;                     /* '<S25>/RESET CIRCUIT' */
   real_T h1;                           /* '<S12>/Attitude controller' */
-  uint32_T Sum3_h;                     /* '<S75>/Sum3' */
-  int16_T Switch;                      /* '<S67>/Switch' */
+  real32_T DataTypeConversion1[2];     /* '<Root>/Data Type Conversion1' */
+  real32_T Sum_f[3];                   /* '<S8>/Sum' */
+  real32_T p[3];                       /* '<S32>/parser' */
+  real32_T q[4];                       /* '<S32>/parser' */
+  real32_T Tstamp;                     /* '<S32>/parser' */
+  real32_T normaP;                     /* '<S32>/parser' */
+  real32_T dx1hat[3];                  /* '<S67>/High-Gain Observer' */
+  real32_T dx2hat[3];                  /* '<S67>/High-Gain Observer' */
+  real32_T dp[3];                      /* '<S32>/VELOCITY' */
+  real32_T MAG_comp[3];                /* '<S62>/MAG Compensation' */
+  real32_T Sum_m[3];                   /* '<S50>/Sum' */
+  real32_T Sum_g[3];                   /* '<S51>/Sum' */
+  real32_T xk_pri[10];                 /* '<S37>/Mechanization' */
+  real32_T w[3];                       /* '<S37>/Mechanization' */
+  real32_T xk_post[10];                /* '<S39>/State Update' */
+  real32_T Pkp1_pri[81];               /* '<S39>/Kalman Gain' */
   uint16_T CINPUTS[11];                /* '<S7>/cinputs' */
   boolean_T DataTypeConversion3;       /* '<S25>/Data Type Conversion3' */
-  rtB_EmbeddedMATLABFunction_Mode sf_EmbeddedMATLABFunction1;/* '<S72>/Embedded MATLAB Function1' */
-  rtB_EmbeddedMATLABFunction_Mode sf_EmbeddedMATLABFunction_b;/* '<S72>/Embedded MATLAB Function' */
-  rtB_Eulersbackwardmetohd_Model_ sf_Eulersbackwardmetohd_h;/* '<S48>/Euler's backward metohd' */
-  rtB_Eulersbackwardmetohd_Model_ sf_Eulersbackwardmetohd_n;/* '<S52>/Euler's backward metohd' */
-  rtB_Eulersbackwardmetohd_Model_ sf_Eulersbackwardmetohd;/* '<S51>/Euler's backward metohd' */
+  rtB_Eulersbackwardmetohd_Model_ sf_Eulersbackwardmetohd_h;/* '<S47>/Euler's backward metohd' */
+  rtB_Eulersbackwardmetohd_Model_ sf_Eulersbackwardmetohd_n;/* '<S51>/Euler's backward metohd' */
+  rtB_Eulersbackwardmetohd_Model_ sf_Eulersbackwardmetohd;/* '<S50>/Euler's backward metohd' */
 } BlockIO_Model_GS;
 
 /* Block states (auto storage) for system '<Root>' */
 typedef struct {
-  real_T BesselLPFdX_states[2];        /* '<S83>/Bessel LPF dX' */
-  real_T BesselLPFdY_states[2];        /* '<S83>/Bessel LPF dY' */
-  real_T BesselLPFdZ_states[2];        /* '<S83>/Bessel LPF dZ' */
-  real_T DiscreteTimeIntegrator1_DSTATE[3];/* '<S8>/Discrete-Time Integrator1' */
-  real_T x1hat_DSTATE[3];              /* '<S85>/x1hat' */
-  real_T x2hat_DSTATE[3];              /* '<S85>/x2hat' */
-  real_T BesselLPFZ_states[2];         /* '<S66>/Bessel LPF Z' */
-  real_T FixPtUnitDelay1_DSTATE;       /* '<S79>/FixPt Unit Delay1' */
-  real_T FixPtUnitDelay1_DSTATE_m;     /* '<S80>/FixPt Unit Delay1' */
-  real_T x1hat_DSTATE_c[3];            /* '<S71>/x1hat' */
-  real_T x2hat_DSTATE_j[3];            /* '<S71>/x2hat' */
-  real_T FixPtUnitDelay1_DSTATE_p;     /* '<S81>/FixPt Unit Delay1' */
-  real_T FixPtUnitDelay1_DSTATE_mz;    /* '<S82>/FixPt Unit Delay1' */
-  real_T FixPtUnitDelay1_DSTATE_o[10]; /* '<S42>/FixPt Unit Delay1' */
-  real_T UnitDelay_DSTATE[81];         /* '<S40>/Unit Delay' */
-  real_T Memory6_PreviousInput[3];     /* '<S33>/Memory6' */
-  real_T Memory5_PreviousInput[4];     /* '<S33>/Memory5' */
-  real_T Memory4_PreviousInput;        /* '<S33>/Memory4' */
-  real_T Memory3_PreviousInput;        /* '<S33>/Memory3' */
   real_T Memory1_PreviousInput;        /* '<S29>/Memory1' */
-  real_T Memory3_PreviousInput_h;      /* '<S29>/Memory3' */
+  real_T Memory3_PreviousInput;        /* '<S29>/Memory3' */
   real_T Memory_PreviousInput;         /* '<S25>/Memory' */
-  real_T Memory_PreviousInput_o[3];    /* '<S63>/Memory' */
-  real_T Memory_PreviousInput_b;       /* '<S59>/Memory' */
+  real_T Memory_PreviousInput_b;       /* '<S58>/Memory' */
   real_T Memory2_PreviousInput[4];     /* '<S16>/Memory2' */
   real_T Memory_PreviousInput_g;       /* '<S12>/Memory' */
-  real_T Memory_PreviousInput_op[3];   /* '<S33>/Memory' */
-  real_T Memory1_PreviousInput_g;      /* '<S33>/Memory1' */
-  real_T Memory2_PreviousInput_k[3];   /* '<S33>/Memory2' */
-  real_T Memory1_PreviousInput_b[2];   /* '<S32>/Memory1' */
-  real_T Memory2_PreviousInput_i[3];   /* '<S32>/Memory2' */
-  real_T Memory3_PreviousInput_e;      /* '<S32>/Memory3' */
-  real_T ytk1_PreviousInput[3];        /* '<S51>/y(tk-1)' */
-  real_T ytk1_PreviousInput_f[3];      /* '<S52>/y(tk-1)' */
-  real_T ytk1_PreviousInput_n[3];      /* '<S48>/y(tk-1)' */
-  real_T Memory_PreviousInput_m[3];    /* '<S39>/Memory' */
-  uint32_T Memory_PreviousInput_p;     /* '<S75>/Memory' */
-  int16_T UnitDelay_DSTATE_l;          /* '<S67>/Unit Delay' */
-  uint8_T FixPtUnitDelay2_DSTATE;      /* '<S79>/FixPt Unit Delay2' */
-  uint8_T FixPtUnitDelay2_DSTATE_i;    /* '<S80>/FixPt Unit Delay2' */
-  uint8_T FixPtUnitDelay2_DSTATE_j;    /* '<S81>/FixPt Unit Delay2' */
-  uint8_T FixPtUnitDelay2_DSTATE_n;    /* '<S82>/FixPt Unit Delay2' */
-  uint8_T FixPtUnitDelay2_DSTATE_f;    /* '<S42>/FixPt Unit Delay2' */
+  real_T ytk1_PreviousInput[3];        /* '<S47>/y(tk-1)' */
+  real_T Memory_PreviousInput_m[3];    /* '<S38>/Memory' */
+  real32_T BesselLPFdX_states[2];      /* '<S65>/Bessel LPF dX' */
+  real32_T BesselLPFdY_states[2];      /* '<S65>/Bessel LPF dY' */
+  real32_T BesselLPFdZ_states[2];      /* '<S65>/Bessel LPF dZ' */
+  real32_T DiscreteTimeIntegrator1_DSTATE[3];/* '<S8>/Discrete-Time Integrator1' */
+  real32_T x1hat_DSTATE[3];            /* '<S67>/x1hat' */
+  real32_T x2hat_DSTATE[3];            /* '<S67>/x2hat' */
+  real32_T FixPtUnitDelay1_DSTATE[10]; /* '<S41>/FixPt Unit Delay1' */
+  real32_T UnitDelay_DSTATE[81];       /* '<S39>/Unit Delay' */
+  real32_T Memory6_PreviousInput[3];   /* '<S32>/Memory6' */
+  real32_T Memory5_PreviousInput[4];   /* '<S32>/Memory5' */
+  real32_T Memory4_PreviousInput;      /* '<S32>/Memory4' */
+  real32_T Memory3_PreviousInput_e;    /* '<S32>/Memory3' */
+  real32_T Memory_PreviousInput_o[3];  /* '<S62>/Memory' */
+  real32_T Memory_PreviousInput_op[3]; /* '<S32>/Memory' */
+  real32_T Memory1_PreviousInput_g;    /* '<S32>/Memory1' */
+  real32_T Memory2_PreviousInput_k[3]; /* '<S32>/Memory2' */
+  real32_T ytk1_PreviousInput_o[3];    /* '<S50>/y(tk-1)' */
+  real32_T ytk1_PreviousInput_f[3];    /* '<S51>/y(tk-1)' */
+  uint8_T FixPtUnitDelay2_DSTATE;      /* '<S41>/FixPt Unit Delay2' */
   int8_T DiscreteTimeIntegrator1_PrevRes;/* '<S8>/Discrete-Time Integrator1' */
 } D_Work_Model_GS;
 
@@ -879,35 +845,35 @@ typedef struct {
 
   /* Pooled Parameter (Mixed Expressions)
    * Referenced by:
-   *   '<S40>/Constant4'
-   *   '<S40>/Constant5'
+   *   '<S39>/Constant4'
+   *   '<S39>/Constant5'
    */
   real_T pooled3[9];
 
   /* Expression: R
-   * Referenced by: '<S40>/Constant6'
+   * Referenced by: '<S39>/Constant6'
    */
   real_T Constant6_Value[36];
 
   /* Expression: Q
-   * Referenced by: '<S40>/Constant7'
+   * Referenced by: '<S39>/Constant7'
    */
   real_T Constant7_Value[81];
 
-  /* Expression: P0
-   * Referenced by: '<S40>/Unit Delay'
-   */
-  real_T UnitDelay_InitialCon[81];
-
   /* Expression: ACC_gain
-   * Referenced by: '<S63>/Constant'
+   * Referenced by: '<S62>/Constant'
    */
-  real_T Constant_Value_m[9];
+  real_T Constant_Value[9];
 
   /* Expression: ACC_offset
-   * Referenced by: '<S63>/Constant1'
+   * Referenced by: '<S62>/Constant1'
    */
   real_T Constant1_Value[3];
+
+  /* Computed Parameter: UnitDelay_InitialCon
+   * Referenced by: '<S39>/Unit Delay'
+   */
+  real32_T UnitDelay_InitialCon[81];
 } ConstParam_Model_GS;
 
 /* External inputs (root inport signals with auto storage) */
@@ -927,10 +893,10 @@ typedef struct {
 typedef struct {
   uint16_T CINPUTS[11];                /* '<Root>/CINPUTS' */
   int16_T STATE[12];                   /* '<Root>/STATE' */
-  real_T C_TORQUES[3];                 /* '<Root>/C_TORQUES' */
-  real_T C_Q[4];                       /* '<Root>/C_Q' */
+  real32_T C_TORQUES[3];               /* '<Root>/C_TORQUES' */
+  real32_T C_Q[4];                     /* '<Root>/C_Q' */
   real_T C_QC[4];                      /* '<Root>/C_QC' */
-  real_T C_THRUST;                     /* '<Root>/C_THRUST' */
+  real32_T C_THRUST;                   /* '<Root>/C_THRUST' */
 } ExternalOutputs_Model_GS;
 
 /* Backward compatible GRT Identifiers */
@@ -1119,62 +1085,44 @@ extern RT_MODEL_Model_GS *const Model_GS_M;
  * '<S29>'  : 'Model_GS/LOW-LEVEL CONTROL/LOW LEVEL SUPERVISOR/SUPERVISOR/STATE MACHINE'
  * '<S30>'  : 'Model_GS/LOW-LEVEL CONTROL/LOW LEVEL SUPERVISOR/SUPERVISOR/STATE MACHINE/STATE TRANSITIONS'
  * '<S31>'  : 'Model_GS/LOW-LEVEL CONTROL/STATE & REFERENCES/AHRS1'
- * '<S32>'  : 'Model_GS/LOW-LEVEL CONTROL/STATE & REFERENCES/LLSENSORS'
- * '<S33>'  : 'Model_GS/LOW-LEVEL CONTROL/STATE & REFERENCES/OPTITRACK'
- * '<S34>'  : 'Model_GS/LOW-LEVEL CONTROL/STATE & REFERENCES/REFERENCES'
- * '<S35>'  : 'Model_GS/LOW-LEVEL CONTROL/STATE & REFERENCES/AHRS1/AHRS'
- * '<S36>'  : 'Model_GS/LOW-LEVEL CONTROL/STATE & REFERENCES/AHRS1/IMU PX4'
- * '<S37>'  : 'Model_GS/LOW-LEVEL CONTROL/STATE & REFERENCES/AHRS1/z rotation'
- * '<S38>'  : 'Model_GS/LOW-LEVEL CONTROL/STATE & REFERENCES/AHRS1/AHRS/FILTER'
- * '<S39>'  : 'Model_GS/LOW-LEVEL CONTROL/STATE & REFERENCES/AHRS1/AHRS/Initialization'
- * '<S40>'  : 'Model_GS/LOW-LEVEL CONTROL/STATE & REFERENCES/AHRS1/AHRS/FILTER/EKF'
- * '<S41>'  : 'Model_GS/LOW-LEVEL CONTROL/STATE & REFERENCES/AHRS1/AHRS/FILTER/Mechanization'
- * '<S42>'  : 'Model_GS/LOW-LEVEL CONTROL/STATE & REFERENCES/AHRS1/AHRS/FILTER/Unit Delay External IC'
- * '<S43>'  : 'Model_GS/LOW-LEVEL CONTROL/STATE & REFERENCES/AHRS1/AHRS/FILTER/EKF/Kalman Gain'
- * '<S44>'  : 'Model_GS/LOW-LEVEL CONTROL/STATE & REFERENCES/AHRS1/AHRS/FILTER/EKF/Residuals'
- * '<S45>'  : 'Model_GS/LOW-LEVEL CONTROL/STATE & REFERENCES/AHRS1/AHRS/FILTER/EKF/State Update'
- * '<S46>'  : 'Model_GS/LOW-LEVEL CONTROL/STATE & REFERENCES/AHRS1/AHRS/Initialization/Enable'
- * '<S47>'  : 'Model_GS/LOW-LEVEL CONTROL/STATE & REFERENCES/AHRS1/AHRS/Initialization/Euler Angles'
- * '<S48>'  : 'Model_GS/LOW-LEVEL CONTROL/STATE & REFERENCES/AHRS1/AHRS/Initialization/LPF u'
- * '<S49>'  : 'Model_GS/LOW-LEVEL CONTROL/STATE & REFERENCES/AHRS1/AHRS/Initialization/Quaternion'
- * '<S50>'  : 'Model_GS/LOW-LEVEL CONTROL/STATE & REFERENCES/AHRS1/AHRS/Initialization/Euler Angles/Gyro Compassing'
- * '<S51>'  : 'Model_GS/LOW-LEVEL CONTROL/STATE & REFERENCES/AHRS1/AHRS/Initialization/Euler Angles/LPF ya'
- * '<S52>'  : 'Model_GS/LOW-LEVEL CONTROL/STATE & REFERENCES/AHRS1/AHRS/Initialization/Euler Angles/LPF ym'
- * '<S53>'  : 'Model_GS/LOW-LEVEL CONTROL/STATE & REFERENCES/AHRS1/AHRS/Initialization/Euler Angles/Gyro Compassing/mw (10.16)'
- * '<S54>'  : 'Model_GS/LOW-LEVEL CONTROL/STATE & REFERENCES/AHRS1/AHRS/Initialization/Euler Angles/LPF ya/Euler's backward metohd'
- * '<S55>'  : 'Model_GS/LOW-LEVEL CONTROL/STATE & REFERENCES/AHRS1/AHRS/Initialization/Euler Angles/LPF ym/Euler's backward metohd'
- * '<S56>'  : 'Model_GS/LOW-LEVEL CONTROL/STATE & REFERENCES/AHRS1/AHRS/Initialization/LPF u/Euler's backward metohd'
- * '<S57>'  : 'Model_GS/LOW-LEVEL CONTROL/STATE & REFERENCES/AHRS1/AHRS/Initialization/Quaternion/Quaternion'
- * '<S58>'  : 'Model_GS/LOW-LEVEL CONTROL/STATE & REFERENCES/AHRS1/AHRS/Initialization/Quaternion/Rnb (NED TO BODY)'
- * '<S59>'  : 'Model_GS/LOW-LEVEL CONTROL/STATE & REFERENCES/AHRS1/IMU PX4/COUNTER'
- * '<S60>'  : 'Model_GS/LOW-LEVEL CONTROL/STATE & REFERENCES/AHRS1/IMU PX4/Mounting'
- * '<S61>'  : 'Model_GS/LOW-LEVEL CONTROL/STATE & REFERENCES/AHRS1/IMU PX4/Parser'
- * '<S62>'  : 'Model_GS/LOW-LEVEL CONTROL/STATE & REFERENCES/AHRS1/IMU PX4/Parser_deltaT'
- * '<S63>'  : 'Model_GS/LOW-LEVEL CONTROL/STATE & REFERENCES/AHRS1/IMU PX4/RAW Compensation'
- * '<S64>'  : 'Model_GS/LOW-LEVEL CONTROL/STATE & REFERENCES/AHRS1/IMU PX4/RAW Compensation/ACC Compensation'
- * '<S65>'  : 'Model_GS/LOW-LEVEL CONTROL/STATE & REFERENCES/AHRS1/IMU PX4/RAW Compensation/MAG Compensation'
- * '<S66>'  : 'Model_GS/LOW-LEVEL CONTROL/STATE & REFERENCES/LLSENSORS/BESSEL FILTER'
- * '<S67>'  : 'Model_GS/LOW-LEVEL CONTROL/STATE & REFERENCES/LLSENSORS/Discrete Sample & Hold'
- * '<S68>'  : 'Model_GS/LOW-LEVEL CONTROL/STATE & REFERENCES/LLSENSORS/OPTICALFLOW'
- * '<S69>'  : 'Model_GS/LOW-LEVEL CONTROL/STATE & REFERENCES/LLSENSORS/SONAR'
- * '<S70>'  : 'Model_GS/LOW-LEVEL CONTROL/STATE & REFERENCES/LLSENSORS/cond'
- * '<S71>'  : 'Model_GS/LOW-LEVEL CONTROL/STATE & REFERENCES/LLSENSORS/dP Observer'
- * '<S72>'  : 'Model_GS/LOW-LEVEL CONTROL/STATE & REFERENCES/LLSENSORS/raws_SONAR'
- * '<S73>'  : 'Model_GS/LOW-LEVEL CONTROL/STATE & REFERENCES/LLSENSORS/dP Observer/BESSEL FILTER'
- * '<S74>'  : 'Model_GS/LOW-LEVEL CONTROL/STATE & REFERENCES/LLSENSORS/dP Observer/High-Gain Observer'
- * '<S75>'  : 'Model_GS/LOW-LEVEL CONTROL/STATE & REFERENCES/LLSENSORS/raws_SONAR/COUNTER'
- * '<S76>'  : 'Model_GS/LOW-LEVEL CONTROL/STATE & REFERENCES/LLSENSORS/raws_SONAR/Embedded MATLAB Function'
- * '<S77>'  : 'Model_GS/LOW-LEVEL CONTROL/STATE & REFERENCES/LLSENSORS/raws_SONAR/Embedded MATLAB Function1'
- * '<S78>'  : 'Model_GS/LOW-LEVEL CONTROL/STATE & REFERENCES/LLSENSORS/raws_SONAR/Embedded MATLAB Function5'
- * '<S79>'  : 'Model_GS/LOW-LEVEL CONTROL/STATE & REFERENCES/LLSENSORS/raws_SONAR/Unit Delay Resettable External IC'
- * '<S80>'  : 'Model_GS/LOW-LEVEL CONTROL/STATE & REFERENCES/LLSENSORS/raws_SONAR/Unit Delay Resettable External IC1'
- * '<S81>'  : 'Model_GS/LOW-LEVEL CONTROL/STATE & REFERENCES/LLSENSORS/raws_SONAR/Unit Delay Resettable External IC5'
- * '<S82>'  : 'Model_GS/LOW-LEVEL CONTROL/STATE & REFERENCES/LLSENSORS/raws_SONAR/Unit Delay Resettable External IC6'
- * '<S83>'  : 'Model_GS/LOW-LEVEL CONTROL/STATE & REFERENCES/OPTITRACK/BESSEL FILTER'
- * '<S84>'  : 'Model_GS/LOW-LEVEL CONTROL/STATE & REFERENCES/OPTITRACK/VELOCITY'
- * '<S85>'  : 'Model_GS/LOW-LEVEL CONTROL/STATE & REFERENCES/OPTITRACK/dP Observer'
- * '<S86>'  : 'Model_GS/LOW-LEVEL CONTROL/STATE & REFERENCES/OPTITRACK/parser'
- * '<S87>'  : 'Model_GS/LOW-LEVEL CONTROL/STATE & REFERENCES/OPTITRACK/dP Observer/BESSEL FILTER'
- * '<S88>'  : 'Model_GS/LOW-LEVEL CONTROL/STATE & REFERENCES/OPTITRACK/dP Observer/High-Gain Observer'
+ * '<S32>'  : 'Model_GS/LOW-LEVEL CONTROL/STATE & REFERENCES/OPTITRACK'
+ * '<S33>'  : 'Model_GS/LOW-LEVEL CONTROL/STATE & REFERENCES/REFERENCES'
+ * '<S34>'  : 'Model_GS/LOW-LEVEL CONTROL/STATE & REFERENCES/AHRS1/AHRS'
+ * '<S35>'  : 'Model_GS/LOW-LEVEL CONTROL/STATE & REFERENCES/AHRS1/IMU PX4'
+ * '<S36>'  : 'Model_GS/LOW-LEVEL CONTROL/STATE & REFERENCES/AHRS1/z rotation'
+ * '<S37>'  : 'Model_GS/LOW-LEVEL CONTROL/STATE & REFERENCES/AHRS1/AHRS/FILTER'
+ * '<S38>'  : 'Model_GS/LOW-LEVEL CONTROL/STATE & REFERENCES/AHRS1/AHRS/Initialization'
+ * '<S39>'  : 'Model_GS/LOW-LEVEL CONTROL/STATE & REFERENCES/AHRS1/AHRS/FILTER/EKF'
+ * '<S40>'  : 'Model_GS/LOW-LEVEL CONTROL/STATE & REFERENCES/AHRS1/AHRS/FILTER/Mechanization'
+ * '<S41>'  : 'Model_GS/LOW-LEVEL CONTROL/STATE & REFERENCES/AHRS1/AHRS/FILTER/Unit Delay External IC'
+ * '<S42>'  : 'Model_GS/LOW-LEVEL CONTROL/STATE & REFERENCES/AHRS1/AHRS/FILTER/EKF/Kalman Gain'
+ * '<S43>'  : 'Model_GS/LOW-LEVEL CONTROL/STATE & REFERENCES/AHRS1/AHRS/FILTER/EKF/Residuals'
+ * '<S44>'  : 'Model_GS/LOW-LEVEL CONTROL/STATE & REFERENCES/AHRS1/AHRS/FILTER/EKF/State Update'
+ * '<S45>'  : 'Model_GS/LOW-LEVEL CONTROL/STATE & REFERENCES/AHRS1/AHRS/Initialization/Enable'
+ * '<S46>'  : 'Model_GS/LOW-LEVEL CONTROL/STATE & REFERENCES/AHRS1/AHRS/Initialization/Euler Angles'
+ * '<S47>'  : 'Model_GS/LOW-LEVEL CONTROL/STATE & REFERENCES/AHRS1/AHRS/Initialization/LPF u'
+ * '<S48>'  : 'Model_GS/LOW-LEVEL CONTROL/STATE & REFERENCES/AHRS1/AHRS/Initialization/Quaternion'
+ * '<S49>'  : 'Model_GS/LOW-LEVEL CONTROL/STATE & REFERENCES/AHRS1/AHRS/Initialization/Euler Angles/Gyro Compassing'
+ * '<S50>'  : 'Model_GS/LOW-LEVEL CONTROL/STATE & REFERENCES/AHRS1/AHRS/Initialization/Euler Angles/LPF ya'
+ * '<S51>'  : 'Model_GS/LOW-LEVEL CONTROL/STATE & REFERENCES/AHRS1/AHRS/Initialization/Euler Angles/LPF ym'
+ * '<S52>'  : 'Model_GS/LOW-LEVEL CONTROL/STATE & REFERENCES/AHRS1/AHRS/Initialization/Euler Angles/Gyro Compassing/mw (10.16)'
+ * '<S53>'  : 'Model_GS/LOW-LEVEL CONTROL/STATE & REFERENCES/AHRS1/AHRS/Initialization/Euler Angles/LPF ya/Euler's backward metohd'
+ * '<S54>'  : 'Model_GS/LOW-LEVEL CONTROL/STATE & REFERENCES/AHRS1/AHRS/Initialization/Euler Angles/LPF ym/Euler's backward metohd'
+ * '<S55>'  : 'Model_GS/LOW-LEVEL CONTROL/STATE & REFERENCES/AHRS1/AHRS/Initialization/LPF u/Euler's backward metohd'
+ * '<S56>'  : 'Model_GS/LOW-LEVEL CONTROL/STATE & REFERENCES/AHRS1/AHRS/Initialization/Quaternion/Quaternion'
+ * '<S57>'  : 'Model_GS/LOW-LEVEL CONTROL/STATE & REFERENCES/AHRS1/AHRS/Initialization/Quaternion/Rnb (NED TO BODY)'
+ * '<S58>'  : 'Model_GS/LOW-LEVEL CONTROL/STATE & REFERENCES/AHRS1/IMU PX4/COUNTER'
+ * '<S59>'  : 'Model_GS/LOW-LEVEL CONTROL/STATE & REFERENCES/AHRS1/IMU PX4/Mounting'
+ * '<S60>'  : 'Model_GS/LOW-LEVEL CONTROL/STATE & REFERENCES/AHRS1/IMU PX4/Parser'
+ * '<S61>'  : 'Model_GS/LOW-LEVEL CONTROL/STATE & REFERENCES/AHRS1/IMU PX4/Parser_deltaT'
+ * '<S62>'  : 'Model_GS/LOW-LEVEL CONTROL/STATE & REFERENCES/AHRS1/IMU PX4/RAW Compensation'
+ * '<S63>'  : 'Model_GS/LOW-LEVEL CONTROL/STATE & REFERENCES/AHRS1/IMU PX4/RAW Compensation/ACC Compensation'
+ * '<S64>'  : 'Model_GS/LOW-LEVEL CONTROL/STATE & REFERENCES/AHRS1/IMU PX4/RAW Compensation/MAG Compensation'
+ * '<S65>'  : 'Model_GS/LOW-LEVEL CONTROL/STATE & REFERENCES/OPTITRACK/BESSEL FILTER'
+ * '<S66>'  : 'Model_GS/LOW-LEVEL CONTROL/STATE & REFERENCES/OPTITRACK/VELOCITY'
+ * '<S67>'  : 'Model_GS/LOW-LEVEL CONTROL/STATE & REFERENCES/OPTITRACK/dP Observer'
+ * '<S68>'  : 'Model_GS/LOW-LEVEL CONTROL/STATE & REFERENCES/OPTITRACK/parser'
+ * '<S69>'  : 'Model_GS/LOW-LEVEL CONTROL/STATE & REFERENCES/OPTITRACK/dP Observer/BESSEL FILTER'
+ * '<S70>'  : 'Model_GS/LOW-LEVEL CONTROL/STATE & REFERENCES/OPTITRACK/dP Observer/High-Gain Observer'
  */
 #endif                                 /* RTW_HEADER_Model_GS_h_ */

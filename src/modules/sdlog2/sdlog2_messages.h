@@ -48,12 +48,6 @@
 /* define message formats */
 
 #pragma pack(push, 1)
-/* --- TIME - TIME STAMP --- */
-#define LOG_TIME_MSG 1
-struct log_TIME_s {
-	uint64_t t;
-};
-
 /* --- ATT - ATTITUDE --- */
 #define LOG_ATT_MSG 2
 struct log_ATT_s {
@@ -154,8 +148,6 @@ struct log_STAT_s {
 	uint8_t main_state;
 	uint8_t navigation_state;
 	uint8_t arming_state;
-	float battery_voltage;
-	float battery_current;
 	float battery_remaining;
 	uint8_t battery_warning;
 	uint8_t landed;
@@ -165,6 +157,7 @@ struct log_STAT_s {
 #define LOG_RC_MSG 11
 struct log_RC_s {
 	float channel[8];
+	uint8_t channel_count;
 };
 
 /* --- OUT0 - ACTUATOR_0 OUTPUT --- */
@@ -253,18 +246,40 @@ struct log_GVSP_s {
 	float vz;
 };
 
+/* --- BATT - BATTERY --- */
+#define LOG_BATT_MSG 20
+struct log_BATT_s {
+	float voltage;
+	float voltage_filtered;
+	float current;
+	float discharged;
+};
+
+/* --- TIME - TIME STAMP --- */
+#define LOG_TIME_MSG 129
+struct log_TIME_s {
+	uint64_t t;
+};
+
 /* --- VER - VERSION --- */
-#define LOG_VER_MSG 127
+#define LOG_VER_MSG 130
 struct log_VER_s {
 	char arch[16];
 	char fw_git[64];
+};
+
+/* --- PARM - PARAMETER --- */
+#define LOG_PARM_MSG 131
+struct log_PARM_s {
+	char name[16];
+	float value;
 };
 
 #pragma pack(pop)
 
 /* construct list of all message formats */
 static const struct log_format_s log_formats[] = {
-	LOG_FORMAT(TIME, "Q", "StartTime"),
+	/* business-level messages, ID < 0x80 */
 	LOG_FORMAT(ATT, "ffffff", "Roll,Pitch,Yaw,RollRate,PitchRate,YawRate"),
 	LOG_FORMAT(ATSP, "ffff", "RollSP,PitchSP,YawSP,ThrustSP"),
 	LOG_FORMAT(IMU, "fffffffff", "AccX,AccY,AccZ,GyroX,GyroY,GyroZ,MagX,MagY,MagZ"),
@@ -273,8 +288,8 @@ static const struct log_format_s log_formats[] = {
 	LOG_FORMAT(LPSP, "ffff", "X,Y,Z,Yaw"),
 	LOG_FORMAT(GPS, "QBffLLfffff", "GPSTime,FixType,EPH,EPV,Lat,Lon,Alt,VelN,VelE,VelD,Cog"),
 	LOG_FORMAT(ATTC, "ffff", "Roll,Pitch,Yaw,Thrust"),
-	LOG_FORMAT(STAT, "BBBfffBB", "MainState,NavState,ArmState,BatV,BatC,BatRem,BatWarn,Landed"),
-	LOG_FORMAT(RC, "ffffffff", "Ch0,Ch1,Ch2,Ch3,Ch4,Ch5,Ch6,Ch7"),
+	LOG_FORMAT(STAT, "BBBfBB", "MainState,NavState,ArmState,BatRem,BatWarn,Landed"),
+	LOG_FORMAT(RC, "ffffffffB", "Ch0,Ch1,Ch2,Ch3,Ch4,Ch5,Ch6,Ch7,Count"),
 	LOG_FORMAT(OUT0, "ffffffff", "Out0,Out1,Out2,Out3,Out4,Out5,Out6,Out7"),
 	LOG_FORMAT(AIRS, "ff", "IndSpeed,TrueSpeed"),
 	LOG_FORMAT(ARSP, "fff", "RollRateSP,PitchRateSP,YawRateSP"),
@@ -283,7 +298,12 @@ static const struct log_format_s log_formats[] = {
 	LOG_FORMAT(GPSP, "BLLfffbBffff", "AltRel,Lat,Lon,Alt,Yaw,LoiterR,LoiterDir,NavCmd,P1,P2,P3,P4"),
 	LOG_FORMAT(ESC, "HBBBHHHHHHfH", "Counter,NumESC,Conn,N,Ver,Adr,Volt,Amp,RPM,Temp,SetP,SetPRAW"),
 	LOG_FORMAT(GVSP, "fff", "VX,VY,VZ"),
+	LOG_FORMAT(BATT, "ffff", "V,VFilt,C,Discharged"),
+	/* system-level messages, ID >= 0x80 */
+	// FMT: don't write format of format message, it's useless
+	LOG_FORMAT(TIME, "Q", "StartTime"),
 	LOG_FORMAT(VER, "NZ", "Arch,FwGit"),
+	LOG_FORMAT(PARM, "Nf", "Name,Value"),
 };
 
 static const int log_formats_num = sizeof(log_formats) / sizeof(struct log_format_s);
