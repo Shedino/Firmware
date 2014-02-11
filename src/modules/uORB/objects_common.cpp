@@ -191,3 +191,6 @@ ORB_DEFINE(esc_status, struct esc_status_s);
 #include "topics/motor_output.h"
 ORB_DEFINE(motor_output, struct motor_output_s);
 
+#include "topics/unibo_reference.h"
+ORB_DEFINE(unibo_reference, struct unibo_reference_s);
+
