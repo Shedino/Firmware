@@ -42,6 +42,8 @@
 #include <nuttx/sched.h>
 #include <uORB/uORB.h>
 #include <uORB/topics/unibo_reference.h>
+#include <uORB/topics/unibo_parameters.h>
+#include <uORB/topics/unibo_optitrack.h>
 ////
 #include <systemlib/systemlib.h>
 #include <systemlib/perf_counter.h>
@@ -234,7 +236,7 @@ void close_port(int fd)
 
 bool readAndParseSerial(int serial_port, char* buff, int bsize, char* frame, int* p, int* s, int* lsi)
 {
-	char string_rcv[LENGTH];
+	static char string_rcv[LENGTH];
 	int pos = *p;
 	int start = *s;
 	int lastSidx = *lsi;
@@ -244,10 +246,10 @@ bool readAndParseSerial(int serial_port, char* buff, int bsize, char* frame, int
 
 	memset(string_rcv, 0, LENGTH);
 	int rsize = read(serial_port,&string_rcv,sizeof(char)*LENGTH);
-	warnx("Char: %s \n",string_rcv);
 	rsize = strlen(string_rcv); // La read potrebbe tornare 0 per i non-blocking interactive files.
 	if(rsize > 0)
 	{
+		//warnx("Char: %s \n",string_rcv);
 		// Riempio il buffer circolare
 		int free = bsize- pos;
 		int diff = rsize-free;
@@ -288,7 +290,7 @@ bool readAndParseSerial(int serial_port, char* buff, int bsize, char* frame, int
 					}
 					lastSidx = -1;
 					ready = true;
-					warnx("Packet ready.\n");
+					//warnx("Packet ready.\n");
 				}
 				break;
 		}
@@ -304,32 +306,91 @@ bool readAndParseSerial(int serial_port, char* buff, int bsize, char* frame, int
 	return ready;
 }
 
-void handle_PACK(char packet[], int unibo_ref_pub_fd){
-	char msg_type[8];
-	for (int i=16; i<24;i++) msg_type[i-16]=packet[i];
-	int msg_type_int = atoi(msg_type);
-	struct unibo_reference_s reference;
+void handle_PACK(char *packet, int unibo_ref_pub_fd, int unibo_param_pub_fd, int unibo_opti_pub_fd){
+	int msg_type;
+//	int i=0;
+//	char packet_copy[LENGTH];
+	warnx("Packet received. Packet: %s \n", packet);
+//	memcpy(&packet_copy, &packet, LENGTH);
+//	warnx("Packet copy. Packet: %s \n", packet_copy);
+//	char * split;
+//	split = strtok (packet_copy," ");
+	sscanf(packet,"S %*d %d",&msg_type);
+	warnx("Msg type: %d\n",msg_type);
+	//msg_type=*packet[4];
+	//int msg_type_int = msg_type -'0';   //convert char to int     Es: '7'-->7
+	struct unibo_reference_s *reference;
+	struct unibo_parameters_s *parameters;
+	struct unibo_optitrack_s *optitrack;
+	int n;
+
+	//warnx("Packet received. Packet: %s \n", packet);
 
 
-	switch (msg_type_int){
+	switch (msg_type){
 	case 7:		// REF PACKET
-		warnx("Received Reference Packet.\n");
-		orb_publish(ORB_ID(unibo_reference), unibo_ref_pub_fd, &reference);
+		//TODO check for spikes
 
+//		reference->valid=false;
+//		int temp = 0;
+//		sscanf(packet,"S %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d E",
+//				&reference->length, &reference->type, &reference->p_x, &reference->p_y,
+//				&reference->p_z, &reference->dp_x, &reference->dp_y, &reference->dp_z, &reference->ddp_x,
+//				&reference->ddp_y, &reference->ddp_z, &reference->psi, &reference->d_psi, &reference->dd_psi,
+//				&reference->q, &reference->button, &reference->timestamp, &reference->CRC);
+//
+//		temp = reference->length + reference->type + reference->p_x + reference->p_y + reference->p_z +
+//			   reference->dp_x + reference->dp_y + reference->dp_z + reference->ddp_x + reference->ddp_y + reference->ddp_z +
+//			   reference->psi + reference->d_psi + reference->dd_psi + reference->q + reference->button + reference->timestamp;
+//		if (temp < 0){
+//			temp = -temp;
+//		}
+//		if (reference->CRC == temp%97){
+//			reference->valid = true;
+//		}
+//
+//		if (reference->valid){
+//			orb_publish(ORB_ID(unibo_reference), unibo_ref_pub_fd, reference);
+//		}
+//		//warnx("Received Reference Packet. REFx: %d \n",reference->p_x);
 		break;
 
-	case 118:	// PAR PACKET
-		warnx("Received Parameter Packet.\n");
+	case 5:	// PAR PACKET
+		warnx("Dentro case 5 \n");
+		//char packet_prova[]="56 Thompspn 12 39";
+		//int prova_1, prova_2, prova_3;
+		n=sscanf(packet, "%*s %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %*s",
+					&parameters->length, &parameters->type, &parameters->in1, &parameters->in2, &parameters->in3, &parameters->in4, &parameters->in5, &parameters->in6,
+					&parameters->in7, &parameters->in8, &parameters->in9,	&parameters->in10, &parameters->in11, &parameters->in12, &parameters->in13, &parameters->in14,
+					&parameters->in15, &parameters->in16, &parameters->in17, &parameters->in18, &parameters->in19, &parameters->in20, &parameters->in21, &parameters->in22,
+					&parameters->in23, &parameters->in24, &parameters->timestamp, &parameters->CRC);
+		//n=sscanf(packet_prova, "%d %*s %d %d", &prova_1, &prova_2, &prova_3);
+		warnx("Dopo scanf \n");
+		parameters->valid=true;
+		warnx("Number scanned: %d. Validity: %b",n,parameters->valid);
+		if (parameters->valid){
+					orb_publish(ORB_ID(unibo_parameters), unibo_param_pub_fd, parameters);
+		}
+		warnx("Received Parameter Packet. Parameter1: %d Parameter2: %d Parameter3: %d\n", parameters->in1, parameters->in2, parameters->in3);
 		break;
 
 	case 1:
-		//OPTI PACKET
-
+//		//OPTI PACKET
+//		//TODO check spikes
+//
+//		sscanf(packet, "S %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d E",
+//					&optitrack->length, &optitrack->type, &optitrack->pos_x, &optitrack->pos_y, &optitrack->pos_z, &optitrack->q0, &optitrack->q1, &optitrack->q2,
+//					&optitrack->q3, &optitrack->CRC);
+//		optitrack->valid=true;
+//		if (optitrack->valid){
+//					orb_publish(ORB_ID(unibo_optitrack), unibo_param_pub_fd, optitrack);
+//		}
+//		//warnx("OPTITRACK Position: %d %d %d.\n",optitrack->pos_x, optitrack->pos_y, optitrack->pos_z);
 		break;
 
 	default:
 		//ERROR IN PACKET TYPE
-		warnx("Arriving packets with non valid TYPE! \n");
+		warnx("Arriving packets with non valid TYPE: %d! \n",msg_type);
 		break;
 	}
 
@@ -383,6 +444,10 @@ int unibo_uart_main(int argc, char *argv[])
 		exit(0);
 	}
 
+
+
+
+
 	usage("unrecognized command");
 	exit(1);
 }
@@ -392,92 +457,94 @@ int unibo_uart_thread_main(int argc, char *argv[])
 {
 	warnx("main thread started");
 	thread_running = true;
+	int unibo_ref_pub_fd;
+	int unibo_param_pub_fd;
+	int unibo_opti_pub_fd;
 	/* default values for arguments */
 	char *uart_name = (char*)"/dev/ttyS1";
 	int baudrate = 115200;
-	int unibo_ref_pub_fd;
 	const char *commandline_usage = "\tusage: %s -d <devicename> -b <baudrate> [-v/--verbose] [--debug]\n\t\tdefault: -d %s -b %i\n";
 
 	/* read program arguments */
-	int i;
+			int i;
 
-	for (i = 1; i < argc; i++) { /* argv[0] is "start" */
-		if (strcmp(argv[i], "-h") == 0 || strcmp(argv[i], "--help") == 0) {
-			warnx(commandline_usage, argv[0], uart_name, baudrate);
-			thread_should_exit = true;
-			return 0;
-		}
+			for (i = 1; i < argc; i++) { /* argv[0] is "start/stop/status" */
+				if (strcmp(argv[i], "-h") == 0 || strcmp(argv[i], "--help") == 0) {
+					warnx(commandline_usage, argv[0], uart_name, baudrate);
+					thread_should_exit = true;
+					return 0;
+				}
 
-		/* UART device ID */
-		if (strcmp(argv[i], "-d") == 0 || strcmp(argv[i], "--device") == 0) {
-			if (argc > i + 1) {
-				uart_name = argv[i + 1];
+				/* UART device ID */
+				if (strcmp(argv[i], "-d") == 0 || strcmp(argv[i], "--device") == 0) {
+					if (argc > i + 1) {
+						uart_name = argv[i + 1];
 
-			} else {
-				warnx(commandline_usage, argv[0], uart_name, baudrate);
-				thread_should_exit = true;
-				return 0;
+					} else {
+						warnx(commandline_usage, argv[0], uart_name, baudrate);
+						thread_should_exit = true;
+						return 0;
+					}
+				}
+
+				/* baud rate */
+				if (strcmp(argv[i], "-b") == 0 || strcmp(argv[i], "--baud") == 0) {
+					if (argc > i + 1) {
+						baudrate = atoi(argv[i + 1]);
+
+					} else {
+						warnx(commandline_usage, argv[0], uart_name, baudrate);
+						thread_should_exit = true;
+						return 0;
+					}
+				}
+
 			}
-		}
 
-		/* baud rate */
-		if (strcmp(argv[i], "-b") == 0 || strcmp(argv[i], "--baud") == 0) {
-			if (argc > i + 1) {
-				baudrate = atoi(argv[i + 1]);
+			// SETUP SERIAL PORT
 
-			} else {
-				warnx(commandline_usage, argv[0], uart_name, baudrate);
-				thread_should_exit = true;
-				return 0;
+			// Exit if opening port failed
+			// Open the serial port.
+			if (!silent) warnx("Trying to connect to %s.. ", uart_name);
+			fflush(stdout);
+
+			fd = open_port(uart_name);
+			if (fd == -1)
+			{
+				if (!silent) warnx("failure, could not open port.\n");
+				//exit(EXIT_FAILURE);
 			}
-		}
+			else
+			{
+				if (!silent) warnx("success.\n");
+			}
+			if (!silent) warnx("Trying to configure %s.. ", uart_name);
+			bool setup = setup_port(fd, baudrate, 8, 1, false, false);
+			if (!setup)
+			{
+				if (!silent) warnx("failure, could not configure port.\n");
+				//exit(EXIT_FAILURE);
+			}
+			else
+			{
+				if (!silent) warnx("success.\n");
+			}
 
-	}
+			int noErrors = 0;
+			if (fd == -1 || fd == 0)
+			{
+				if (!silent) fprintf(stderr, "Connection attempt to port %s with %d baud, 8N1 failed, exiting.\n", uart_name, baudrate);
+				//exit(EXIT_FAILURE);
+			}
+			else
+			{
+				if (!silent) fprintf(stderr, "\nConnected to %s with %d baud, 8 data bits, no parity, 1 stop bit (8N1)\n", uart_name, baudrate);
+			}
 
-	// SETUP SERIAL PORT
-
-	// Exit if opening port failed
-	// Open the serial port.
-	if (!silent) warnx("Trying to connect to %s.. ", uart_name);
-	fflush(stdout);
-
-	fd = open_port(uart_name);
-	if (fd == -1)
-	{
-		if (!silent) warnx("failure, could not open port.\n");
-		//exit(EXIT_FAILURE);
-	}
-	else
-	{
-		if (!silent) warnx("success.\n");
-	}
-	if (!silent) warnx("Trying to configure %s.. ", uart_name);
-	bool setup = setup_port(fd, baudrate, 8, 1, false, false);
-	if (!setup)
-	{
-		if (!silent) warnx("failure, could not configure port.\n");
-		//exit(EXIT_FAILURE);
-	}
-	else
-	{
-		if (!silent) warnx("success.\n");
-	}
-
-	int noErrors = 0;
-	if (fd == -1 || fd == 0)
-	{
-		if (!silent) fprintf(stderr, "Connection attempt to port %s with %d baud, 8N1 failed, exiting.\n", uart_name, baudrate);
-		//exit(EXIT_FAILURE);
-	}
-	else
-	{
-		if (!silent) fprintf(stderr, "\nConnected to %s with %d baud, 8 data bits, no parity, 1 stop bit (8N1)\n", uart_name, baudrate);
-	}
-
-	if(fd < 0)
-	{
-		//exit(noErrors);
-	}
+			if(fd < 0)
+			{
+				//exit(noErrors);
+			}
 
 
 	// Round Buffer for REF packet
@@ -493,6 +560,14 @@ int unibo_uart_thread_main(int argc, char *argv[])
 	memset(&reff, 0, sizeof(reff));
 	unibo_ref_pub_fd = orb_advertise(ORB_ID(unibo_reference), &reff);
 
+	struct unibo_parameters_s param;
+	memset(&reff, 0, sizeof(param));
+	unibo_param_pub_fd = orb_advertise(ORB_ID(unibo_parameters), &param);
+
+	struct unibo_optitrack_s opti;
+	memset(&reff, 0, sizeof(opti));
+	unibo_param_pub_fd = orb_advertise(ORB_ID(unibo_optitrack), &opti);
+
 	// Run indefinitely while the serial loop handles data
 	if (!silent) warnx("\nREADY, waiting for serial data.\n");
 
@@ -502,11 +577,10 @@ int unibo_uart_thread_main(int argc, char *argv[])
 
 		PACK_ready = readAndParseSerial(fd, round_buffer_PACK, sizeof(round_buffer_PACK), packet_PACK, &pos_PACK, &start_PACK, &lastSidx_PACK);
 		if (PACK_ready){
-			warnx("Packet received! \n");
-			handle_PACK(packet_PACK,unibo_ref_pub_fd);
+			handle_PACK(packet_PACK,unibo_ref_pub_fd,unibo_param_pub_fd,unibo_opti_pub_fd);
 		}
 
-		usleep(20000);
+		//usleep(20000);
 
 	}
 

@@ -48,6 +48,9 @@
 #include <uORB/topics/sensor_combined.h>
 #include <uORB/topics/vehicle_attitude.h>
 #include <uORB/topics/motor_output.h>
+#include <uORB/topics/unibo_reference.h>
+#include <uORB/topics/unibo_parameters.h>
+#include <uORB/topics/unibo_optitrack.h>
 
 /* Deamon libraries? */
 #include <systemlib/systemlib.h>
@@ -327,22 +330,30 @@ int unibo_control_thread_main(int argc, char *argv[])
 			error_counter++;
 		} else {
 			if (fds[0].revents & POLLIN) {
-				//TECNICAMENTE SIAMO GIA' A 500HZ
+				//TECNICAMENTE SIAMO GIA' A 500HZ     EDIT 333Hz, freq del topic di assetto
 				txtcounter++;
 
 				/* copy sensors raw data into local buffer */
 				orb_copy(ORB_ID(vehicle_attitude), sensor_sub_fd, &ahrs);
-				if (txtcounter>500){
-					warnx("RPY:\t%1.4f %1.4f %1.4f - %1.4f %1.4f %1.4f %1.4f\n",
-						(double)ahrs.roll,
-						(double)ahrs.pitch,
-						(double)ahrs.yaw,
-						(double)ahrs.q[0],
-						(double)ahrs.q[1],
-						(double)ahrs.q[2],
-						(double)ahrs.q[3]);
-					txtcounter = 0;
-				}
+				/* copy sensors local buffer to Simulink Model */
+				Model_GS_U.Attitude[0] = ahrs.q[0];
+				Model_GS_U.Attitude[1] = ahrs.q[1];
+				Model_GS_U.Attitude[2] = ahrs.q[2];
+				Model_GS_U.Attitude[3] = ahrs.q[3];
+				Model_GS_U.AngSpeed[0] = ahrs.rollspeed;
+				Model_GS_U.AngSpeed[1] = ahrs.pitchspeed;
+				Model_GS_U.AngSpeed[2] = ahrs.yawspeed;
+//				if (txtcounter>500){
+//					warnx("RPY:\t%1.4f %1.4f %1.4f - %1.4f %1.4f %1.4f %1.4f\n",
+//						(double)ahrs.roll,
+//						(double)ahrs.pitch,
+//						(double)ahrs.yaw,
+//						(double)ahrs.q[0],
+//						(double)ahrs.q[1],
+//						(double)ahrs.q[2],
+//						(double)ahrs.q[3]);
+//					txtcounter = 0;
+//				}
 
 				/*
 				 * |-----------------------------------------------------|
@@ -371,10 +382,10 @@ int unibo_control_thread_main(int argc, char *argv[])
 //				tTime = getMyTime();
 //				tAtom = tTime/1000 % 30000;
 //				LLFFC_updateModelAtomTime(tAtom);
-				tTime=utils_getCurrentTime();
-				tTimeDiff = tTime - tTimeOld;
-				tTimeOld = tTime;
-				LLFFC_updateModelAtomTime(tAtom);
+//				tTime=utils_getCurrentTime();
+//				tTimeDiff = tTime - tTimeOld;
+//				tTimeOld = tTime;
+//				LLFFC_updateModelAtomTime(tAtom);
 				// XXX FINE copiate
 
 				if (FirstFlg)
@@ -386,10 +397,10 @@ int unibo_control_thread_main(int argc, char *argv[])
 				// TODO eventuali benchmark di tempo
 
 				// se viene stampato un messaggio circa ogni secondo vuol dire che va tutto bene
-				if (print_counter++ >= 500)
+				if (print_counter++ >= 333)
 				{
 					//warnx("pkgimu (length, type, gyro xyz, acc xyz, mag xyz, deltat, time, crc):\n %s\n", PacketIMU_toString(&pkgIMU));
-					warnx("%lu\n", tTimeDiff);
+					//warnx("%lu\n", tTimeDiff);
 					//printf();
 					//printf("cinputs: %d %d %d %d %d %d %d %d %d %d %d\n", cinputs.getU0(), cinputs.getU1(), cinputs.getU2(), cinputs.getU3(), cinputs.getU4(), cinputs.getU5(), cinputs.getU6(), cinputs.getU7(), cinputs.getU8(), cinputs.getU9(), cinputs.getU10());
 					//printf("cinputs: %s\n", cinputs.toString());
@@ -398,19 +409,6 @@ int unibo_control_thread_main(int argc, char *argv[])
 					print_counter = 0;
 				}
 
-				// decodifica pacchetto mavlink
-				//mavlink_highres_imu_t px4_imu;
-				//mavlink_msg_highres_imu_decode(&px4_input_message, &px4_imu);
-
-				// ---- riempimento oggetto pkgIMU con i valori imu ricevuti ----
-				// readPacketIMU contiene anche gli algoritmi di conversione da unita' del SI
-				// (come arrivano da mavlink) a valori pkgIMU valutabili dal controllo
-				////PacketIMU_readPacketIMU(&pkgIMU, &rawIMU);
-
-				// confermo al modello che sono arrivati dati IMU e li carico
-				////PacketIMU_newPacketIMUArrived(&pkgIMU);
-				//PacketIMU_loadPacketIMU(&pkgIMU);
-				utils_loadAHRSPacket(&ahrs);
 
 				if(DEBUG_MODE) // TODO sistemare
 				{
@@ -430,7 +428,7 @@ int unibo_control_thread_main(int argc, char *argv[])
 					*/
 				}
 
-				// gestione pacchetto REFERENCES ricevuto da Xbee, nel caso sia arrivato nel frattempo
+				// gestione pacchetto REFERENCES ricevuto dal Topic References
 				REF_packet_ready = true;
 				if(REF_packet_ready)
 				{

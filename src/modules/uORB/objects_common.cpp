@@ -194,3 +194,8 @@ ORB_DEFINE(motor_output, struct motor_output_s);
 #include "topics/unibo_reference.h"
 ORB_DEFINE(unibo_reference, struct unibo_reference_s);
 
+#include "topics/unibo_parameters.h"
+ORB_DEFINE(unibo_parameters, struct unibo_parameters_s);
+
+#include "topics/unibo_optitrack.h"
+ORB_DEFINE(unibo_optitrack, struct unibo_optitrack_s);

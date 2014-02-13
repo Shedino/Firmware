@@ -18,14 +18,25 @@
 
 struct unibo_reference_s
 {
-	uint64_t timestamp;		/**< in microseconds since system start          */
-	float p;				/**< position      */
-	float dp;				/**< velocity       */
-	float ddp;				/**< acceleration         */
-	float psi;				/**< yaw    */
-	float d_psi;			/**< yaw speed         */
-	float dd_psi; 			/**< yaw acceleration      */
-	int   button;			/**< joystick button      */
+	int timestamp;		/**< timestamp        */
+	int length;
+	int type;
+	int p_x;				/**< position x     */
+	int p_y;				/**< position y     */
+	int p_z;				/**< position z     */
+	int dp_x;				/**< velocity x      */
+	int dp_y;				/**< velocity y      */
+	int dp_z;				/**< velocity z      */
+	int ddp_x;			/**< acceleration x        */
+	int ddp_y;			/**< acceleration y       */
+	int ddp_z;			/**< acceleration z        */
+	int psi;				/**< yaw    */
+	int d_psi;			/**< yaw speed         */
+	int dd_psi; 			/**< yaw acceleration      */
+	int q;
+	int CRC;
+	int button;			/**< joystick button      */
+	bool  valid;			/**< validity      */
 };
 
 /* register this as object request broker structure */
