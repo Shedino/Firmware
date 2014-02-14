@@ -247,7 +247,7 @@ bool readAndParseSerial(int serial_port, char* buff, int bsize, char* frame, int
 	rsize = strlen(string_rcv); // La read potrebbe tornare 0 per i non-blocking interactive files.
 	if(rsize > 0)
 	{
-		//warnx("Char: %s \n",string_rcv);
+		warnx("Char: %s \n",string_rcv);
 		// Riempio il buffer circolare
 		int free = bsize- pos;
 		int diff = rsize-free;
@@ -277,11 +277,13 @@ bool readAndParseSerial(int serial_port, char* buff, int bsize, char* frame, int
 					if (lastSidx<i)
 					{
 						// copia normale
+						memcpy(&frame[0], 0, LENGTH);
 						memcpy(&frame[0], &buff[lastSidx], i-lastSidx+1);
 					}
 					else
 					{
 						// copia da S a fine e da inizio a E
+						memcpy(&frame[0], 0, LENGTH);
 						int diff = bsize - lastSidx;
 						memcpy(&frame[0], &buff[lastSidx], diff);
 						memcpy(&frame[diff], &buff[0], i+1);
@@ -543,10 +545,10 @@ int unibo_uart_thread_main(int argc, char *argv[])
 	// Round Buffer for REF packet
 	static char round_buffer_PACK[LENGTH*4];
 	static char packet_PACK[LENGTH];
-	static int pos_PACK=0;
-	static int start_PACK=0;
-	static int lastSidx_PACK = -1;
-	static bool PACK_ready = false;
+	int pos_PACK=0;
+	int start_PACK=0;
+	int lastSidx_PACK = -1;
+	bool PACK_ready = false;
 
 	//Topics advertise
 	struct unibo_reference_s reff;
