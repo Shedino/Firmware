@@ -49,8 +49,6 @@
 #include <systemlib/perf_counter.h>
 #include <systemlib/err.h>
 #include <stdlib.h>
-//#include <unistd.h>
-//#include <cmath>
 #include <string.h>
 #include <stdio.h>   /* Standard input/output definitions */
 //#include <string.h>  /* String function definitions */
@@ -307,21 +305,16 @@ bool readAndParseSerial(int serial_port, char* buff, int bsize, char* frame, int
 }
 
 void handle_PACK(char *packet, int unibo_ref_pub_fd, int unibo_param_pub_fd, int unibo_opti_pub_fd){
-	int msg_type;
-//	int i=0;
-//	char packet_copy[LENGTH];
+
 	warnx("Packet received. Packet: %s \n", packet);
-//	memcpy(&packet_copy, &packet, LENGTH);
-//	warnx("Packet copy. Packet: %s \n", packet_copy);
-//	char * split;
-//	split = strtok (packet_copy," ");
+	int msg_type;
 	sscanf(packet,"S %*d %d",&msg_type);
-	warnx("Msg type: %d\n",msg_type);
+	//warnx("Msg type: %d\n",msg_type);
 	//msg_type=*packet[4];
 	//int msg_type_int = msg_type -'0';   //convert char to int     Es: '7'-->7
-	struct unibo_reference_s *reference;
-	struct unibo_parameters_s *parameters;
-	struct unibo_optitrack_s *optitrack;
+	struct unibo_reference_s reference;
+	struct unibo_parameters_s parameters;
+	struct unibo_optitrack_s optitrack;
 	int n;
 
 	//warnx("Packet received. Packet: %s \n", packet);
@@ -331,61 +324,61 @@ void handle_PACK(char *packet, int unibo_ref_pub_fd, int unibo_param_pub_fd, int
 	case 7:		// REF PACKET
 		//TODO check for spikes
 
-//		reference->valid=false;
-//		int temp = 0;
-//		sscanf(packet,"S %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d E",
-//				&reference->length, &reference->type, &reference->p_x, &reference->p_y,
-//				&reference->p_z, &reference->dp_x, &reference->dp_y, &reference->dp_z, &reference->ddp_x,
-//				&reference->ddp_y, &reference->ddp_z, &reference->psi, &reference->d_psi, &reference->dd_psi,
-//				&reference->q, &reference->button, &reference->timestamp, &reference->CRC);
-//
-//		temp = reference->length + reference->type + reference->p_x + reference->p_y + reference->p_z +
-//			   reference->dp_x + reference->dp_y + reference->dp_z + reference->ddp_x + reference->ddp_y + reference->ddp_z +
-//			   reference->psi + reference->d_psi + reference->dd_psi + reference->q + reference->button + reference->timestamp;
-//		if (temp < 0){
-//			temp = -temp;
-//		}
-//		if (reference->CRC == temp%97){
-//			reference->valid = true;
-//		}
-//
-//		if (reference->valid){
-//			orb_publish(ORB_ID(unibo_reference), unibo_ref_pub_fd, reference);
-//		}
-//		//warnx("Received Reference Packet. REFx: %d \n",reference->p_x);
+		reference.valid=false;
+		int temp = 0;
+		n=sscanf(packet,"%*s %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %*s",
+				&reference.length, &reference.type, &reference.p_x, &reference.p_y,
+				&reference.p_z, &reference.dp_x, &reference.dp_y, &reference.dp_z, &reference.ddp_x,
+				&reference.ddp_y, &reference.ddp_z, &reference.psi, &reference.d_psi, &reference.dd_psi,
+				&reference.q, &reference.button, &reference.timestamp, &reference.CRC);
+
+		temp = reference.length + reference.type + reference.p_x + reference.p_y + reference.p_z +
+			   reference.dp_x + reference.dp_y + reference.dp_z + reference.ddp_x + reference.ddp_y + reference.ddp_z +
+			   reference.psi + reference.d_psi + reference.dd_psi + reference.q + reference.button + reference.timestamp;
+		if (temp < 0){
+			temp = -temp;
+		}
+		if (reference.CRC == temp%97){
+			reference.valid = true;
+		}
+
+		if (reference.valid){
+			orb_publish(ORB_ID(unibo_reference), unibo_ref_pub_fd, &reference);
+			warnx("Received Reference Packet. REFx: %d \n",reference.p_x);
+		}
+
 		break;
 
 	case 5:	// PAR PACKET
-		warnx("Dentro case 5 \n");
-		//char packet_prova[]="56 Thompspn 12 39";
-		//int prova_1, prova_2, prova_3;
-		n=sscanf(packet, "%*s %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %*s",
-					&parameters->length, &parameters->type, &parameters->in1, &parameters->in2, &parameters->in3, &parameters->in4, &parameters->in5, &parameters->in6,
-					&parameters->in7, &parameters->in8, &parameters->in9,	&parameters->in10, &parameters->in11, &parameters->in12, &parameters->in13, &parameters->in14,
-					&parameters->in15, &parameters->in16, &parameters->in17, &parameters->in18, &parameters->in19, &parameters->in20, &parameters->in21, &parameters->in22,
-					&parameters->in23, &parameters->in24, &parameters->timestamp, &parameters->CRC);
-		//n=sscanf(packet_prova, "%d %*s %d %d", &prova_1, &prova_2, &prova_3);
-		warnx("Dopo scanf \n");
-		parameters->valid=true;
-		warnx("Number scanned: %d. Validity: %b",n,parameters->valid);
-		if (parameters->valid){
-					orb_publish(ORB_ID(unibo_parameters), unibo_param_pub_fd, parameters);
+		n=sscanf(packet, "S %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d E",
+					&parameters.length, &parameters.type, &parameters.in1, &parameters.in2, &parameters.in3, &parameters.in4, &parameters.in5, &parameters.in6,
+					&parameters.in7, &parameters.in8, &parameters.in9,	&parameters.in10, &parameters.in11, &parameters.in12, &parameters.in13, &parameters.in14,
+					&parameters.in15, &parameters.in16, &parameters.in17, &parameters.in18, &parameters.in19, &parameters.in20, &parameters.in21, &parameters.in22,
+					&parameters.in23, &parameters.in24, &parameters.timestamp, &parameters.CRC);
+		if (n==28) parameters.valid=true;
+		else parameters.valid=false;
+		//warnx("Number scanned: %d. Validity: %b",n,parameters.valid);
+		if (parameters.valid){
+					orb_publish(ORB_ID(unibo_parameters), unibo_param_pub_fd, &parameters);
+					warnx("Received Parameter Packet.\n");
 		}
-		warnx("Received Parameter Packet. Parameter1: %d Parameter2: %d Parameter3: %d\n", parameters->in1, parameters->in2, parameters->in3);
+
 		break;
 
 	case 1:
-//		//OPTI PACKET
-//		//TODO check spikes
-//
-//		sscanf(packet, "S %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d E",
-//					&optitrack->length, &optitrack->type, &optitrack->pos_x, &optitrack->pos_y, &optitrack->pos_z, &optitrack->q0, &optitrack->q1, &optitrack->q2,
-//					&optitrack->q3, &optitrack->CRC);
-//		optitrack->valid=true;
-//		if (optitrack->valid){
-//					orb_publish(ORB_ID(unibo_optitrack), unibo_param_pub_fd, optitrack);
-//		}
-//		//warnx("OPTITRACK Position: %d %d %d.\n",optitrack->pos_x, optitrack->pos_y, optitrack->pos_z);
+		//OPTI PACKET
+		//TODO check spikes
+
+		n=sscanf(packet, "S %d %d %d %d %d %d %d %d %d %d E",
+					&optitrack.length, &optitrack.type, &optitrack.pos_x, &optitrack.pos_y, &optitrack.pos_z, &optitrack.q0, &optitrack.q1, &optitrack.q2,
+					&optitrack.q3, &optitrack.CRC);
+		if (n==15) optitrack.valid=true;
+		else optitrack.valid=false;
+		if (optitrack.valid){
+					orb_publish(ORB_ID(unibo_optitrack), unibo_param_pub_fd, &optitrack);
+					warnx("OPTITRACK Position: %d %d %d.\n",optitrack.pos_x, optitrack.pos_y, optitrack.pos_z);
+		}
+
 		break;
 
 	default:
