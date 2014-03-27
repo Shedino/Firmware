@@ -199,3 +199,6 @@ ORB_DEFINE(unibo_parameters, struct unibo_parameters_s);
 
 #include "topics/unibo_optitrack.h"
 ORB_DEFINE(unibo_optitrack, struct unibo_optitrack_s);
+
+#include "topics/unibo_telemetry.h"
+ORB_DEFINE(unibo_telemetry, struct unibo_telemetry_s);

@@ -44,6 +44,7 @@
 
 #include <unistd.h>
 #include <poll.h>
+#include <stdbool.h>
 #include <uORB/uORB.h>
 #include <uORB/topics/sensor_combined.h>
 #include <uORB/topics/vehicle_attitude.h>
@@ -51,6 +52,7 @@
 #include <uORB/topics/unibo_reference.h>
 #include <uORB/topics/unibo_parameters.h>
 #include <uORB/topics/unibo_optitrack.h>
+#include <uORB/topics/unibo_telemetry.h>
 
 /* Deamon libraries? */
 #include <systemlib/systemlib.h>
@@ -176,10 +178,27 @@ int unibo_control_thread_main(int argc, char *argv[])
 	warnx("Hello Sky!\n");
 	model = Model_GS(); //Init model!
 
-	/* subscribe to sensor_combined topic */
+	/* subscribe to attitude topic */
 	int sensor_sub_fd = orb_subscribe(ORB_ID(vehicle_attitude));
 	/* set data to 1Hz */
 	orb_set_interval(sensor_sub_fd, 3); //1000 = 1Hz (ms)
+
+	/* subscribe to reference topic */
+	int reference_sub_fd = orb_subscribe(ORB_ID(unibo_reference));
+
+	/* subscribe to Optitrack topic */
+	int optitrack_sub_fd = orb_subscribe(ORB_ID(unibo_optitrack));
+
+	/* subscribe to unibo_parameters topic */
+	int parameters_sub_fd = orb_subscribe(ORB_ID(unibo_parameters));
+
+	/* advertize telemetry topic */
+	struct unibo_telemetry_s telem;
+	memset(&telem, 0, sizeof(telem));
+	int unibo_telem_pub_fd = orb_advertise(ORB_ID(unibo_telemetry), &telem);
+
+
+
 
 	/* advertise attitude topic */
 //	struct vehicle_attitude_s att;
@@ -212,7 +231,7 @@ int unibo_control_thread_main(int argc, char *argv[])
 	static char udp_receive_buffer[LENGTH]; // buffer di lettura UDP
 
 	// init function to initialize the ports and the sockets
-	init(argc, argv);
+	//init(argc, argv);                                                 CHANGED SEEMS USELESS
 
 	// inizializzazione middle-layer
 	static PacketREFERENCES_s pkgRef;
@@ -227,7 +246,7 @@ int unibo_control_thread_main(int argc, char *argv[])
 
 	cInputs_s cinputs;
 
-	printf("STARTING...\n");
+	//printf("STARTING...\n");
 	LLFFC_start();
 	//PacketIMU_loadPacketIMU(&pkgIMU);
 	utils_loadAHRSPacket(ahrs);
@@ -293,8 +312,16 @@ int unibo_control_thread_main(int argc, char *argv[])
 	static long imuTimeMin = 1000000000L;
 	static long imuTimeMax = 0;
 
+	int counter_ref_pack=0;
+	int counter_opti_pack=0;
+	int telemetry_counter=0;
+
+	/* Bool for topics update */
+	bool updated;
+
+
 	//printf("READY\n\n");
-	warnx("READY");
+	warnx("READY\n");
 
 	static bool FirstFlg = true;
 
@@ -331,7 +358,8 @@ int unibo_control_thread_main(int argc, char *argv[])
 		} else {
 			if (fds[0].revents & POLLIN) {
 				//TECNICAMENTE SIAMO GIA' A 500HZ     EDIT 333Hz, freq del topic di assetto
-				txtcounter++;
+				log_counter++;
+				telemetry_counter++;
 
 				/* copy sensors raw data into local buffer */
 				orb_copy(ORB_ID(vehicle_attitude), sensor_sub_fd, &ahrs);
@@ -361,7 +389,7 @@ int unibo_control_thread_main(int argc, char *argv[])
 				 * |-----------------------------------------------------|
 				 */
 
-				print_counter2++;
+				print_counter++;
 				// XXX copiate
 				if (resetTimeCounter > RST_TCOUNT){
 					AckDiffMin = 1000000000L;
@@ -372,13 +400,7 @@ int unibo_control_thread_main(int argc, char *argv[])
 
 					resetTimeCounter = 0;
 				}
-				//		printf("LOOP TIME = %ld\n", getMyTime() - tTime);
-//				if (tTime > 0){
-//					unsigned long int ltime = getMyTime() - tTime;
-//					if (ltime > 0 && ltime > loopMaxTime){
-//						loopMaxTime = ltime;
-//					}
-//				}
+
 //				tTime = getMyTime();
 //				tAtom = tTime/1000 % 30000;
 //				LLFFC_updateModelAtomTime(tAtom);
@@ -399,91 +421,109 @@ int unibo_control_thread_main(int argc, char *argv[])
 				// se viene stampato un messaggio circa ogni secondo vuol dire che va tutto bene
 				if (print_counter++ >= 333)
 				{
+					//warnx(".");
 					//warnx("pkgimu (length, type, gyro xyz, acc xyz, mag xyz, deltat, time, crc):\n %s\n", PacketIMU_toString(&pkgIMU));
-					//warnx("%lu\n", tTimeDiff);
-					//printf();
-					//printf("cinputs: %d %d %d %d %d %d %d %d %d %d %d\n", cinputs.getU0(), cinputs.getU1(), cinputs.getU2(), cinputs.getU3(), cinputs.getU4(), cinputs.getU5(), cinputs.getU6(), cinputs.getU7(), cinputs.getU8(), cinputs.getU9(), cinputs.getU10());
-					//printf("cinputs: %s\n", cinputs.toString());
-					//printf("servo: %d %d %d %d %d %d %d %d\n\n", px4_output.servo1_raw, px4_output.servo2_raw, px4_output.servo3_raw, px4_output.servo4_raw, px4_output.servo5_raw, px4_output.servo6_raw, px4_output.servo7_raw,  px4_output.servo8_raw);
-					//fflush(stdout);
 					print_counter = 0;
 				}
 
 
 				if(DEBUG_MODE) // TODO sistemare
 				{
-					// clear console output
-					//system("clear");
 
-					warnx("Got message HIGHRES_IMU\n");
-					/*
-					printf("\t time: %llu\n", px4_imu.time_usec);
-					printf("\t acc  (NED):\t% f\t% f\t% f (m/s^2)\n", px4_imu.xacc, px4_imu.yacc, px4_imu.zacc);
-					printf("\t gyro (NED):\t% f\t% f\t% f (rad/s)\n", px4_imu.xgyro, px4_imu.ygyro, px4_imu.zgyro);
-					printf("\t mag  (NED):\t% f\t% f\t% f (Ga)\n", px4_imu.xmag, px4_imu.ymag, px4_imu.zmag);
-					printf("\t baro: \t %f (mBar)\n", px4_imu.abs_pressure);
-					printf("\t altitude: \t %f (m)\n", px4_imu.pressure_alt);
-					printf("\t temperature: \t %f C\n", px4_imu.temperature);
-					printf("\n");
-					*/
 				}
 
-				// gestione pacchetto REFERENCES ricevuto dal Topic References
-				REF_packet_ready = true;
-				if(REF_packet_ready)
-				{
-					strcpy(packet_REF, "S 0 7 166 -52 -22 0 0 0 0 0 0 8 0 0 0 0 0 10 E");
-					//packet_REF = "S 0 7 166 -52 -22 0 0 0 0 0 0 8 0 0 0 0 0 10 E";
-					PacketREFERENCES_readPacketREFERENCES(&pkgRef, packet_REF);
-					memset(packet_REF,0,LENGTH);
-					if (PacketREFERENCES_isValid(&pkgRef))
-					{
-						PacketREFERENCES_loadPacketREFERENCES(&pkgRef);
-						REF_packet_ready = false;
-					}
-					else
-					{
-						count_missed++;
-						warnx("WARNING %d\n", count_missed);
-					}
+				// gestione pacchetto REFERENCES ricevuto dal Topic unibo_reference
+				orb_check(reference_sub_fd, &updated);
+				if (updated){
+					struct unibo_reference_s temp_ref;
+					orb_copy(ORB_ID(unibo_reference),reference_sub_fd,&temp_ref);
+					Model_GS_U.REF_TIME[0] = temp_ref.length;
+					Model_GS_U.REF_TIME[1] = temp_ref.type;
+					Model_GS_U.REF_TIME[2] = temp_ref.p_x;
+					Model_GS_U.REF_TIME[3] = temp_ref.p_y;
+					Model_GS_U.REF_TIME[4] = temp_ref.p_z;
+					Model_GS_U.REF_TIME[5] = temp_ref.dp_x;
+					Model_GS_U.REF_TIME[6] = temp_ref.dp_y;
+					Model_GS_U.REF_TIME[7] = temp_ref.dp_z;
+					Model_GS_U.REF_TIME[8] = temp_ref.ddp_x;
+					Model_GS_U.REF_TIME[9] = temp_ref.ddp_y;
+					Model_GS_U.REF_TIME[10] = temp_ref.ddp_z;
+					Model_GS_U.REF_TIME[11] = temp_ref.psi;
+					Model_GS_U.REF_TIME[12] = temp_ref.d_psi;
+					Model_GS_U.REF_TIME[13] = temp_ref.dd_psi;
+					Model_GS_U.REF_TIME[14] = temp_ref.q;
+					Model_GS_U.REF_TIME[15] = temp_ref.button;
+					Model_GS_U.REF_TIME[16] = temp_ref.timestamp;
+					Model_GS_U.REF_TIME[17] = temp_ref.CRC;
+					//warnx("Position reference from topic: %d %d %d\n",temp_ref.p_x,temp_ref.p_y,temp_ref.p_z);
+//					counter_ref_pack++;
+//					if (counter_ref_pack>=20){
+//						warnx("Ricevuti 20 pacchetti reference.");
+//						counter_ref_pack=0;
+//					}
 				}
 
-				// aumento dei contatori che gestiranno lo scheduling del reset, della ricezione
-				// dei pacchetti OPTITRACK e PARAMETERS e della scrittura scrittura alla GS
-				resetTimeCounter++;
-				optitrack_counter++;
-				parameters_counter++;
-				gs_counter++;
-				log_counter++;
-
-
-				// scheduling OPTITRACK
-				if (optitrack_counter >= 2)
-				{
-					//memset(udp_receive_buffer,0,LENGTH);
-					strcpy(udp_receive_buffer, "S 49 5 166 -52 -22 9999 -21 102 39 0 12382 3339 E");
-					//udp_receive_buffer = "S 49 5 166 -52 -22 9999 -21 102 39 0 12382 3339 E";
-					//while(recvfrom(sdOptitrack,&udp_receive_buffer,sizeof(char)*LENGTH,0,(struct sockaddr *)&clientaddr, (socklen_t*) &len) >= 0)
-					//{
-						PacketOPTITRACK_readPacketOPTITRACK(&pkgOpti, udp_receive_buffer);
-						PacketOPTITRACK_loadPacketOPTITRACK(&pkgOpti);
-					//}
-					optitrack_counter = 0;
+				// gestione pacchetto OPTITRACK ricevuto dal Topic unibo_optitrack
+				orb_check(optitrack_sub_fd, &updated);
+				if (updated){
+					struct unibo_optitrack_s temp_opti;
+					orb_copy(ORB_ID(unibo_optitrack),optitrack_sub_fd,&temp_opti);
+					Model_GS_U.OPTITRACK[0] = temp_opti.length;
+					Model_GS_U.OPTITRACK[1] = temp_opti.type;
+					Model_GS_U.OPTITRACK[2] = temp_opti.pos_x;
+					Model_GS_U.OPTITRACK[3] = temp_opti.pos_y;
+					Model_GS_U.OPTITRACK[4] = temp_opti.pos_z;
+					Model_GS_U.OPTITRACK[5] = temp_opti.q0;
+					Model_GS_U.OPTITRACK[6] = temp_opti.q1;
+					Model_GS_U.OPTITRACK[7] = temp_opti.q2;
+					Model_GS_U.OPTITRACK[8] = temp_opti.q3;
+					Model_GS_U.OPTITRACK[9] = temp_opti.err;
+					Model_GS_U.OPTITRACK[10] = temp_opti.timestamp;
+					Model_GS_U.OPTITRACK[11] = temp_opti.CRC;
+					//warnx("Optitrack from topic: %d %d %d\n",temp_opti.pos_x,temp_opti.pos_y,temp_opti.pos_z);
+//					counter_opti_pack++;
+//					if (counter_opti_pack>=50){
+//						warnx("Ricevuti 50 pacchetti OPTITRACK.");
+//						counter_opti_pack=0;
+//					}
 				}
 
-				// scheduling PARAMETERS
-				if (parameters_counter >= 500)
-				{
-					//memset(udp_receive_buffer,0,LENGTH);
-					strcpy(udp_receive_buffer, "S 0 118 -4000 1000 100 3000 4800 20 50000 130000 200 1810 1810 1340 135 135 120 0 0 0 0 60 1000 0 0 0 0 0 E");
-					//udp_receive_buffer = "S 0 118 -4000 1000 100 3000 4800 20 50000 130000 200 1810 1810 1340 135 135 120 0 0 0 0 60 1000 0 0 0 0 0 E";
-					//while(recvfrom(sdParameters,&udp_receive_buffer,sizeof(char)*LENGTH,0,(struct sockaddr *)&clientaddr, (socklen_t*) &len) >= 0)
-					//{
-						PacketPARAMETERS_readPacketPARAMETERS(&pkgPar,udp_receive_buffer);
-						PacketPARAMETERS_loadPacketPARAMETERS(&pkgPar);
-					//}
-					parameters_counter = 0;
+				// gestione pacchetto parameters ricevuto dal Topic unibo_optitrack
+				orb_check(parameters_sub_fd, &updated);
+				if (updated){
+					struct unibo_parameters_s temp_PAR;
+					orb_copy(ORB_ID(unibo_parameters),parameters_sub_fd,&temp_PAR);
+					Model_GS_U.PARAMETERS[0] = temp_PAR.length;
+					Model_GS_U.PARAMETERS[1] = temp_PAR.type;
+					Model_GS_U.PARAMETERS[2] = temp_PAR.in1;
+					Model_GS_U.PARAMETERS[3] = temp_PAR.in2;
+					Model_GS_U.PARAMETERS[4] = temp_PAR.in3;
+					Model_GS_U.PARAMETERS[5] = temp_PAR.in4;
+					Model_GS_U.PARAMETERS[6] = temp_PAR.in5;
+					Model_GS_U.PARAMETERS[7] = temp_PAR.in6;
+					Model_GS_U.PARAMETERS[8] = temp_PAR.in7;
+					Model_GS_U.PARAMETERS[9] = temp_PAR.in8;
+					Model_GS_U.PARAMETERS[10] = temp_PAR.in9;
+					Model_GS_U.PARAMETERS[11] = temp_PAR.in10;
+					Model_GS_U.PARAMETERS[12] = temp_PAR.in11;
+					Model_GS_U.PARAMETERS[13] = temp_PAR.in12;
+					Model_GS_U.PARAMETERS[14] = temp_PAR.in13;
+					Model_GS_U.PARAMETERS[15] = temp_PAR.in14;
+					Model_GS_U.PARAMETERS[16] = temp_PAR.in15;
+					Model_GS_U.PARAMETERS[17] = temp_PAR.in16;
+					Model_GS_U.PARAMETERS[18] = temp_PAR.in17;
+					Model_GS_U.PARAMETERS[19] = temp_PAR.in18;
+					Model_GS_U.PARAMETERS[20] = temp_PAR.in19;
+					Model_GS_U.PARAMETERS[21] = temp_PAR.in20;
+					Model_GS_U.PARAMETERS[22] = temp_PAR.in21;
+					Model_GS_U.PARAMETERS[23] = temp_PAR.in22;
+					Model_GS_U.PARAMETERS[24] = temp_PAR.in23;
+					Model_GS_U.PARAMETERS[25] = temp_PAR.in24;
+					Model_GS_U.PARAMETERS[26] = temp_PAR.timestamp;
+					Model_GS_U.PARAMETERS[27] = temp_PAR.CRC;
+					//warnx("Parameters from topic: %d %d %d\n",temp_PAR.in1,temp_PAR.in2,temp_PAR.in3);
 				}
+
 
 				// ----------- CONTROLLO -----------
 				LLFFC_control();
@@ -491,13 +531,6 @@ int unibo_control_thread_main(int argc, char *argv[])
 				// ---- Riempio oggetto CInputs con i valori generati in output dal controllo ----
 				CInputs_readCInputs(&cinputs);
 
-				/*
-				if (print_counter % 100 == 0)
-				{
-					printf("cinputs: %s\n", cinputs.toString());
-					fflush(stdout);
-				}
-				*/
 
 				// riempimento del pacchetto mavlink servo_output_raw a partire dall'output del controllo (cinputs)
 				// la funzione comprende anche la scalatura dal range 0..4095 di cinputs a 900..2100 dei microsecondi pwm (usati da px4)
@@ -515,31 +548,34 @@ int unibo_control_thread_main(int argc, char *argv[])
 
 				//tcflush(serial_PX4, TCOFLUSH);
 
-				// invio alla groundstation (UDP)                  RIMETTEREEEEEEEEEEEEEE
-				/*if (gs_counter >= 50)
-				{
-					static char *p;
-					p = CInputs_toString_GS(&cinputs);
-					//if(sendto(sdCINPUTS,p,strlen(p),0,(struct sockaddr *) &servaddrCINPUTS, len)<0)
-					//{
-					//	perror("error sendto CINPUTS");
-					//}
-					PacketSTATE_readPacketSTATE(&pkgState);
-					writtenChars = write(serial_XBee, PacketSTATE_toString(&pkgState), strlen(PacketSTATE_toString(&pkgState)));
-					gs_counter = 0;
 
-					#ifdef GSEXT
-						p = pkgState.toString();
-						if(sendto(sdGS,p,strlen(p),0,(struct sockaddr *) &servaddrGS, len)<0)
-						{
-							perror("error sendto GS_STATE");
-						}
-					#endif
-				}*/
-				if (log_counter>=500){
-					//printf("TORQUES: %f %f %f\n", Model_GS_Y.C_TORQUES[0], Model_GS_Y.C_TORQUES[1], Model_GS_Y.C_TORQUES[2]);
-					//printf("Q: %f %f %f %f - QC: %f %f %f %f\n", Model_GS_Y.C_Q[0], Model_GS_Y.C_Q[1], Model_GS_Y.C_Q[2], Model_GS_Y.C_Q[3], Model_GS_Y.C_QC[0], Model_GS_Y.C_QC[1], Model_GS_Y.C_QC[2], Model_GS_Y.C_QC[3]);
-					warnx("Thrust: %f\n", Model_GS_Y.C_THRUST);
+				//TELEMETRIA UART
+				if (telemetry_counter >= 6){                     //almost 50Hz if running at 333 Hz
+					telemetry_counter=0;
+					telem.x = Model_GS_Y.STATE[0];
+					telem.y = Model_GS_Y.STATE[1];
+					telem.z = Model_GS_Y.STATE[2];
+					telem.dx = Model_GS_Y.STATE[3];
+					telem.dy = Model_GS_Y.STATE[4];
+					telem.dz = Model_GS_Y.STATE[5];
+					telem.phi = Model_GS_Y.STATE[6];
+					telem.theta = Model_GS_Y.STATE[7];
+					telem.psi = Model_GS_Y.STATE[8];
+					telem.wx = Model_GS_Y.STATE[9];
+					telem.wy = Model_GS_Y.STATE[10];
+					telem.wz = Model_GS_Y.STATE[11];
+					telem.cinput1 = Model_GS_Y.CINPUTS[4];
+					telem.cinput2 = Model_GS_Y.CINPUTS[5];
+					telem.cinput3 = Model_GS_Y.CINPUTS[6];
+					telem.cinput4 = Model_GS_Y.CINPUTS[7];
+					//warnx("Cinputs: %u %u %u %u", telem.cinput1,telem.cinput2,telem.cinput3,telem.cinput4);
+					orb_publish(ORB_ID(unibo_telemetry), unibo_telem_pub_fd, &telem);
+					//warnx("Publishing telemetry topic.\n");
+				}
+
+
+
+				if (log_counter>=333){
 					log_counter=0;
 				}
 
@@ -602,7 +638,7 @@ int unibo_control_thread_main(int argc, char *argv[])
 				}
 
 				*/
-
+				print_counter2++;
 				if(print_counter2 >= 1)
 				{
 					usleep(200);

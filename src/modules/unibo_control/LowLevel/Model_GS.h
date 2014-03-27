@@ -3,9 +3,9 @@
  *
  * Code generation for model "Model_GS".
  *
- * Model version              : 1.2353
+ * Model version              : 1.2357
  * Simulink Coder version : 8.3 (R2012b) 20-Jul-2012
- * C source code generated on : Fri Jan 24 15:01:02 2014
+ * C source code generated on : Tue Feb 18 19:21:00 2014
  *
  * Target selection: grt.tlc
  * Note: GRT includes extra infrastructure and instrumentation for prototyping
@@ -780,7 +780,6 @@ typedef struct {
   real_T h1;                           /* '<S12>/Attitude controller' */
   real32_T dx1hat[3];                  /* '<S36>/High-Gain Observer' */
   real32_T dx2hat[3];                  /* '<S36>/High-Gain Observer' */
-  uint16_T CINPUTS[11];                /* '<S7>/cinputs' */
   boolean_T DataTypeConversion3;       /* '<S25>/Data Type Conversion3' */
 } BlockIO_Model_GS;
 

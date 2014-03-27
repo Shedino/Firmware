@@ -140,30 +140,30 @@ void scale_cinputs_to_px4pwm(struct motor_output_s* px4_output, cInputs_s* cinpu
 void init(int argc, char* argv[])
 {
 
-	warnx("\n\nINITIALIZING MODEL...\n");
-
-	/*********************** SECTION TO CONFIGURE SERIAL PORT **********************/
-
-	// ---- SERIAL PX4 ----
-
-	warnx("[serial px4] Trying to connect to %s.. ", argv[1]);
-	//fflush(stdout);
-
-	//serial_PX4 = open(argv[1], O_RDWR | O_NOCTTY | O_NDELAY);
-	//fcntl(serial_PX4, F_SETFL, FNDELAY); // non blocking I/0
-
-	if (serial_PX4 < 0)
-	{
-		warnx("failure, could not open port.\n");
-		//exit(EXIT_FAILURE);
-		//return -1;
-	}
-	else
-	{
-		warnx("success.\n");
-	}
-
-	warnx("[serial px4] Trying to configure %s.. \n", argv[1]);
+//	warnx("\n\nINITIALIZING MODEL...\n");
+//
+//	/*********************** SECTION TO CONFIGURE SERIAL PORT **********************/
+//
+//	// ---- SERIAL PX4 ----
+//
+//	warnx("[serial px4] Trying to connect to %s.. ", argv[1]);
+//	//fflush(stdout);
+//
+//	//serial_PX4 = open(argv[1], O_RDWR | O_NOCTTY | O_NDELAY);
+//	//fcntl(serial_PX4, F_SETFL, FNDELAY); // non blocking I/0
+//
+//	if (serial_PX4 < 0)
+//	{
+//		warnx("failure, could not open port.\n");
+//		//exit(EXIT_FAILURE);
+//		//return -1;
+//	}
+//	else
+//	{
+//		warnx("success.\n");
+//	}
+//
+//	warnx("[serial px4] Trying to configure %s.. \n", argv[1]);
 
 	//oldOptions = actualOptions;
 

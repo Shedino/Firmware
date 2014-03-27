@@ -3,9 +3,9 @@
  *
  * Code generation for model "Model_GS".
  *
- * Model version              : 1.2353
+ * Model version              : 1.2357
  * Simulink Coder version : 8.3 (R2012b) 20-Jul-2012
- * C source code generated on : Fri Jan 24 15:01:02 2014
+ * C source code generated on : Tue Feb 18 19:21:00 2014
  *
  * Target selection: grt.tlc
  * Note: GRT includes extra infrastructure and instrumentation for prototyping
@@ -16,10 +16,6 @@
 #ifndef RTW_HEADER_Model_GS_private_h_
 #define RTW_HEADER_Model_GS_private_h_
 #include "rtwtypes.h"
-
-/* Used to reverse endianness */
-#define SWAP16(x)                      (((x) >> 8) | (((x) & 0xff) << 8))
-#define SWAP32(x)                      (SWAP16((x) >> 16) | (SWAP16((x) & 0xffff) << 16))
 #ifndef __RTWTYPES_H__
 #error This file requires rtwtypes.h to be included
 #else
