@@ -53,15 +53,15 @@
 //INFRASTRUCTURE
 #ifndef LOW_LEVEL_FREE_FLIGHT_CONTROL_H
 #define LOW_LEVEL_FREE_FLIGHT_CONTROL_H
-#include "./include/Low_Level_Free_Flight_Control.h"
+#include <Low_Level_Free_Flight_Control.h>
 #endif
 #ifndef CINPUTS_H
 #define CINPUTS_H
-#include "./include/CInputs.h"
+#include <CInputs.h>
 #endif
 #ifndef PACKETREFERENCES_H
 #define PACKETREFERENCES_H
-#include "./include/PacketREFERENCES.h"
+#include <PacketREFERENCES.h>
 #endif
 #ifndef PACKETPARAMETERS_H
 #define PACKETPARAMETERS_H

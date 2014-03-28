@@ -19,8 +19,8 @@
 # define Model_GS_COMMON_INCLUDES_
 #include <math.h>
 #include <string.h>
-#include "rtwtypes.h"
-#include "simstruc.h"
+#include <rtwtypes.h>
+#include <simstruc.h>
 #include "fixedpoint.h"
 #include "rt_defines.h"
 #include "rt_nonfinite.h"
