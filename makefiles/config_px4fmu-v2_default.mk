@@ -118,6 +118,13 @@ MODULES		+= lib/external_lgpl
 MODULES		+= lib/geo
 MODULES		+= lib/conversion
 
+# folowing lines  added by Mohammad Hayajneh 31/March/2014
+MODULES		+= modules/unibo_filtertest
+MODULES		+= modules/unibo_uart
+MODULES		+= modules/unibo_motor_output
+MODULES		+= modules/unibo_control
+#-----------
+
 #
 # Demo apps
 #

@@ -31,7 +31,7 @@
  ****************************************************************************/
  
  /*
- * @file unibo_uart.cpp
+ * @file unibo_filtertest.cpp
  *
  * 
  */
@@ -80,11 +80,11 @@ int fd;
 //
 static bool thread_should_exit = false;		/**< Deamon exit flag */
 static bool thread_running = false;		/**< Deamon status flag */
-static int unibo_uart_task;				/**< Handle of deamon task / thread */
+static int unibo_filtertest_task;				/**< Handle of deamon task / thread */
 
 
-__EXPORT int unibo_uart_main(int argc, char *argv[]);
-int unibo_uart_thread_main(int argc, char *argv[]);
+__EXPORT int unibo_filtertest_main(int argc, char *argv[]);
+int unibo_filtertest_thread_main(int argc, char *argv[]);
 /**
  * Print the correct usage.
  */
@@ -93,7 +93,7 @@ static void usage(const char *reason)
 	if (reason)
 		fprintf(stderr, "%s\n", reason);
 
-	fprintf(stderr, "usage: unibo_uart {start|stop|status}\n");
+	fprintf(stderr, "usage: unibo_filtertest {start|stop|status}\n");
 	exit(1);
 }
 
@@ -235,11 +235,12 @@ void close_port(int fd)
 }
 
 
-bool serial_write(int fd, struct unibo_telemetry_s telem)
+bool serial_write(int fd, struct sensor_combined_s sens)
 {
 	char string[LENGTH];
-	sprintf(string,"S %d %d %d %d %d %d %d %d %d %d %d %d %u %u %u %u E",telem.x,telem.y,telem.z,telem.dx,telem.dy,telem.dz
-			,telem.phi,telem.theta,telem.psi,telem.wx,telem.wy,telem.wz,telem.cinput1,telem.cinput2,telem.cinput3,telem.cinput4);
+	sprintf(string,"S %d %d %d %d %d %d %d %d %d E",sens.gyro_raw[0],sens.gyro_raw[1],sens.gyro_raw[2]
+                                                       ,sens.accelerometer_raw[0],sens.accelerometer_raw[1],sens.accelerometer_raw[2]
+                                                       ,sens.magnetometer_raw[0],sens.magnetometer_raw[1],sens.magnetometer_raw[2]);
 	//warnx("String to print: %s\n",string);
 	int strlgt=1;
 	while (string[strlgt-1]!='E' && strlgt<LENGTH){
@@ -413,7 +414,7 @@ void handle_PACK(char *packet, int unibo_ref_pub_fd, int unibo_param_pub_fd, int
 }
 
 
-int unibo_uart_main(int argc, char *argv[])
+int unibo_filtertest_main(int argc, char *argv[])
 {
 	if (argc < 1)
 		usage("missing command");
@@ -427,11 +428,11 @@ int unibo_uart_main(int argc, char *argv[])
 		}
 
 		thread_should_exit = false;
-		unibo_uart_task = task_spawn_cmd("unibo_uart",
+		unibo_filtertest_task = task_spawn_cmd("unibo_filtertest",
 					      SCHED_DEFAULT,
 					      SCHED_PRIORITY_MAX - 10,
 					      14000,
-					      unibo_uart_thread_main,
+					      unibo_filtertest_thread_main,
 					      (argv) ? (const char **)&argv[2] : (const char **)NULL);
 		exit(0);
 	}
@@ -469,7 +470,7 @@ int unibo_uart_main(int argc, char *argv[])
 }
 
 
-int unibo_uart_thread_main(int argc, char *argv[])
+int unibo_filtertest_thread_main(int argc, char *argv[])
 {
 	warnx("main thread started");
 	thread_running = true;
@@ -479,7 +480,7 @@ int unibo_uart_thread_main(int argc, char *argv[])
 	/* default values for arguments */
 
 	// use (ttyS2) for UART5 in px4fum_v1
-	char *uart_name = (char*)"/dev/ttyS2";      //(ttyS2)--> UART5, px4fum_v1
+	char *uart_name = (char*)"/dev/ttyS5";      //(ttyS2)--> UART5,
 	int baudrate = 115200;
 	const char *commandline_usage = "\tusage: %s -d <devicename> -b <baudrate> [-v/--verbose] [--debug]\n\t\tdefault: -d %s -b %i\n";
 
@@ -576,21 +577,10 @@ int unibo_uart_thread_main(int argc, char *argv[])
 
 	//Topics advertise
 
-	struct unibo_reference_s reff;
-	memset(&reff, 0, sizeof(reff));
-	unibo_ref_pub_fd = orb_advertise(ORB_ID(unibo_reference), &reff);
+	// subscribe to sensor_combined topic
 
-	struct unibo_parameters_s param;
-	memset(&reff, 0, sizeof(param));
-	unibo_param_pub_fd = orb_advertise(ORB_ID(unibo_parameters), &param);
-
-	struct unibo_optitrack_s opti;
-	memset(&reff, 0, sizeof(opti));
-	unibo_opti_pub_fd = orb_advertise(ORB_ID(unibo_optitrack), &opti);
-
-	// subscribe to telemetry topic
-	int telemetry_sub_fd = orb_subscribe(ORB_ID(unibo_telemetry));
-
+	int sensor_sub_fd = orb_subscribe(ORB_ID(sensor_combined));
+	orb_set_interval(sensor_sub_fd, 10);
 
 	// Run indefinitely while the serial loop handles data
 	warnx("\nREADY, waiting for serial data.\n");
@@ -598,17 +588,13 @@ int unibo_uart_thread_main(int argc, char *argv[])
 	/* Main loop*/
 	while (!thread_should_exit) {
 
-		PACK_ready = readAndParseSerial(fd, round_buffer_PACK, sizeof(round_buffer_PACK), packet_PACK, &pos_PACK, &start_PACK, &lastSidx_PACK);
-		if (PACK_ready){
-			handle_PACK(packet_PACK,unibo_ref_pub_fd,unibo_param_pub_fd,unibo_opti_pub_fd);
-		}
-		orb_check(telemetry_sub_fd, &updated);
-		if (updated){
-			struct unibo_telemetry_s telem;
-			orb_copy(ORB_ID(unibo_telemetry),telemetry_sub_fd,&telem);
-			serial_write(fd, telem);
-		}
-  
+		orb_check(sensor_sub_fd, &updated);
+				if (updated){
+					struct sensor_combined_s sens;
+					orb_copy(ORB_ID(sensor_combined),sensor_sub_fd,&sens);
+					serial_write(fd, sens);
+				}
+
 		//usleep(20000);
 
 	}
