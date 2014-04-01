@@ -150,7 +150,7 @@ int attitude_estimator_so3_main(int argc, char *argv[])
 		attitude_estimator_so3_task = task_spawn_cmd("attitude_estimator_so3",
 					      SCHED_DEFAULT,
 					      SCHED_PRIORITY_MAX - 5,
-					      14000,
+					      2048,
 					      attitude_estimator_so3_thread_main,
 					      (argv) ? (const char **)&argv[2] : (const char **)NULL);
 		exit(0);

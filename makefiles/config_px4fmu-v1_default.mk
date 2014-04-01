@@ -34,9 +34,9 @@ MODULES		+= drivers/blinkm
 MODULES		+= drivers/rgbled
 MODULES		+= drivers/mkblctrl
 #MODULES		+= drivers/roboclaw
-MODULES		+= drivers/airspeed
-MODULES		+= drivers/ets_airspeed
-MODULES		+= drivers/meas_airspeed
+#MODULES		+= drivers/airspeed
+#MODULES		+= drivers/ets_airspeed
+#MODULES		+= drivers/meas_airspeed
 #MODULES		+= drivers/frsky_telemetry
 MODULES		+= modules/sensors
 

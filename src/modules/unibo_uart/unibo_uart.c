@@ -78,9 +78,9 @@ int fd;
 
 //
 //
-static bool thread_should_exit = false;		/**< Deamon exit flag */
-static bool thread_running = false;		/**< Deamon status flag */
-static int unibo_uart_task;				/**< Handle of deamon task / thread */
+static bool unibou_thread_should_exit = false;		/**< Deamon exit flag */
+static bool unibou_thread_running = false;		/**< Deamon status flag */
+static int unibou_unibo_uart_task;				/**< Handle of deamon task / thread */
 
 
 __EXPORT int unibo_uart_main(int argc, char *argv[]);
@@ -223,7 +223,7 @@ bool setup_port(int fd, int baud, int data_bits, int stop_bits, bool parity, boo
 	} while(0);
 
 
-	thread_should_exit = true;
+	unibou_thread_should_exit = true;
 	return false;
 }
 
@@ -420,26 +420,27 @@ int unibo_uart_main(int argc, char *argv[])
 
 	if (!strcmp(argv[1], "start")) {
 
-		if (thread_running) {
+		if (unibou_thread_running) {
 			warnx("already running\n");
 			/* this is not an error */
 			exit(0);
 		}
 
-		thread_should_exit = false;
-		unibo_uart_task = task_spawn_cmd("unibo_uart",
+		unibou_thread_should_exit = false;
+		unibou_unibo_uart_task = task_spawn_cmd("unibo_uart",
 					      SCHED_DEFAULT,
 					      SCHED_PRIORITY_MAX - 10,
-					      14000,
+					      2048,
 					      unibo_uart_thread_main,
 					      (argv) ? (const char **)&argv[2] : (const char **)NULL);
+		warnx("Thread started PID: %d",unibou_unibo_uart_task);
 		exit(0);
 	}
 
 	if (!strcmp(argv[1], "stop")) {
-		thread_should_exit = true;
+		unibou_thread_should_exit = true;
 
-		while (thread_running){
+		while (unibou_thread_running){
 			usleep(200000);
 		}
 
@@ -448,7 +449,7 @@ int unibo_uart_main(int argc, char *argv[])
 	}
 
 	if (!strcmp(argv[1], "status")) {
-		if (thread_running) {
+		if (unibou_thread_running) {
 			warnx("running");
 			exit(0);
 
@@ -472,7 +473,7 @@ int unibo_uart_main(int argc, char *argv[])
 int unibo_uart_thread_main(int argc, char *argv[])
 {
 	warnx("main thread started");
-	thread_running = true;
+	unibou_thread_running = true;
 	int unibo_ref_pub_fd;
 	int unibo_param_pub_fd;
 	int unibo_opti_pub_fd;
@@ -489,7 +490,7 @@ int unibo_uart_thread_main(int argc, char *argv[])
 			for (i = 1; i < argc; i++) { /* argv[0] is "start/stop/status" */
 				if (strcmp(argv[i], "-h") == 0 || strcmp(argv[i], "--help") == 0) {
 					warnx(commandline_usage, argv[0], uart_name, baudrate);
-					thread_should_exit = true;
+					unibou_thread_should_exit = true;
 					return 0;
 				}
 
@@ -500,7 +501,7 @@ int unibo_uart_thread_main(int argc, char *argv[])
 
 					} else {
 						warnx(commandline_usage, argv[0], uart_name, baudrate);
-						thread_should_exit = true;
+						unibou_thread_should_exit = true;
 						return 0;
 					}
 				}
@@ -512,7 +513,7 @@ int unibo_uart_thread_main(int argc, char *argv[])
 
 					} else {
 						warnx(commandline_usage, argv[0], uart_name, baudrate);
-						thread_should_exit = true;
+						unibou_thread_should_exit = true;
 						return 0;
 					}
 				}
@@ -596,7 +597,7 @@ int unibo_uart_thread_main(int argc, char *argv[])
 	warnx("\nREADY, waiting for serial data.\n");
 
 	/* Main loop*/
-	while (!thread_should_exit) {
+	while (!unibou_thread_should_exit) {
 
 		PACK_ready = readAndParseSerial(fd, round_buffer_PACK, sizeof(round_buffer_PACK), packet_PACK, &pos_PACK, &start_PACK, &lastSidx_PACK);
 		if (PACK_ready){
@@ -614,7 +615,7 @@ int unibo_uart_thread_main(int argc, char *argv[])
 	}
 
 	close_port(fd);
-	thread_running = false;
+	unibou_thread_running = false;
 
 	return 0;
 }

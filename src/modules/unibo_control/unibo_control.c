@@ -58,9 +58,9 @@
 #include <systemlib/systemlib.h>
 #include <systemlib/err.h>
 /* Deamon variables */
-static bool thread_should_exit = false;		/**< daemon exit flag */
-static bool thread_running = false;		/**< daemon status flag */
-static int daemon_task;				/**< Handle of daemon task / thread */
+static bool uniboc_thread_should_exit = false;		/**< daemon exit flag */
+static bool uniboc_thread_running = false;		/**< daemon status flag */
+static int uniboc_unibo_control_task;				/**< Handle of daemon task / thread */
 
 
 //#include <mavlink\mavlink_bridge_header.h>
@@ -93,7 +93,7 @@ int unibo_control_thread_main(int argc, char *argv[]);
 #include "utils.h"
 
 // Variabili globali, usate anche dalle procedure in main_procedures.cpp
-int serial_PX4, serial_XBee;
+//int serial_PX4, serial_XBee;
 int sdParameters, sdCINPUTS, sdOptitrack, sdGS, sdIMU;
 struct timeval tv;
 //struct sigaction sact;
@@ -130,30 +130,31 @@ int unibo_control_main(int argc, char *argv[])
 
 	if (!strcmp(argv[1], "start")) {
 
-		if (thread_running) {
+		if (uniboc_thread_running) {
 			warnx("daemon already running\n");
 			/* this is not an error */
 			exit(0);
 		}
 
-		thread_should_exit = false;
-		daemon_task = task_spawn_cmd("unibo_control",
+		uniboc_thread_should_exit = false;
+		uniboc_unibo_control_task = task_spawn_cmd("unibo_control",
 					 SCHED_DEFAULT,
 					 //SCHED_PRIORITY_DEFAULT,
 					 SCHED_PRIORITY_MAX - 15,
-					 4096,
+					 4096*2,
 					 unibo_control_thread_main,
 					 (argv) ? (const char **)&argv[2] : (const char **)NULL);
+		warnx("Thread started PID: %d",uniboc_unibo_control_task);
 		exit(0);
 	}
 
 	if (!strcmp(argv[1], "stop")) {
-		thread_should_exit = true;
+		uniboc_thread_should_exit = true;
 		exit(0);
 	}
 
 	if (!strcmp(argv[1], "status")) {
-		if (thread_running) {
+		if (uniboc_thread_running) {
 			warnx("\trunning\n");
 		} else {
 			warnx("\tnot started\n");
@@ -173,7 +174,7 @@ int unibo_control_thread_main(int argc, char *argv[])
 {
 	warnx("[unibo_control] starting\n");
 
-	thread_running = true;
+	uniboc_thread_running = true;
 
 	warnx("Hello Sky!\n");
 	model = Model_GS(); //Init model!
@@ -334,7 +335,7 @@ int unibo_control_thread_main(int argc, char *argv[])
 
 	int txtcounter = 0;
 
-	while (!thread_should_exit) {
+	while (!uniboc_thread_should_exit) {
 		/* wait for sensor update of 1 file descriptor for 1000 ms (1 second) */
 		//Imposto solo 10 ms
 		int poll_ret = poll(fds, 1, 10); //filedescr, number of file descriptor to wait for, timeout in ms
@@ -346,7 +347,7 @@ int unibo_control_thread_main(int argc, char *argv[])
 		/* handle the poll result */
 		if (poll_ret == 0) {
 			/* this means none of our providers is giving us data */
-			warnx("[unibo_control_thread] Got no data within 10ms\n"); //i 10 ms impostati poco sopra, il topic cmq dovrebbe arrivare a 500hz (2ms)
+			//warnx("[unibo_control_thread] Got no data within poll interval\n"); //i 10 ms impostati poco sopra, il topic cmq dovrebbe arrivare a 500hz (2ms)
 		} else if (poll_ret < 0) {
 			/* this is seriously bad - should be an emergency */
 			if (error_counter < 10 || error_counter % 50 == 0) {
@@ -360,6 +361,7 @@ int unibo_control_thread_main(int argc, char *argv[])
 				//TECNICAMENTE SIAMO GIA' A 500HZ     EDIT 333Hz, freq del topic di assetto
 				log_counter++;
 				telemetry_counter++;
+				txtcounter++;
 
 				/* copy sensors raw data into local buffer */
 				orb_copy(ORB_ID(vehicle_attitude), sensor_sub_fd, &ahrs);
@@ -371,17 +373,17 @@ int unibo_control_thread_main(int argc, char *argv[])
 				Model_GS_U.AngSpeed[0] = ahrs.rollspeed;
 				Model_GS_U.AngSpeed[1] = ahrs.pitchspeed;
 				Model_GS_U.AngSpeed[2] = ahrs.yawspeed;
-//				if (txtcounter>500){
-//					warnx("RPY:\t%1.4f %1.4f %1.4f - %1.4f %1.4f %1.4f %1.4f\n",
-//						(double)ahrs.roll,
-//						(double)ahrs.pitch,
-//						(double)ahrs.yaw,
-//						(double)ahrs.q[0],
-//						(double)ahrs.q[1],
-//						(double)ahrs.q[2],
-//						(double)ahrs.q[3]);
-//					txtcounter = 0;
-//				}
+				if (txtcounter>500){
+					warnx("RPY:\t%1.4f %1.4f %1.4f - %1.4f %1.4f %1.4f %1.4f\n",
+						(double)ahrs.roll,
+						(double)ahrs.pitch,
+						(double)ahrs.yaw,
+						(double)ahrs.q[0],
+						(double)ahrs.q[1],
+						(double)ahrs.q[2],
+						(double)ahrs.q[3]);
+					txtcounter = 0;
+				}
 
 				/*
 				 * |-----------------------------------------------------|
@@ -656,7 +658,7 @@ int unibo_control_thread_main(int argc, char *argv[])
 
 	warnx("[unibo_control_daemon] exiting.\n");
 
-	thread_running = false;
+	uniboc_thread_running = false;
 
 	return 0;
 
