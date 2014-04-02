@@ -61,6 +61,7 @@ MODULES		+= systemcmds/tests
 MODULES		+= systemcmds/config
 MODULES		+= systemcmds/nshterm
 MODULES		+= systemcmds/hw_ver
+MODULES		+= systemcmds/dumpfile
 
 #
 # General system control
@@ -68,7 +69,6 @@ MODULES		+= systemcmds/hw_ver
 MODULES		+= modules/commander
 MODULES		+= modules/navigator
 MODULES		+= modules/mavlink
-MODULES		+= modules/mavlink_onboard
 MODULES		+= modules/gpio_led
 
 #
@@ -76,7 +76,7 @@ MODULES		+= modules/gpio_led
 #
 #MODULES		+= modules/attitude_estimator_ekf
 MODULES		+= modules/attitude_estimator_so3
-MODULES		+= modules/att_pos_estimator_ekf
+MODULES		+= modules/fw_att_pos_estimator
 MODULES		+= modules/position_estimator_inav
 #MODULES		+= examples/flow_position_estimator
 
@@ -86,8 +86,8 @@ MODULES		+= modules/position_estimator_inav
 #MODULES		+= modules/segway
 #MODULES		+= modules/fw_pos_control_l1
 #MODULES		+= modules/fw_att_control
-#MODULES		+= modules/multirotor_att_control
-#MODULES		+= modules/multirotor_pos_control
+#MODULES		+= modules/mc_att_control
+#MODULES		+= modules/mc_pos_control
 #MODULES		+= examples/flow_position_control
 #MODULES		+= examples/flow_speed_control
 
@@ -109,6 +109,7 @@ MODULES		+= modules/systemlib
 MODULES		+= modules/systemlib/mixer
 MODULES		+= modules/controllib
 MODULES		+= modules/uORB
+MODULES		+= modules/dataman
 
 #
 # Libraries
@@ -120,6 +121,7 @@ MODULES		+= lib/ecl
 MODULES		+= lib/external_lgpl
 MODULES		+= lib/geo
 MODULES		+= lib/conversion
+MODULES		+= lib/launchdetection
 
 #
 # UNIBO apps
