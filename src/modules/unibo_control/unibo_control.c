@@ -182,7 +182,7 @@ int unibo_control_thread_main(int argc, char *argv[])
 	/* subscribe to attitude topic */
 	int sensor_sub_fd = orb_subscribe(ORB_ID(vehicle_attitude));
 	/* set data to 1Hz */
-	orb_set_interval(sensor_sub_fd, 3); //1000 = 1Hz (ms)
+	orb_set_interval(sensor_sub_fd, 5); //1000 = 1Hz (ms)
 
 	/* subscribe to reference topic */
 	int reference_sub_fd = orb_subscribe(ORB_ID(unibo_reference));
@@ -341,7 +341,7 @@ int unibo_control_thread_main(int argc, char *argv[])
 		int poll_ret = poll(fds, 1, 10); //filedescr, number of file descriptor to wait for, timeout in ms
 		//TODO: INSERIRE QUI INIZIALIZZAZIONI PRE-LOOP AD OGNI LOOP
 		// XBee: packet_REF viene riempito con i dati da xbee
-		strcpy(packet_REF, "S 0 7 166 -52 -22 0 0 0 0 0 0 8 0 0 0 0 0 10 E");  //rimettere quella sotto poi!!!!!!!!
+		//strcpy(packet_REF, "S 0 7 166 -52 -22 0 0 0 0 0 0 8 0 0 0 0 0 10 E");  //rimettere quella sotto poi!!!!!!!!
 		//readAndParseSerial(serial_XBee, round_buffer_REF, sizeof(round_buffer_REF), packet_REF, &pos_REF, &start_REF, &lastSidx_REF, &REF_packet_ready);
 
 		/* handle the poll result */
@@ -373,15 +373,16 @@ int unibo_control_thread_main(int argc, char *argv[])
 				Model_GS_U.AngSpeed[0] = ahrs.rollspeed;
 				Model_GS_U.AngSpeed[1] = ahrs.pitchspeed;
 				Model_GS_U.AngSpeed[2] = ahrs.yawspeed;
-				if (txtcounter>500){
-					warnx("RPY:\t%1.4f %1.4f %1.4f - %1.4f %1.4f %1.4f %1.4f\n",
-						(double)ahrs.roll,
-						(double)ahrs.pitch,
-						(double)ahrs.yaw,
-						(double)ahrs.q[0],
-						(double)ahrs.q[1],
-						(double)ahrs.q[2],
-						(double)ahrs.q[3]);
+				if (txtcounter>333){
+//					warnx("RPY:\t%1.4f %1.4f %1.4f - %1.4f %1.4f %1.4f %1.4f\n",
+//						(double)ahrs.roll,
+//						(double)ahrs.pitch,
+//						(double)ahrs.yaw,
+//						(double)ahrs.q[0],
+//						(double)ahrs.q[1],
+//						(double)ahrs.q[2],
+//						(double)ahrs.q[3]);
+					warnx(".");
 					txtcounter = 0;
 				}
 
@@ -552,7 +553,7 @@ int unibo_control_thread_main(int argc, char *argv[])
 
 
 				//TELEMETRIA UART
-				if (telemetry_counter >= 6){                     //almost 50Hz if running at 333 Hz
+				if (telemetry_counter >= 4){                     //almost 50Hz if running at 333 Hz
 					telemetry_counter=0;
 					telem.x = Model_GS_Y.STATE[0];
 					telem.y = Model_GS_Y.STATE[1];
@@ -566,10 +567,10 @@ int unibo_control_thread_main(int argc, char *argv[])
 					telem.wx = Model_GS_Y.STATE[9];
 					telem.wy = Model_GS_Y.STATE[10];
 					telem.wz = Model_GS_Y.STATE[11];
-					telem.cinput1 = Model_GS_Y.CINPUTS[4];
-					telem.cinput2 = Model_GS_Y.CINPUTS[5];
-					telem.cinput3 = Model_GS_Y.CINPUTS[6];
-					telem.cinput4 = Model_GS_Y.CINPUTS[7];
+					telem.cinput1 = cinputs.u[0];
+					telem.cinput2 = cinputs.u[1];
+					telem.cinput3 = cinputs.u[2];
+					telem.cinput4 = cinputs.u[3];
 					//warnx("Cinputs: %u %u %u %u", telem.cinput1,telem.cinput2,telem.cinput3,telem.cinput4);
 					orb_publish(ORB_ID(unibo_telemetry), unibo_telem_pub_fd, &telem);
 					//warnx("Publishing telemetry topic.\n");
@@ -577,7 +578,9 @@ int unibo_control_thread_main(int argc, char *argv[])
 
 
 
-				if (log_counter>=333){
+				if (log_counter>=200){
+					//warnx("CINPUTS: %d %d %d %d\n",CInputs_getU0(&cinputs),CInputs_getU1(&cinputs),CInputs_getU2(&cinputs),CInputs_getU3(&cinputs));
+					//warnx("PWMOUTPUTS: %d %d %d %d %d %d %d %d\n",mout.outputs[0],mout.outputs[1],mout.outputs[2],mout.outputs[3],mout.outputs[4],mout.outputs[5],mout.outputs[6],mout.outputs[7]);
 					log_counter=0;
 				}
 

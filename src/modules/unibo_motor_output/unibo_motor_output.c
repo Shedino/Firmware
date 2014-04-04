@@ -79,7 +79,7 @@ void unibo_motor_output_init()
 {
 	int ret = 0;
 
-	pwm_fd = open("/dev/pwm_output", 0);
+	pwm_fd = open("/dev/pwm_output", O_RDWR);
 	if (pwm_fd < 0)
 	{
 		warnx("cannot open fd\n");
@@ -93,6 +93,11 @@ void unibo_motor_output_init()
 	{
 		warnx("errore arm\n");
 		exit(1);
+	}
+	int i;
+	for(i = 0; i < MOTORS_NUMBER; i++)
+	{
+		ioctl(pwm_fd, PWM_SERVO_SET(i), 900);
 	}
 }
 
@@ -229,16 +234,23 @@ int unibo_motor_output_thread_main(int argc, char *argv[])
 	int i;
 	struct motor_output_s pwm_values;
 
+	// PWM to 0 initially
+	for(i = 0; i < MOTORS_NUMBER; i++)
+	{
+		ioctl(pwm_fd, PWM_SERVO_SET(i), 0);
+	}
+
 	// loop dell'applicazione
 	while (!unibomo_thread_should_exit)
 	{
 		// controllo se ci sono nuovi dati
-		int poll_ret = poll(fds, 1, 1000);
+		int poll_ret = poll(fds, 1, 100);     //forse si può mettere (fds, 3, 1000) per andare a 333Hz
 		if(poll_ret > 0)
 		{
 			if(fds[0].revents & POLLIN)
 			{
 				// lettura ORB
+				//warnx("Nuovo valore pwm: %d %d %d %d %d %d %d %d", pwm_values.outputs[0], pwm_values.outputs[1], pwm_values.outputs[2], pwm_values.outputs[3],pwm_values.outputs[4], pwm_values.outputs[5], pwm_values.outputs[6], pwm_values.outputs[7]);
 				orb_copy(ORB_ID(motor_output), motor_output_fd, &pwm_values);
 
 				// scrittura su pin output

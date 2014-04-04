@@ -1,21 +1,19 @@
 /*
- * File: rtwtypes.h
+ * rtwtypes.h
  *
- * Real-Time Workshop code generation for Simulink model "embedded.mdl".
+ * Code generation for model "Model_GS".
  *
- * Model version              : 1.4
- * Real-Time Workshop version : 7.5  (R2010a)  25-Jan-2010
- * C source code generated on : Thu Aug 25 15:16:57 2011
+ * Model version              : 1.2357
+ * Simulink Coder version : 8.3 (R2012b) 20-Jul-2012
+ * C source code generated on : Fri Apr 04 15:10:34 2014
  *
  * Target selection: grt.tlc
  * Note: GRT includes extra infrastructure and instrumentation for prototyping
- * Embedded hardware selection: 32-bit Generic
- * Code generation objectives: Unspecified
+ * Embedded hardware selection: Generic->32-bit x86 compatible
+ * Code generation objective: Execution efficiency
  * Validation result: Not run
  */
 
-#ifndef RTW_HEADER_rtwtypes_h_
-#define RTW_HEADER_rtwtypes_h_
 #ifndef __RTWTYPES_H__
 #define __RTWTYPES_H__
 #include "tmwtypes.h"
@@ -37,12 +35,6 @@ typedef void * pointer_T;
 #ifndef FALSE
 # define FALSE                         (0U)
 #endif
-
-/*
- * Definitions supporting external data access
- */
-typedef int32_T chunk_T;
-typedef uint32_T uchunk_T;
 
 /*
  * MultiWord supporting definitions
@@ -1187,4 +1179,3 @@ typedef struct {
 } cuint2048m_T;
 
 #endif                                 /* __RTWTYPES_H__ */
-#endif                                 /* RTW_HEADER_rtwtypes_h_ */

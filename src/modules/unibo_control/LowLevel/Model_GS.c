@@ -5,7 +5,7 @@
  *
  * Model version              : 1.2357
  * Simulink Coder version : 8.3 (R2012b) 20-Jul-2012
- * C source code generated on : Tue Feb 18 19:21:00 2014
+ * C source code generated on : Fri Apr 04 15:10:34 2014
  *
  * Target selection: grt.tlc
  * Note: GRT includes extra infrastructure and instrumentation for prototyping
@@ -245,16 +245,16 @@ static void Model_GS_output(void)
   /* End of MATLAB Function: '<S31>/parser' */
 
   /* DiscreteTransferFcn: '<S34>/Bessel LPF dX' */
-  numAccum = 0.0073431698624741772 * Model_GS_DWork.BesselLPFdX_states[0] +
-    0.0068291888673644215 * Model_GS_DWork.BesselLPFdX_states[1];
+  numAccum = 0.041166186246621314 * Model_GS_DWork.BesselLPFdX_states[0] +
+    0.034330643623440855 * Model_GS_DWork.BesselLPFdX_states[1];
 
   /* DiscreteTransferFcn: '<S34>/Bessel LPF dY' */
-  numAccum_0 = 0.0073431698624741772 * Model_GS_DWork.BesselLPFdY_states[0] +
-    0.0068291888673644215 * Model_GS_DWork.BesselLPFdY_states[1];
+  numAccum_0 = 0.041166186246621314 * Model_GS_DWork.BesselLPFdY_states[0] +
+    0.034330643623440855 * Model_GS_DWork.BesselLPFdY_states[1];
 
   /* DiscreteTransferFcn: '<S34>/Bessel LPF dZ' */
-  numAccum_1 = 0.0073431698624741772 * Model_GS_DWork.BesselLPFdZ_states[0] +
-    0.0068291888673644215 * Model_GS_DWork.BesselLPFdZ_states[1];
+  numAccum_1 = 0.041166186246621314 * Model_GS_DWork.BesselLPFdZ_states[0] +
+    0.034330643623440855 * Model_GS_DWork.BesselLPFdZ_states[1];
 
   /* MATLAB Function: '<S25>/Embedded MATLAB Function' incorporates:
    *  Memory: '<S29>/Memory3'
@@ -1797,22 +1797,22 @@ static void Model_GS_update(void)
   Model_GS_DWork.Memory3_PreviousInput = Model_GS_B.normaP;
 
   /* Update for DiscreteTransferFcn: '<S34>/Bessel LPF dX' */
-  denAccum = (Model_GS_B.dp[0] - -1.7902298110419679 *
-              Model_GS_DWork.BesselLPFdX_states[0]) - 0.80440216977180645 *
+  denAccum = (Model_GS_B.dp[0] - -1.5048439425786611 *
+              Model_GS_DWork.BesselLPFdX_states[0]) - 0.58034077244872317 *
     Model_GS_DWork.BesselLPFdX_states[1];
   Model_GS_DWork.BesselLPFdX_states[1] = Model_GS_DWork.BesselLPFdX_states[0];
   Model_GS_DWork.BesselLPFdX_states[0] = denAccum;
 
   /* Update for DiscreteTransferFcn: '<S34>/Bessel LPF dY' */
-  denAccum = (Model_GS_B.dp[1] - -1.7902298110419679 *
-              Model_GS_DWork.BesselLPFdY_states[0]) - 0.80440216977180645 *
+  denAccum = (Model_GS_B.dp[1] - -1.5048439425786611 *
+              Model_GS_DWork.BesselLPFdY_states[0]) - 0.58034077244872317 *
     Model_GS_DWork.BesselLPFdY_states[1];
   Model_GS_DWork.BesselLPFdY_states[1] = Model_GS_DWork.BesselLPFdY_states[0];
   Model_GS_DWork.BesselLPFdY_states[0] = denAccum;
 
   /* Update for DiscreteTransferFcn: '<S34>/Bessel LPF dZ' */
-  denAccum = (Model_GS_B.dp[2] - -1.7902298110419679 *
-              Model_GS_DWork.BesselLPFdZ_states[0]) - 0.80440216977180645 *
+  denAccum = (Model_GS_B.dp[2] - -1.5048439425786611 *
+              Model_GS_DWork.BesselLPFdZ_states[0]) - 0.58034077244872317 *
     Model_GS_DWork.BesselLPFdZ_states[1];
   Model_GS_DWork.BesselLPFdZ_states[1] = Model_GS_DWork.BesselLPFdZ_states[0];
   Model_GS_DWork.BesselLPFdZ_states[0] = denAccum;
@@ -1827,9 +1827,9 @@ static void Model_GS_update(void)
   Model_GS_DWork.Memory_PreviousInput = Model_GS_B.countNew;
 
   /* Update for DiscreteIntegrator: '<S8>/Discrete-Time Integrator1' */
-  Model_GS_DWork.DiscreteTimeIntegrator1_DSTATE[0] += 0.002 * Model_GS_B.Sum[0];
-  Model_GS_DWork.DiscreteTimeIntegrator1_DSTATE[1] += 0.002 * Model_GS_B.Sum[1];
-  Model_GS_DWork.DiscreteTimeIntegrator1_DSTATE[2] += 0.002 * Model_GS_B.Sum[2];
+  Model_GS_DWork.DiscreteTimeIntegrator1_DSTATE[0] += 0.005 * Model_GS_B.Sum[0];
+  Model_GS_DWork.DiscreteTimeIntegrator1_DSTATE[1] += 0.005 * Model_GS_B.Sum[1];
+  Model_GS_DWork.DiscreteTimeIntegrator1_DSTATE[2] += 0.005 * Model_GS_B.Sum[2];
   if (Model_GS_B.DataTypeConversion3) {
     Model_GS_DWork.DiscreteTimeIntegrator1_PrevRes = 1;
   } else {
@@ -1861,14 +1861,14 @@ static void Model_GS_update(void)
   Model_GS_DWork.Memory2_PreviousInput_k[2] = Model_GS_B.dp[2];
 
   /* Update for DiscreteIntegrator: '<S36>/x1hat' */
-  Model_GS_DWork.x1hat_DSTATE[0] += 0.002F * Model_GS_B.dx1hat[0];
-  Model_GS_DWork.x1hat_DSTATE[1] += 0.002F * Model_GS_B.dx1hat[1];
-  Model_GS_DWork.x1hat_DSTATE[2] += 0.002F * Model_GS_B.dx1hat[2];
+  Model_GS_DWork.x1hat_DSTATE[0] += 0.005F * Model_GS_B.dx1hat[0];
+  Model_GS_DWork.x1hat_DSTATE[1] += 0.005F * Model_GS_B.dx1hat[1];
+  Model_GS_DWork.x1hat_DSTATE[2] += 0.005F * Model_GS_B.dx1hat[2];
 
   /* Update for DiscreteIntegrator: '<S36>/x2hat' */
-  Model_GS_DWork.x2hat_DSTATE[0] += 0.002F * Model_GS_B.dx2hat[0];
-  Model_GS_DWork.x2hat_DSTATE[1] += 0.002F * Model_GS_B.dx2hat[1];
-  Model_GS_DWork.x2hat_DSTATE[2] += 0.002F * Model_GS_B.dx2hat[2];
+  Model_GS_DWork.x2hat_DSTATE[0] += 0.005F * Model_GS_B.dx2hat[0];
+  Model_GS_DWork.x2hat_DSTATE[1] += 0.005F * Model_GS_B.dx2hat[1];
+  Model_GS_DWork.x2hat_DSTATE[2] += 0.005F * Model_GS_B.dx2hat[2];
 
   /* Update absolute time for base rate */
   /* The "clockTick0" counts the number of times the code of this task has
@@ -2037,7 +2037,7 @@ RT_MODEL_Model_GS *Model_GS(void)
     Model_GS_M->Timing.offsetTimes = (&Model_GS_M->Timing.offsetTimesArray[0]);
 
     /* task periods */
-    Model_GS_M->Timing.sampleTimes[0] = (0.002);
+    Model_GS_M->Timing.sampleTimes[0] = (0.005);
 
     /* task offsets */
     Model_GS_M->Timing.offsetTimes[0] = (0.0);
@@ -2052,10 +2052,10 @@ RT_MODEL_Model_GS *Model_GS(void)
   }
 
   rtmSetTFinal(Model_GS_M, -1);
-  Model_GS_M->Timing.stepSize0 = 0.002;
+  Model_GS_M->Timing.stepSize0 = 0.005;
   Model_GS_M->solverInfoPtr = (&Model_GS_M->solverInfo);
-  Model_GS_M->Timing.stepSize = (0.002);
-  rtsiSetFixedStepSize(&Model_GS_M->solverInfo, 0.002);
+  Model_GS_M->Timing.stepSize = (0.005);
+  rtsiSetFixedStepSize(&Model_GS_M->solverInfo, 0.005);
   rtsiSetSolverMode(&Model_GS_M->solverInfo, SOLVER_MODE_SINGLETASKING);
 
   /* block I/O */

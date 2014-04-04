@@ -5,7 +5,7 @@
  *
  * Model version              : 1.2357
  * Simulink Coder version : 8.3 (R2012b) 20-Jul-2012
- * C source code generated on : Tue Feb 18 19:21:00 2014
+ * C source code generated on : Fri Apr 04 15:10:34 2014
  *
  * Target selection: grt.tlc
  * Note: GRT includes extra infrastructure and instrumentation for prototyping
@@ -19,8 +19,8 @@
 # define Model_GS_COMMON_INCLUDES_
 #include <math.h>
 #include <string.h>
-#include <rtwtypes.h>
-#include <simstruc.h>
+#include "rtwtypes.h"
+#include "simstruc.h"
 #include "fixedpoint.h"
 #include "rt_defines.h"
 #include "rt_nonfinite.h"

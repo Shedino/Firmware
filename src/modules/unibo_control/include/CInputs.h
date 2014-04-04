@@ -15,11 +15,12 @@
 #endif
 
 struct cInputs_struct{
-		uint16_T* u;
 		uint16_T header1;
 		uint16_T header2;
 		uint16_T len;
 		uint16_T type;
+
+		uint16_T u[4];
 
 		uint16_T tstamp;
 		uint16_T crc;

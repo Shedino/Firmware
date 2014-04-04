@@ -18,7 +18,6 @@
 
 void initCInputs(cInputs_s* obj)
 {
-	obj->u = (uint16_T*)malloc(4*sizeof(uint16_T));
 	obj->header1 = -1;
 	obj->header2 = -1;
 	obj->len = -1;
@@ -34,17 +33,18 @@ void initCInputs(cInputs_s* obj)
 
 void CInputs_readCInputs(cInputs_s* obj)
 {
-	obj->header1 = ((Model_GS_Y.CINPUTS[0] >> 8) &0x00FF) | ((Model_GS_Y.CINPUTS[0] << 8) &0xFF00);
-	obj->header2 = ((Model_GS_Y.CINPUTS[1] >> 8) &0x00FF) | ((Model_GS_Y.CINPUTS[1] << 8) &0xFF00);
-	obj->len = ((Model_GS_Y.CINPUTS[2] >> 8) &0x00FF) | ((Model_GS_Y.CINPUTS[2] << 8) &0xFF00);
-	obj->type = ((Model_GS_Y.CINPUTS[3] >> 8) &0x00FF) | ((Model_GS_Y.CINPUTS[3] << 8) &0xFF00);
-	obj->u[0] = ((Model_GS_Y.CINPUTS[4] >> 8) &0x00FF) | ((Model_GS_Y.CINPUTS[4] << 8) &0xFF00);
-	obj->u[1] = ((Model_GS_Y.CINPUTS[5] >> 8) &0x00FF) | ((Model_GS_Y.CINPUTS[5] << 8) &0xFF00);
-	obj->u[2] = ((Model_GS_Y.CINPUTS[6] >> 8) &0x00FF) | ((Model_GS_Y.CINPUTS[6] << 8) &0xFF00);
-	obj->u[3] =((Model_GS_Y.CINPUTS[7] >> 8) &0x00FF) | ((Model_GS_Y.CINPUTS[7] << 8) &0xFF00);
-	obj->tstamp = ((Model_GS_Y.CINPUTS[8] >> 8) &0x00FF) | ((Model_GS_Y.CINPUTS[8] << 8) &0xFF00);
-	obj->crc = ((Model_GS_Y.CINPUTS[9] >> 8) &0x00FF) | ((Model_GS_Y.CINPUTS[9] << 8) &0xFF00);
-	obj->footer = ((Model_GS_Y.CINPUTS[10] >> 8) &0x00FF) | ((Model_GS_Y.CINPUTS[10] << 8) &0xFF00);
+	obj->header1 = Model_GS_Y.CINPUTS[0]; //((Model_GS_Y.CINPUTS[0] >> 8) &0x00FF) | ((Model_GS_Y.CINPUTS[0] << 8) &0xFF00);
+	obj->header2 = Model_GS_Y.CINPUTS[1]; //((Model_GS_Y.CINPUTS[1] >> 8) &0x00FF) | ((Model_GS_Y.CINPUTS[1] << 8) &0xFF00);
+	obj->len = Model_GS_Y.CINPUTS[2]; //((Model_GS_Y.CINPUTS[2] >> 8) &0x00FF) | ((Model_GS_Y.CINPUTS[2] << 8) &0xFF00);
+	obj->type = Model_GS_Y.CINPUTS[3]; //((Model_GS_Y.CINPUTS[3] >> 8) &0x00FF) | ((Model_GS_Y.CINPUTS[3] << 8) &0xFF00);
+	obj->u[0] = Model_GS_Y.CINPUTS[4]; //((Model_GS_Y.CINPUTS[4] >> 8) &0x00FF) | ((Model_GS_Y.CINPUTS[4] << 8) &0xFF00);
+	obj->u[1] = Model_GS_Y.CINPUTS[5]; //((Model_GS_Y.CINPUTS[5] >> 8) &0x00FF) | ((Model_GS_Y.CINPUTS[5] << 8) &0xFF00);
+	obj->u[2] = Model_GS_Y.CINPUTS[6]; //((Model_GS_Y.CINPUTS[6] >> 8) &0x00FF) | ((Model_GS_Y.CINPUTS[6] << 8) &0xFF00);
+	obj->u[3] = Model_GS_Y.CINPUTS[7]; //((Model_GS_Y.CINPUTS[7] >> 8) &0x00FF) | ((Model_GS_Y.CINPUTS[7] << 8) &0xFF00);
+	obj->tstamp = Model_GS_Y.CINPUTS[8]; //((Model_GS_Y.CINPUTS[8] >> 8) &0x00FF) | ((Model_GS_Y.CINPUTS[8] << 8) &0xFF00);
+	obj->crc = Model_GS_Y.CINPUTS[9]; //((Model_GS_Y.CINPUTS[9] >> 8) &0x00FF) | ((Model_GS_Y.CINPUTS[9] << 8) &0xFF00);
+	obj->footer = Model_GS_Y.CINPUTS[10]; //((Model_GS_Y.CINPUTS[10] >> 8) &0x00FF) | ((Model_GS_Y.CINPUTS[10] << 8) &0xFF00);
+	//warnx("READ CINPUTS: %d %d",Model_GS_Y.CINPUTS[4], Model_GS_Y.CINPUTS[7]);
 }
 
 	//u
@@ -73,12 +73,6 @@ void CInputs_readCInputs(cInputs_s* obj)
 		obj->u[3] = u3;
 	}
 
-	uint16_T* CInputs_getU(cInputs_s* obj) {
-		return obj->u;
-	}
-	void CInputs_setU(cInputs_s* obj, uint16_T* u){
-		obj->u = u;
-	}
 
 	char* CInputs_toString(cInputs_s* obj) {
 
