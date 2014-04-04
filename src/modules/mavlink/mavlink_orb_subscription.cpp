@@ -88,7 +88,6 @@ MavlinkOrbSubscription::update(const hrt_abstime t)
 
 		if (_updated) {
 			orb_copy(_topic, _fd, _data);
-			_published = true;
 			return true;
 		}
 	}

@@ -47,7 +47,8 @@
  * @{
  */
 
-struct vehicle_global_velocity_setpoint_s {
+struct vehicle_global_velocity_setpoint_s
+{
 	float vx;		/**< in m/s NED			  		*/
 	float vy;		/**< in m/s NED			  		*/
 	float vz;		/**< in m/s NED			  		*/

@@ -44,7 +44,6 @@ class Parameter(object):
         "default": 6,
         "min": 5,
         "max": 4,
-        "unit": 3,
         # all others == 0 (sorted alphabetically)
     }
 
@@ -72,7 +71,7 @@ class Parameter(object):
         """
         return self.fields.get(code)
 
-class SourceParser(object):
+class Parser(object):
     """
     Parses provided data and stores all found parameters internally.
     """
@@ -87,7 +86,7 @@ class SourceParser(object):
     re_is_a_number = re.compile(r'^-?[0-9\.]')
     re_remove_dots = re.compile(r'\.+$')
 
-    valid_tags = set(["group", "min", "max", "unit"])
+    valid_tags = set(["min", "max", "group"])
 
     # Order of parameter groups
     priority = {

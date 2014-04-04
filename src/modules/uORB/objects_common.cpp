@@ -194,9 +194,6 @@ ORB_DEFINE(esc_status, struct esc_status_s);
 #include "topics/encoders.h"
 ORB_DEFINE(encoders, struct encoders_s);
 
-#include "topics/estimator_status.h"
-ORB_DEFINE(estimator_status, struct estimator_status_report);
-
 //Custom topics
 #include "topics/motor_output.h"
 ORB_DEFINE(motor_output, struct motor_output_s);

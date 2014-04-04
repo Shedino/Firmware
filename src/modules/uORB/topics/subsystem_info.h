@@ -50,7 +50,8 @@
 #include <stdbool.h>
 #include "../uORB.h"
 
-enum SUBSYSTEM_TYPE {
+enum SUBSYSTEM_TYPE
+{
 	SUBSYSTEM_TYPE_GYRO = 1,
 	SUBSYSTEM_TYPE_ACC = 2,
 	SUBSYSTEM_TYPE_MAG = 4,

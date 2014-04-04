@@ -112,18 +112,18 @@ unsigned long int getMyTime()
 
 void scale_cinputs_to_px4pwm(struct motor_output_s* px4_output, cInputs_s* cinputs)
 {
-	float pwm_min = 1100;
+	float pwm_min = 1000;
 	float pwm_size = 1000;
 	float cinputs_size = 1000;
 	// variabili temporanee piu' grandi per evitare calcoli errati da overflow
-	float servo1_scaled = ((float)CInputs_getU0(cinputs) * (pwm_size / cinputs_size)) + pwm_min;
-	float servo2_scaled = ((float)CInputs_getU1(cinputs) * (pwm_size / cinputs_size)) + pwm_min;
-	float servo3_scaled = ((float)CInputs_getU2(cinputs) * (pwm_size / cinputs_size)) + pwm_min;
-	float servo4_scaled = ((float)CInputs_getU3(cinputs) * (pwm_size / cinputs_size)) + pwm_min;
-	float servo5_scaled = ((float)CInputs_getU0(cinputs) * (pwm_size / cinputs_size)) + pwm_min; //pwm_min; //(cinputs.getU4() * pwm_size / cinputs_size) + pwm_min;
-	float servo6_scaled = ((float)CInputs_getU1(cinputs) * (pwm_size / cinputs_size)) + pwm_min; //pwm_min; //(cinputs.getU5() * pwm_size / cinputs_size) + pwm_min;
-	float servo7_scaled = ((float)CInputs_getU2(cinputs) * (pwm_size / cinputs_size)) + pwm_min; //pwm_min; //(cinputs.getU6() * pwm_size / cinputs_size) + pwm_min;
-	float servo8_scaled = ((float)CInputs_getU3(cinputs) * (pwm_size / cinputs_size)) + pwm_min; //pwm_min; //(cinputs.getU7() * pwm_size / cinputs_size) + pwm_min;
+	uint16_T servo1_scaled = (CInputs_getU0(cinputs) * (pwm_size / cinputs_size)) + pwm_min;
+	uint16_T servo2_scaled = (CInputs_getU1(cinputs) * (pwm_size / cinputs_size)) + pwm_min;
+	uint16_T servo3_scaled = (CInputs_getU2(cinputs) * (pwm_size / cinputs_size)) + pwm_min;
+	uint16_T servo4_scaled = (CInputs_getU3(cinputs) * (pwm_size / cinputs_size)) + pwm_min;
+	uint16_T servo5_scaled = (CInputs_getU0(cinputs) * (pwm_size / cinputs_size)) + pwm_min; //pwm_min; //(cinputs.getU4() * pwm_size / cinputs_size) + pwm_min;
+	uint16_T servo6_scaled = (CInputs_getU1(cinputs) * (pwm_size / cinputs_size)) + pwm_min; //pwm_min; //(cinputs.getU5() * pwm_size / cinputs_size) + pwm_min;
+	uint16_T servo7_scaled = (CInputs_getU2(cinputs) * (pwm_size / cinputs_size)) + pwm_min; //pwm_min; //(cinputs.getU6() * pwm_size / cinputs_size) + pwm_min;
+	uint16_T servo8_scaled = (CInputs_getU3(cinputs) * (pwm_size / cinputs_size)) + pwm_min; //pwm_min; //(cinputs.getU7() * pwm_size / cinputs_size) + pwm_min;
 
 	//px4_output->port = 0; // non usato
 	//px4_output->time_usec = 0; // non usato

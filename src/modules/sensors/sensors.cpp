@@ -36,8 +36,6 @@
  * Sensor readout process.
  *
  * @author Lorenz Meier <lm@inf.ethz.ch>
- * @author Julian Oes <joes@student.ethz.ch>
- * @author Thomas Gubler <thomasgubler@student.ethz.ch>
  */
 
 #include <nuttx/config.h>
@@ -1031,14 +1029,11 @@ Sensors::diff_pres_poll(struct sensor_combined_s &raw)
 
 		raw.differential_pressure_pa = _diff_pres.differential_pressure_pa;
 		raw.differential_pressure_timestamp = _diff_pres.timestamp;
-		raw.differential_pressure_filtered_pa = _diff_pres.differential_pressure_filtered_pa;
 
-		float air_temperature_celcius = (_diff_pres.temperature > -300.0f) ? _diff_pres.temperature : (raw.baro_temp_celcius - PCB_TEMP_ESTIMATE_DEG);
-
-		_airspeed.timestamp = _diff_pres.timestamp;
-		_airspeed.indicated_airspeed_m_s = calc_indicated_airspeed(_diff_pres.differential_pressure_filtered_pa);
-		_airspeed.true_airspeed_m_s = calc_true_airspeed(_diff_pres.differential_pressure_filtered_pa + raw.baro_pres_mbar * 1e2f,
-					      raw.baro_pres_mbar * 1e2f, air_temperature_celcius);
+		_airspeed.timestamp = hrt_absolute_time();
+		_airspeed.indicated_airspeed_m_s = calc_indicated_airspeed(_diff_pres.differential_pressure_pa);
+		_airspeed.true_airspeed_m_s = calc_true_airspeed(_diff_pres.differential_pressure_pa + raw.baro_pres_mbar * 1e2f,
+					      raw.baro_pres_mbar * 1e2f, raw.baro_temp_celcius - PCB_TEMP_ESTIMATE_DEG);
 
 		/* announce the airspeed if needed, just publish else */
 		if (_airspeed_pub > 0) {
@@ -1175,19 +1170,16 @@ Sensors::adc_poll(struct sensor_combined_s &raw)
 	hrt_abstime t = hrt_absolute_time();
 	/* rate limit to 100 Hz */
 	if (t - _last_adc >= 10000) {
-		/* make space for a maximum of twelve channels (to ensure reading all channels at once) */
-		struct adc_msg_s buf_adc[12];
+		/* make space for a maximum of eight channels */
+		struct adc_msg_s buf_adc[8];
 		/* read all channels available */
 		int ret = read(_fd_adc, &buf_adc, sizeof(buf_adc));
 
 		if (ret >= (int)sizeof(buf_adc[0])) {
-
-			/* Read add channels we got */
-			for (unsigned i = 0; i < ret / sizeof(buf_adc[0]); i++) {
+			for (unsigned i = 0; i < sizeof(buf_adc) / sizeof(buf_adc[0]); i++) {
 				/* Save raw voltage values */
-				if (i < (sizeof(raw.adc_voltage_v) / sizeof(raw.adc_voltage_v[0]))) {
+				if (i < (sizeof(raw.adc_voltage_v)) / sizeof(raw.adc_voltage_v[0])) {
 					raw.adc_voltage_v[i] = buf_adc[i].am_data / (4096.0f / 3.3f);
-					raw.adc_mapping[i] = buf_adc[i].am_channel;
 				}
 
 				/* look for specific channels and process the raw voltage to measurement data */
@@ -1246,8 +1238,6 @@ Sensors::adc_poll(struct sensor_combined_s &raw)
 
 						_diff_pres.timestamp = t;
 						_diff_pres.differential_pressure_pa = diff_pres_pa;
-						_diff_pres.differential_pressure_filtered_pa = diff_pres_pa;
-						_diff_pres.temperature = -1000.0f;
 						_diff_pres.voltage = voltage;
 
 						/* announce the airspeed if needed, just publish else */
@@ -1518,9 +1508,6 @@ void
 Sensors::task_main()
 {
 
-	/* inform about start */
-	warnx("Initializing..");
-
 	/* start individual sensors */
 	accel_init();
 	gyro_init();
@@ -1664,17 +1651,17 @@ int sensors_main(int argc, char *argv[])
 	if (!strcmp(argv[1], "start")) {
 
 		if (sensors::g_sensors != nullptr)
-			errx(0, "sensors task already running");
+			errx(0, "already running");
 
 		sensors::g_sensors = new Sensors;
 
 		if (sensors::g_sensors == nullptr)
-			errx(1, "sensors task alloc failed");
+			errx(1, "alloc failed");
 
 		if (OK != sensors::g_sensors->start()) {
 			delete sensors::g_sensors;
 			sensors::g_sensors = nullptr;
-			err(1, "sensors task start failed");
+			err(1, "start failed");
 		}
 
 		exit(0);
@@ -1682,7 +1669,7 @@ int sensors_main(int argc, char *argv[])
 
 	if (!strcmp(argv[1], "stop")) {
 		if (sensors::g_sensors == nullptr)
-			errx(1, "sensors task not running");
+			errx(1, "not running");
 
 		delete sensors::g_sensors;
 		sensors::g_sensors = nullptr;
@@ -1691,10 +1678,10 @@ int sensors_main(int argc, char *argv[])
 
 	if (!strcmp(argv[1], "status")) {
 		if (sensors::g_sensors) {
-			errx(0, "task is running");
+			errx(0, "is running");
 
 		} else {
-			errx(1, "task is not running");
+			errx(1, "not running");
 		}
 	}
 
