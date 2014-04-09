@@ -580,9 +580,9 @@ int attitude_estimator_so3_thread_main(int argc, char *argv[])
 //										so3_comp_params.Ki,
 //										dt);
 
-					NonlinearSO3AHRSupdate(gyro[0],-gyro[1],-gyro[2],
-										   -acc[0],acc[1],acc[2],
-															mag[0], -mag[1], -mag[2],
+					NonlinearSO3AHRSupdate(-gyro[0],gyro[1],-gyro[2],          //UNIBO
+										   acc[0],-acc[1],acc[2],
+															-mag[0], mag[1], -mag[2],
 															so3_comp_params.Kp,
 															so3_comp_params.Ki,
 															dt);
