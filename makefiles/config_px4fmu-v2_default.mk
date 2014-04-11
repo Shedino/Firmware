@@ -129,6 +129,9 @@ MODULES		+= modules/unibo_filtertest
 MODULES		+= modules/unibo_uart
 MODULES		+= modules/unibo_motor_output
 MODULES		+= modules/unibo_control
+#MODULES		+= modules/unibo_ECF_standard
+MODULES		+= modules/unibo_att_esti_ECF_s
+MODULES		+= modules/unibo_att_esti_ECF_c
 #-----------
 
 #

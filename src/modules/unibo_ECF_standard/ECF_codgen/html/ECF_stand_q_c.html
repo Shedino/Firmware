@@ -1,0 +1,844 @@
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<title>RTW Report - ECF_stand_q.c</title>
+<style> .LN { font-style: italic; color: #888888 } </style>
+<style> .CT { font-style: italic; color: #117755 } </style>
+<style> .PP { font-style: bold;   color: #992211 } </style>
+<style> .KW { font-style: bold;   color: #112266 } </style>
+<style> .DT { font-style: bold;   color: #112266 } </style>
+<link rel="stylesheet" type="text/css" href="rtwreport.css"></link><script language="JavaScript" type="text/javascript" src="rtwreport_utils.js"></script>
+<SCRIPT type="text/javascript" src="rtwannotate.js"></SCRIPT>
+</head>
+<body bgcolor="#eeeeee" text="#1122aa" onload="try {if (top) { if (top.rtwFileOnLoad) top.rtwFileOnLoad(window.document); else local_onload();}} catch(err) {};if (typeof rtwannotate === 'function') {rtwannotate('ECF_stand_q_c_cov.xml');}">
+<p>
+<table border="0" cellspacing="0" cellpadding="6" width="100%%" height="100%%"><tr><td width="100%%" valign="top" bgcolor="#ffffff">
+<h4>File: <a href="../ECF_stand_q.c" target="rtwreport_document_frame" id="linkToText_plain">ECF_stand_q.c</a></h4>
+<pre id="RTWcode">
+<span><a class="LN" name="1">    1   </a><span class="CT">/*</span>
+</span><span><a class="LN" name="2">    2   </a><span class="CT"> * ECF_stand_q.c</span>
+</span><span><a class="LN" name="3">    3   </a><span class="CT"> *</span>
+</span><span><a class="LN" name="4">    4   </a><span class="CT"> * Code generation for model "ECF_stand_q".</span>
+</span><span><a class="LN" name="5">    5   </a><span class="CT"> *</span>
+</span><span><a class="LN" name="6">    6   </a><span class="CT"> * Model version              : 1.111</span>
+</span><span><a class="LN" name="7">    7   </a><span class="CT"> * Simulink Coder version : 8.5 (R2013b) 08-Aug-2013</span>
+</span><span><a class="LN" name="8">    8   </a><span class="CT"> * C source code generated on : Thu Apr 03 08:52:35 2014</span>
+</span><span><a class="LN" name="9">    9   </a><span class="CT"> *</span>
+</span><span><a class="LN" name="10">   10   </a><span class="CT"> * Target selection: grt.tlc</span>
+</span><span><a class="LN" name="11">   11   </a><span class="CT"> * Note: GRT includes extra infrastructure and instrumentation for prototyping</span>
+</span><span><a class="LN" name="12">   12   </a><span class="CT"> * Embedded hardware selection: 32-bit Generic</span>
+</span><span><a class="LN" name="13">   13   </a><span class="CT"> * Code generation objectives: Unspecified</span>
+</span><span><a class="LN" name="14">   14   </a><span class="CT"> * Validation result: Not run</span>
+</span><span><a class="LN" name="15">   15   </a><span class="CT"> */</span>
+</span><span><a class="LN" name="16">   16   </a><font color="#992211">#</font><span class="PP">include</span> <font color="#992211">&quot;ECF_stand_q.h&quot;</font>
+</span><span><a class="LN" name="17">   17   </a><font color="#992211">#</font><span class="PP">include</span> <font color="#992211">&quot;ECF_stand_q_private.h&quot;</font>
+</span><span><a class="LN" name="18">   18   </a>
+</span><span><a class="LN" name="19">   19   </a><span class="CT">/* Block signals (auto storage) */</span>
+</span><span><a class="LN" name="20">   20   </a><a href="ECF_stand_q_h.html#type_B_ECF_stand_q_T" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'type_B_ECF_stand_q_T');" target="rtwreport_document_frame"><font color="#1122aa">B_ECF_stand_q_T</font></a> <a name="var_ECF_stand_q_B">ECF_stand_q_B</a>;
+</span><span><a class="LN" name="21">   21   </a>
+</span><span><a class="LN" name="22">   22   </a><span class="CT">/* Block states (auto storage) */</span>
+</span><span><a class="LN" name="23">   23   </a><a href="ECF_stand_q_h.html#type_DW_ECF_stand_q_T" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'type_DW_ECF_stand_q_T');" target="rtwreport_document_frame"><font color="#1122aa">DW_ECF_stand_q_T</font></a> <a name="var_ECF_stand_q_DW">ECF_stand_q_DW</a>;
+</span><span><a class="LN" name="24">   24   </a>
+</span><span><a class="LN" name="25">   25   </a><span class="CT">/* External inputs (root inport signals with auto storage) */</span>
+</span><span><a class="LN" name="26">   26   </a><a href="ECF_stand_q_h.html#type_ExtU_ECF_stand_q_T" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'type_ExtU_ECF_stand_q_T');" target="rtwreport_document_frame"><font color="#1122aa">ExtU_ECF_stand_q_T</font></a> <a name="var_ECF_stand_q_U">ECF_stand_q_U</a>;
+</span><span><a class="LN" name="27">   27   </a>
+</span><span><a class="LN" name="28">   28   </a><span class="CT">/* External outputs (root outports fed by signals with auto storage) */</span>
+</span><span><a class="LN" name="29">   29   </a><a href="ECF_stand_q_h.html#type_ExtY_ECF_stand_q_T" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'type_ExtY_ECF_stand_q_T');" target="rtwreport_document_frame"><font color="#1122aa">ExtY_ECF_stand_q_T</font></a> <a name="var_ECF_stand_q_Y">ECF_stand_q_Y</a>;
+</span><span><a class="LN" name="30">   30   </a>
+</span><span><a class="LN" name="31">   31   </a><span class="CT">/* Real-time model */</span>
+</span><span><a class="LN" name="32">   32   </a><a href="ECF_stand_q_types_h.html#type_RT_MODEL_ECF_stand_q_T" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'type_RT_MODEL_ECF_stand_q_T');" target="rtwreport_document_frame"><font color="#1122aa">RT_MODEL_ECF_stand_q_T</font></a> <a name="var_ECF_stand_q_M_">ECF_stand_q_M_</a>;
+</span><span><a class="LN" name="33">   33   </a><a href="ECF_stand_q_types_h.html#type_RT_MODEL_ECF_stand_q_T" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'type_RT_MODEL_ECF_stand_q_T');" target="rtwreport_document_frame"><font color="#1122aa">RT_MODEL_ECF_stand_q_T</font></a> *<span class="DT">const</span> <a name="var_ECF_stand_q_M">ECF_stand_q_M</a> = &amp;<a href="#var_ECF_stand_q_M_" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_M_');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_M_</font></a>;
+</span><span><a class="LN" name="34">   34   </a><span class="DT">static</span> <span class="DT">void</span> <a href="#fcn_rate_monotonic_scheduler" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'fcn_rate_monotonic_scheduler');" target="rtwreport_document_frame"><font color="#1122aa">rate_monotonic_scheduler</font></a>(<span class="DT">void</span>);
+</span><span><a class="LN" name="35">   35   </a>time_T <a name="fcn_rt_SimUpdateDiscreteEvents">rt_SimUpdateDiscreteEvents</a>(
+</span><span><a class="LN" name="36">   36   </a>  int_T rtmNumSampTimes, <span class="DT">void</span> *rtmTimingData, int_T *rtmSampleHitPtr, int_T
+</span><span><a class="LN" name="37">   37   </a>  *rtmPerTaskSampleHits )
+</span><span><a class="LN" name="38">   38   </a><b>{</b>
+</span><span><a class="LN" name="39">   39   </a>  rtmSampleHitPtr[1] = rtmStepTask(<a href="#var_ECF_stand_q_M" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_M');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_M</font></a>, 1);
+</span><span><a class="LN" name="40">   40   </a>  UNUSED_PARAMETER(rtmNumSampTimes);
+</span><span><a class="LN" name="41">   41   </a>  UNUSED_PARAMETER(rtmTimingData);
+</span><span><a class="LN" name="42">   42   </a>  UNUSED_PARAMETER(rtmPerTaskSampleHits);
+</span><span><a class="LN" name="43">   43   </a>  <span class="KW">return</span>(-1);
+</span><span><a class="LN" name="44">   44   </a><b>}</b>
+</span><span><a class="LN" name="45">   45   </a>
+</span><span><a class="LN" name="46">   46   </a><span class="CT">/*</span>
+</span><span><a class="LN" name="47">   47   </a><span class="CT"> *   This function updates active task flag for each subrate</span>
+</span><span><a class="LN" name="48">   48   </a><span class="CT"> * and rate transition flags for tasks that exchange data.</span>
+</span><span><a class="LN" name="49">   49   </a><span class="CT"> * The function assumes rate-monotonic multitasking scheduler.</span>
+</span><span><a class="LN" name="50">   50   </a><span class="CT"> * The function must be called at model base rate so that</span>
+</span><span><a class="LN" name="51">   51   </a><span class="CT"> * the generated code self-manages all its subrates and rate</span>
+</span><span><a class="LN" name="52">   52   </a><span class="CT"> * transition flags.</span>
+</span><span><a class="LN" name="53">   53   </a><span class="CT"> */</span>
+</span><span><a class="LN" name="54">   54   </a><span class="DT">static</span> <span class="DT">void</span> <a name="fcn_rate_monotonic_scheduler">rate_monotonic_scheduler</a>(<span class="DT">void</span>)
+</span><span><a class="LN" name="55">   55   </a><b>{</b>
+</span><span><a class="LN" name="56">   56   </a>  <span class="CT">/* Compute which subrates run during the next base time step.  Subrates</span>
+</span><span><a class="LN" name="57">   57   </a><span class="CT">   * are an integer multiple of the base rate counter.  Therefore, the subtask</span>
+</span><span><a class="LN" name="58">   58   </a><span class="CT">   * counter is reset when it reaches its limit (zero means run).</span>
+</span><span><a class="LN" name="59">   59   </a><span class="CT">   */</span>
+</span><span><a class="LN" name="60">   60   </a>  (<a href="#var_ECF_stand_q_M" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_M');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_M</font></a>-&gt;Timing.TaskCounters.TID[1])++;
+</span><span><a class="LN" name="61">   61   </a>  <span class="KW">if</span> ((<a href="#var_ECF_stand_q_M" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_M');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_M</font></a>-&gt;Timing.TaskCounters.TID[1]) &gt; 1) <b>{</b><span class="CT">/* Sample time: [0.02s, 0.0s] */</span>
+</span><span><a class="LN" name="62">   62   </a>    <a href="#var_ECF_stand_q_M" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_M');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_M</font></a>-&gt;Timing.TaskCounters.TID[1] = 0;
+</span><span><a class="LN" name="63">   63   </a>  <b>}</b>
+</span><span><a class="LN" name="64">   64   </a><b>}</b>
+</span><span><a class="LN" name="65">   65   </a>
+</span><span><a class="LN" name="66">   66   </a><span class="CT">/*</span>
+</span><span><a class="LN" name="67">   67   </a><span class="CT"> * Output and update for atomic system:</span>
+</span><span><a class="LN" name="68">   68   </a><span class="CT"> *    '&lt;Root&gt;/inv_q'</span>
+</span><span><a class="LN" name="69">   69   </a><span class="CT"> *    '&lt;S8&gt;/MATLAB Function'</span>
+</span><span><a class="LN" name="70">   70   </a><span class="CT"> */</span>
+</span><span><a class="LN" name="71">   71   </a><span class="DT">void</span> <a name="fcn_ECF_stand_q_inv_q">ECF_stand_q_inv_q</a>(<span class="DT">const</span> real_T rtu_q[4], <a href="ECF_stand_q_h.html#type_B_inv_q_ECF_stand_q_T" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'type_B_inv_q_ECF_stand_q_T');" target="rtwreport_document_frame"><font color="#1122aa">B_inv_q_ECF_stand_q_T</font></a> *localB)
+</span><span><a class="LN" name="72">   72   </a><b>{</b>
+</span><span><a class="LN" name="73">   73   </a>  <span class="CT">/* MATLAB Function 'inv_q': '&lt;S4&gt;:1' */</span>
+</span><span><a class="LN" name="74">   74   </a>  <span class="CT">/* # invq return the inverse of unit quaternion   */</span>
+</span><span><a class="LN" name="75">   75   </a>  <span class="CT">/* '&lt;S4&gt;:1:6' */</span>
+</span><span><a class="LN" name="76">   76   </a>  localB-&gt;inv_q[0] = rtu_q[0];
+</span><span><a class="LN" name="77">   77   </a>  localB-&gt;inv_q[1] = -rtu_q[1];
+</span><span><a class="LN" name="78">   78   </a>  localB-&gt;inv_q[2] = -rtu_q[2];
+</span><span><a class="LN" name="79">   79   </a>  localB-&gt;inv_q[3] = -rtu_q[3];
+</span><span><a class="LN" name="80">   80   </a><b>}</b>
+</span><span><a class="LN" name="81">   81   </a>
+</span><span><a class="LN" name="82">   82   </a><span class="CT">/*</span>
+</span><span><a class="LN" name="83">   83   </a><span class="CT"> * Output and update for atomic system:</span>
+</span><span><a class="LN" name="84">   84   </a><span class="CT"> *    '&lt;S8&gt;/MATLAB Function1'</span>
+</span><span><a class="LN" name="85">   85   </a><span class="CT"> *    '&lt;S8&gt;/MATLAB Function2'</span>
+</span><span><a class="LN" name="86">   86   </a><span class="CT"> */</span>
+</span><span><a class="LN" name="87">   87   </a><span class="DT">void</span> <a name="fcn_ECF_stand_q_MATLABFunction1">ECF_stand_q_MATLABFunction1</a>(<span class="DT">const</span> real_T rtu_q1[4], <span class="DT">const</span> real_T rtu_q2[4],
+</span><span><a class="LN" name="88">   88   </a>  <a href="ECF_stand_q_h.html#type_B_MATLABFunction1_ECF_stand_q_T" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'type_B_MATLABFunction1_ECF_stand_q_T');" target="rtwreport_document_frame"><font color="#1122aa">B_MATLABFunction1_ECF_stand_q_T</font></a> *localB)
+</span><span><a class="LN" name="89">   89   </a><b>{</b>
+</span><span><a class="LN" name="90">   90   </a>  <span class="CT">/* MATLAB Function 'vectors_error/MATLAB Function1': '&lt;S13&gt;:1' */</span>
+</span><span><a class="LN" name="91">   91   </a>  <span class="CT">/* quatmultiply(q1,q2) calculates the quaternion product, n, for two given */</span>
+</span><span><a class="LN" name="92">   92   </a>  <span class="CT">/* quaternions, q1 and q2; */</span>
+</span><span><a class="LN" name="93">   93   </a>  <span class="CT">/* '&lt;S13&gt;:1:8' */</span>
+</span><span><a class="LN" name="94">   94   </a>  <span class="CT">/* '&lt;S13&gt;:1:9' */</span>
+</span><span><a class="LN" name="95">   95   </a>  <span class="CT">/* '&lt;S13&gt;:1:10' */</span>
+</span><span><a class="LN" name="96">   96   </a>  <span class="CT">/* '&lt;S13&gt;:1:11' */</span>
+</span><span><a class="LN" name="97">   97   </a>  <span class="CT">/* '&lt;S13&gt;:1:13' */</span>
+</span><span><a class="LN" name="98">   98   </a>  localB-&gt;n[0] = rtu_q1[0] * rtu_q2[0] - ((rtu_q1[1] * rtu_q2[1] + rtu_q1[2] *
+</span><span><a class="LN" name="99">   99   </a>    rtu_q2[2]) + rtu_q1[3] * rtu_q2[3]);
+</span><span><a class="LN" name="100">  100   </a>  localB-&gt;n[1] = (rtu_q1[0] * rtu_q2[1] + rtu_q2[0] * rtu_q1[1]) + (rtu_q1[2] *
+</span><span><a class="LN" name="101">  101   </a>    rtu_q2[3] - rtu_q1[3] * rtu_q2[2]);
+</span><span><a class="LN" name="102">  102   </a>  localB-&gt;n[2] = (rtu_q1[0] * rtu_q2[2] + rtu_q2[0] * rtu_q1[2]) + (rtu_q1[3] *
+</span><span><a class="LN" name="103">  103   </a>    rtu_q2[1] - rtu_q1[1] * rtu_q2[3]);
+</span><span><a class="LN" name="104">  104   </a>  localB-&gt;n[3] = (rtu_q1[0] * rtu_q2[3] + rtu_q2[0] * rtu_q1[3]) + (rtu_q1[1] *
+</span><span><a class="LN" name="105">  105   </a>    rtu_q2[2] - rtu_q1[2] * rtu_q2[1]);
+</span><span><a class="LN" name="106">  106   </a><b>}</b>
+</span><span><a class="LN" name="107">  107   </a>
+</span><span><a class="LN" name="108">  108   </a><span class="CT">/*</span>
+</span><span><a class="LN" name="109">  109   </a><span class="CT"> * Output and update for atomic system:</span>
+</span><span><a class="LN" name="110">  110   </a><span class="CT"> *    '&lt;S8&gt;/MATLAB Function3'</span>
+</span><span><a class="LN" name="111">  111   </a><span class="CT"> *    '&lt;S8&gt;/MATLAB Function4'</span>
+</span><span><a class="LN" name="112">  112   </a><span class="CT"> */</span>
+</span><span><a class="LN" name="113">  113   </a><span class="DT">void</span> <a name="fcn_ECF_stand_q_MATLABFunction3">ECF_stand_q_MATLABFunction3</a>(<span class="DT">const</span> real_T rtu_q1[4], <span class="DT">const</span> real_T rtu_q2[4],
+</span><span><a class="LN" name="114">  114   </a>  <a href="ECF_stand_q_h.html#type_B_MATLABFunction3_ECF_stand_q_T" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'type_B_MATLABFunction3_ECF_stand_q_T');" target="rtwreport_document_frame"><font color="#1122aa">B_MATLABFunction3_ECF_stand_q_T</font></a> *localB)
+</span><span><a class="LN" name="115">  115   </a><b>{</b>
+</span><span><a class="LN" name="116">  116   </a>  <span class="CT">/* MATLAB Function 'vectors_error/MATLAB Function3': '&lt;S15&gt;:1' */</span>
+</span><span><a class="LN" name="117">  117   </a>  <span class="CT">/* quatmultiply(q1,q2) calculates the quaternion product, n, for two given */</span>
+</span><span><a class="LN" name="118">  118   </a>  <span class="CT">/* quaternions, q1 and q2; */</span>
+</span><span><a class="LN" name="119">  119   </a>  <span class="CT">/* '&lt;S15&gt;:1:8' */</span>
+</span><span><a class="LN" name="120">  120   </a>  <span class="CT">/* '&lt;S15&gt;:1:9' */</span>
+</span><span><a class="LN" name="121">  121   </a>  <span class="CT">/* '&lt;S15&gt;:1:10' */</span>
+</span><span><a class="LN" name="122">  122   </a>  <span class="CT">/* '&lt;S15&gt;:1:11' */</span>
+</span><span><a class="LN" name="123">  123   </a>  <span class="CT">/* '&lt;S15&gt;:1:13' */</span>
+</span><span><a class="LN" name="124">  124   </a>  localB-&gt;n[0] = rtu_q1[0] * rtu_q2[0] - ((rtu_q1[1] * rtu_q2[1] + rtu_q1[2] *
+</span><span><a class="LN" name="125">  125   </a>    rtu_q2[2]) + rtu_q1[3] * rtu_q2[3]);
+</span><span><a class="LN" name="126">  126   </a>  localB-&gt;n[1] = (rtu_q1[0] * rtu_q2[1] + rtu_q2[0] * rtu_q1[1]) + (rtu_q1[2] *
+</span><span><a class="LN" name="127">  127   </a>    rtu_q2[3] - rtu_q1[3] * rtu_q2[2]);
+</span><span><a class="LN" name="128">  128   </a>  localB-&gt;n[2] = (rtu_q1[0] * rtu_q2[2] + rtu_q2[0] * rtu_q1[2]) + (rtu_q1[3] *
+</span><span><a class="LN" name="129">  129   </a>    rtu_q2[1] - rtu_q1[1] * rtu_q2[3]);
+</span><span><a class="LN" name="130">  130   </a>  localB-&gt;n[3] = (rtu_q1[0] * rtu_q2[3] + rtu_q2[0] * rtu_q1[3]) + (rtu_q1[1] *
+</span><span><a class="LN" name="131">  131   </a>    rtu_q2[2] - rtu_q1[2] * rtu_q2[1]);
+</span><span><a class="LN" name="132">  132   </a><b>}</b>
+</span><span><a class="LN" name="133">  133   </a>
+</span><span><a class="LN" name="134">  134   </a>real_T <a name="fcn_rt_atan2d_snf">rt_atan2d_snf</a>(real_T u0, real_T u1)
+</span><span><a class="LN" name="135">  135   </a><b>{</b>
+</span><span><a class="LN" name="136">  136   </a>  real_T y;
+</span><span><a class="LN" name="137">  137   </a>  int32_T u;
+</span><span><a class="LN" name="138">  138   </a>  int32_T u_0;
+</span><span><a class="LN" name="139">  139   </a>  <span class="KW">if</span> (<a href="rt_nonfinite_c.html#fcn_rtIsNaN" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'fcn_rtIsNaN');" target="rtwreport_document_frame"><font color="#1122aa">rtIsNaN</font></a>(u0) || <a href="rt_nonfinite_c.html#fcn_rtIsNaN" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'fcn_rtIsNaN');" target="rtwreport_document_frame"><font color="#1122aa">rtIsNaN</font></a>(u1)) <b>{</b>
+</span><span><a class="LN" name="140">  140   </a>    y = (<a href="rt_nonfinite_c.html#var_rtNaN" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_rtNaN');" target="rtwreport_document_frame"><font color="#1122aa">rtNaN</font></a>);
+</span><span><a class="LN" name="141">  141   </a>  <b>}</b> <span class="KW">else</span> <span class="KW">if</span> (<a href="rt_nonfinite_c.html#fcn_rtIsInf" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'fcn_rtIsInf');" target="rtwreport_document_frame"><font color="#1122aa">rtIsInf</font></a>(u0) &amp;&amp; <a href="rt_nonfinite_c.html#fcn_rtIsInf" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'fcn_rtIsInf');" target="rtwreport_document_frame"><font color="#1122aa">rtIsInf</font></a>(u1)) <b>{</b>
+</span><span><a class="LN" name="142">  142   </a>    <span class="KW">if</span> (u0 &gt; 0.0) <b>{</b>
+</span><span><a class="LN" name="143">  143   </a>      u = 1;
+</span><span><a class="LN" name="144">  144   </a>    <b>}</b> <span class="KW">else</span> <b>{</b>
+</span><span><a class="LN" name="145">  145   </a>      u = -1;
+</span><span><a class="LN" name="146">  146   </a>    <b>}</b>
+</span><span><a class="LN" name="147">  147   </a>
+</span><span><a class="LN" name="148">  148   </a>    <span class="KW">if</span> (u1 &gt; 0.0) <b>{</b>
+</span><span><a class="LN" name="149">  149   </a>      u_0 = 1;
+</span><span><a class="LN" name="150">  150   </a>    <b>}</b> <span class="KW">else</span> <b>{</b>
+</span><span><a class="LN" name="151">  151   </a>      u_0 = -1;
+</span><span><a class="LN" name="152">  152   </a>    <b>}</b>
+</span><span><a class="LN" name="153">  153   </a>
+</span><span><a class="LN" name="154">  154   </a>    y = atan2(u, u_0);
+</span><span><a class="LN" name="155">  155   </a>  <b>}</b> <span class="KW">else</span> <span class="KW">if</span> (u1 == 0.0) <b>{</b>
+</span><span><a class="LN" name="156">  156   </a>    <span class="KW">if</span> (u0 &gt; 0.0) <b>{</b>
+</span><span><a class="LN" name="157">  157   </a>      y = RT_PI / 2.0;
+</span><span><a class="LN" name="158">  158   </a>    <b>}</b> <span class="KW">else</span> <span class="KW">if</span> (u0 &lt; 0.0) <b>{</b>
+</span><span><a class="LN" name="159">  159   </a>      y = -(RT_PI / 2.0);
+</span><span><a class="LN" name="160">  160   </a>    <b>}</b> <span class="KW">else</span> <b>{</b>
+</span><span><a class="LN" name="161">  161   </a>      y = 0.0;
+</span><span><a class="LN" name="162">  162   </a>    <b>}</b>
+</span><span><a class="LN" name="163">  163   </a>  <b>}</b> <span class="KW">else</span> <b>{</b>
+</span><span><a class="LN" name="164">  164   </a>    y = atan2(u0, u1);
+</span><span><a class="LN" name="165">  165   </a>  <b>}</b>
+</span><span><a class="LN" name="166">  166   </a>
+</span><span><a class="LN" name="167">  167   </a>  <span class="KW">return</span> y;
+</span><span><a class="LN" name="168">  168   </a><b>}</b>
+</span><span><a class="LN" name="169">  169   </a>
+</span><span><a class="LN" name="170">  170   </a><span class="CT">/* Model output function for TID0 */</span>
+</span><span><a class="LN" name="171">  171   </a><span class="DT">static</span> <span class="DT">void</span> <a name="fcn_ECF_stand_q_output0">ECF_stand_q_output0</a>(<span class="DT">void</span>)  <span class="CT">/* Sample time: [0.01s, 0.0s] */</span>
+</span><span><a class="LN" name="172">  172   </a><b>{</b>
+</span><span><a class="LN" name="173">  173   </a>  <b>{</b>                                    <span class="CT">/* Sample time: [0.01s, 0.0s] */</span>
+</span><span><a class="LN" name="174">  174   </a>    <a href="#fcn_rate_monotonic_scheduler" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'fcn_rate_monotonic_scheduler');" target="rtwreport_document_frame"><font color="#1122aa">rate_monotonic_scheduler</font></a>();
+</span><span><a class="LN" name="175">  175   </a>  <b>}</b>
+</span><span><a class="LN" name="176">  176   </a><b>}</b>
+</span><span><a class="LN" name="177">  177   </a>
+</span><span><a class="LN" name="178">  178   </a><span class="CT">/* Model update function for TID0 */</span>
+</span><span><a class="LN" name="179">  179   </a><span class="DT">static</span> <span class="DT">void</span> <a name="fcn_ECF_stand_q_update0">ECF_stand_q_update0</a>(<span class="DT">void</span>)  <span class="CT">/* Sample time: [0.01s, 0.0s] */</span>
+</span><span><a class="LN" name="180">  180   </a><b>{</b>
+</span><span><a class="LN" name="181">  181   </a>  <span class="CT">/* Update absolute time */</span>
+</span><span><a class="LN" name="182">  182   </a>  <span class="CT">/* The "clockTick0" counts the number of times the code of this task has</span>
+</span><span><a class="LN" name="183">  183   </a><span class="CT">   * been executed. The absolute time is the multiplication of "clockTick0"</span>
+</span><span><a class="LN" name="184">  184   </a><span class="CT">   * and "Timing.stepSize0". Size of "clockTick0" ensures timer will not</span>
+</span><span><a class="LN" name="185">  185   </a><span class="CT">   * overflow during the application lifespan selected.</span>
+</span><span><a class="LN" name="186">  186   </a><span class="CT">   * Timer of this task consists of two 32 bit unsigned integers.</span>
+</span><span><a class="LN" name="187">  187   </a><span class="CT">   * The two integers represent the low bits Timing.clockTick0 and the high bits</span>
+</span><span><a class="LN" name="188">  188   </a><span class="CT">   * Timing.clockTickH0. When the low bit overflows to 0, the high bits increment.</span>
+</span><span><a class="LN" name="189">  189   </a><span class="CT">   */</span>
+</span><span><a class="LN" name="190">  190   </a>  <span class="KW">if</span> (!(++<a href="#var_ECF_stand_q_M" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_M');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_M</font></a>-&gt;Timing.clockTick0)) <b>{</b>
+</span><span><a class="LN" name="191">  191   </a>    ++<a href="#var_ECF_stand_q_M" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_M');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_M</font></a>-&gt;Timing.clockTickH0;
+</span><span><a class="LN" name="192">  192   </a>  <b>}</b>
+</span><span><a class="LN" name="193">  193   </a>
+</span><span><a class="LN" name="194">  194   </a>  <a href="#var_ECF_stand_q_M" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_M');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_M</font></a>-&gt;Timing.t[0] = <a href="#var_ECF_stand_q_M" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_M');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_M</font></a>-&gt;Timing.clockTick0 *
+</span><span><a class="LN" name="195">  195   </a>    <a href="#var_ECF_stand_q_M" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_M');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_M</font></a>-&gt;Timing.stepSize0 + <a href="#var_ECF_stand_q_M" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_M');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_M</font></a>-&gt;Timing.clockTickH0 *
+</span><span><a class="LN" name="196">  196   </a>    <a href="#var_ECF_stand_q_M" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_M');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_M</font></a>-&gt;Timing.stepSize0 * 4294967296.0;
+</span><span><a class="LN" name="197">  197   </a><b>}</b>
+</span><span><a class="LN" name="198">  198   </a>
+</span><span><a class="LN" name="199">  199   </a><span class="CT">/* Model output function for TID1 */</span>
+</span><span><a class="LN" name="200">  200   </a><span class="DT">static</span> <span class="DT">void</span> <a name="fcn_ECF_stand_q_output1">ECF_stand_q_output1</a>(<span class="DT">void</span>)  <span class="CT">/* Sample time: [0.02s, 0.0s] */</span>
+</span><span><a class="LN" name="201">  201   </a><b>{</b>
+</span><span><a class="LN" name="202">  202   </a>  <span class="CT">/* local block i/o variables */</span>
+</span><span><a class="LN" name="203">  203   </a>  real_T rtb_y[4];
+</span><span><a class="LN" name="204">  204   </a>  real_T y;
+</span><span><a class="LN" name="205">  205   </a>  real_T scale;
+</span><span><a class="LN" name="206">  206   </a>  real_T absxk;
+</span><span><a class="LN" name="207">  207   </a>  real_T t;
+</span><span><a class="LN" name="208">  208   </a>  real_T rtb_Divide_idx;
+</span><span><a class="LN" name="209">  209   </a>  real_T rtb_Elementproduct_idx;
+</span><span><a class="LN" name="210">  210   </a>  real_T rtb_Divide_idx_0;
+</span><span><a class="LN" name="211">  211   </a>  real_T rtb_Elementproduct_idx_0;
+</span><span><a class="LN" name="212">  212   </a>  real_T rtb_DiscreteTimeIntegrator1_idx;
+</span><span><a class="LN" name="213">  213   </a>  real_T rtb_DiscreteTimeIntegrator1_i_0;
+</span><span><a class="LN" name="214">  214   </a>  real_T rtb_DiscreteTimeIntegrator1_i_1;
+</span><span><a class="LN" name="215">  215   </a>
+</span><span><a class="LN" name="216">  216   </a>  <span class="CT">/* MATLAB Function: '&lt;S6&gt;/q_norm' incorporates:</span>
+</span><span><a class="LN" name="217">  217   </a><span class="CT">   *  DiscreteIntegrator: '&lt;S6&gt;/Discrete-Time Integrator'</span>
+</span><span><a class="LN" name="218">  218   </a><span class="CT">   */</span>
+</span><span><a class="LN" name="219">  219   </a>  <span class="CT">/* MATLAB Function 'state Integration /q_norm': '&lt;S11&gt;:1' */</span>
+</span><span><a class="LN" name="220">  220   </a>  <span class="CT">/* # norm return a normalized vector  */</span>
+</span><span><a class="LN" name="221">  221   </a>  <span class="CT">/* '&lt;S11&gt;:1:6' */</span>
+</span><span><a class="LN" name="222">  222   </a>  scale = 2.2250738585072014E-308;
+</span><span><a class="LN" name="223">  223   </a>  absxk = fabs(<a href="#var_ECF_stand_q_DW" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_DW');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_DW</font></a>.DiscreteTimeIntegrator_DSTATE[0]);
+</span><span><a class="LN" name="224">  224   </a>  <span class="KW">if</span> (absxk &gt; 2.2250738585072014E-308) <b>{</b>
+</span><span><a class="LN" name="225">  225   </a>    y = 1.0;
+</span><span><a class="LN" name="226">  226   </a>    scale = absxk;
+</span><span><a class="LN" name="227">  227   </a>  <b>}</b> <span class="KW">else</span> <b>{</b>
+</span><span><a class="LN" name="228">  228   </a>    t = absxk / 2.2250738585072014E-308;
+</span><span><a class="LN" name="229">  229   </a>    y = t * t;
+</span><span><a class="LN" name="230">  230   </a>  <b>}</b>
+</span><span><a class="LN" name="231">  231   </a>
+</span><span><a class="LN" name="232">  232   </a>  absxk = fabs(<a href="#var_ECF_stand_q_DW" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_DW');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_DW</font></a>.DiscreteTimeIntegrator_DSTATE[1]);
+</span><span><a class="LN" name="233">  233   </a>  <span class="KW">if</span> (absxk &gt; scale) <b>{</b>
+</span><span><a class="LN" name="234">  234   </a>    t = scale / absxk;
+</span><span><a class="LN" name="235">  235   </a>    y = y * t * t + 1.0;
+</span><span><a class="LN" name="236">  236   </a>    scale = absxk;
+</span><span><a class="LN" name="237">  237   </a>  <b>}</b> <span class="KW">else</span> <b>{</b>
+</span><span><a class="LN" name="238">  238   </a>    t = absxk / scale;
+</span><span><a class="LN" name="239">  239   </a>    y += t * t;
+</span><span><a class="LN" name="240">  240   </a>  <b>}</b>
+</span><span><a class="LN" name="241">  241   </a>
+</span><span><a class="LN" name="242">  242   </a>  absxk = fabs(<a href="#var_ECF_stand_q_DW" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_DW');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_DW</font></a>.DiscreteTimeIntegrator_DSTATE[2]);
+</span><span><a class="LN" name="243">  243   </a>  <span class="KW">if</span> (absxk &gt; scale) <b>{</b>
+</span><span><a class="LN" name="244">  244   </a>    t = scale / absxk;
+</span><span><a class="LN" name="245">  245   </a>    y = y * t * t + 1.0;
+</span><span><a class="LN" name="246">  246   </a>    scale = absxk;
+</span><span><a class="LN" name="247">  247   </a>  <b>}</b> <span class="KW">else</span> <b>{</b>
+</span><span><a class="LN" name="248">  248   </a>    t = absxk / scale;
+</span><span><a class="LN" name="249">  249   </a>    y += t * t;
+</span><span><a class="LN" name="250">  250   </a>  <b>}</b>
+</span><span><a class="LN" name="251">  251   </a>
+</span><span><a class="LN" name="252">  252   </a>  absxk = fabs(<a href="#var_ECF_stand_q_DW" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_DW');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_DW</font></a>.DiscreteTimeIntegrator_DSTATE[3]);
+</span><span><a class="LN" name="253">  253   </a>  <span class="KW">if</span> (absxk &gt; scale) <b>{</b>
+</span><span><a class="LN" name="254">  254   </a>    t = scale / absxk;
+</span><span><a class="LN" name="255">  255   </a>    y = y * t * t + 1.0;
+</span><span><a class="LN" name="256">  256   </a>    scale = absxk;
+</span><span><a class="LN" name="257">  257   </a>  <b>}</b> <span class="KW">else</span> <b>{</b>
+</span><span><a class="LN" name="258">  258   </a>    t = absxk / scale;
+</span><span><a class="LN" name="259">  259   </a>    y += t * t;
+</span><span><a class="LN" name="260">  260   </a>  <b>}</b>
+</span><span><a class="LN" name="261">  261   </a>
+</span><span><a class="LN" name="262">  262   </a>  y = scale * sqrt(y);
+</span><span><a class="LN" name="263">  263   </a>  rtb_y[0] = <a href="#var_ECF_stand_q_DW" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_DW');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_DW</font></a>.DiscreteTimeIntegrator_DSTATE[0] / y;
+</span><span><a class="LN" name="264">  264   </a>  rtb_y[1] = <a href="#var_ECF_stand_q_DW" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_DW');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_DW</font></a>.DiscreteTimeIntegrator_DSTATE[1] / y;
+</span><span><a class="LN" name="265">  265   </a>  rtb_y[2] = <a href="#var_ECF_stand_q_DW" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_DW');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_DW</font></a>.DiscreteTimeIntegrator_DSTATE[2] / y;
+</span><span><a class="LN" name="266">  266   </a>  rtb_y[3] = <a href="#var_ECF_stand_q_DW" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_DW');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_DW</font></a>.DiscreteTimeIntegrator_DSTATE[3] / y;
+</span><span><a class="LN" name="267">  267   </a>
+</span><span><a class="LN" name="268">  268   </a>  <span class="CT">/* End of MATLAB Function: '&lt;S6&gt;/q_norm' */</span>
+</span><span><a class="LN" name="269">  269   </a>
+</span><span><a class="LN" name="270">  270   </a>  <span class="CT">/* MATLAB Function: '&lt;Root&gt;/inv_q' */</span>
+</span><span><a class="LN" name="271">  271   </a>  <a href="#fcn_ECF_stand_q_inv_q" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'fcn_ECF_stand_q_inv_q');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_inv_q</font></a>(rtb_y, &amp;<a href="#var_ECF_stand_q_B" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_B');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_B</font></a>.sf_inv_q);
+</span><span><a class="LN" name="272">  272   </a>
+</span><span><a class="LN" name="273">  273   </a>  <span class="CT">/* Outport: '&lt;Root&gt;/Euler' incorporates:</span>
+</span><span><a class="LN" name="274">  274   </a><span class="CT">   *  MATLAB Function: '&lt;Root&gt;/quat2Euler'</span>
+</span><span><a class="LN" name="275">  275   </a><span class="CT">   */</span>
+</span><span><a class="LN" name="276">  276   </a>  <span class="CT">/* MATLAB Function 'quat2Euler': '&lt;S5&gt;:1' */</span>
+</span><span><a class="LN" name="277">  277   </a>  <span class="CT">/*  q2e find euler angles ( roll, pitch, yaw) from quaternion  */</span>
+</span><span><a class="LN" name="278">  278   </a>  <span class="CT">/* '&lt;S5&gt;:1:7' */</span>
+</span><span><a class="LN" name="279">  279   </a>  <span class="CT">/* '&lt;S5&gt;:1:9' */</span>
+</span><span><a class="LN" name="280">  280   </a>  <span class="CT">/* '&lt;S5&gt;:1:11' */</span>
+</span><span><a class="LN" name="281">  281   </a>  <span class="CT">/* '&lt;S5&gt;:1:13' */</span>
+</span><span><a class="LN" name="282">  282   </a>  <a href="#var_ECF_stand_q_Y" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_Y');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_Y</font></a>.Euler[0] = <a href="#fcn_rt_atan2d_snf" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'fcn_rt_atan2d_snf');" target="rtwreport_document_frame"><font color="#1122aa">rt_atan2d_snf</font></a>((<a href="#var_ECF_stand_q_B" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_B');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_B</font></a>.sf_inv_q.inv_q[2] *
+</span><span><a class="LN" name="283">  283   </a>    <a href="#var_ECF_stand_q_B" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_B');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_B</font></a>.sf_inv_q.inv_q[3] - <a href="#var_ECF_stand_q_B" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_B');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_B</font></a>.sf_inv_q.inv_q[0] *
+</span><span><a class="LN" name="284">  284   </a>    <a href="#var_ECF_stand_q_B" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_B');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_B</font></a>.sf_inv_q.inv_q[1]) * 2.0, 1.0 - (<a href="#var_ECF_stand_q_B" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_B');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_B</font></a>.sf_inv_q.inv_q
+</span><span><a class="LN" name="285">  285   </a>    [1] * <a href="#var_ECF_stand_q_B" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_B');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_B</font></a>.sf_inv_q.inv_q[1] + <a href="#var_ECF_stand_q_B" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_B');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_B</font></a>.sf_inv_q.inv_q[2] *
+</span><span><a class="LN" name="286">  286   </a>    <a href="#var_ECF_stand_q_B" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_B');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_B</font></a>.sf_inv_q.inv_q[2]) * 2.0);
+</span><span><a class="LN" name="287">  287   </a>  <a href="#var_ECF_stand_q_Y" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_Y');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_Y</font></a>.Euler[1] = asin((<a href="#var_ECF_stand_q_B" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_B');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_B</font></a>.sf_inv_q.inv_q[1] *
+</span><span><a class="LN" name="288">  288   </a>    <a href="#var_ECF_stand_q_B" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_B');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_B</font></a>.sf_inv_q.inv_q[3] + <a href="#var_ECF_stand_q_B" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_B');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_B</font></a>.sf_inv_q.inv_q[0] *
+</span><span><a class="LN" name="289">  289   </a>    <a href="#var_ECF_stand_q_B" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_B');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_B</font></a>.sf_inv_q.inv_q[2]) * -2.0);
+</span><span><a class="LN" name="290">  290   </a>  <a href="#var_ECF_stand_q_Y" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_Y');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_Y</font></a>.Euler[2] = <a href="#fcn_rt_atan2d_snf" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'fcn_rt_atan2d_snf');" target="rtwreport_document_frame"><font color="#1122aa">rt_atan2d_snf</font></a>((<a href="#var_ECF_stand_q_B" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_B');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_B</font></a>.sf_inv_q.inv_q[1] *
+</span><span><a class="LN" name="291">  291   </a>    <a href="#var_ECF_stand_q_B" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_B');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_B</font></a>.sf_inv_q.inv_q[2] - <a href="#var_ECF_stand_q_B" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_B');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_B</font></a>.sf_inv_q.inv_q[0] *
+</span><span><a class="LN" name="292">  292   </a>    <a href="#var_ECF_stand_q_B" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_B');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_B</font></a>.sf_inv_q.inv_q[3]) * 2.0, 1.0 - (<a href="#var_ECF_stand_q_B" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_B');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_B</font></a>.sf_inv_q.inv_q
+</span><span><a class="LN" name="293">  293   </a>    [2] * <a href="#var_ECF_stand_q_B" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_B');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_B</font></a>.sf_inv_q.inv_q[2] + <a href="#var_ECF_stand_q_B" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_B');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_B</font></a>.sf_inv_q.inv_q[3] *
+</span><span><a class="LN" name="294">  294   </a>    <a href="#var_ECF_stand_q_B" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_B');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_B</font></a>.sf_inv_q.inv_q[3]) * 2.0);
+</span><span><a class="LN" name="295">  295   </a>
+</span><span><a class="LN" name="296">  296   </a>  <span class="CT">/* DiscreteIntegrator: '&lt;S6&gt;/Discrete-Time Integrator1' */</span>
+</span><span><a class="LN" name="297">  297   </a>  rtb_DiscreteTimeIntegrator1_idx =
+</span><span><a class="LN" name="298">  298   </a>    <a href="#var_ECF_stand_q_DW" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_DW');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_DW</font></a>.DiscreteTimeIntegrator1_DSTATE[0];
+</span><span><a class="LN" name="299">  299   </a>  rtb_DiscreteTimeIntegrator1_i_0 =
+</span><span><a class="LN" name="300">  300   </a>    <a href="#var_ECF_stand_q_DW" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_DW');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_DW</font></a>.DiscreteTimeIntegrator1_DSTATE[1];
+</span><span><a class="LN" name="301">  301   </a>  rtb_DiscreteTimeIntegrator1_i_1 =
+</span><span><a class="LN" name="302">  302   </a>    <a href="#var_ECF_stand_q_DW" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_DW');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_DW</font></a>.DiscreteTimeIntegrator1_DSTATE[2];
+</span><span><a class="LN" name="303">  303   </a>
+</span><span><a class="LN" name="304">  304   </a>  <span class="CT">/* Outport: '&lt;Root&gt;/bias' incorporates:</span>
+</span><span><a class="LN" name="305">  305   </a><span class="CT">   *  DiscreteIntegrator: '&lt;S6&gt;/Discrete-Time Integrator1'</span>
+</span><span><a class="LN" name="306">  306   </a><span class="CT">   */</span>
+</span><span><a class="LN" name="307">  307   </a>  <a href="#var_ECF_stand_q_Y" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_Y');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_Y</font></a>.bias[0] = <a href="#var_ECF_stand_q_DW" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_DW');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_DW</font></a>.DiscreteTimeIntegrator1_DSTATE[0];
+</span><span><a class="LN" name="308">  308   </a>  <a href="#var_ECF_stand_q_Y" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_Y');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_Y</font></a>.bias[1] = <a href="#var_ECF_stand_q_DW" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_DW');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_DW</font></a>.DiscreteTimeIntegrator1_DSTATE[1];
+</span><span><a class="LN" name="309">  309   </a>  <a href="#var_ECF_stand_q_Y" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_Y');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_Y</font></a>.bias[2] = <a href="#var_ECF_stand_q_DW" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_DW');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_DW</font></a>.DiscreteTimeIntegrator1_DSTATE[2];
+</span><span><a class="LN" name="310">  310   </a>
+</span><span><a class="LN" name="311">  311   </a>  <span class="CT">/* Product: '&lt;Root&gt;/Divide' incorporates:</span>
+</span><span><a class="LN" name="312">  312   </a><span class="CT">   *  Constant: '&lt;Root&gt;/Constant'</span>
+</span><span><a class="LN" name="313">  313   </a><span class="CT">   *  Gain: '&lt;Root&gt;/-1'</span>
+</span><span><a class="LN" name="314">  314   </a><span class="CT">   *  Inport: '&lt;Root&gt;/Acc'</span>
+</span><span><a class="LN" name="315">  315   </a><span class="CT">   */</span>
+</span><span><a class="LN" name="316">  316   </a>  rtb_Divide_idx_0 = <a href="ECF_stand_q_data_c.html#var_ECF_stand_q_P" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_P');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_P</font></a>.u_Gain * <a href="#var_ECF_stand_q_U" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_U');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_U</font></a>.Acc[0] /
+</span><span><a class="LN" name="317">  317   </a>    <a href="ECF_stand_q_data_c.html#var_ECF_stand_q_P" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_P');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_P</font></a>.Constant_Value;
+</span><span><a class="LN" name="318">  318   </a>  rtb_Divide_idx = <a href="ECF_stand_q_data_c.html#var_ECF_stand_q_P" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_P');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_P</font></a>.u_Gain * <a href="#var_ECF_stand_q_U" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_U');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_U</font></a>.Acc[1] /
+</span><span><a class="LN" name="319">  319   </a>    <a href="ECF_stand_q_data_c.html#var_ECF_stand_q_P" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_P');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_P</font></a>.Constant_Value;
+</span><span><a class="LN" name="320">  320   </a>  scale = <a href="ECF_stand_q_data_c.html#var_ECF_stand_q_P" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_P');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_P</font></a>.u_Gain * <a href="#var_ECF_stand_q_U" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_U');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_U</font></a>.Acc[2] /
+</span><span><a class="LN" name="321">  321   </a>    <a href="ECF_stand_q_data_c.html#var_ECF_stand_q_P" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_P');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_P</font></a>.Constant_Value;
+</span><span><a class="LN" name="322">  322   </a>
+</span><span><a class="LN" name="323">  323   </a>  <span class="CT">/* MATLAB Function: '&lt;S8&gt;/MATLAB Function' */</span>
+</span><span><a class="LN" name="324">  324   </a>  <a href="#fcn_ECF_stand_q_inv_q" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'fcn_ECF_stand_q_inv_q');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_inv_q</font></a>(rtb_y, &amp;<a href="#var_ECF_stand_q_B" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_B');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_B</font></a>.sf_MATLABFunction);
+</span><span><a class="LN" name="325">  325   </a>
+</span><span><a class="LN" name="326">  326   </a>  <span class="CT">/* MATLAB Function: '&lt;S8&gt;/MATLAB Function1' incorporates:</span>
+</span><span><a class="LN" name="327">  327   </a><span class="CT">   *  Constant: '&lt;S8&gt;/e3_q Normalized'</span>
+</span><span><a class="LN" name="328">  328   </a><span class="CT">   */</span>
+</span><span><a class="LN" name="329">  329   </a>  <a href="#fcn_ECF_stand_q_MATLABFunction1" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'fcn_ECF_stand_q_MATLABFunction1');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_MATLABFunction1</font></a>(<a href="#var_ECF_stand_q_B" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_B');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_B</font></a>.sf_MATLABFunction.inv_q,
+</span><span><a class="LN" name="330">  330   </a>    <a href="ECF_stand_q_data_c.html#var_ECF_stand_q_P" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_P');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_P</font></a>.e3_qNormalized_Value, &amp;<a href="#var_ECF_stand_q_B" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_B');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_B</font></a>.sf_MATLABFunction1);
+</span><span><a class="LN" name="331">  331   </a>
+</span><span><a class="LN" name="332">  332   </a>  <span class="CT">/* MATLAB Function: '&lt;S8&gt;/MATLAB Function3' */</span>
+</span><span><a class="LN" name="333">  333   </a>  <a href="#fcn_ECF_stand_q_MATLABFunction3" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'fcn_ECF_stand_q_MATLABFunction3');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_MATLABFunction3</font></a>(<a href="#var_ECF_stand_q_B" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_B');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_B</font></a>.sf_MATLABFunction1.n, rtb_y,
+</span><span><a class="LN" name="334">  334   </a>    &amp;<a href="#var_ECF_stand_q_B" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_B');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_B</font></a>.sf_MATLABFunction3);
+</span><span><a class="LN" name="335">  335   </a>
+</span><span><a class="LN" name="336">  336   </a>  <span class="CT">/* Product: '&lt;S1&gt;/Element product' */</span>
+</span><span><a class="LN" name="337">  337   </a>  rtb_Elementproduct_idx = rtb_Divide_idx_0 *
+</span><span><a class="LN" name="338">  338   </a>    <a href="#var_ECF_stand_q_B" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_B');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_B</font></a>.sf_MATLABFunction3.n[2];
+</span><span><a class="LN" name="339">  339   </a>  absxk = rtb_Divide_idx_0 * <a href="#var_ECF_stand_q_B" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_B');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_B</font></a>.sf_MATLABFunction3.n[3];
+</span><span><a class="LN" name="340">  340   </a>  rtb_Elementproduct_idx_0 = rtb_Divide_idx *
+</span><span><a class="LN" name="341">  341   </a>    <a href="#var_ECF_stand_q_B" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_B');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_B</font></a>.sf_MATLABFunction3.n[1];
+</span><span><a class="LN" name="342">  342   </a>
+</span><span><a class="LN" name="343">  343   </a>  <span class="CT">/* Sum: '&lt;S1&gt;/Add3' incorporates:</span>
+</span><span><a class="LN" name="344">  344   </a><span class="CT">   *  Product: '&lt;S1&gt;/Element product'</span>
+</span><span><a class="LN" name="345">  345   </a><span class="CT">   */</span>
+</span><span><a class="LN" name="346">  346   </a>  rtb_Divide_idx_0 = rtb_Divide_idx * <a href="#var_ECF_stand_q_B" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_B');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_B</font></a>.sf_MATLABFunction3.n[3] -
+</span><span><a class="LN" name="347">  347   </a>    scale * <a href="#var_ECF_stand_q_B" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_B');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_B</font></a>.sf_MATLABFunction3.n[2];
+</span><span><a class="LN" name="348">  348   </a>  rtb_Divide_idx = scale * <a href="#var_ECF_stand_q_B" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_B');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_B</font></a>.sf_MATLABFunction3.n[1] - absxk;
+</span><span><a class="LN" name="349">  349   </a>
+</span><span><a class="LN" name="350">  350   </a>  <span class="CT">/* MATLAB Function: '&lt;Root&gt;/Norm M' incorporates:</span>
+</span><span><a class="LN" name="351">  351   </a><span class="CT">   *  Inport: '&lt;Root&gt;/Mag'</span>
+</span><span><a class="LN" name="352">  352   </a><span class="CT">   */</span>
+</span><span><a class="LN" name="353">  353   </a>  <span class="CT">/* MATLAB Function 'Norm M': '&lt;S3&gt;:1' */</span>
+</span><span><a class="LN" name="354">  354   </a>  <span class="CT">/* # norm return a normalized vector  */</span>
+</span><span><a class="LN" name="355">  355   </a>  <span class="CT">/* '&lt;S3&gt;:1:6' */</span>
+</span><span><a class="LN" name="356">  356   </a>  scale = 2.2250738585072014E-308;
+</span><span><a class="LN" name="357">  357   </a>  absxk = fabs(<a href="#var_ECF_stand_q_U" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_U');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_U</font></a>.Mag[0]);
+</span><span><a class="LN" name="358">  358   </a>  <span class="KW">if</span> (absxk &gt; 2.2250738585072014E-308) <b>{</b>
+</span><span><a class="LN" name="359">  359   </a>    y = 1.0;
+</span><span><a class="LN" name="360">  360   </a>    scale = absxk;
+</span><span><a class="LN" name="361">  361   </a>  <b>}</b> <span class="KW">else</span> <b>{</b>
+</span><span><a class="LN" name="362">  362   </a>    t = absxk / 2.2250738585072014E-308;
+</span><span><a class="LN" name="363">  363   </a>    y = t * t;
+</span><span><a class="LN" name="364">  364   </a>  <b>}</b>
+</span><span><a class="LN" name="365">  365   </a>
+</span><span><a class="LN" name="366">  366   </a>  absxk = fabs(<a href="#var_ECF_stand_q_U" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_U');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_U</font></a>.Mag[1]);
+</span><span><a class="LN" name="367">  367   </a>  <span class="KW">if</span> (absxk &gt; scale) <b>{</b>
+</span><span><a class="LN" name="368">  368   </a>    t = scale / absxk;
+</span><span><a class="LN" name="369">  369   </a>    y = y * t * t + 1.0;
+</span><span><a class="LN" name="370">  370   </a>    scale = absxk;
+</span><span><a class="LN" name="371">  371   </a>  <b>}</b> <span class="KW">else</span> <b>{</b>
+</span><span><a class="LN" name="372">  372   </a>    t = absxk / scale;
+</span><span><a class="LN" name="373">  373   </a>    y += t * t;
+</span><span><a class="LN" name="374">  374   </a>  <b>}</b>
+</span><span><a class="LN" name="375">  375   </a>
+</span><span><a class="LN" name="376">  376   </a>  absxk = fabs(<a href="#var_ECF_stand_q_U" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_U');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_U</font></a>.Mag[2]);
+</span><span><a class="LN" name="377">  377   </a>  <span class="KW">if</span> (absxk &gt; scale) <b>{</b>
+</span><span><a class="LN" name="378">  378   </a>    t = scale / absxk;
+</span><span><a class="LN" name="379">  379   </a>    y = y * t * t + 1.0;
+</span><span><a class="LN" name="380">  380   </a>    scale = absxk;
+</span><span><a class="LN" name="381">  381   </a>  <b>}</b> <span class="KW">else</span> <b>{</b>
+</span><span><a class="LN" name="382">  382   </a>    t = absxk / scale;
+</span><span><a class="LN" name="383">  383   </a>    y += t * t;
+</span><span><a class="LN" name="384">  384   </a>  <b>}</b>
+</span><span><a class="LN" name="385">  385   </a>
+</span><span><a class="LN" name="386">  386   </a>  y = scale * sqrt(y);
+</span><span><a class="LN" name="387">  387   </a>  scale = <a href="#var_ECF_stand_q_U" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_U');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_U</font></a>.Mag[0] / y;
+</span><span><a class="LN" name="388">  388   </a>  absxk = <a href="#var_ECF_stand_q_U" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_U');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_U</font></a>.Mag[1] / y;
+</span><span><a class="LN" name="389">  389   </a>  t = <a href="#var_ECF_stand_q_U" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_U');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_U</font></a>.Mag[2] / y;
+</span><span><a class="LN" name="390">  390   </a>
+</span><span><a class="LN" name="391">  391   </a>  <span class="CT">/* End of MATLAB Function: '&lt;Root&gt;/Norm M' */</span>
+</span><span><a class="LN" name="392">  392   </a>
+</span><span><a class="LN" name="393">  393   </a>  <span class="CT">/* MATLAB Function: '&lt;S8&gt;/MATLAB Function2' incorporates:</span>
+</span><span><a class="LN" name="394">  394   </a><span class="CT">   *  Constant: '&lt;S8&gt;/m*_q Normalized'</span>
+</span><span><a class="LN" name="395">  395   </a><span class="CT">   */</span>
+</span><span><a class="LN" name="396">  396   </a>  <a href="#fcn_ECF_stand_q_MATLABFunction1" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'fcn_ECF_stand_q_MATLABFunction1');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_MATLABFunction1</font></a>(<a href="#var_ECF_stand_q_B" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_B');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_B</font></a>.sf_MATLABFunction.inv_q,
+</span><span><a class="LN" name="397">  397   </a>    <a href="ECF_stand_q_data_c.html#var_ECF_stand_q_P" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_P');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_P</font></a>.m_qNormalized_Value, &amp;<a href="#var_ECF_stand_q_B" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_B');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_B</font></a>.sf_MATLABFunction2);
+</span><span><a class="LN" name="398">  398   </a>
+</span><span><a class="LN" name="399">  399   </a>  <span class="CT">/* MATLAB Function: '&lt;S8&gt;/MATLAB Function4' */</span>
+</span><span><a class="LN" name="400">  400   </a>  <a href="#fcn_ECF_stand_q_MATLABFunction3" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'fcn_ECF_stand_q_MATLABFunction3');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_MATLABFunction3</font></a>(<a href="#var_ECF_stand_q_B" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_B');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_B</font></a>.sf_MATLABFunction2.n, rtb_y,
+</span><span><a class="LN" name="401">  401   </a>    &amp;<a href="#var_ECF_stand_q_B" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_B');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_B</font></a>.sf_MATLABFunction4);
+</span><span><a class="LN" name="402">  402   </a>
+</span><span><a class="LN" name="403">  403   </a>  <span class="CT">/* MATLAB Function: '&lt;Root&gt;/w_mes' incorporates:</span>
+</span><span><a class="LN" name="404">  404   </a><span class="CT">   *  Inport: '&lt;Root&gt;/K_a'</span>
+</span><span><a class="LN" name="405">  405   </a><span class="CT">   *  Inport: '&lt;Root&gt;/K_m'</span>
+</span><span><a class="LN" name="406">  406   </a><span class="CT">   *  Product: '&lt;S2&gt;/Element product'</span>
+</span><span><a class="LN" name="407">  407   </a><span class="CT">   *  Sum: '&lt;S1&gt;/Add3'</span>
+</span><span><a class="LN" name="408">  408   </a><span class="CT">   *  Sum: '&lt;S2&gt;/Add3'</span>
+</span><span><a class="LN" name="409">  409   </a><span class="CT">   */</span>
+</span><span><a class="LN" name="410">  410   </a>  <span class="CT">/* MATLAB Function 'w_mes': '&lt;S9&gt;:1' */</span>
+</span><span><a class="LN" name="411">  411   </a>  <span class="CT">/*  gains K_a and K_m */</span>
+</span><span><a class="LN" name="412">  412   </a>  <span class="CT">/* '&lt;S9&gt;:1:7' */</span>
+</span><span><a class="LN" name="413">  413   </a>  rtb_Divide_idx_0 = (absxk * <a href="#var_ECF_stand_q_B" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_B');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_B</font></a>.sf_MATLABFunction4.n[3] - t *
+</span><span><a class="LN" name="414">  414   </a>                      <a href="#var_ECF_stand_q_B" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_B');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_B</font></a>.sf_MATLABFunction4.n[2]) * <a href="#var_ECF_stand_q_U" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_U');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_U</font></a>.K_m
+</span><span><a class="LN" name="415">  415   </a>    + <a href="#var_ECF_stand_q_U" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_U');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_U</font></a>.K_a * rtb_Divide_idx_0;
+</span><span><a class="LN" name="416">  416   </a>  rtb_Divide_idx = (t * <a href="#var_ECF_stand_q_B" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_B');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_B</font></a>.sf_MATLABFunction4.n[1] - scale *
+</span><span><a class="LN" name="417">  417   </a>                    <a href="#var_ECF_stand_q_B" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_B');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_B</font></a>.sf_MATLABFunction4.n[3]) * <a href="#var_ECF_stand_q_U" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_U');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_U</font></a>.K_m +
+</span><span><a class="LN" name="418">  418   </a>    <a href="#var_ECF_stand_q_U" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_U');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_U</font></a>.K_a * rtb_Divide_idx;
+</span><span><a class="LN" name="419">  419   </a>  scale = (scale * <a href="#var_ECF_stand_q_B" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_B');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_B</font></a>.sf_MATLABFunction4.n[2] - absxk *
+</span><span><a class="LN" name="420">  420   </a>           <a href="#var_ECF_stand_q_B" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_B');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_B</font></a>.sf_MATLABFunction4.n[1]) * <a href="#var_ECF_stand_q_U" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_U');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_U</font></a>.K_m +
+</span><span><a class="LN" name="421">  421   </a>    (rtb_Elementproduct_idx - rtb_Elementproduct_idx_0) * <a href="#var_ECF_stand_q_U" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_U');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_U</font></a>.K_a;
+</span><span><a class="LN" name="422">  422   </a>
+</span><span><a class="LN" name="423">  423   </a>  <span class="CT">/* MATLAB Function: '&lt;Root&gt;/state update' incorporates:</span>
+</span><span><a class="LN" name="424">  424   </a><span class="CT">   *  Inport: '&lt;Root&gt;/K_p'</span>
+</span><span><a class="LN" name="425">  425   </a><span class="CT">   */</span>
+</span><span><a class="LN" name="426">  426   </a>  <span class="CT">/* MATLAB Function 'state update': '&lt;S7&gt;:1' */</span>
+</span><span><a class="LN" name="427">  427   </a>  <span class="CT">/*  gains K_p for estimated bias and K_i for coorection term */</span>
+</span><span><a class="LN" name="428">  428   </a>  <span class="CT">/* '&lt;S7&gt;:1:6' */</span>
+</span><span><a class="LN" name="429">  429   </a>  <span class="CT">/* '&lt;S7&gt;:1:8' */</span>
+</span><span><a class="LN" name="430">  430   </a>  <span class="CT">/* '&lt;S7&gt;:1:12' */</span>
+</span><span><a class="LN" name="431">  431   </a>  <a href="#var_ECF_stand_q_B" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_B');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_B</font></a>.bias_dot[0] = <a href="#var_ECF_stand_q_U" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_U');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_U</font></a>.K_p * rtb_Divide_idx_0;
+</span><span><a class="LN" name="432">  432   </a>  <a href="#var_ECF_stand_q_B" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_B');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_B</font></a>.bias_dot[1] = <a href="#var_ECF_stand_q_U" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_U');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_U</font></a>.K_p * rtb_Divide_idx;
+</span><span><a class="LN" name="433">  433   </a>  <a href="#var_ECF_stand_q_B" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_B');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_B</font></a>.bias_dot[2] = <a href="#var_ECF_stand_q_U" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_U');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_U</font></a>.K_p * scale;
+</span><span><a class="LN" name="434">  434   </a>
+</span><span><a class="LN" name="435">  435   </a>  <span class="CT">/* SignalConversion: '&lt;S10&gt;/TmpSignal ConversionAt SFunction Inport2' incorporates:</span>
+</span><span><a class="LN" name="436">  436   </a><span class="CT">   *  Inport: '&lt;Root&gt;/Gyro'</span>
+</span><span><a class="LN" name="437">  437   </a><span class="CT">   *  Inport: '&lt;Root&gt;/K_i'</span>
+</span><span><a class="LN" name="438">  438   </a><span class="CT">   *  MATLAB Function: '&lt;Root&gt;/state update'</span>
+</span><span><a class="LN" name="439">  439   </a><span class="CT">   *  MATLAB Function: '&lt;S6&gt;/q_dot'</span>
+</span><span><a class="LN" name="440">  440   </a><span class="CT">   */</span>
+</span><span><a class="LN" name="441">  441   </a>  t = (<a href="#var_ECF_stand_q_U" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_U');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_U</font></a>.Gyro[0] - rtb_DiscreteTimeIntegrator1_idx) +
+</span><span><a class="LN" name="442">  442   </a>    <a href="#var_ECF_stand_q_U" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_U');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_U</font></a>.K_i * rtb_Divide_idx_0;
+</span><span><a class="LN" name="443">  443   </a>  absxk = (<a href="#var_ECF_stand_q_U" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_U');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_U</font></a>.Gyro[1] - rtb_DiscreteTimeIntegrator1_i_0) +
+</span><span><a class="LN" name="444">  444   </a>    <a href="#var_ECF_stand_q_U" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_U');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_U</font></a>.K_i * rtb_Divide_idx;
+</span><span><a class="LN" name="445">  445   </a>  scale = (<a href="#var_ECF_stand_q_U" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_U');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_U</font></a>.Gyro[2] - rtb_DiscreteTimeIntegrator1_i_1) +
+</span><span><a class="LN" name="446">  446   </a>    <a href="#var_ECF_stand_q_U" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_U');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_U</font></a>.K_i * scale;
+</span><span><a class="LN" name="447">  447   </a>
+</span><span><a class="LN" name="448">  448   </a>  <span class="CT">/* Gain: '&lt;S6&gt;/cons' incorporates:</span>
+</span><span><a class="LN" name="449">  449   </a><span class="CT">   *  Constant: '&lt;S6&gt;/Constant'</span>
+</span><span><a class="LN" name="450">  450   </a><span class="CT">   *  MATLAB Function: '&lt;S6&gt;/q_dot'</span>
+</span><span><a class="LN" name="451">  451   </a><span class="CT">   *  SignalConversion: '&lt;S10&gt;/TmpSignal ConversionAt SFunction Inport2'</span>
+</span><span><a class="LN" name="452">  452   </a><span class="CT">   */</span>
+</span><span><a class="LN" name="453">  453   </a>  <span class="CT">/* MATLAB Function 'state Integration /q_dot': '&lt;S10&gt;:1' */</span>
+</span><span><a class="LN" name="454">  454   </a>  <span class="CT">/* quatmultiply(q1,q2) calculates the quaternion product, n, for two given */</span>
+</span><span><a class="LN" name="455">  455   </a>  <span class="CT">/* quaternions, q1 and q2; */</span>
+</span><span><a class="LN" name="456">  456   </a>  <span class="CT">/* '&lt;S10&gt;:1:8' */</span>
+</span><span><a class="LN" name="457">  457   </a>  <span class="CT">/* '&lt;S10&gt;:1:9' */</span>
+</span><span><a class="LN" name="458">  458   </a>  <span class="CT">/* '&lt;S10&gt;:1:10' */</span>
+</span><span><a class="LN" name="459">  459   </a>  <span class="CT">/* '&lt;S10&gt;:1:11' */</span>
+</span><span><a class="LN" name="460">  460   </a>  <span class="CT">/* '&lt;S10&gt;:1:13' */</span>
+</span><span><a class="LN" name="461">  461   </a>  <a href="#var_ECF_stand_q_B" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_B');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_B</font></a>.cons[0] = (rtb_y[0] * <a href="ECF_stand_q_data_c.html#var_ECF_stand_q_P" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_P');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_P</font></a>.Constant_Value_g - ((rtb_y[1]
+</span><span><a class="LN" name="462">  462   </a>    * t + rtb_y[2] * absxk) + rtb_y[3] * scale)) * 0.5 * <a href="ECF_stand_q_data_c.html#var_ECF_stand_q_P" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_P');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_P</font></a>.cons_Gain;
+</span><span><a class="LN" name="463">  463   </a>  <a href="#var_ECF_stand_q_B" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_B');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_B</font></a>.cons[1] = ((rtb_y[0] * t + <a href="ECF_stand_q_data_c.html#var_ECF_stand_q_P" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_P');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_P</font></a>.Constant_Value_g *
+</span><span><a class="LN" name="464">  464   </a>    rtb_y[1]) + (rtb_y[2] * scale - rtb_y[3] * absxk)) * 0.5 *
+</span><span><a class="LN" name="465">  465   </a>    <a href="ECF_stand_q_data_c.html#var_ECF_stand_q_P" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_P');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_P</font></a>.cons_Gain;
+</span><span><a class="LN" name="466">  466   </a>  <a href="#var_ECF_stand_q_B" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_B');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_B</font></a>.cons[2] = ((rtb_y[0] * absxk + <a href="ECF_stand_q_data_c.html#var_ECF_stand_q_P" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_P');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_P</font></a>.Constant_Value_g *
+</span><span><a class="LN" name="467">  467   </a>    rtb_y[2]) + (rtb_y[3] * t - rtb_y[1] * scale)) * 0.5 *
+</span><span><a class="LN" name="468">  468   </a>    <a href="ECF_stand_q_data_c.html#var_ECF_stand_q_P" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_P');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_P</font></a>.cons_Gain;
+</span><span><a class="LN" name="469">  469   </a>  <a href="#var_ECF_stand_q_B" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_B');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_B</font></a>.cons[3] = ((rtb_y[0] * scale + <a href="ECF_stand_q_data_c.html#var_ECF_stand_q_P" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_P');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_P</font></a>.Constant_Value_g *
+</span><span><a class="LN" name="470">  470   </a>    rtb_y[3]) + (rtb_y[1] * absxk - rtb_y[2] * t)) * 0.5 *
+</span><span><a class="LN" name="471">  471   </a>    <a href="ECF_stand_q_data_c.html#var_ECF_stand_q_P" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_P');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_P</font></a>.cons_Gain;
+</span><span><a class="LN" name="472">  472   </a><b>}</b>
+</span><span><a class="LN" name="473">  473   </a>
+</span><span><a class="LN" name="474">  474   </a><span class="CT">/* Model update function for TID1 */</span>
+</span><span><a class="LN" name="475">  475   </a><span class="DT">static</span> <span class="DT">void</span> <a name="fcn_ECF_stand_q_update1">ECF_stand_q_update1</a>(<span class="DT">void</span>)  <span class="CT">/* Sample time: [0.02s, 0.0s] */</span>
+</span><span><a class="LN" name="476">  476   </a><b>{</b>
+</span><span><a class="LN" name="477">  477   </a>  <span class="CT">/* Update for DiscreteIntegrator: '&lt;S6&gt;/Discrete-Time Integrator' */</span>
+</span><span><a class="LN" name="478">  478   </a>  <a href="#var_ECF_stand_q_DW" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_DW');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_DW</font></a>.DiscreteTimeIntegrator_DSTATE[0] +=
+</span><span><a class="LN" name="479">  479   </a>    <a href="ECF_stand_q_data_c.html#var_ECF_stand_q_P" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_P');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_P</font></a>.DiscreteTimeIntegrator_gainval * <a href="#var_ECF_stand_q_B" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_B');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_B</font></a>.cons[0];
+</span><span><a class="LN" name="480">  480   </a>  <a href="#var_ECF_stand_q_DW" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_DW');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_DW</font></a>.DiscreteTimeIntegrator_DSTATE[1] +=
+</span><span><a class="LN" name="481">  481   </a>    <a href="ECF_stand_q_data_c.html#var_ECF_stand_q_P" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_P');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_P</font></a>.DiscreteTimeIntegrator_gainval * <a href="#var_ECF_stand_q_B" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_B');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_B</font></a>.cons[1];
+</span><span><a class="LN" name="482">  482   </a>  <a href="#var_ECF_stand_q_DW" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_DW');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_DW</font></a>.DiscreteTimeIntegrator_DSTATE[2] +=
+</span><span><a class="LN" name="483">  483   </a>    <a href="ECF_stand_q_data_c.html#var_ECF_stand_q_P" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_P');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_P</font></a>.DiscreteTimeIntegrator_gainval * <a href="#var_ECF_stand_q_B" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_B');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_B</font></a>.cons[2];
+</span><span><a class="LN" name="484">  484   </a>  <a href="#var_ECF_stand_q_DW" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_DW');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_DW</font></a>.DiscreteTimeIntegrator_DSTATE[3] +=
+</span><span><a class="LN" name="485">  485   </a>    <a href="ECF_stand_q_data_c.html#var_ECF_stand_q_P" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_P');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_P</font></a>.DiscreteTimeIntegrator_gainval * <a href="#var_ECF_stand_q_B" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_B');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_B</font></a>.cons[3];
+</span><span><a class="LN" name="486">  486   </a>
+</span><span><a class="LN" name="487">  487   </a>  <span class="CT">/* Update for DiscreteIntegrator: '&lt;S6&gt;/Discrete-Time Integrator1' */</span>
+</span><span><a class="LN" name="488">  488   </a>  <a href="#var_ECF_stand_q_DW" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_DW');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_DW</font></a>.DiscreteTimeIntegrator1_DSTATE[0] +=
+</span><span><a class="LN" name="489">  489   </a>    <a href="ECF_stand_q_data_c.html#var_ECF_stand_q_P" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_P');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_P</font></a>.DiscreteTimeIntegrator1_gainval * <a href="#var_ECF_stand_q_B" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_B');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_B</font></a>.bias_dot[0];
+</span><span><a class="LN" name="490">  490   </a>  <a href="#var_ECF_stand_q_DW" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_DW');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_DW</font></a>.DiscreteTimeIntegrator1_DSTATE[1] +=
+</span><span><a class="LN" name="491">  491   </a>    <a href="ECF_stand_q_data_c.html#var_ECF_stand_q_P" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_P');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_P</font></a>.DiscreteTimeIntegrator1_gainval * <a href="#var_ECF_stand_q_B" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_B');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_B</font></a>.bias_dot[1];
+</span><span><a class="LN" name="492">  492   </a>  <a href="#var_ECF_stand_q_DW" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_DW');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_DW</font></a>.DiscreteTimeIntegrator1_DSTATE[2] +=
+</span><span><a class="LN" name="493">  493   </a>    <a href="ECF_stand_q_data_c.html#var_ECF_stand_q_P" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_P');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_P</font></a>.DiscreteTimeIntegrator1_gainval * <a href="#var_ECF_stand_q_B" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_B');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_B</font></a>.bias_dot[2];
+</span><span><a class="LN" name="494">  494   </a>
+</span><span><a class="LN" name="495">  495   </a>  <span class="CT">/* Update absolute time */</span>
+</span><span><a class="LN" name="496">  496   </a>  <span class="CT">/* The "clockTick1" counts the number of times the code of this task has</span>
+</span><span><a class="LN" name="497">  497   </a><span class="CT">   * been executed. The absolute time is the multiplication of "clockTick1"</span>
+</span><span><a class="LN" name="498">  498   </a><span class="CT">   * and "Timing.stepSize1". Size of "clockTick1" ensures timer will not</span>
+</span><span><a class="LN" name="499">  499   </a><span class="CT">   * overflow during the application lifespan selected.</span>
+</span><span><a class="LN" name="500">  500   </a><span class="CT">   * Timer of this task consists of two 32 bit unsigned integers.</span>
+</span><span><a class="LN" name="501">  501   </a><span class="CT">   * The two integers represent the low bits Timing.clockTick1 and the high bits</span>
+</span><span><a class="LN" name="502">  502   </a><span class="CT">   * Timing.clockTickH1. When the low bit overflows to 0, the high bits increment.</span>
+</span><span><a class="LN" name="503">  503   </a><span class="CT">   */</span>
+</span><span><a class="LN" name="504">  504   </a>  <span class="KW">if</span> (!(++<a href="#var_ECF_stand_q_M" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_M');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_M</font></a>-&gt;Timing.clockTick1)) <b>{</b>
+</span><span><a class="LN" name="505">  505   </a>    ++<a href="#var_ECF_stand_q_M" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_M');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_M</font></a>-&gt;Timing.clockTickH1;
+</span><span><a class="LN" name="506">  506   </a>  <b>}</b>
+</span><span><a class="LN" name="507">  507   </a>
+</span><span><a class="LN" name="508">  508   </a>  <a href="#var_ECF_stand_q_M" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_M');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_M</font></a>-&gt;Timing.t[1] = <a href="#var_ECF_stand_q_M" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_M');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_M</font></a>-&gt;Timing.clockTick1 *
+</span><span><a class="LN" name="509">  509   </a>    <a href="#var_ECF_stand_q_M" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_M');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_M</font></a>-&gt;Timing.stepSize1 + <a href="#var_ECF_stand_q_M" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_M');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_M</font></a>-&gt;Timing.clockTickH1 *
+</span><span><a class="LN" name="510">  510   </a>    <a href="#var_ECF_stand_q_M" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_M');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_M</font></a>-&gt;Timing.stepSize1 * 4294967296.0;
+</span><span><a class="LN" name="511">  511   </a><b>}</b>
+</span><span><a class="LN" name="512">  512   </a>
+</span><span><a class="LN" name="513">  513   </a><span class="CT">/* Model output wrapper function for compatibility with a static main program */</span>
+</span><span><a class="LN" name="514">  514   </a><span class="DT">static</span> <span class="DT">void</span> <a name="fcn_ECF_stand_q_output">ECF_stand_q_output</a>(int_T tid)
+</span><span><a class="LN" name="515">  515   </a><b>{</b>
+</span><span><a class="LN" name="516">  516   </a>  <span class="KW">switch</span> (tid) <b>{</b>
+</span><span><a class="LN" name="517">  517   </a>   <span class="KW">case</span> 0 :
+</span><span><a class="LN" name="518">  518   </a>    <a href="#fcn_ECF_stand_q_output0" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'fcn_ECF_stand_q_output0');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_output0</font></a>();
+</span><span><a class="LN" name="519">  519   </a>    <span class="KW">break</span>;
+</span><span><a class="LN" name="520">  520   </a>
+</span><span><a class="LN" name="521">  521   </a>   <span class="KW">case</span> 1 :
+</span><span><a class="LN" name="522">  522   </a>    <a href="#fcn_ECF_stand_q_output1" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'fcn_ECF_stand_q_output1');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_output1</font></a>();
+</span><span><a class="LN" name="523">  523   </a>    <span class="KW">break</span>;
+</span><span><a class="LN" name="524">  524   </a>
+</span><span><a class="LN" name="525">  525   </a>   <span class="KW">default</span> :
+</span><span><a class="LN" name="526">  526   </a>    <span class="KW">break</span>;
+</span><span><a class="LN" name="527">  527   </a>  <b>}</b>
+</span><span><a class="LN" name="528">  528   </a><b>}</b>
+</span><span><a class="LN" name="529">  529   </a>
+</span><span><a class="LN" name="530">  530   </a><span class="CT">/* Model update wrapper function for compatibility with a static main program */</span>
+</span><span><a class="LN" name="531">  531   </a><span class="DT">static</span> <span class="DT">void</span> <a name="fcn_ECF_stand_q_update">ECF_stand_q_update</a>(int_T tid)
+</span><span><a class="LN" name="532">  532   </a><b>{</b>
+</span><span><a class="LN" name="533">  533   </a>  <span class="KW">switch</span> (tid) <b>{</b>
+</span><span><a class="LN" name="534">  534   </a>   <span class="KW">case</span> 0 :
+</span><span><a class="LN" name="535">  535   </a>    <a href="#fcn_ECF_stand_q_update0" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'fcn_ECF_stand_q_update0');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_update0</font></a>();
+</span><span><a class="LN" name="536">  536   </a>    <span class="KW">break</span>;
+</span><span><a class="LN" name="537">  537   </a>
+</span><span><a class="LN" name="538">  538   </a>   <span class="KW">case</span> 1 :
+</span><span><a class="LN" name="539">  539   </a>    <a href="#fcn_ECF_stand_q_update1" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'fcn_ECF_stand_q_update1');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_update1</font></a>();
+</span><span><a class="LN" name="540">  540   </a>    <span class="KW">break</span>;
+</span><span><a class="LN" name="541">  541   </a>
+</span><span><a class="LN" name="542">  542   </a>   <span class="KW">default</span> :
+</span><span><a class="LN" name="543">  543   </a>    <span class="KW">break</span>;
+</span><span><a class="LN" name="544">  544   </a>  <b>}</b>
+</span><span><a class="LN" name="545">  545   </a><b>}</b>
+</span><span><a class="LN" name="546">  546   </a>
+</span><span><a class="LN" name="547">  547   </a><span class="CT">/* Model initialize function */</span>
+</span><span><a class="LN" name="548">  548   </a><span class="DT">void</span> <a name="fcn_ECF_stand_q_initialize">ECF_stand_q_initialize</a>(<span class="DT">void</span>)
+</span><span><a class="LN" name="549">  549   </a><b>{</b>
+</span><span><a class="LN" name="550">  550   </a>  <span class="CT">/* InitializeConditions for DiscreteIntegrator: '&lt;S6&gt;/Discrete-Time Integrator' */</span>
+</span><span><a class="LN" name="551">  551   </a>  <a href="#var_ECF_stand_q_DW" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_DW');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_DW</font></a>.DiscreteTimeIntegrator_DSTATE[0] =
+</span><span><a class="LN" name="552">  552   </a>    <a href="ECF_stand_q_data_c.html#var_ECF_stand_q_P" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_P');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_P</font></a>.DiscreteTimeIntegrator_IC[0];
+</span><span><a class="LN" name="553">  553   </a>  <a href="#var_ECF_stand_q_DW" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_DW');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_DW</font></a>.DiscreteTimeIntegrator_DSTATE[1] =
+</span><span><a class="LN" name="554">  554   </a>    <a href="ECF_stand_q_data_c.html#var_ECF_stand_q_P" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_P');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_P</font></a>.DiscreteTimeIntegrator_IC[1];
+</span><span><a class="LN" name="555">  555   </a>  <a href="#var_ECF_stand_q_DW" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_DW');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_DW</font></a>.DiscreteTimeIntegrator_DSTATE[2] =
+</span><span><a class="LN" name="556">  556   </a>    <a href="ECF_stand_q_data_c.html#var_ECF_stand_q_P" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_P');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_P</font></a>.DiscreteTimeIntegrator_IC[2];
+</span><span><a class="LN" name="557">  557   </a>  <a href="#var_ECF_stand_q_DW" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_DW');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_DW</font></a>.DiscreteTimeIntegrator_DSTATE[3] =
+</span><span><a class="LN" name="558">  558   </a>    <a href="ECF_stand_q_data_c.html#var_ECF_stand_q_P" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_P');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_P</font></a>.DiscreteTimeIntegrator_IC[3];
+</span><span><a class="LN" name="559">  559   </a>
+</span><span><a class="LN" name="560">  560   </a>  <span class="CT">/* InitializeConditions for DiscreteIntegrator: '&lt;S6&gt;/Discrete-Time Integrator1' */</span>
+</span><span><a class="LN" name="561">  561   </a>  <a href="#var_ECF_stand_q_DW" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_DW');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_DW</font></a>.DiscreteTimeIntegrator1_DSTATE[0] =
+</span><span><a class="LN" name="562">  562   </a>    <a href="ECF_stand_q_data_c.html#var_ECF_stand_q_P" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_P');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_P</font></a>.DiscreteTimeIntegrator1_IC[0];
+</span><span><a class="LN" name="563">  563   </a>  <a href="#var_ECF_stand_q_DW" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_DW');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_DW</font></a>.DiscreteTimeIntegrator1_DSTATE[1] =
+</span><span><a class="LN" name="564">  564   </a>    <a href="ECF_stand_q_data_c.html#var_ECF_stand_q_P" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_P');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_P</font></a>.DiscreteTimeIntegrator1_IC[1];
+</span><span><a class="LN" name="565">  565   </a>  <a href="#var_ECF_stand_q_DW" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_DW');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_DW</font></a>.DiscreteTimeIntegrator1_DSTATE[2] =
+</span><span><a class="LN" name="566">  566   </a>    <a href="ECF_stand_q_data_c.html#var_ECF_stand_q_P" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_P');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_P</font></a>.DiscreteTimeIntegrator1_IC[2];
+</span><span><a class="LN" name="567">  567   </a><b>}</b>
+</span><span><a class="LN" name="568">  568   </a>
+</span><span><a class="LN" name="569">  569   </a><span class="CT">/* Model terminate function */</span>
+</span><span><a class="LN" name="570">  570   </a><span class="DT">void</span> <a name="fcn_ECF_stand_q_terminate">ECF_stand_q_terminate</a>(<span class="DT">void</span>)
+</span><span><a class="LN" name="571">  571   </a><b>{</b>
+</span><span><a class="LN" name="572">  572   </a>  <span class="CT">/* (no terminate code required) */</span>
+</span><span><a class="LN" name="573">  573   </a><b>}</b>
+</span><span><a class="LN" name="574">  574   </a>
+</span><span><a class="LN" name="575">  575   </a><span class="CT">/*========================================================================*</span>
+</span><span><a class="LN" name="576">  576   </a><span class="CT"> * Start of Classic call interface                                        *</span>
+</span><span><a class="LN" name="577">  577   </a><span class="CT"> *========================================================================*/</span>
+</span><span><a class="LN" name="578">  578   </a><span class="DT">void</span> <a name="fcn_MdlOutputs">MdlOutputs</a>(int_T tid)
+</span><span><a class="LN" name="579">  579   </a><b>{</b>
+</span><span><a class="LN" name="580">  580   </a>  <a href="#fcn_ECF_stand_q_output" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'fcn_ECF_stand_q_output');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_output</font></a>(tid);
+</span><span><a class="LN" name="581">  581   </a><b>}</b>
+</span><span><a class="LN" name="582">  582   </a>
+</span><span><a class="LN" name="583">  583   </a><span class="DT">void</span> <a name="fcn_MdlUpdate">MdlUpdate</a>(int_T tid)
+</span><span><a class="LN" name="584">  584   </a><b>{</b>
+</span><span><a class="LN" name="585">  585   </a>  <a href="#fcn_ECF_stand_q_update" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'fcn_ECF_stand_q_update');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_update</font></a>(tid);
+</span><span><a class="LN" name="586">  586   </a><b>}</b>
+</span><span><a class="LN" name="587">  587   </a>
+</span><span><a class="LN" name="588">  588   </a><span class="DT">void</span> <a name="fcn_MdlInitializeSizes">MdlInitializeSizes</a>(<span class="DT">void</span>)
+</span><span><a class="LN" name="589">  589   </a><b>{</b>
+</span><span><a class="LN" name="590">  590   </a><b>}</b>
+</span><span><a class="LN" name="591">  591   </a>
+</span><span><a class="LN" name="592">  592   </a><span class="DT">void</span> <a name="fcn_MdlInitializeSampleTimes">MdlInitializeSampleTimes</a>(<span class="DT">void</span>)
+</span><span><a class="LN" name="593">  593   </a><b>{</b>
+</span><span><a class="LN" name="594">  594   </a><b>}</b>
+</span><span><a class="LN" name="595">  595   </a>
+</span><span><a class="LN" name="596">  596   </a><span class="DT">void</span> <a name="fcn_MdlInitialize">MdlInitialize</a>(<span class="DT">void</span>)
+</span><span><a class="LN" name="597">  597   </a><b>{</b>
+</span><span><a class="LN" name="598">  598   </a><b>}</b>
+</span><span><a class="LN" name="599">  599   </a>
+</span><span><a class="LN" name="600">  600   </a><span class="DT">void</span> <a name="fcn_MdlStart">MdlStart</a>(<span class="DT">void</span>)
+</span><span><a class="LN" name="601">  601   </a><b>{</b>
+</span><span><a class="LN" name="602">  602   </a>  <a href="#fcn_ECF_stand_q_initialize" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'fcn_ECF_stand_q_initialize');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_initialize</font></a>();
+</span><span><a class="LN" name="603">  603   </a><b>}</b>
+</span><span><a class="LN" name="604">  604   </a>
+</span><span><a class="LN" name="605">  605   </a><span class="DT">void</span> <a name="fcn_MdlTerminate">MdlTerminate</a>(<span class="DT">void</span>)
+</span><span><a class="LN" name="606">  606   </a><b>{</b>
+</span><span><a class="LN" name="607">  607   </a>  <a href="#fcn_ECF_stand_q_terminate" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'fcn_ECF_stand_q_terminate');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_terminate</font></a>();
+</span><span><a class="LN" name="608">  608   </a><b>}</b>
+</span><span><a class="LN" name="609">  609   </a>
+</span><span><a class="LN" name="610">  610   </a><span class="CT">/* Registration function */</span>
+</span><span><a class="LN" name="611">  611   </a><a href="ECF_stand_q_types_h.html#type_RT_MODEL_ECF_stand_q_T" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'type_RT_MODEL_ECF_stand_q_T');" target="rtwreport_document_frame"><font color="#1122aa">RT_MODEL_ECF_stand_q_T</font></a> *<a name="fcn_ECF_stand_q">ECF_stand_q</a>(<span class="DT">void</span>)
+</span><span><a class="LN" name="612">  612   </a><b>{</b>
+</span><span><a class="LN" name="613">  613   </a>  <span class="CT">/* Registration code */</span>
+</span><span><a class="LN" name="614">  614   </a>
+</span><span><a class="LN" name="615">  615   </a>  <span class="CT">/* initialize non-finites */</span>
+</span><span><a class="LN" name="616">  616   </a>  <a href="rt_nonfinite_c.html#fcn_rt_InitInfAndNaN" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'fcn_rt_InitInfAndNaN');" target="rtwreport_document_frame"><font color="#1122aa">rt_InitInfAndNaN</font></a>(<span class="KW">sizeof</span>(real_T));
+</span><span><a class="LN" name="617">  617   </a>
+</span><span><a class="LN" name="618">  618   </a>  <span class="CT">/* initialize real-time model */</span>
+</span><span><a class="LN" name="619">  619   </a>  (<span class="DT">void</span>) memset((<span class="DT">void</span> *)<a href="#var_ECF_stand_q_M" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_M');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_M</font></a>, 0,
+</span><span><a class="LN" name="620">  620   </a>                <span class="KW">sizeof</span>(<a href="ECF_stand_q_types_h.html#type_RT_MODEL_ECF_stand_q_T" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'type_RT_MODEL_ECF_stand_q_T');" target="rtwreport_document_frame"><font color="#1122aa">RT_MODEL_ECF_stand_q_T</font></a>));
+</span><span><a class="LN" name="621">  621   </a>
+</span><span><a class="LN" name="622">  622   </a>  <span class="CT">/* Initialize timing info */</span>
+</span><span><a class="LN" name="623">  623   </a>  <b>{</b>
+</span><span><a class="LN" name="624">  624   </a>    int_T *mdlTsMap = <a href="#var_ECF_stand_q_M" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_M');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_M</font></a>-&gt;Timing.sampleTimeTaskIDArray;
+</span><span><a class="LN" name="625">  625   </a>    mdlTsMap[0] = 0;
+</span><span><a class="LN" name="626">  626   </a>    mdlTsMap[1] = 1;
+</span><span><a class="LN" name="627">  627   </a>    <a href="#var_ECF_stand_q_M" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_M');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_M</font></a>-&gt;Timing.sampleTimeTaskIDPtr = (&amp;mdlTsMap[0]);
+</span><span><a class="LN" name="628">  628   </a>    <a href="#var_ECF_stand_q_M" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_M');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_M</font></a>-&gt;Timing.sampleTimes = (&amp;<a href="#var_ECF_stand_q_M" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_M');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_M</font></a>-&gt;
+</span><span><a class="LN" name="629">  629   </a>      Timing.sampleTimesArray[0]);
+</span><span><a class="LN" name="630">  630   </a>    <a href="#var_ECF_stand_q_M" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_M');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_M</font></a>-&gt;Timing.offsetTimes = (&amp;<a href="#var_ECF_stand_q_M" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_M');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_M</font></a>-&gt;
+</span><span><a class="LN" name="631">  631   </a>      Timing.offsetTimesArray[0]);
+</span><span><a class="LN" name="632">  632   </a>
+</span><span><a class="LN" name="633">  633   </a>    <span class="CT">/* task periods */</span>
+</span><span><a class="LN" name="634">  634   </a>    <a href="#var_ECF_stand_q_M" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_M');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_M</font></a>-&gt;Timing.sampleTimes[0] = (0.01);
+</span><span><a class="LN" name="635">  635   </a>    <a href="#var_ECF_stand_q_M" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_M');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_M</font></a>-&gt;Timing.sampleTimes[1] = (0.02);
+</span><span><a class="LN" name="636">  636   </a>
+</span><span><a class="LN" name="637">  637   </a>    <span class="CT">/* task offsets */</span>
+</span><span><a class="LN" name="638">  638   </a>    <a href="#var_ECF_stand_q_M" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_M');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_M</font></a>-&gt;Timing.offsetTimes[0] = (0.0);
+</span><span><a class="LN" name="639">  639   </a>    <a href="#var_ECF_stand_q_M" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_M');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_M</font></a>-&gt;Timing.offsetTimes[1] = (0.0);
+</span><span><a class="LN" name="640">  640   </a>  <b>}</b>
+</span><span><a class="LN" name="641">  641   </a>
+</span><span><a class="LN" name="642">  642   </a>  rtmSetTPtr(<a href="#var_ECF_stand_q_M" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_M');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_M</font></a>, &amp;<a href="#var_ECF_stand_q_M" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_M');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_M</font></a>-&gt;Timing.tArray[0]);
+</span><span><a class="LN" name="643">  643   </a>
+</span><span><a class="LN" name="644">  644   </a>  <b>{</b>
+</span><span><a class="LN" name="645">  645   </a>    int_T *mdlSampleHits = <a href="#var_ECF_stand_q_M" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_M');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_M</font></a>-&gt;Timing.sampleHitArray;
+</span><span><a class="LN" name="646">  646   </a>    int_T *mdlPerTaskSampleHits = <a href="#var_ECF_stand_q_M" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_M');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_M</font></a>-&gt;Timing.perTaskSampleHitsArray;
+</span><span><a class="LN" name="647">  647   </a>    <a href="#var_ECF_stand_q_M" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_M');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_M</font></a>-&gt;Timing.perTaskSampleHits = (&amp;mdlPerTaskSampleHits[0]);
+</span><span><a class="LN" name="648">  648   </a>    mdlSampleHits[0] = 1;
+</span><span><a class="LN" name="649">  649   </a>    <a href="#var_ECF_stand_q_M" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_M');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_M</font></a>-&gt;Timing.sampleHits = (&amp;mdlSampleHits[0]);
+</span><span><a class="LN" name="650">  650   </a>  <b>}</b>
+</span><span><a class="LN" name="651">  651   </a>
+</span><span><a class="LN" name="652">  652   </a>  rtmSetTFinal(<a href="#var_ECF_stand_q_M" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_M');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_M</font></a>, 180.0);
+</span><span><a class="LN" name="653">  653   </a>  <a href="#var_ECF_stand_q_M" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_M');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_M</font></a>-&gt;Timing.stepSize0 = 0.01;
+</span><span><a class="LN" name="654">  654   </a>  <a href="#var_ECF_stand_q_M" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_M');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_M</font></a>-&gt;Timing.stepSize1 = 0.02;
+</span><span><a class="LN" name="655">  655   </a>
+</span><span><a class="LN" name="656">  656   </a>  <span class="CT">/* Setup for data logging */</span>
+</span><span><a class="LN" name="657">  657   </a>  <b>{</b>
+</span><span><a class="LN" name="658">  658   </a>    <span class="DT">static</span> RTWLogInfo rt_DataLoggingInfo;
+</span><span><a class="LN" name="659">  659   </a>    <a href="#var_ECF_stand_q_M" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_M');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_M</font></a>-&gt;rtwLogInfo = &amp;rt_DataLoggingInfo;
+</span><span><a class="LN" name="660">  660   </a>  <b>}</b>
+</span><span><a class="LN" name="661">  661   </a>
+</span><span><a class="LN" name="662">  662   </a>  <span class="CT">/* Setup for data logging */</span>
+</span><span><a class="LN" name="663">  663   </a>  <b>{</b>
+</span><span><a class="LN" name="664">  664   </a>    rtliSetLogXSignalInfo(<a href="#var_ECF_stand_q_M" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_M');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_M</font></a>-&gt;rtwLogInfo, (NULL));
+</span><span><a class="LN" name="665">  665   </a>    rtliSetLogXSignalPtrs(<a href="#var_ECF_stand_q_M" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_M');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_M</font></a>-&gt;rtwLogInfo, (NULL));
+</span><span><a class="LN" name="666">  666   </a>    rtliSetLogT(<a href="#var_ECF_stand_q_M" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_M');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_M</font></a>-&gt;rtwLogInfo, <font color="#1122ff">&quot;tout&quot;</font>);
+</span><span><a class="LN" name="667">  667   </a>    rtliSetLogX(<a href="#var_ECF_stand_q_M" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_M');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_M</font></a>-&gt;rtwLogInfo, <font color="#1122ff">&quot;&quot;</font>);
+</span><span><a class="LN" name="668">  668   </a>    rtliSetLogXFinal(<a href="#var_ECF_stand_q_M" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_M');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_M</font></a>-&gt;rtwLogInfo, <font color="#1122ff">&quot;&quot;</font>);
+</span><span><a class="LN" name="669">  669   </a>    rtliSetSigLog(<a href="#var_ECF_stand_q_M" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_M');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_M</font></a>-&gt;rtwLogInfo, <font color="#1122ff">&quot;&quot;</font>);
+</span><span><a class="LN" name="670">  670   </a>    rtliSetLogVarNameModifier(<a href="#var_ECF_stand_q_M" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_M');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_M</font></a>-&gt;rtwLogInfo, <font color="#1122ff">&quot;rt_&quot;</font>);
+</span><span><a class="LN" name="671">  671   </a>    rtliSetLogFormat(<a href="#var_ECF_stand_q_M" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_M');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_M</font></a>-&gt;rtwLogInfo, 0);
+</span><span><a class="LN" name="672">  672   </a>    rtliSetLogMaxRows(<a href="#var_ECF_stand_q_M" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_M');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_M</font></a>-&gt;rtwLogInfo, 1000);
+</span><span><a class="LN" name="673">  673   </a>    rtliSetLogDecimation(<a href="#var_ECF_stand_q_M" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_M');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_M</font></a>-&gt;rtwLogInfo, 1);
+</span><span><a class="LN" name="674">  674   </a>
+</span><span><a class="LN" name="675">  675   </a>    <span class="CT">/*</span>
+</span><span><a class="LN" name="676">  676   </a><span class="CT">     * Set pointers to the data and signal info for each output</span>
+</span><span><a class="LN" name="677">  677   </a><span class="CT">     */</span>
+</span><span><a class="LN" name="678">  678   </a>    <b>{</b>
+</span><span><a class="LN" name="679">  679   </a>      <span class="DT">static</span> <span class="DT">void</span> * rt_LoggedOutputSignalPtrs[] = <b>{</b>
+</span><span><a class="LN" name="680">  680   </a>        &amp;<a href="#var_ECF_stand_q_Y" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_Y');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_Y</font></a>.Euler[0],
+</span><span><a class="LN" name="681">  681   </a>        &amp;<a href="#var_ECF_stand_q_Y" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_Y');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_Y</font></a>.bias[0]
+</span><span><a class="LN" name="682">  682   </a>      <b>}</b>;
+</span><span><a class="LN" name="683">  683   </a>
+</span><span><a class="LN" name="684">  684   </a>      rtliSetLogYSignalPtrs(<a href="#var_ECF_stand_q_M" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_M');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_M</font></a>-&gt;rtwLogInfo, ((LogSignalPtrsType)
+</span><span><a class="LN" name="685">  685   </a>        rt_LoggedOutputSignalPtrs));
+</span><span><a class="LN" name="686">  686   </a>    <b>}</b>
+</span><span><a class="LN" name="687">  687   </a>
+</span><span><a class="LN" name="688">  688   </a>    <b>{</b>
+</span><span><a class="LN" name="689">  689   </a>      <span class="DT">static</span> int_T rt_LoggedOutputWidths[] = <b>{</b>
+</span><span><a class="LN" name="690">  690   </a>        3,
+</span><span><a class="LN" name="691">  691   </a>        3
+</span><span><a class="LN" name="692">  692   </a>      <b>}</b>;
+</span><span><a class="LN" name="693">  693   </a>
+</span><span><a class="LN" name="694">  694   </a>      <span class="DT">static</span> int_T rt_LoggedOutputNumDimensions[] = <b>{</b>
+</span><span><a class="LN" name="695">  695   </a>        1,
+</span><span><a class="LN" name="696">  696   </a>        1
+</span><span><a class="LN" name="697">  697   </a>      <b>}</b>;
+</span><span><a class="LN" name="698">  698   </a>
+</span><span><a class="LN" name="699">  699   </a>      <span class="DT">static</span> int_T rt_LoggedOutputDimensions[] = <b>{</b>
+</span><span><a class="LN" name="700">  700   </a>        3,
+</span><span><a class="LN" name="701">  701   </a>        3
+</span><span><a class="LN" name="702">  702   </a>      <b>}</b>;
+</span><span><a class="LN" name="703">  703   </a>
+</span><span><a class="LN" name="704">  704   </a>      <span class="DT">static</span> boolean_T rt_LoggedOutputIsVarDims[] = <b>{</b>
+</span><span><a class="LN" name="705">  705   </a>        0,
+</span><span><a class="LN" name="706">  706   </a>        0
+</span><span><a class="LN" name="707">  707   </a>      <b>}</b>;
+</span><span><a class="LN" name="708">  708   </a>
+</span><span><a class="LN" name="709">  709   </a>      <span class="DT">static</span> <span class="DT">void</span>* rt_LoggedCurrentSignalDimensions[] = <b>{</b>
+</span><span><a class="LN" name="710">  710   </a>        (NULL),
+</span><span><a class="LN" name="711">  711   </a>        (NULL)
+</span><span><a class="LN" name="712">  712   </a>      <b>}</b>;
+</span><span><a class="LN" name="713">  713   </a>
+</span><span><a class="LN" name="714">  714   </a>      <span class="DT">static</span> int_T rt_LoggedCurrentSignalDimensionsSize[] = <b>{</b>
+</span><span><a class="LN" name="715">  715   </a>        4,
+</span><span><a class="LN" name="716">  716   </a>        4
+</span><span><a class="LN" name="717">  717   </a>      <b>}</b>;
+</span><span><a class="LN" name="718">  718   </a>
+</span><span><a class="LN" name="719">  719   </a>      <span class="DT">static</span> <a href="builtin_typeid_types_h.html#type_BuiltInDTypeId" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'type_BuiltInDTypeId');" target="rtwreport_document_frame"><font color="#1122aa">BuiltInDTypeId</font></a> rt_LoggedOutputDataTypeIds[] = <b>{</b>
+</span><span><a class="LN" name="720">  720   </a>        SS_DOUBLE,
+</span><span><a class="LN" name="721">  721   </a>        SS_DOUBLE
+</span><span><a class="LN" name="722">  722   </a>      <b>}</b>;
+</span><span><a class="LN" name="723">  723   </a>
+</span><span><a class="LN" name="724">  724   </a>      <span class="DT">static</span> int_T rt_LoggedOutputComplexSignals[] = <b>{</b>
+</span><span><a class="LN" name="725">  725   </a>        0,
+</span><span><a class="LN" name="726">  726   </a>        0
+</span><span><a class="LN" name="727">  727   </a>      <b>}</b>;
+</span><span><a class="LN" name="728">  728   </a>
+</span><span><a class="LN" name="729">  729   </a>      <span class="DT">static</span> <span class="DT">const</span> char_T *rt_LoggedOutputLabels[] = <b>{</b>
+</span><span><a class="LN" name="730">  730   </a>        <font color="#1122ff">&quot;&quot;</font>,
+</span><span><a class="LN" name="731">  731   </a>        <font color="#1122ff">&quot;&quot;</font> <b>}</b>;
+</span><span><a class="LN" name="732">  732   </a>
+</span><span><a class="LN" name="733">  733   </a>      <span class="DT">static</span> <span class="DT">const</span> char_T *rt_LoggedOutputBlockNames[] = <b>{</b>
+</span><span><a class="LN" name="734">  734   </a>        <font color="#1122ff">&quot;ECF_stand_q/Euler&quot;</font>,
+</span><span><a class="LN" name="735">  735   </a>        <font color="#1122ff">&quot;ECF_stand_q/bias&quot;</font> <b>}</b>;
+</span><span><a class="LN" name="736">  736   </a>
+</span><span><a class="LN" name="737">  737   </a>      <span class="DT">static</span> RTWLogDataTypeConvert rt_RTWLogDataTypeConvert[] = <b>{</b>
+</span><span><a class="LN" name="738">  738   </a>        <b>{</b> 0, SS_DOUBLE, SS_DOUBLE, 0, 0, 0, 1.0, 0, 0.0 <b>}</b>,
+</span><span><a class="LN" name="739">  739   </a>
+</span><span><a class="LN" name="740">  740   </a>        <b>{</b> 0, SS_DOUBLE, SS_DOUBLE, 0, 0, 0, 1.0, 0, 0.0 <b>}</b>
+</span><span><a class="LN" name="741">  741   </a>      <b>}</b>;
+</span><span><a class="LN" name="742">  742   </a>
+</span><span><a class="LN" name="743">  743   </a>      <span class="DT">static</span> RTWLogSignalInfo rt_LoggedOutputSignalInfo[] = <b>{</b>
+</span><span><a class="LN" name="744">  744   </a>        <b>{</b>
+</span><span><a class="LN" name="745">  745   </a>          2,
+</span><span><a class="LN" name="746">  746   </a>          rt_LoggedOutputWidths,
+</span><span><a class="LN" name="747">  747   </a>          rt_LoggedOutputNumDimensions,
+</span><span><a class="LN" name="748">  748   </a>          rt_LoggedOutputDimensions,
+</span><span><a class="LN" name="749">  749   </a>          rt_LoggedOutputIsVarDims,
+</span><span><a class="LN" name="750">  750   </a>          rt_LoggedCurrentSignalDimensions,
+</span><span><a class="LN" name="751">  751   </a>          rt_LoggedCurrentSignalDimensionsSize,
+</span><span><a class="LN" name="752">  752   </a>          rt_LoggedOutputDataTypeIds,
+</span><span><a class="LN" name="753">  753   </a>          rt_LoggedOutputComplexSignals,
+</span><span><a class="LN" name="754">  754   </a>          (NULL),
+</span><span><a class="LN" name="755">  755   </a>
+</span><span><a class="LN" name="756">  756   </a>          <b>{</b> rt_LoggedOutputLabels <b>}</b>,
+</span><span><a class="LN" name="757">  757   </a>          (NULL),
+</span><span><a class="LN" name="758">  758   </a>          (NULL),
+</span><span><a class="LN" name="759">  759   </a>          (NULL),
+</span><span><a class="LN" name="760">  760   </a>
+</span><span><a class="LN" name="761">  761   </a>          <b>{</b> rt_LoggedOutputBlockNames <b>}</b>,
+</span><span><a class="LN" name="762">  762   </a>
+</span><span><a class="LN" name="763">  763   </a>          <b>{</b> (NULL) <b>}</b>,
+</span><span><a class="LN" name="764">  764   </a>          (NULL),
+</span><span><a class="LN" name="765">  765   </a>          rt_RTWLogDataTypeConvert
+</span><span><a class="LN" name="766">  766   </a>        <b>}</b>
+</span><span><a class="LN" name="767">  767   </a>      <b>}</b>;
+</span><span><a class="LN" name="768">  768   </a>
+</span><span><a class="LN" name="769">  769   </a>      rtliSetLogYSignalInfo(<a href="#var_ECF_stand_q_M" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_M');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_M</font></a>-&gt;rtwLogInfo, rt_LoggedOutputSignalInfo);
+</span><span><a class="LN" name="770">  770   </a>
+</span><span><a class="LN" name="771">  771   </a>      <span class="CT">/* set currSigDims field */</span>
+</span><span><a class="LN" name="772">  772   </a>      rt_LoggedCurrentSignalDimensions[0] = &amp;rt_LoggedOutputWidths[0];
+</span><span><a class="LN" name="773">  773   </a>      rt_LoggedCurrentSignalDimensions[1] = &amp;rt_LoggedOutputWidths[1];
+</span><span><a class="LN" name="774">  774   </a>    <b>}</b>
+</span><span><a class="LN" name="775">  775   </a>
+</span><span><a class="LN" name="776">  776   </a>    rtliSetLogY(<a href="#var_ECF_stand_q_M" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_M');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_M</font></a>-&gt;rtwLogInfo, <font color="#1122ff">&quot;yout&quot;</font>);
+</span><span><a class="LN" name="777">  777   </a>  <b>}</b>
+</span><span><a class="LN" name="778">  778   </a>
+</span><span><a class="LN" name="779">  779   </a>  <a href="#var_ECF_stand_q_M" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_M');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_M</font></a>-&gt;solverInfoPtr = (&amp;<a href="#var_ECF_stand_q_M" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_M');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_M</font></a>-&gt;solverInfo);
+</span><span><a class="LN" name="780">  780   </a>  <a href="#var_ECF_stand_q_M" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_M');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_M</font></a>-&gt;Timing.stepSize = (0.01);
+</span><span><a class="LN" name="781">  781   </a>  rtsiSetFixedStepSize(&amp;<a href="#var_ECF_stand_q_M" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_M');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_M</font></a>-&gt;solverInfo, 0.01);
+</span><span><a class="LN" name="782">  782   </a>  rtsiSetSolverMode(&amp;<a href="#var_ECF_stand_q_M" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_M');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_M</font></a>-&gt;solverInfo, SOLVER_MODE_MULTITASKING);
+</span><span><a class="LN" name="783">  783   </a>
+</span><span><a class="LN" name="784">  784   </a>  <span class="CT">/* block I/O */</span>
+</span><span><a class="LN" name="785">  785   </a>  <a href="#var_ECF_stand_q_M" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_M');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_M</font></a>-&gt;ModelData.blockIO = ((<span class="DT">void</span> *) &amp;<a href="#var_ECF_stand_q_B" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_B');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_B</font></a>);
+</span><span><a class="LN" name="786">  786   </a>  (<span class="DT">void</span>) memset(((<span class="DT">void</span> *) &amp;<a href="#var_ECF_stand_q_B" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_B');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_B</font></a>), 0,
+</span><span><a class="LN" name="787">  787   </a>                <span class="KW">sizeof</span>(<a href="ECF_stand_q_h.html#type_B_ECF_stand_q_T" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'type_B_ECF_stand_q_T');" target="rtwreport_document_frame"><font color="#1122aa">B_ECF_stand_q_T</font></a>));
+</span><span><a class="LN" name="788">  788   </a>
+</span><span><a class="LN" name="789">  789   </a>  <span class="CT">/* parameters */</span>
+</span><span><a class="LN" name="790">  790   </a>  <a href="#var_ECF_stand_q_M" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_M');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_M</font></a>-&gt;ModelData.defaultParam = ((real_T *)&amp;<a href="ECF_stand_q_data_c.html#var_ECF_stand_q_P" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_P');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_P</font></a>);
+</span><span><a class="LN" name="791">  791   </a>
+</span><span><a class="LN" name="792">  792   </a>  <span class="CT">/* states (dwork) */</span>
+</span><span><a class="LN" name="793">  793   </a>  <a href="#var_ECF_stand_q_M" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_M');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_M</font></a>-&gt;ModelData.dwork = ((<span class="DT">void</span> *) &amp;<a href="#var_ECF_stand_q_DW" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_DW');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_DW</font></a>);
+</span><span><a class="LN" name="794">  794   </a>  (<span class="DT">void</span>) memset((<span class="DT">void</span> *)&amp;<a href="#var_ECF_stand_q_DW" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_DW');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_DW</font></a>, 0,
+</span><span><a class="LN" name="795">  795   </a>                <span class="KW">sizeof</span>(<a href="ECF_stand_q_h.html#type_DW_ECF_stand_q_T" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'type_DW_ECF_stand_q_T');" target="rtwreport_document_frame"><font color="#1122aa">DW_ECF_stand_q_T</font></a>));
+</span><span><a class="LN" name="796">  796   </a>
+</span><span><a class="LN" name="797">  797   </a>  <span class="CT">/* external inputs */</span>
+</span><span><a class="LN" name="798">  798   </a>  <a href="#var_ECF_stand_q_M" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_M');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_M</font></a>-&gt;ModelData.inputs = (((<span class="DT">void</span>*)&amp;<a href="#var_ECF_stand_q_U" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_U');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_U</font></a>));
+</span><span><a class="LN" name="799">  799   </a>  (<span class="DT">void</span>) memset((<span class="DT">void</span> *)&amp;<a href="#var_ECF_stand_q_U" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_U');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_U</font></a>, 0,
+</span><span><a class="LN" name="800">  800   </a>                <span class="KW">sizeof</span>(<a href="ECF_stand_q_h.html#type_ExtU_ECF_stand_q_T" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'type_ExtU_ECF_stand_q_T');" target="rtwreport_document_frame"><font color="#1122aa">ExtU_ECF_stand_q_T</font></a>));
+</span><span><a class="LN" name="801">  801   </a>
+</span><span><a class="LN" name="802">  802   </a>  <span class="CT">/* external outputs */</span>
+</span><span><a class="LN" name="803">  803   </a>  <a href="#var_ECF_stand_q_M" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_M');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_M</font></a>-&gt;ModelData.outputs = (&amp;<a href="#var_ECF_stand_q_Y" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_Y');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_Y</font></a>);
+</span><span><a class="LN" name="804">  804   </a>  (<span class="DT">void</span>) memset((<span class="DT">void</span> *)&amp;<a href="#var_ECF_stand_q_Y" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_Y');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_Y</font></a>, 0,
+</span><span><a class="LN" name="805">  805   </a>                <span class="KW">sizeof</span>(<a href="ECF_stand_q_h.html#type_ExtY_ECF_stand_q_T" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'type_ExtY_ECF_stand_q_T');" target="rtwreport_document_frame"><font color="#1122aa">ExtY_ECF_stand_q_T</font></a>));
+</span><span><a class="LN" name="806">  806   </a>
+</span><span><a class="LN" name="807">  807   </a>  <span class="CT">/* Initialize Sizes */</span>
+</span><span><a class="LN" name="808">  808   </a>  <a href="#var_ECF_stand_q_M" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_M');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_M</font></a>-&gt;Sizes.numContStates = (0);<span class="CT">/* Number of continuous states */</span>
+</span><span><a class="LN" name="809">  809   </a>  <a href="#var_ECF_stand_q_M" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_M');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_M</font></a>-&gt;Sizes.numY = (6);     <span class="CT">/* Number of model outputs */</span>
+</span><span><a class="LN" name="810">  810   </a>  <a href="#var_ECF_stand_q_M" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_M');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_M</font></a>-&gt;Sizes.numU = (13);    <span class="CT">/* Number of model inputs */</span>
+</span><span><a class="LN" name="811">  811   </a>  <a href="#var_ECF_stand_q_M" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_M');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_M</font></a>-&gt;Sizes.sysDirFeedThru = (1);<span class="CT">/* The model is direct feedthrough */</span>
+</span><span><a class="LN" name="812">  812   </a>  <a href="#var_ECF_stand_q_M" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_M');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_M</font></a>-&gt;Sizes.numSampTimes = (2);<span class="CT">/* Number of sample times */</span>
+</span><span><a class="LN" name="813">  813   </a>  <a href="#var_ECF_stand_q_M" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_M');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_M</font></a>-&gt;Sizes.numBlocks = (37);<span class="CT">/* Number of blocks */</span>
+</span><span><a class="LN" name="814">  814   </a>  <a href="#var_ECF_stand_q_M" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_M');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_M</font></a>-&gt;Sizes.numBlockIO = (8);<span class="CT">/* Number of block outputs */</span>
+</span><span><a class="LN" name="815">  815   </a>  <a href="#var_ECF_stand_q_M" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_M');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_M</font></a>-&gt;Sizes.numBlockPrms = (21);<span class="CT">/* Sum of parameter "widths" */</span>
+</span><span><a class="LN" name="816">  816   </a>  <span class="KW">return</span> <a href="#var_ECF_stand_q_M" onclick="if (top) if (top.docHiliteMe) top.docHiliteMe(window, 'var_ECF_stand_q_M');" target="rtwreport_document_frame"><font color="#1122aa">ECF_stand_q_M</font></a>;
+</span><span><a class="LN" name="817">  817   </a><b>}</b>
+</span><span><a class="LN" name="818">  818   </a>
+</span><span><a class="LN" name="819">  819   </a><span class="CT">/*========================================================================*</span>
+</span><span><a class="LN" name="820">  820   </a><span class="CT"> * End of Classic call interface                                          *</span>
+</span><span><a class="LN" name="821">  821   </a><span class="CT"> *========================================================================*/</span>
+</span><span><a class="LN" name="822">  822   </a>
+</span></pre>
+</td></tr></table>
+</p>
+</body>
+</html>
