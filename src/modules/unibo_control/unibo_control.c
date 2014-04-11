@@ -235,29 +235,29 @@ int unibo_control_thread_main(int argc, char *argv[])
 	//init(argc, argv);                                                 CHANGED SEEMS USELESS
 
 	// inizializzazione middle-layer
-	static PacketREFERENCES_s pkgRef;
+	//static PacketREFERENCES_s pkgRef;
 	//PacketIMU_s pkgIMU;
-	static struct vehicle_attitude_s ahrs;
-	static PacketPARAMETERS_s pkgPar;
-	static PacketTELEMETRY_s pkgTel;
-	static PacketOFLOW_s pkgOflow;
-	static PacketSTATE_s pkgState;
-	static PacketACK_s pkgAck;
-	static PacketOPTITRACK_s pkgOpti;
+	struct vehicle_attitude_s ahrs;
+//	static PacketPARAMETERS_s pkgPar;
+//	static PacketTELEMETRY_s pkgTel;
+//	static PacketOFLOW_s pkgOflow;
+//	static PacketSTATE_s pkgState;
+//	static PacketACK_s pkgAck;
+//	static PacketOPTITRACK_s pkgOpti;
 
 	cInputs_s cinputs;
 
 	//printf("STARTING...\n");
 	LLFFC_start();
 	//PacketIMU_loadPacketIMU(&pkgIMU);
-	utils_loadAHRSPacket(ahrs);
+//	utils_loadAHRSPacket(ahrs);
 	//pkgIMU.loadPacketIMU();
-	PacketREFERENCES_loadPacketREFERENCES(&pkgRef);
-	PacketPARAMETERS_loadPacketPARAMETERS(&pkgPar);
-	PacketTELEMETRY_loadPacketTELEMETRY(&pkgTel);
-	PacketOFLOW_loadPacketOFLOW(&pkgOflow);
-	PacketOPTITRACK_loadPacketOPTITRACK(&pkgOpti);
-	LLFFC_control();
+//	PacketREFERENCES_loadPacketREFERENCES(&pkgRef);
+//	PacketPARAMETERS_loadPacketPARAMETERS(&pkgPar);
+//	PacketTELEMETRY_loadPacketTELEMETRY(&pkgTel);
+//	PacketOFLOW_loadPacketOFLOW(&pkgOflow);
+//	PacketOPTITRACK_loadPacketOPTITRACK(&pkgOpti);
+//	LLFFC_control();
 
 
 	static int optitrack_counter = 0;
@@ -340,9 +340,6 @@ int unibo_control_thread_main(int argc, char *argv[])
 		//Imposto solo 10 ms
 		int poll_ret = poll(fds, 1, 10); //filedescr, number of file descriptor to wait for, timeout in ms
 		//TODO: INSERIRE QUI INIZIALIZZAZIONI PRE-LOOP AD OGNI LOOP
-		// XBee: packet_REF viene riempito con i dati da xbee
-		//strcpy(packet_REF, "S 0 7 166 -52 -22 0 0 0 0 0 0 8 0 0 0 0 0 10 E");  //rimettere quella sotto poi!!!!!!!!
-		//readAndParseSerial(serial_XBee, round_buffer_REF, sizeof(round_buffer_REF), packet_REF, &pos_REF, &start_REF, &lastSidx_REF, &REF_packet_ready);
 
 		/* handle the poll result */
 		if (poll_ret == 0) {
@@ -358,7 +355,7 @@ int unibo_control_thread_main(int argc, char *argv[])
 			error_counter++;
 		} else {
 			if (fds[0].revents & POLLIN) {
-				//TECNICAMENTE SIAMO GIA' A 500HZ     EDIT 333Hz, freq del topic di assetto
+				//TECNICAMENTE SIAMO GIA' A 333HZ, freq del topic di assetto   (o 200???)
 				log_counter++;
 				telemetry_counter++;
 				txtcounter++;
@@ -366,14 +363,14 @@ int unibo_control_thread_main(int argc, char *argv[])
 				/* copy sensors raw data into local buffer */
 				orb_copy(ORB_ID(vehicle_attitude), sensor_sub_fd, &ahrs);
 				/* copy sensors local buffer to Simulink Model */
-				Model_GS_U.Attitude[0] = ahrs.q[0];
+				Model_GS_U.Attitude[0] = ahrs.q[0];           //multipliyng for simulink and to send int data instead of float without precision loss
 				Model_GS_U.Attitude[1] = ahrs.q[1];
 				Model_GS_U.Attitude[2] = ahrs.q[2];
 				Model_GS_U.Attitude[3] = ahrs.q[3];
 				Model_GS_U.AngSpeed[0] = ahrs.rollspeed;
 				Model_GS_U.AngSpeed[1] = ahrs.pitchspeed;
 				Model_GS_U.AngSpeed[2] = ahrs.yawspeed;
-				if (txtcounter>333){
+				if (txtcounter>3330){
 //					warnx("RPY:\t%1.4f %1.4f %1.4f - %1.4f %1.4f %1.4f %1.4f\n",
 //						(double)ahrs.roll,
 //						(double)ahrs.pitch,
@@ -553,7 +550,7 @@ int unibo_control_thread_main(int argc, char *argv[])
 
 
 				//TELEMETRIA UART
-				if (telemetry_counter >= 4){                     //almost 50Hz if running at 333 Hz
+				if (telemetry_counter >= 50){                     //4Hz if running at 200 Hz
 					telemetry_counter=0;
 					telem.x = Model_GS_Y.STATE[0];
 					telem.y = Model_GS_Y.STATE[1];
@@ -572,6 +569,8 @@ int unibo_control_thread_main(int argc, char *argv[])
 					telem.cinput3 = cinputs.u[2];
 					telem.cinput4 = cinputs.u[3];
 					//warnx("Cinputs: %u %u %u %u", telem.cinput1,telem.cinput2,telem.cinput3,telem.cinput4);
+					//warnx("Attitude: Roll: %d----- Pitch: %d ------- Yaw: %d", telem.phi,telem.theta,telem.psi);
+					//warnx("Attitude quaternion: %.4f %.4f %.4f %.4f", ahrs.q[0],ahrs.q[1],ahrs.q[2],ahrs.q[3]);
 					orb_publish(ORB_ID(unibo_telemetry), unibo_telem_pub_fd, &telem);
 					//warnx("Publishing telemetry topic.\n");
 				}
