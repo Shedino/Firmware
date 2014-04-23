@@ -19,8 +19,6 @@
 struct unibo_reference_s
 {
 	int timestamp;		/**< timestamp        */
-	int length;
-	int type;
 	int p_x;				/**< position x     */
 	int p_y;				/**< position y     */
 	int p_z;				/**< position z     */
@@ -34,7 +32,6 @@ struct unibo_reference_s
 	int d_psi;			/**< yaw speed         */
 	int dd_psi; 			/**< yaw acceleration      */
 	int q;
-	int CRC;
 	int button;			/**< joystick button      */
 	bool  valid;			/**< validity      */
 };

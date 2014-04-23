@@ -351,21 +351,14 @@ void handle_PACK(char *packet, int unibo_ref_pub_fd, int unibo_param_pub_fd, int
 
 		reference.valid=false;
 		int temp = 0;
-		n=sscanf(packet,"S %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d E",
-				&reference.length, &reference.type, &reference.p_x, &reference.p_y,
+		n=sscanf(packet,"S %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d E",
+				&reference.p_x, &reference.p_y,
 				&reference.p_z, &reference.dp_x, &reference.dp_y, &reference.dp_z, &reference.ddp_x,
 				&reference.ddp_y, &reference.ddp_z, &reference.psi, &reference.d_psi, &reference.dd_psi,
-				&reference.q, &reference.button, &reference.timestamp, &reference.CRC);
+				&reference.q, &reference.button, &reference.timestamp);
 
-		temp = reference.length + reference.type + reference.p_x + reference.p_y + reference.p_z +
-			   reference.dp_x + reference.dp_y + reference.dp_z + reference.ddp_x + reference.ddp_y + reference.ddp_z +
-			   reference.psi + reference.d_psi + reference.dd_psi + reference.q + reference.button + reference.timestamp;
-		if (temp < 0){
-			temp = -temp;
-		}
-		if (reference.CRC == temp%97){
-			reference.valid = true;
-		}
+
+	    reference.valid = true;
 
 		if (reference.valid){
 			orb_publish(ORB_ID(unibo_reference), unibo_ref_pub_fd, &reference);
@@ -375,11 +368,11 @@ void handle_PACK(char *packet, int unibo_ref_pub_fd, int unibo_param_pub_fd, int
 		break;
 
 	case 5:	// PAR PACKET
-		n=sscanf(packet, "S %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d E",
-					&parameters.length, &parameters.type, &parameters.in1, &parameters.in2, &parameters.in3, &parameters.in4, &parameters.in5, &parameters.in6,
+		n=sscanf(packet, "S %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d E",
+					&parameters.in1, &parameters.in2, &parameters.in3, &parameters.in4, &parameters.in5, &parameters.in6,
 					&parameters.in7, &parameters.in8, &parameters.in9,	&parameters.in10, &parameters.in11, &parameters.in12, &parameters.in13, &parameters.in14,
 					&parameters.in15, &parameters.in16, &parameters.in17, &parameters.in18, &parameters.in19, &parameters.in20, &parameters.in21, &parameters.in22,
-					&parameters.in23, &parameters.in24, &parameters.timestamp, &parameters.CRC);
+					&parameters.in23, &parameters.in24);
 		if (n==28) parameters.valid=true;
 		else parameters.valid=false;
 		if (parameters.valid){
@@ -393,9 +386,9 @@ void handle_PACK(char *packet, int unibo_ref_pub_fd, int unibo_param_pub_fd, int
 		//OPTI PACKET
 		//TODO check spikes
 
-		n=sscanf(packet, "S %d %d %d %d %d %d %d %d %d %d %d %d E",
-					&optitrack.length, &optitrack.type, &optitrack.pos_x, &optitrack.pos_y, &optitrack.pos_z, &optitrack.q0, &optitrack.q1, &optitrack.q2,
-					&optitrack.q3, &optitrack.err, &optitrack.timestamp, &optitrack.CRC);
+		n=sscanf(packet, "S %d %d %d %d %d %d %d %d %d E",
+					&optitrack.pos_x, &optitrack.pos_y, &optitrack.pos_z, &optitrack.q0, &optitrack.q1, &optitrack.q2,
+					&optitrack.q3, &optitrack.err, &optitrack.timestamp);
 		if (n==12) optitrack.valid=true;
 		else optitrack.valid=false;
 		if (optitrack.valid){

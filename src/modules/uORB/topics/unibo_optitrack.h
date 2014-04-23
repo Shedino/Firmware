@@ -18,8 +18,6 @@
 
 struct unibo_optitrack_s
 {
-	int length;
-	int type;
 	int pos_x;
 	int pos_y;
 	int pos_z;
@@ -29,7 +27,6 @@ struct unibo_optitrack_s
 	int q3;
 	int err;
 	int timestamp;		/**< timestamp        */
-	int CRC;
 	bool  valid;			/**< validity      */
 };
 

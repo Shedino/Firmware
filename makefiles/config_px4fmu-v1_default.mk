@@ -64,7 +64,7 @@ MODULES		+= systemcmds/dumpfile
 #
 MODULES		+= modules/commander
 MODULES		+= modules/navigator
-MODULES		+= modules/mavlink
+MODULES		+= modules/mavlink            
 MODULES		+= modules/gpio_led
 
 #
@@ -126,6 +126,7 @@ MODULES		+= modules/unibo_motor_output
 MODULES		+= modules/unibo_control
 MODULES		+= modules/unibo_filtertest
 MODULES		+= modules/unibo_uart
+MODULES		+= modules/unibo_mavlink
 
 #
 # Demo apps

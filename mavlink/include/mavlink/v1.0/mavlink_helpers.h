@@ -6,6 +6,18 @@
 #include "mavlink_types.h"
 #include "mavlink_conversions.h"
 
+#include <nuttx/config.h>                    //MODIFICATO INIZIO (per avere il warnx)
+#include <nuttx/sched.h>
+#include <uORB/uORB.h>
+////
+#include <systemlib/systemlib.h>
+#include <systemlib/perf_counter.h>
+#include <systemlib/err.h>
+#include <stdlib.h>
+#include <stdbool.h>
+#include <string.h>
+#include <stdio.h>                         //MODIFICATO FINE
+
 #ifndef MAVLINK_HELPER
 #define MAVLINK_HELPER
 #endif

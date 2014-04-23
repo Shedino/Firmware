@@ -71,7 +71,7 @@ MODULES		+= systemcmds/dumpfile
 #
 MODULES		+= modules/commander
 MODULES		+= modules/navigator
-MODULES		+= modules/mavlink
+MODULES		+= modules/mavlink                   
 MODULES		+= modules/gpio_led
 
 #
@@ -127,6 +127,7 @@ MODULES		+= lib/launchdetection
 # folowing lines  added by Mohammad Hayajneh 31/March/2014
 MODULES		+= modules/unibo_filtertest
 MODULES		+= modules/unibo_uart
+MODULES		+= modules/unibo_mavlink
 MODULES		+= modules/unibo_motor_output
 MODULES		+= modules/unibo_control
 #MODULES		+= modules/unibo_ECF_standard

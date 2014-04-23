@@ -200,12 +200,6 @@ int unibo_control_thread_main(int argc, char *argv[])
 
 
 
-
-	/* advertise attitude topic */
-//	struct vehicle_attitude_s att;
-//	memset(&att, 0, sizeof(att));
-//	int att_pub_fd = orb_advertise(ORB_ID(vehicle_attitude), &att);
-
 	/* advertise motor output topic */
 	struct motor_output_s mout;
 	memset(&mout, 0, sizeof(mout));
@@ -235,29 +229,20 @@ int unibo_control_thread_main(int argc, char *argv[])
 	//init(argc, argv);                                                 CHANGED SEEMS USELESS
 
 	// inizializzazione middle-layer
-	//static PacketREFERENCES_s pkgRef;
-	//PacketIMU_s pkgIMU;
 	struct vehicle_attitude_s ahrs;
-//	static PacketPARAMETERS_s pkgPar;
-//	static PacketTELEMETRY_s pkgTel;
-//	static PacketOFLOW_s pkgOflow;
-//	static PacketSTATE_s pkgState;
-//	static PacketACK_s pkgAck;
-//	static PacketOPTITRACK_s pkgOpti;
-
 	cInputs_s cinputs;
 
 	//printf("STARTING...\n");
 	LLFFC_start();
 	//PacketIMU_loadPacketIMU(&pkgIMU);
-//	utils_loadAHRSPacket(ahrs);
+	//	utils_loadAHRSPacket(ahrs);
 	//pkgIMU.loadPacketIMU();
-//	PacketREFERENCES_loadPacketREFERENCES(&pkgRef);
-//	PacketPARAMETERS_loadPacketPARAMETERS(&pkgPar);
-//	PacketTELEMETRY_loadPacketTELEMETRY(&pkgTel);
-//	PacketOFLOW_loadPacketOFLOW(&pkgOflow);
-//	PacketOPTITRACK_loadPacketOPTITRACK(&pkgOpti);
-//	LLFFC_control();
+	//	PacketREFERENCES_loadPacketREFERENCES(&pkgRef);
+	//	PacketPARAMETERS_loadPacketPARAMETERS(&pkgPar);
+	//	PacketTELEMETRY_loadPacketTELEMETRY(&pkgTel);
+	//	PacketOFLOW_loadPacketOFLOW(&pkgOflow);
+	//	PacketOPTITRACK_loadPacketOPTITRACK(&pkgOpti);
+	//	LLFFC_control();
 
 
 	static int optitrack_counter = 0;
@@ -355,7 +340,7 @@ int unibo_control_thread_main(int argc, char *argv[])
 			error_counter++;
 		} else {
 			if (fds[0].revents & POLLIN) {
-				//TECNICAMENTE SIAMO GIA' A 333HZ, freq del topic di assetto   (o 200???)
+				//TECNICAMENTE SIAMO GIA' A 200HZ, freq del topic di assetto
 				log_counter++;
 				telemetry_counter++;
 				txtcounter++;
@@ -370,7 +355,7 @@ int unibo_control_thread_main(int argc, char *argv[])
 				Model_GS_U.AngSpeed[0] = ahrs.rollspeed;
 				Model_GS_U.AngSpeed[1] = ahrs.pitchspeed;
 				Model_GS_U.AngSpeed[2] = ahrs.yawspeed;
-				if (txtcounter>3330){
+				if (txtcounter>200){
 //					warnx("RPY:\t%1.4f %1.4f %1.4f - %1.4f %1.4f %1.4f %1.4f\n",
 //						(double)ahrs.roll,
 //						(double)ahrs.pitch,
@@ -379,7 +364,7 @@ int unibo_control_thread_main(int argc, char *argv[])
 //						(double)ahrs.q[1],
 //						(double)ahrs.q[2],
 //						(double)ahrs.q[3]);
-					warnx(".");
+					//warnx(".");
 					txtcounter = 0;
 				}
 
@@ -437,8 +422,8 @@ int unibo_control_thread_main(int argc, char *argv[])
 				if (updated){
 					struct unibo_reference_s temp_ref;
 					orb_copy(ORB_ID(unibo_reference),reference_sub_fd,&temp_ref);
-					Model_GS_U.REF_TIME[0] = temp_ref.length;
-					Model_GS_U.REF_TIME[1] = temp_ref.type;
+					Model_GS_U.REF_TIME[0] = 0;
+					Model_GS_U.REF_TIME[1] = 0;
 					Model_GS_U.REF_TIME[2] = temp_ref.p_x;
 					Model_GS_U.REF_TIME[3] = temp_ref.p_y;
 					Model_GS_U.REF_TIME[4] = temp_ref.p_z;
@@ -454,8 +439,8 @@ int unibo_control_thread_main(int argc, char *argv[])
 					Model_GS_U.REF_TIME[14] = temp_ref.q;
 					Model_GS_U.REF_TIME[15] = temp_ref.button;
 					Model_GS_U.REF_TIME[16] = temp_ref.timestamp;
-					Model_GS_U.REF_TIME[17] = temp_ref.CRC;
-					//warnx("Position reference from topic: %d %d %d\n",temp_ref.p_x,temp_ref.p_y,temp_ref.p_z);
+					Model_GS_U.REF_TIME[17] = 0;
+					warnx("Button received: %d",temp_ref.button);
 //					counter_ref_pack++;
 //					if (counter_ref_pack>=20){
 //						warnx("Ricevuti 20 pacchetti reference.");
@@ -468,8 +453,8 @@ int unibo_control_thread_main(int argc, char *argv[])
 				if (updated){
 					struct unibo_optitrack_s temp_opti;
 					orb_copy(ORB_ID(unibo_optitrack),optitrack_sub_fd,&temp_opti);
-					Model_GS_U.OPTITRACK[0] = temp_opti.length;
-					Model_GS_U.OPTITRACK[1] = temp_opti.type;
+					Model_GS_U.OPTITRACK[0] = 0;
+					Model_GS_U.OPTITRACK[1] = 0;
 					Model_GS_U.OPTITRACK[2] = temp_opti.pos_x;
 					Model_GS_U.OPTITRACK[3] = temp_opti.pos_y;
 					Model_GS_U.OPTITRACK[4] = temp_opti.pos_z;
@@ -479,7 +464,7 @@ int unibo_control_thread_main(int argc, char *argv[])
 					Model_GS_U.OPTITRACK[8] = temp_opti.q3;
 					Model_GS_U.OPTITRACK[9] = temp_opti.err;
 					Model_GS_U.OPTITRACK[10] = temp_opti.timestamp;
-					Model_GS_U.OPTITRACK[11] = temp_opti.CRC;
+					Model_GS_U.OPTITRACK[11] = 0;
 					//warnx("Optitrack from topic: %d %d %d\n",temp_opti.pos_x,temp_opti.pos_y,temp_opti.pos_z);
 //					counter_opti_pack++;
 //					if (counter_opti_pack>=50){
@@ -493,8 +478,8 @@ int unibo_control_thread_main(int argc, char *argv[])
 				if (updated){
 					struct unibo_parameters_s temp_PAR;
 					orb_copy(ORB_ID(unibo_parameters),parameters_sub_fd,&temp_PAR);
-					Model_GS_U.PARAMETERS[0] = temp_PAR.length;
-					Model_GS_U.PARAMETERS[1] = temp_PAR.type;
+					Model_GS_U.PARAMETERS[0] = 0;
+					Model_GS_U.PARAMETERS[1] = 0;
 					Model_GS_U.PARAMETERS[2] = temp_PAR.in1;
 					Model_GS_U.PARAMETERS[3] = temp_PAR.in2;
 					Model_GS_U.PARAMETERS[4] = temp_PAR.in3;
@@ -519,8 +504,8 @@ int unibo_control_thread_main(int argc, char *argv[])
 					Model_GS_U.PARAMETERS[23] = temp_PAR.in22;
 					Model_GS_U.PARAMETERS[24] = temp_PAR.in23;
 					Model_GS_U.PARAMETERS[25] = temp_PAR.in24;
-					Model_GS_U.PARAMETERS[26] = temp_PAR.timestamp;
-					Model_GS_U.PARAMETERS[27] = temp_PAR.CRC;
+					Model_GS_U.PARAMETERS[26] = 0;
+					Model_GS_U.PARAMETERS[27] = 0;
 					//warnx("Parameters from topic: %d %d %d\n",temp_PAR.in1,temp_PAR.in2,temp_PAR.in3);
 				}
 
@@ -550,7 +535,7 @@ int unibo_control_thread_main(int argc, char *argv[])
 
 
 				//TELEMETRIA UART
-				if (telemetry_counter >= 50){                     //4Hz if running at 200 Hz
+				if (telemetry_counter >= 200){                     //1Hz if running at 200 Hz
 					telemetry_counter=0;
 					telem.x = Model_GS_Y.STATE[0];
 					telem.y = Model_GS_Y.STATE[1];
@@ -568,7 +553,7 @@ int unibo_control_thread_main(int argc, char *argv[])
 					telem.cinput2 = cinputs.u[1];
 					telem.cinput3 = cinputs.u[2];
 					telem.cinput4 = cinputs.u[3];
-					//warnx("Cinputs: %u %u %u %u", telem.cinput1,telem.cinput2,telem.cinput3,telem.cinput4);
+					warnx("Cinputs: %u %u %u %u", telem.cinput1,telem.cinput2,telem.cinput3,telem.cinput4);
 					//warnx("Attitude: Roll: %d----- Pitch: %d ------- Yaw: %d", telem.phi,telem.theta,telem.psi);
 					//warnx("Attitude quaternion: %.4f %.4f %.4f %.4f", ahrs.q[0],ahrs.q[1],ahrs.q[2],ahrs.q[3]);
 					orb_publish(ORB_ID(unibo_telemetry), unibo_telem_pub_fd, &telem);
@@ -645,7 +630,7 @@ int unibo_control_thread_main(int argc, char *argv[])
 				print_counter2++;
 				if(print_counter2 >= 1)
 				{
-					usleep(200);
+					usleep(2000);
 					print_counter2 = 0;
 				}
 

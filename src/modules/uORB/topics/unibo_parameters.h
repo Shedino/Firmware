@@ -18,9 +18,6 @@
 
 struct unibo_parameters_s
 {
-	int timestamp;		/**< timestamp        */
-	int length;
-	int type;
 	int in1;
 	int in2;
 	int in3;
@@ -45,7 +42,6 @@ struct unibo_parameters_s
 	int in22;
 	int in23;
 	int in24;
-	int CRC;
 	bool  valid;			/**< validity      */
 };
 
