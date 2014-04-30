@@ -66,8 +66,8 @@
 //#endif
 //
 #include <v1.0/unibo_mavlink/mavlink.h>
-#include <v1.0/unibo_mavlink/unibo_mavlink.h>
-#include <v1.0/unibo_mavlink/version.h>
+//#include <v1.0/unibo_mavlink/unibo_mavlink.h>
+//#include <v1.0/unibo_mavlink/version.h>
 #include <v1.0/mavlink_types.h>
 #include <v1.0/protocol.h>
 #include <v1.0/checksum.h>
@@ -151,8 +151,8 @@ bool setup_port(int fd, int baud, int data_bits, int stop_bits, bool parity, boo
 		// no input parity check, don't strip high bit off,
 		// no XON/XOFF software flow control
 		//
-		config.c_iflag &= ~(IGNBRK | BRKINT | ICRNL |
-		                    INLCR | PARMRK | INPCK | ISTRIP | IXON);
+		//config.c_iflag &= ~(IGNBRK | BRKINT | ICRNL |                               //OLD
+		  //                  INLCR | PARMRK | INPCK | ISTRIP | IXON);
 		//
 		// Output flags - Turn off output processing
 		// no CR to NL translation, no NL to CR-NL translation,
@@ -160,9 +160,11 @@ bool setup_port(int fd, int baud, int data_bits, int stop_bits, bool parity, boo
 		// no Ctrl-D suppression, no fill characters, no case mapping,
 		// no local output processing
 		//
-		config.c_oflag &= ~(OCRNL | ONLCR | ONLRET |
-		                     ONOCR | OFILL | OPOST);
+		config.c_oflag &= ~ONLCR;                           //NEW
+		//config.c_oflag &= ~(OCRNL | ONLCR | ONLRET |         //OLD
+					 	 	 //ONOCR | OFILL | OPOST);
 
+		/*                                                 //OLD
 		#ifdef OLCUC
 	  		config.c_oflag &= ~OLCUC;
 		#endif
@@ -170,26 +172,28 @@ bool setup_port(int fd, int baud, int data_bits, int stop_bits, bool parity, boo
 	  	#ifdef ONOEOT
 	  		config.c_oflag &= ~ONOEOT;
 	  	#endif
+	  	*/
+		config.c_cflag |= CRTS_IFLOW;                      //NEW
 
 		//
 		// No line processing:
 		// echo off, echo newline off, canonical mode off,
 		// extended input processing off, signal chars off
 		//
-		config.c_lflag &= ~(ECHO | ECHONL | ICANON | IEXTEN | ISIG);
+		//config.c_lflag &= ~(ECHO | ECHONL | ICANON | IEXTEN | ISIG);       //OLD
 		//
 		// Turn off character processing
 		// clear current char size mask, no parity checking,
 		// no output processing, force 8 bit input
 		//
-		config.c_cflag &= ~(CSIZE | PARENB);
-		config.c_cflag |= CS8;
+		//config.c_cflag &= ~(CSIZE | PARENB);                            //OLD
+		//config.c_cflag |= CS8;                                           //OLD
 		//
 		// One input byte is enough to return from read()
 		// Inter-character timer off
 		//
-		config.c_cc[VMIN]  = 1;
-		config.c_cc[VTIME] = 10; // was 0
+		//config.c_cc[VMIN]  = 1;                                     //OLD
+		//config.c_cc[VTIME] = 10; // was 0							//OLD
 
 		// Get the current options for the port
 		//tcgetattr(fd, &options);
@@ -399,7 +403,6 @@ int unibo_mavlink_thread_main(int argc, char *argv[])
 				warnx("success.\n");
 			}
 
-			int noErrors = 0;
 			if (fd == -1 || fd == 0)
 			{
 				fprintf(stderr, "Connection attempt to port %s with %d baud, 8N1 failed, exiting.\n", uart_name, baudrate);
@@ -415,15 +418,6 @@ int unibo_mavlink_thread_main(int argc, char *argv[])
 				//exit(noErrors);
 			}
 
-
-	// Round Buffer for REF packet
-	static char round_buffer_PACK[LENGTH*4];
-	static char packet_PACK[LENGTH];
-	int pos_PACK=0;
-	int start_PACK=0;
-	int lastSidx_PACK = -1;
-	bool PACK_ready = false;
-	bool updated;
 
 	//Topics advertise
 
@@ -451,17 +445,17 @@ int unibo_mavlink_thread_main(int argc, char *argv[])
 	warnx("MAvLink UNIBO READY, waiting for serial data.");
 
 	const int timeout = 500;
-	uint8_t buf[64];
-	char charbuf;
+	static uint8_t buf[16];
 
 	mavlink_message_t msg;
 	static mavlink_status_t status;
 	static int packet_drops = 0;
-	static int mode = MAV_MODE_UNINIT; /* Defined in mavlink_types.h, which is included by mavlink.h */
+	//static int mode = MAV_MODE_UNINIT; /* Defined in mavlink_types.h, which is included by mavlink.h */
 
 	struct pollfd fds[1];
 	fds[0].fd = fd;
 	fds[0].events = POLLIN;
+	bool updated;
 
 	ssize_t nread = 0;
 
@@ -490,9 +484,9 @@ int unibo_mavlink_thread_main(int argc, char *argv[])
 								break;
 							case MAVLINK_MSG_ID_VICON_POSITION_ESTIMATE:
 								//decoding
-								mavlink_msg_param_set_decode(&msg, &unibo_opti_mav);
+								mavlink_msg_vicon_position_estimate_decode(&msg, &unibo_opti_mav);
 								//MAV2topic
-								if (!silent) warnx("Received Optitrack Packet: %.3f %.3f %.3f", unibo_opti_mav.x, unibo_opti_mav.y, unibo_opti_mav.z);
+								if (!silent) warnx("Received Optitrack Packet: %.3f %.3f %.3f, %.3f %.3f %.3f", unibo_opti_mav.x, unibo_opti_mav.y, unibo_opti_mav.z, unibo_opti_mav.roll, unibo_opti_mav.pitch, unibo_opti_mav.yaw);
 								opti.pos_x=unibo_opti_mav.x;
 								opti.pos_y=unibo_opti_mav.y;
 								opti.pos_z=unibo_opti_mav.z;
@@ -504,11 +498,12 @@ int unibo_mavlink_thread_main(int argc, char *argv[])
 								opti.timestamp=unibo_opti_mav.usec;   //not used
 								opti.valid=1;
 								orb_publish(ORB_ID(unibo_optitrack), unibo_opti_pub_fd, &opti);
+								if (!silent) warnx("Pubblicato optitrack!");
 								break;
 							case MAVLINK_MSG_ID_UNIBO_REFERENCES:
 								//decoding
-								mavlink_msg_param_set_decode(&msg, &unibo_ref_mav);
-								if (!silent) warnx("Received Reference Packet: PosX:%.3f - PosY:%.3f - PosZ:%.3f", unibo_ref_mav.p_refX,unibo_ref_mav.p_refY,unibo_ref_mav.p_refZ);
+								mavlink_msg_unibo_references_decode(&msg, &unibo_ref_mav);
+								if (!silent) warnx("Received Reference Packet: PosX:%.3f - PosY:%.3f - PosZ:%.3f - VelX: %.3f - VelY: %.3f - VelZ: %.3f - Psi: %.3f - BTNS: %d", unibo_ref_mav.p_refX,unibo_ref_mav.p_refY,unibo_ref_mav.p_refZ, unibo_ref_mav.dot_p_refX, unibo_ref_mav.dot_p_refY, unibo_ref_mav.dot_p_refZ, unibo_ref_mav.psi_ref, unibo_ref_mav.buttons);
 								//MAV2topic
 								reff.p_x=unibo_ref_mav.p_refX;
 								reff.p_y=unibo_ref_mav.p_refY;
@@ -527,10 +522,12 @@ int unibo_mavlink_thread_main(int argc, char *argv[])
 								reff.button=unibo_ref_mav.buttons;
 								reff.valid=1;
 								orb_publish(ORB_ID(unibo_reference), unibo_ref_pub_fd, &reff);
+								if (!silent) warnx("Pubblicato reference!");
 								break;
 							case MAVLINK_MSG_ID_UNIBO_PARAMETERS:
-								mavlink_msg_param_set_decode(&msg, &unibo_par_mav);
+								mavlink_msg_unibo_parameters_decode(&msg, &unibo_par_mav);
 								if (!silent) warnx("Received PAR Packet. XYmult: %f",unibo_par_mav.XY_Multiplier);
+								if (!silent) warnx("Parametri: Offset_T %.3f - latmode %.3f - k1 %.3f - L1 %.3f - KpAttx %.3f", unibo_par_mav.Offset_T, unibo_par_mav.lat_mode, unibo_par_mav.K1, unibo_par_mav.L1, unibo_par_mav.KpAttX);
 								param.in1=unibo_par_mav.Offset_T;
 								param.in2=unibo_par_mav.lat_mode;
 								param.in3=unibo_par_mav.delta;
@@ -575,7 +572,12 @@ int unibo_mavlink_thread_main(int argc, char *argv[])
 			}
 			packet_drops += status.packet_rx_drop_count;
 			//if (nread>0)	warnx("Letto: %d",buf);
-
+//			orb_check(telemetry_sub_fd, &updated);
+//			if (updated){
+//				struct unibo_telemetry_s telem;
+//				orb_copy(ORB_ID(unibo_telemetry),telemetry_sub_fd,&telem);
+//				serial_write(fd, telem);
+//			}
 		}
 		usleep(1000);
 

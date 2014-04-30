@@ -3,9 +3,9 @@
  *
  * Code generation for model "Model_GS".
  *
- * Model version              : 1.2397
+ * Model version              : 1.2409
  * Simulink Coder version : 8.3 (R2012b) 20-Jul-2012
- * C source code generated on : Tue Apr 08 17:03:56 2014
+ * C source code generated on : Tue Apr 29 12:58:44 2014
  *
  * Target selection: grt.tlc
  * Note: GRT includes extra infrastructure and instrumentation for prototyping
@@ -777,16 +777,16 @@ typedef struct {
   real_T nextResetState;               /* '<S29>/STATE TRANSITIONS' */
   real_T countNew;                     /* '<S25>/RESET CIRCUIT' */
   real_T h1;                           /* '<S12>/Attitude controller' */
-  real32_T dx1hat[3];                  /* '<S38>/High-Gain Observer' */
-  real32_T dx2hat[3];                  /* '<S38>/High-Gain Observer' */
+  real32_T dx1hat[3];                  /* '<S37>/High-Gain Observer' */
+  real32_T dx2hat[3];                  /* '<S37>/High-Gain Observer' */
   boolean_T DataTypeConversion3;       /* '<S25>/Data Type Conversion3' */
 } BlockIO_Model_GS;
 
 /* Block states (auto storage) for system '<Root>' */
 typedef struct {
-  real_T BesselLPFdX_states[2];        /* '<S36>/Bessel LPF dX' */
-  real_T BesselLPFdY_states[2];        /* '<S36>/Bessel LPF dY' */
-  real_T BesselLPFdZ_states[2];        /* '<S36>/Bessel LPF dZ' */
+  real_T BesselLPFdX_states[2];        /* '<S35>/Bessel LPF dX' */
+  real_T BesselLPFdY_states[2];        /* '<S35>/Bessel LPF dY' */
+  real_T BesselLPFdZ_states[2];        /* '<S35>/Bessel LPF dZ' */
   real_T DiscreteTimeIntegrator1_DSTATE[3];/* '<S8>/Discrete-Time Integrator1' */
   real_T Memory6_PreviousInput[3];     /* '<S31>/Memory6' */
   real_T Memory5_PreviousInput[4];     /* '<S31>/Memory5' */
@@ -800,8 +800,8 @@ typedef struct {
   real_T Memory_PreviousInput_o[3];    /* '<S31>/Memory' */
   real_T Memory1_PreviousInput_g;      /* '<S31>/Memory1' */
   real_T Memory2_PreviousInput_k[3];   /* '<S31>/Memory2' */
-  real32_T x1hat_DSTATE[3];            /* '<S38>/x1hat' */
-  real32_T x2hat_DSTATE[3];            /* '<S38>/x2hat' */
+  real32_T x1hat_DSTATE[3];            /* '<S37>/x1hat' */
+  real32_T x2hat_DSTATE[3];            /* '<S37>/x2hat' */
   int8_T DiscreteTimeIntegrator1_PrevRes;/* '<S8>/Discrete-Time Integrator1' */
 } D_Work_Model_GS;
 
@@ -817,16 +817,16 @@ typedef struct {
 typedef struct {
   real_T Attitude[4];                  /* '<Root>/Attitude' */
   real_T AngSpeed[3];                  /* '<Root>/AngSpeed' */
-  int16_T REF_TIME[18];                /* '<Root>/REF_TIME' */
-  int32_T PARAMETERS[28];              /* '<Root>/PARAMETERS' */
+  real_T REF_TIME[18];                 /* '<Root>/REF_TIME' */
+  real_T PARAMETERS[28];               /* '<Root>/PARAMETERS' */
   int16_T TIME_ATOM;                   /* '<Root>/TIME_ATOM' */
-  int16_T OPTITRACK[12];               /* '<Root>/OPTITRACK' */
+  real_T OPTITRACK[12];                /* '<Root>/OPTITRACK' */
 } ExternalInputs_Model_GS;
 
 /* External outputs (root outports fed by signals with auto storage) */
 typedef struct {
   uint16_T CINPUTS[11];                /* '<Root>/CINPUTS' */
-  int16_T STATE[12];                   /* '<Root>/STATE' */
+  int32_T STATE[12];                   /* '<Root>/STATE' */
   real_T C_TORQUES[3];                 /* '<Root>/C_TORQUES' */
   real_T C_Q[4];                       /* '<Root>/C_Q' */
   real_T C_QC[4];                      /* '<Root>/C_QC' */
@@ -1021,14 +1021,13 @@ extern RT_MODEL_Model_GS *const Model_GS_M;
  * '<S30>'  : 'Model_GS/LOW-LEVEL CONTROL/LOW LEVEL SUPERVISOR/SUPERVISOR/STATE MACHINE/STATE TRANSITIONS'
  * '<S31>'  : 'Model_GS/LOW-LEVEL CONTROL/STATE & REFERENCES/OPTITRACK'
  * '<S32>'  : 'Model_GS/LOW-LEVEL CONTROL/STATE & REFERENCES/REFERENCES'
- * '<S33>'  : 'Model_GS/LOW-LEVEL CONTROL/STATE & REFERENCES/division 1e-3'
- * '<S34>'  : 'Model_GS/LOW-LEVEL CONTROL/STATE & REFERENCES/mounting'
- * '<S35>'  : 'Model_GS/LOW-LEVEL CONTROL/STATE & REFERENCES/z rotation'
- * '<S36>'  : 'Model_GS/LOW-LEVEL CONTROL/STATE & REFERENCES/OPTITRACK/BESSEL FILTER'
- * '<S37>'  : 'Model_GS/LOW-LEVEL CONTROL/STATE & REFERENCES/OPTITRACK/VELOCITY'
- * '<S38>'  : 'Model_GS/LOW-LEVEL CONTROL/STATE & REFERENCES/OPTITRACK/dP Observer'
- * '<S39>'  : 'Model_GS/LOW-LEVEL CONTROL/STATE & REFERENCES/OPTITRACK/parser'
- * '<S40>'  : 'Model_GS/LOW-LEVEL CONTROL/STATE & REFERENCES/OPTITRACK/dP Observer/BESSEL FILTER'
- * '<S41>'  : 'Model_GS/LOW-LEVEL CONTROL/STATE & REFERENCES/OPTITRACK/dP Observer/High-Gain Observer'
+ * '<S33>'  : 'Model_GS/LOW-LEVEL CONTROL/STATE & REFERENCES/mounting'
+ * '<S34>'  : 'Model_GS/LOW-LEVEL CONTROL/STATE & REFERENCES/z rotation'
+ * '<S35>'  : 'Model_GS/LOW-LEVEL CONTROL/STATE & REFERENCES/OPTITRACK/BESSEL FILTER'
+ * '<S36>'  : 'Model_GS/LOW-LEVEL CONTROL/STATE & REFERENCES/OPTITRACK/VELOCITY'
+ * '<S37>'  : 'Model_GS/LOW-LEVEL CONTROL/STATE & REFERENCES/OPTITRACK/dP Observer'
+ * '<S38>'  : 'Model_GS/LOW-LEVEL CONTROL/STATE & REFERENCES/OPTITRACK/parser'
+ * '<S39>'  : 'Model_GS/LOW-LEVEL CONTROL/STATE & REFERENCES/OPTITRACK/dP Observer/BESSEL FILTER'
+ * '<S40>'  : 'Model_GS/LOW-LEVEL CONTROL/STATE & REFERENCES/OPTITRACK/dP Observer/High-Gain Observer'
  */
 #endif                                 /* RTW_HEADER_Model_GS_h_ */

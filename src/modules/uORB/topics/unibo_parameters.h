@@ -18,30 +18,30 @@
 
 struct unibo_parameters_s
 {
-	int in1;
-	int in2;
-	int in3;
-	int in4;
-	int in5;
-	int in6;
-	int in7;
-	int in8;
-	int in9;
-	int in10;
-	int in11;
-	int in12;
-	int in13;
-	int in14;
-	int in15;
-	int in16;
-	int in17;
-	int in18;
-	int in19;
-	int in20;
-	int in21;
-	int in22;
-	int in23;
-	int in24;
+	float in1;
+	float in2;
+	float in3;
+	float in4;
+	float in5;
+	float in6;
+	float in7;
+	float in8;
+	float in9;
+	float in10;
+	float in11;
+	float in12;
+	float in13;
+	float in14;
+	float in15;
+	float in16;
+	float in17;
+	float in18;
+	float in19;
+	float in20;
+	float in21;
+	float in22;
+	float in23;
+	float in24;
 	bool  valid;			/**< validity      */
 };
 

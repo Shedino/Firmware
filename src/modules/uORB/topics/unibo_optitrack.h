@@ -18,15 +18,15 @@
 
 struct unibo_optitrack_s
 {
-	int pos_x;
-	int pos_y;
-	int pos_z;
-	int q0;
-	int q1;
-	int q2;
-	int q3;
-	int err;
-	int timestamp;		/**< timestamp        */
+	float pos_x;
+	float pos_y;
+	float pos_z;
+	float q0;
+	float q1;
+	float q2;
+	float q3;
+	float err;
+	uint64_t timestamp;		/**< timestamp        */
 	bool  valid;			/**< validity      */
 };
 

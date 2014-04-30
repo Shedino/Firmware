@@ -580,7 +580,7 @@ int attitude_estimator_so3_thread_main(int argc, char *argv[])
 //										so3_comp_params.Ki,
 //										dt);
 
-					NonlinearSO3AHRSupdate(-gyro[0],gyro[1],-gyro[2],          //UNIBO
+					NonlinearSO3AHRSupdate(-gyro[0],gyro[1],-gyro[2],          //UNIBO mounting
 										   acc[0],-acc[1],acc[2],
 															-mag[0], mag[1], -mag[2],
 															so3_comp_params.Kp,
@@ -645,9 +645,13 @@ int attitude_estimator_so3_thread_main(int argc, char *argv[])
 					att.pitchspeed = 2.0f*(-q2*dq0 + q3*dq1 + q0*dq2 - q1*dq3);
 					att.yawspeed = 2.0f*(-q3*dq0 -q2*dq1 + q1*dq2 + q0*dq3);
 					*/
-					att.rollspeed = gyro[0];
+//					att.rollspeed = gyro[0];
+//					att.pitchspeed = gyro[1];
+//					att.yawspeed = gyro[2];
+
+					att.rollspeed = -gyro[0];                          //UNIBO MOUNTING
 					att.pitchspeed = gyro[1];
-					att.yawspeed = gyro[2];
+					att.yawspeed = -gyro[2];
 
 					att.rollacc = 0;
 					att.pitchacc = 0;

@@ -18,21 +18,21 @@
 
 struct unibo_reference_s
 {
-	int timestamp;		/**< timestamp        */
-	int p_x;				/**< position x     */
-	int p_y;				/**< position y     */
-	int p_z;				/**< position z     */
-	int dp_x;				/**< velocity x      */
-	int dp_y;				/**< velocity y      */
-	int dp_z;				/**< velocity z      */
-	int ddp_x;			/**< acceleration x        */
-	int ddp_y;			/**< acceleration y       */
-	int ddp_z;			/**< acceleration z        */
-	int psi;				/**< yaw    */
-	int d_psi;			/**< yaw speed         */
-	int dd_psi; 			/**< yaw acceleration      */
-	int q;
-	int button;			/**< joystick button      */
+	uint64_t timestamp;		/**< timestamp        */
+	float p_x;				/**< position x     */
+	float p_y;				/**< position y     */
+	float p_z;				/**< position z     */
+	float dp_x;				/**< velocity x      */
+	float dp_y;				/**< velocity y      */
+	float dp_z;				/**< velocity z      */
+	float ddp_x;			/**< acceleration x        */
+	float ddp_y;			/**< acceleration y       */
+	float ddp_z;			/**< acceleration z        */
+	float psi;				/**< yaw    */
+	float d_psi;			/**< yaw speed         */
+	float dd_psi; 			/**< yaw acceleration      */
+	float q;
+	uint32_t button;			/**< joystick button      */
 	bool  valid;			/**< validity      */
 };
 

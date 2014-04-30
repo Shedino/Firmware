@@ -595,10 +595,10 @@ int unibo_uart_thread_main(int argc, char *argv[])
 	/* Main loop*/
 	while (!unibou_thread_should_exit) {
 
-		PACK_ready = readAndParseSerial(fd, round_buffer_PACK, sizeof(round_buffer_PACK), packet_PACK, &pos_PACK, &start_PACK, &lastSidx_PACK);
-		if (PACK_ready){
-			handle_PACK(packet_PACK,unibo_ref_pub_fd,unibo_param_pub_fd,unibo_opti_pub_fd);
-		}
+//		PACK_ready = readAndParseSerial(fd, round_buffer_PACK, sizeof(round_buffer_PACK), packet_PACK, &pos_PACK, &start_PACK, &lastSidx_PACK);
+//		if (PACK_ready){
+//			handle_PACK(packet_PACK,unibo_ref_pub_fd,unibo_param_pub_fd,unibo_opti_pub_fd);
+//		}
 		orb_check(telemetry_sub_fd, &updated);
 		if (updated){
 			struct unibo_telemetry_s telem;

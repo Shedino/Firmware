@@ -222,11 +222,7 @@ int unibo_control_thread_main(int argc, char *argv[])
 	 * |-----------------------------------------------------|
 	 */
 
-	int len;
-	static char udp_receive_buffer[LENGTH]; // buffer di lettura UDP
 
-	// init function to initialize the ports and the sockets
-	//init(argc, argv);                                                 CHANGED SEEMS USELESS
 
 	// inizializzazione middle-layer
 	struct vehicle_attitude_s ahrs;
@@ -245,11 +241,8 @@ int unibo_control_thread_main(int argc, char *argv[])
 	//	LLFFC_control();
 
 
-	static int optitrack_counter = 0;
-	static int parameters_counter = 0;
 	static int print_counter = 0;
 	static int print_counter2 = 0;
-	static int gs_counter = 0;
 	static int log_counter = 0;
 	//len = sizeof(struct sockaddr_in);
 	static int writtenChars = 0;
@@ -276,10 +269,6 @@ int unibo_control_thread_main(int argc, char *argv[])
 	// Round Buffer for REF packet
 	static char round_buffer_REF[LENGTH*4];
 	static char packet_REF[LENGTH];
-	static int pos_REF=0;
-	static int start_REF=0;
-	static int lastSidx_REF = -1;
-	static bool REF_packet_ready = false;
 
 	memset(round_buffer_REF,0,sizeof(round_buffer_REF));
 	memset(packet_REF,0,LENGTH);
@@ -298,8 +287,6 @@ int unibo_control_thread_main(int argc, char *argv[])
 	static long imuTimeMin = 1000000000L;
 	static long imuTimeMax = 0;
 
-	int counter_ref_pack=0;
-	int counter_opti_pack=0;
 	int telemetry_counter=0;
 
 	/* Bool for topics update */
@@ -348,7 +335,7 @@ int unibo_control_thread_main(int argc, char *argv[])
 				/* copy sensors raw data into local buffer */
 				orb_copy(ORB_ID(vehicle_attitude), sensor_sub_fd, &ahrs);
 				/* copy sensors local buffer to Simulink Model */
-				Model_GS_U.Attitude[0] = ahrs.q[0];           //multipliyng for simulink and to send int data instead of float without precision loss
+				Model_GS_U.Attitude[0] = ahrs.q[0];
 				Model_GS_U.Attitude[1] = ahrs.q[1];
 				Model_GS_U.Attitude[2] = ahrs.q[2];
 				Model_GS_U.Attitude[3] = ahrs.q[3];
@@ -440,7 +427,7 @@ int unibo_control_thread_main(int argc, char *argv[])
 					Model_GS_U.REF_TIME[15] = temp_ref.button;
 					Model_GS_U.REF_TIME[16] = temp_ref.timestamp;
 					Model_GS_U.REF_TIME[17] = 0;
-					warnx("Button received: %d",temp_ref.button);
+					//warnx("Button received: %d",temp_ref.button);
 //					counter_ref_pack++;
 //					if (counter_ref_pack>=20){
 //						warnx("Ricevuti 20 pacchetti reference.");
@@ -463,7 +450,7 @@ int unibo_control_thread_main(int argc, char *argv[])
 					Model_GS_U.OPTITRACK[7] = temp_opti.q2;
 					Model_GS_U.OPTITRACK[8] = temp_opti.q3;
 					Model_GS_U.OPTITRACK[9] = temp_opti.err;
-					Model_GS_U.OPTITRACK[10] = temp_opti.timestamp;
+					Model_GS_U.OPTITRACK[10] = temp_opti.timestamp / 1000000.f;
 					Model_GS_U.OPTITRACK[11] = 0;
 					//warnx("Optitrack from topic: %d %d %d\n",temp_opti.pos_x,temp_opti.pos_y,temp_opti.pos_z);
 //					counter_opti_pack++;
@@ -535,7 +522,7 @@ int unibo_control_thread_main(int argc, char *argv[])
 
 
 				//TELEMETRIA UART
-				if (telemetry_counter >= 200){                     //1Hz if running at 200 Hz
+				if (telemetry_counter >= 8){                     //1Hz if running at 200 Hz
 					telemetry_counter=0;
 					telem.x = Model_GS_Y.STATE[0];
 					telem.y = Model_GS_Y.STATE[1];
@@ -553,7 +540,10 @@ int unibo_control_thread_main(int argc, char *argv[])
 					telem.cinput2 = cinputs.u[1];
 					telem.cinput3 = cinputs.u[2];
 					telem.cinput4 = cinputs.u[3];
-					warnx("Cinputs: %u %u %u %u", telem.cinput1,telem.cinput2,telem.cinput3,telem.cinput4);
+					//warnx("Velocities: %d %d %d",Model_GS_Y.STATE[3],Model_GS_Y.STATE[4],Model_GS_Y.STATE[5]);
+					warnx("Positions: %d %d %d",Model_GS_Y.STATE[0],Model_GS_Y.STATE[1],Model_GS_Y.STATE[2]);
+					//warnx("Cinputs: %u %u %u %u", telem.cinput1,telem.cinput2,telem.cinput3,telem.cinput4);
+					//warnx("Tstamp (s): %.3f",Model_GS_U.OPTITRACK[10]);
 					//warnx("Attitude: Roll: %d----- Pitch: %d ------- Yaw: %d", telem.phi,telem.theta,telem.psi);
 					//warnx("Attitude quaternion: %.4f %.4f %.4f %.4f", ahrs.q[0],ahrs.q[1],ahrs.q[2],ahrs.q[3]);
 					orb_publish(ORB_ID(unibo_telemetry), unibo_telem_pub_fd, &telem);
