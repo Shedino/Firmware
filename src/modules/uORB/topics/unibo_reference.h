@@ -28,11 +28,17 @@ struct unibo_reference_s
 	float ddp_x;			/**< acceleration x        */
 	float ddp_y;			/**< acceleration y       */
 	float ddp_z;			/**< acceleration z        */
+	float d3p_x;			/**< jerk x        */
+	float d3p_y;			/**< jerk y       */
+	float d3p_z;			/**< jerk z        */
+	float d4p_x;			/**< snap x        */
+	float d4p_y;			/**< snap y       */
+	float d4p_z;			/**< snap z        */
 	float psi;				/**< yaw    */
-	float d_psi;			/**< yaw speed         */
+	float d_psi;			/**< yaw velocity        */
 	float dd_psi; 			/**< yaw acceleration      */
 	float q;
-	uint32_t button;			/**< joystick button      */
+	uint16_t button;			/**< joystick button      */
 	bool  valid;			/**< validity      */
 };
 

@@ -9,13 +9,6 @@ SRCS				= 	unibo_control.c \
 			   			main_procedures.c \
 			   			Infrastructure/CInputs.c \
 			   			Infrastructure/Low_Level_Free_Flight_Control.c \
-			   			PacketACK.c \
-			   			PacketOFLOW.c \
-			   			PacketOPTITRACK.c \
-			   			PacketPARAMETERS.c \
-			   			PacketREFERENCES.c \
-			   			PacketSTATE.c \
-			   			PacketTELEMETRY.c \
 			   			LowLevel/Model_GS_data.c \
 			   			LowLevel/Model_GS.c \
 			   			LowLevel/rt_nonfinite.c \

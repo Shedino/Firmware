@@ -305,6 +305,38 @@ int unibo_control_thread_main(int argc, char *argv[])
 	 */
 
 
+	Model_GS_U.PARAMETERS[2] = 0.f;           //offset
+	Model_GS_U.PARAMETERS[3] = 0.f;
+	Model_GS_U.PARAMETERS[4] = 0.1f;        //delta
+
+	Model_GS_U.PARAMETERS[5] = 7.f;
+	Model_GS_U.PARAMETERS[6] = 18.f;
+	Model_GS_U.PARAMETERS[7] = 0.01f;
+
+	Model_GS_U.PARAMETERS[8] = 70.f;
+	Model_GS_U.PARAMETERS[9] = 200.f;
+	Model_GS_U.PARAMETERS[10] = 0.06f;
+
+	Model_GS_U.PARAMETERS[11] = 2.4f;
+	Model_GS_U.PARAMETERS[12] = 2.4f;
+	Model_GS_U.PARAMETERS[13] = 3.f;
+
+	Model_GS_U.PARAMETERS[14] = 0.14f;
+	Model_GS_U.PARAMETERS[15] = 0.14f;
+	Model_GS_U.PARAMETERS[16] = 0.14f;
+
+	Model_GS_U.PARAMETERS[17] = 0.f;
+	Model_GS_U.PARAMETERS[18] = 0.f;
+	Model_GS_U.PARAMETERS[19] = 0.01f;
+
+	Model_GS_U.PARAMETERS[20] = 0.f;
+	Model_GS_U.PARAMETERS[21] = 0.06f;		 //epsilon
+	Model_GS_U.PARAMETERS[22] = 1.f;           //XY multiplier
+	Model_GS_U.PARAMETERS[23] = 0.f;
+	Model_GS_U.PARAMETERS[24] = 0.f;
+	Model_GS_U.PARAMETERS[25] = 0.f;
+
+
 	int txtcounter = 0;
 
 	while (!uniboc_thread_should_exit) {
@@ -409,25 +441,30 @@ int unibo_control_thread_main(int argc, char *argv[])
 				if (updated){
 					struct unibo_reference_s temp_ref;
 					orb_copy(ORB_ID(unibo_reference),reference_sub_fd,&temp_ref);
-					Model_GS_U.REF_TIME[0] = 0;
-					Model_GS_U.REF_TIME[1] = 0;
-					Model_GS_U.REF_TIME[2] = temp_ref.p_x;
-					Model_GS_U.REF_TIME[3] = temp_ref.p_y;
-					Model_GS_U.REF_TIME[4] = temp_ref.p_z;
-					Model_GS_U.REF_TIME[5] = temp_ref.dp_x;
-					Model_GS_U.REF_TIME[6] = temp_ref.dp_y;
-					Model_GS_U.REF_TIME[7] = temp_ref.dp_z;
-					Model_GS_U.REF_TIME[8] = temp_ref.ddp_x;
-					Model_GS_U.REF_TIME[9] = temp_ref.ddp_y;
-					Model_GS_U.REF_TIME[10] = temp_ref.ddp_z;
-					Model_GS_U.REF_TIME[11] = temp_ref.psi;
-					Model_GS_U.REF_TIME[12] = temp_ref.d_psi;
-					Model_GS_U.REF_TIME[13] = temp_ref.dd_psi;
-					Model_GS_U.REF_TIME[14] = temp_ref.q;
-					Model_GS_U.REF_TIME[15] = temp_ref.button;
-					Model_GS_U.REF_TIME[16] = temp_ref.timestamp;
-					Model_GS_U.REF_TIME[17] = 0;
-					//warnx("Button received: %d",temp_ref.button);
+					Model_GS_U.REF_POS[0] = temp_ref.p_x;
+					Model_GS_U.REF_POS[1] = temp_ref.p_y;
+					Model_GS_U.REF_POS[2] = temp_ref.p_z;
+					Model_GS_U.REF_POS[3] = temp_ref.dp_x;
+					Model_GS_U.REF_POS[4] = temp_ref.dp_y;
+					Model_GS_U.REF_POS[5] = temp_ref.dp_z;
+					Model_GS_U.REF_POS[6] = temp_ref.ddp_x;
+					Model_GS_U.REF_POS[7] = temp_ref.ddp_y;
+					Model_GS_U.REF_POS[8] = temp_ref.ddp_z;
+					Model_GS_U.REF_POS[9] = temp_ref.d3p_x;
+					Model_GS_U.REF_POS[10] = temp_ref.d3p_y;
+					Model_GS_U.REF_POS[11] = temp_ref.d3p_z;
+					Model_GS_U.REF_POS[12] = temp_ref.d4p_x;
+					Model_GS_U.REF_POS[13] = temp_ref.d4p_y;
+					Model_GS_U.REF_POS[14] = temp_ref.d4p_z;
+
+					Model_GS_U.REF_YAW[0] = temp_ref.psi;
+					Model_GS_U.REF_YAW[1] = temp_ref.d_psi;
+					Model_GS_U.REF_YAW[2] = temp_ref.dd_psi;
+
+					Model_GS_U.REF_BUTTONS = temp_ref.button;
+
+					Model_GS_U.TIME_STAMP = temp_ref.timestamp;
+					//warnx("Button: %d",temp_ref.button);
 //					counter_ref_pack++;
 //					if (counter_ref_pack>=20){
 //						warnx("Ricevuti 20 pacchetti reference.");
@@ -461,40 +498,41 @@ int unibo_control_thread_main(int argc, char *argv[])
 				}
 
 				// gestione pacchetto parameters ricevuto dal Topic unibo_optitrack
-				orb_check(parameters_sub_fd, &updated);
-				if (updated){
-					struct unibo_parameters_s temp_PAR;
-					orb_copy(ORB_ID(unibo_parameters),parameters_sub_fd,&temp_PAR);
-					Model_GS_U.PARAMETERS[0] = 0;
-					Model_GS_U.PARAMETERS[1] = 0;
-					Model_GS_U.PARAMETERS[2] = temp_PAR.in1;
-					Model_GS_U.PARAMETERS[3] = temp_PAR.in2;
-					Model_GS_U.PARAMETERS[4] = temp_PAR.in3;
-					Model_GS_U.PARAMETERS[5] = temp_PAR.in4;
-					Model_GS_U.PARAMETERS[6] = temp_PAR.in5;
-					Model_GS_U.PARAMETERS[7] = temp_PAR.in6;
-					Model_GS_U.PARAMETERS[8] = temp_PAR.in7;
-					Model_GS_U.PARAMETERS[9] = temp_PAR.in8;
-					Model_GS_U.PARAMETERS[10] = temp_PAR.in9;
-					Model_GS_U.PARAMETERS[11] = temp_PAR.in10;
-					Model_GS_U.PARAMETERS[12] = temp_PAR.in11;
-					Model_GS_U.PARAMETERS[13] = temp_PAR.in12;
-					Model_GS_U.PARAMETERS[14] = temp_PAR.in13;
-					Model_GS_U.PARAMETERS[15] = temp_PAR.in14;
-					Model_GS_U.PARAMETERS[16] = temp_PAR.in15;
-					Model_GS_U.PARAMETERS[17] = temp_PAR.in16;
-					Model_GS_U.PARAMETERS[18] = temp_PAR.in17;
-					Model_GS_U.PARAMETERS[19] = temp_PAR.in18;
-					Model_GS_U.PARAMETERS[20] = temp_PAR.in19;
-					Model_GS_U.PARAMETERS[21] = temp_PAR.in20;
-					Model_GS_U.PARAMETERS[22] = temp_PAR.in21;
-					Model_GS_U.PARAMETERS[23] = temp_PAR.in22;
-					Model_GS_U.PARAMETERS[24] = temp_PAR.in23;
-					Model_GS_U.PARAMETERS[25] = temp_PAR.in24;
-					Model_GS_U.PARAMETERS[26] = 0;
-					Model_GS_U.PARAMETERS[27] = 0;
-					//warnx("Parameters from topic: %d %d %d\n",temp_PAR.in1,temp_PAR.in2,temp_PAR.in3);
-				}
+//				orb_check(parameters_sub_fd, &updated);
+//				if (updated){
+//					struct unibo_parameters_s temp_PAR;
+//					orb_copy(ORB_ID(unibo_parameters),parameters_sub_fd,&temp_PAR);
+//					Model_GS_U.PARAMETERS[0] = 0;
+//					Model_GS_U.PARAMETERS[1] = 0;
+//					Model_GS_U.PARAMETERS[2] = temp_PAR.in1;
+//					Model_GS_U.PARAMETERS[3] = temp_PAR.in2;
+//					Model_GS_U.PARAMETERS[4] = temp_PAR.in3;
+//					Model_GS_U.PARAMETERS[5] = temp_PAR.in4;
+//					Model_GS_U.PARAMETERS[6] = temp_PAR.in5;
+//					Model_GS_U.PARAMETERS[7] = temp_PAR.in6;
+//					Model_GS_U.PARAMETERS[8] = temp_PAR.in7;
+//					Model_GS_U.PARAMETERS[9] = temp_PAR.in8;
+//					Model_GS_U.PARAMETERS[10] = temp_PAR.in9;
+//					Model_GS_U.PARAMETERS[11] = temp_PAR.in10;
+//					Model_GS_U.PARAMETERS[12] = temp_PAR.in11;
+//					Model_GS_U.PARAMETERS[13] = temp_PAR.in12;
+//					Model_GS_U.PARAMETERS[14] = temp_PAR.in13;
+//					Model_GS_U.PARAMETERS[15] = temp_PAR.in14;
+//					Model_GS_U.PARAMETERS[16] = temp_PAR.in15;
+//					Model_GS_U.PARAMETERS[17] = temp_PAR.in16;
+//					Model_GS_U.PARAMETERS[18] = temp_PAR.in17;
+//					Model_GS_U.PARAMETERS[19] = temp_PAR.in18;
+//					Model_GS_U.PARAMETERS[20] = temp_PAR.in19;
+//					Model_GS_U.PARAMETERS[21] = temp_PAR.in20;
+//					Model_GS_U.PARAMETERS[22] = temp_PAR.in21;
+//					Model_GS_U.PARAMETERS[23] = temp_PAR.in22;
+//					Model_GS_U.PARAMETERS[24] = temp_PAR.in23;
+//					Model_GS_U.PARAMETERS[25] = temp_PAR.in24;
+//					Model_GS_U.PARAMETERS[26] = 0;
+//					Model_GS_U.PARAMETERS[27] = 0;
+//					//warnx("Parameters from topic: %d %d %d\n",temp_PAR.in1,temp_PAR.in2,temp_PAR.in3);
+//				}
+
 
 
 				// ----------- CONTROLLO -----------
@@ -509,39 +547,42 @@ int unibo_control_thread_main(int argc, char *argv[])
 				scale_cinputs_to_px4pwm(&mout, &cinputs);
 
 				// ---- INVIO OUTPUTS ----
-				// codifica e invio del pacchetto mavlink
-				//mavlink_msg_servo_output_raw_encode(200, 0, &px4_output_message, &px4_output);
-				//px4_output_len = mavlink_msg_to_send_buffer((uint8_t*)px4_output_buffer, &px4_output_message);
-				//write(serial_PX4, px4_output_buffer, px4_output_len);
-				//Invio topic orb motor_output!
-				/* set att and publish this information for other apps */
-				//mout.outputs = cinputs.u; --> Imposto i valori di mout dentro la funzione di scale!
 				orb_publish(ORB_ID(motor_output), mout_pub_fd, &mout);
 
 				//tcflush(serial_PX4, TCOFLUSH);
 
 
 				//TELEMETRIA UART
-				if (telemetry_counter >= 8){                     //1Hz if running at 200 Hz
+				if (telemetry_counter >= 8){                     //25Hz if running at 200 Hz
 					telemetry_counter=0;
 					telem.x = Model_GS_Y.STATE[0];
 					telem.y = Model_GS_Y.STATE[1];
 					telem.z = Model_GS_Y.STATE[2];
-					telem.dx = Model_GS_Y.STATE[3];
-					telem.dy = Model_GS_Y.STATE[4];
-					telem.dz = Model_GS_Y.STATE[5];
-					telem.phi = Model_GS_Y.STATE[6];
-					telem.theta = Model_GS_Y.STATE[7];
-					telem.psi = Model_GS_Y.STATE[8];
-					telem.wx = Model_GS_Y.STATE[9];
-					telem.wy = Model_GS_Y.STATE[10];
-					telem.wz = Model_GS_Y.STATE[11];
+					telem.dx = Model_GS_Y.C_Q[0]*10000;           //YAWTEST
+					telem.dy = Model_GS_Y.C_Q[1]*10000;
+					telem.dz = Model_GS_Y.C_Q[2]*10000;
+					telem.phi = Model_GS_Y.C_Q[3]*10000;
+					telem.theta = Model_GS_Y.C_QC[0]*10000;
+					telem.psi = Model_GS_Y.C_QC[1]*10000;
+					telem.wx = Model_GS_Y.C_QC[2]*10000;
+					telem.wy = Model_GS_Y.C_QC[3]*10000;
+					telem.wz = (int)Model_GS_Y.C_H;
+//					telem.dx = Model_GS_Y.STATE[3];           //ORIGINAL
+//					telem.dy = Model_GS_Y.STATE[4];
+//					telem.dz = Model_GS_Y.STATE[5];
+//					telem.phi = Model_GS_Y.STATE[6];
+//					telem.theta = Model_GS_Y.STATE[7];
+//					telem.psi = Model_GS_Y.STATE[8];
+//					telem.wx = Model_GS_Y.STATE[9];
+//					telem.wy = Model_GS_Y.STATE[10];
+//					telem.wz = Model_GS_Y.STATE[11];
 					telem.cinput1 = cinputs.u[0];
 					telem.cinput2 = cinputs.u[1];
 					telem.cinput3 = cinputs.u[2];
 					telem.cinput4 = cinputs.u[3];
+					//warnx("Quaternion: %d %d %d %d",telem.dx, telem.dy, telem.dz,telem.phi);
 					//warnx("Velocities: %d %d %d",Model_GS_Y.STATE[3],Model_GS_Y.STATE[4],Model_GS_Y.STATE[5]);
-					warnx("Positions: %d %d %d",Model_GS_Y.STATE[0],Model_GS_Y.STATE[1],Model_GS_Y.STATE[2]);
+					//warnx("Positions: %d %d %d",Model_GS_Y.STATE[0],Model_GS_Y.STATE[1],Model_GS_Y.STATE[2]);
 					//warnx("Cinputs: %u %u %u %u", telem.cinput1,telem.cinput2,telem.cinput3,telem.cinput4);
 					//warnx("Tstamp (s): %.3f",Model_GS_U.OPTITRACK[10]);
 					//warnx("Attitude: Roll: %d----- Pitch: %d ------- Yaw: %d", telem.phi,telem.theta,telem.psi);
@@ -559,64 +600,6 @@ int unibo_control_thread_main(int argc, char *argv[])
 				}
 
 
-				/*
-				QUI DA IMPLEMENTARE EVENTUALI ALTRI CASE PER I SEGUENTI PACCHETTI (che arriveranno da PX4 via mavlink):
-
-				//  LLSENSORS
-				Model_GS_U.LLSenable = 0;
-				if (TELE_packet_ready) {
-					pkgTel.readPacketTELEMETRY(packet_TELE);
-					memset(packet_TELE,0,LENGTH);
-					if(pkgTel.isValid()){
-						Model_GS_U.LLSenable = 1;
-						pkgTel.loadPacketTELEMETRY();
-						TELE_packet_ready = false;
-					}
-				}
-
-				//  OPTICALFLOW
-				if (OFLOW_packet_ready) {
-					pkgOflow.readPacketOFLOW(packet_OFLOW);
-					memset(packet_OFLOW,0,LENGTH);
-					if(pkgOflow.isValid()){
-						pkgOflow.loadPacketOFLOW();
-						OFLOW_packet_ready = false;
-					}
-				}
-
-				//  ACK
-				if (ACK_packet_ready) {
-					pkgAck.readPacketACK(packet_ACK);
-					memset(packet_ACK,0,LENGTH);
-					if(pkgAck.isValid()){
-						//TODP: CAlcolo il tempo
-						long diff = tAtom-pkgAck.getTstamp();
-	//					printf("DIFF: %d %d %d \n", tAtom, pkgAck.getTstamp(), diff);
-						if (diff>0){
-							if (AckDiffMax<diff){
-								AckDiffMax=diff;
-							}
-							if (AckDiffMin>diff){
-								AckDiffMin=diff;
-							}
-							AckDiff[ackbcount] = diff;
-							ackbcount++;
-							if (ackbcount==ACKDLEN){
-								//Calcolo la media
-								unsigned long mean = 0;
-								for (int meani= 0; meani<ACKDLEN; meani++){
-									mean += AckDiff[meani];
-								}
-								mean = mean / ACKDLEN;
-	//							printf("TEMPO: %ld %ld %ld %ld \n", AckDiffMin, AckDiffMax, mean, loopMaxTime);
-								ackbcount = 0;
-							}
-						}
-						ACK_packet_ready = false;
-					}
-				}
-
-				*/
 				print_counter2++;
 				if(print_counter2 >= 1)
 				{

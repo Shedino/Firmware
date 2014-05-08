@@ -1,11 +1,11 @@
 /*
  * rtGetNaN.h
  *
- * Code generation for model "Model_GS".
+ * Code generation for model "TRAJECTORY_GENERATOR_APP".
  *
- * Model version              : 1.2425
+ * Model version              : 1.3955
  * Simulink Coder version : 8.3 (R2012b) 20-Jul-2012
- * C source code generated on : Wed May 07 10:44:47 2014
+ * C source code generated on : Wed May 07 12:09:56 2014
  *
  * Target selection: grt.tlc
  * Note: GRT includes extra infrastructure and instrumentation for prototyping

@@ -124,7 +124,7 @@ MODULES		+= lib/geo
 MODULES		+= lib/conversion
 MODULES		+= lib/launchdetection
 
-# folowing lines  added by Mohammad Hayajneh 31/March/2014
+# UNIBO APPS
 MODULES		+= modules/unibo_filtertest
 MODULES		+= modules/unibo_uart
 MODULES		+= modules/unibo_mavlink
@@ -133,6 +133,7 @@ MODULES		+= modules/unibo_control
 #MODULES		+= modules/unibo_ECF_standard
 MODULES		+= modules/unibo_att_esti_ECF_s
 MODULES		+= modules/unibo_att_esti_ECF_c
+MODULES		+= modules/unibo_trajectory_ref
 #-----------
 
 #

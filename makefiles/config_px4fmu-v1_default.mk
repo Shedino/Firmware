@@ -127,6 +127,7 @@ MODULES		+= modules/unibo_control
 MODULES		+= modules/unibo_filtertest
 MODULES		+= modules/unibo_uart
 MODULES		+= modules/unibo_mavlink
+MODULES		+= modules/unibo_trajectory_ref
 
 #
 # Demo apps

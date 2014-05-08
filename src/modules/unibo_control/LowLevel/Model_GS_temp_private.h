@@ -1,11 +1,11 @@
 /*
- * Model_GS_private.h
+ * Model_GS_temp_private.h
  *
- * Code generation for model "Model_GS".
+ * Code generation for model "Model_GS_temp".
  *
- * Model version              : 1.2425
+ * Model version              : 1.2383
  * Simulink Coder version : 8.3 (R2012b) 20-Jul-2012
- * C source code generated on : Wed May 07 10:44:47 2014
+ * C source code generated on : Tue Apr 08 14:13:17 2014
  *
  * Target selection: grt.tlc
  * Note: GRT includes extra infrastructure and instrumentation for prototyping
@@ -13,8 +13,8 @@
  * Code generation objective: Execution efficiency
  * Validation result: Not run
  */
-#ifndef RTW_HEADER_Model_GS_private_h_
-#define RTW_HEADER_Model_GS_private_h_
+#ifndef RTW_HEADER_Model_GS_temp_private_h_
+#define RTW_HEADER_Model_GS_temp_private_h_
 #include "rtwtypes.h"
 #ifndef __RTWTYPES_H__
 #error This file requires rtwtypes.h to be included
@@ -33,4 +33,4 @@
 extern real_T rt_roundd(real_T u);
 
 /* Exported functions */
-#endif                                 /* RTW_HEADER_Model_GS_private_h_ */
+#endif                                 /* RTW_HEADER_Model_GS_temp_private_h_ */

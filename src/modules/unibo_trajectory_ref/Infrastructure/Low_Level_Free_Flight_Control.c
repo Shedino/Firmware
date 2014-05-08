@@ -13,7 +13,7 @@
 //using std::cout;
 
 
-void LLFFC_control() {
+void TRAJ_control() {
 
 	MdlInitializeSampleTimes();
 	MdlUpdate(1);
@@ -22,12 +22,13 @@ void LLFFC_control() {
 
 }
 
-void LLFFC_start(){
+void TRAJ_start(){
 	MdlStart();
 }
 
-void LLFFC_updateModelAtomTime(unsigned long int tAtom)
-{
-	Model_GS_U.TIME_STAMP = (int16_T)tAtom;
-}
+//void LLFFC_updateModelAtomTime(unsigned long int tAtom)
+//{
+//	Model_GS_U.TIME_ATOM = (int16_T)tAtom;
+//
+//}
 

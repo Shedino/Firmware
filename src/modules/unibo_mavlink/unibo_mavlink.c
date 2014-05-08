@@ -46,6 +46,7 @@
 #include <uORB/topics/unibo_optitrack.h>
 #include <uORB/topics/unibo_telemetry.h>
 #include <uORB/topics/sensor_combined.h>
+#include <uORB/topics/unibo_joystick.h>
 #include <poll.h>
 ////
 #include <systemlib/systemlib.h>
@@ -331,6 +332,7 @@ int unibo_mavlink_thread_main(int argc, char *argv[])
 	int unibo_ref_pub_fd;
 	int unibo_param_pub_fd;
 	int unibo_opti_pub_fd;
+	int unibo_joy_pub_fd;
 	/* default values for arguments */
 
 	// use (ttyS2) for UART5 in px4fum_v1
@@ -433,9 +435,14 @@ int unibo_mavlink_thread_main(int argc, char *argv[])
 	memset(&opti, 0, sizeof(opti));
 	unibo_opti_pub_fd = orb_advertise(ORB_ID(unibo_optitrack), &opti);
 
+	struct unibo_joystick_s joy;
+	memset(&joy, 0, sizeof(joy));
+	unibo_joy_pub_fd = orb_advertise(ORB_ID(unibo_joystick), &joy);
+
 	mavlink_unibo_references_t unibo_ref_mav;
 	mavlink_unibo_parameters_t unibo_par_mav;
 	mavlink_vicon_position_estimate_t unibo_opti_mav;
+	mavlink_rc_channels_scaled_t unibo_rc;
 
 	// subscribe to telemetry topic
 	int telemetry_sub_fd = orb_subscribe(ORB_ID(unibo_telemetry));
@@ -446,6 +453,7 @@ int unibo_mavlink_thread_main(int argc, char *argv[])
 
 	const int timeout = 500;
 	static uint8_t buf[16];
+	int counter_opti = 0;
 
 	mavlink_message_t msg;
 	static mavlink_status_t status;
@@ -495,10 +503,15 @@ int unibo_mavlink_thread_main(int argc, char *argv[])
 								opti.q2 = 0;
 								opti.q3 = 0;
 								opti.err=0;
-								opti.timestamp=unibo_opti_mav.usec;   //not used
+								opti.timestamp=unibo_opti_mav.usec;
 								opti.valid=1;
 								orb_publish(ORB_ID(unibo_optitrack), unibo_opti_pub_fd, &opti);
 								if (!silent) warnx("Pubblicato optitrack!");
+//								counter_opti++;
+//								if (counter_opti>=50){
+//									warnx("50 packets optitrack received");
+//									counter_opti=0;
+//								}
 								break;
 							case MAVLINK_MSG_ID_UNIBO_REFERENCES:
 								//decoding
@@ -554,6 +567,16 @@ int unibo_mavlink_thread_main(int argc, char *argv[])
 								param.in24=unibo_par_mav.offset_z;
 								param.valid=1;
 								orb_publish(ORB_ID(unibo_parameters), unibo_param_pub_fd, &param);
+								break;
+							case MAVLINK_MSG_ID_RC_CHANNELS_SCALED:
+								mavlink_msg_rc_channels_scaled_decode(&msg, &unibo_rc);
+								joy.raw_joystick[0] = unibo_rc.chan1_scaled / 19.5 +512;	//-10000/+10000  -->  -512/+512
+								joy.raw_joystick[1] = unibo_rc.chan2_scaled / 19.5 +512;
+								joy.raw_joystick[2] = unibo_rc.chan3_scaled / 19.5 +512;
+								joy.raw_joystick[3] = unibo_rc.chan4_scaled / 19.5 +512;
+								joy.raw_joystick[7] = unibo_rc.chan8_scaled / 30;         //button is (Button_number-1)^2*30
+								orb_publish(ORB_ID(unibo_joystick), unibo_joy_pub_fd, &joy);
+								//warnx("Joystick pachet received: CH1: %d - CH2: %d - CH3: %d - CH4: %d BUTTON: %d",joy.raw_joystick[0],joy.raw_joystick[1],joy.raw_joystick[2],joy.raw_joystick[3],joy.raw_joystick[7]);
 								break;
 							default:
 								//Do nothing
