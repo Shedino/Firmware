@@ -141,7 +141,7 @@ int unibo_control_main(int argc, char *argv[])
 					 SCHED_DEFAULT,
 					 //SCHED_PRIORITY_DEFAULT,
 					 SCHED_PRIORITY_MAX - 15,
-					 4096*2,
+					 4096*1.5,
 					 unibo_control_thread_main,
 					 (argv) ? (const char **)&argv[2] : (const char **)NULL);
 		warnx("Thread started PID: %d",uniboc_unibo_control_task);
@@ -289,6 +289,10 @@ int unibo_control_thread_main(int argc, char *argv[])
 
 	int telemetry_counter=0;
 
+	static int counter_opti_pack = 0;
+	static int counter_pars_pack = 0;
+	static int counter_ref_pack = 0;
+
 	/* Bool for topics update */
 	bool updated;
 
@@ -304,37 +308,6 @@ int unibo_control_thread_main(int argc, char *argv[])
 	 * |-----------------------------------------------------|
 	 */
 
-
-	Model_GS_U.PARAMETERS[2] = 0.f;           //offset
-	Model_GS_U.PARAMETERS[3] = 0.f;
-	Model_GS_U.PARAMETERS[4] = 0.1f;        //delta
-
-	Model_GS_U.PARAMETERS[5] = 7.f;
-	Model_GS_U.PARAMETERS[6] = 18.f;
-	Model_GS_U.PARAMETERS[7] = 0.01f;
-
-	Model_GS_U.PARAMETERS[8] = 70.f;
-	Model_GS_U.PARAMETERS[9] = 200.f;
-	Model_GS_U.PARAMETERS[10] = 0.06f;
-
-	Model_GS_U.PARAMETERS[11] = 2.4f;
-	Model_GS_U.PARAMETERS[12] = 2.4f;
-	Model_GS_U.PARAMETERS[13] = 3.f;
-
-	Model_GS_U.PARAMETERS[14] = 0.14f;
-	Model_GS_U.PARAMETERS[15] = 0.14f;
-	Model_GS_U.PARAMETERS[16] = 0.14f;
-
-	Model_GS_U.PARAMETERS[17] = 0.f;
-	Model_GS_U.PARAMETERS[18] = 0.f;
-	Model_GS_U.PARAMETERS[19] = 0.01f;
-
-	Model_GS_U.PARAMETERS[20] = 0.f;
-	Model_GS_U.PARAMETERS[21] = 0.06f;		 //epsilon
-	Model_GS_U.PARAMETERS[22] = 1.f;           //XY multiplier
-	Model_GS_U.PARAMETERS[23] = 0.f;
-	Model_GS_U.PARAMETERS[24] = 0.f;
-	Model_GS_U.PARAMETERS[25] = 0.f;
 
 
 	int txtcounter = 0;
@@ -464,12 +437,15 @@ int unibo_control_thread_main(int argc, char *argv[])
 					Model_GS_U.REF_BUTTONS = temp_ref.button;
 
 					Model_GS_U.TIME_STAMP = temp_ref.timestamp;
+					//warnx("Actual yaw: %.3f - YawREF: %.3f - DYawREF: %.3f - D2YawREF: %.3f", ahrs.yaw, Model_GS_U.REF_YAW[0], Model_GS_U.REF_YAW[1], Model_GS_U.REF_YAW[2]);
+					//warnx("Posx: %.3f - Posy: %.3f - Posz: %.3f - YawREF: %.3f", Model_GS_U.REF_POS[0], Model_GS_U.REF_POS[1], Model_GS_U.REF_POS[2], Model_GS_U.REF_YAW[0]);
 					//warnx("Button: %d",temp_ref.button);
-//					counter_ref_pack++;
-//					if (counter_ref_pack>=20){
-//						warnx("Ricevuti 20 pacchetti reference.");
-//						counter_ref_pack=0;
-//					}
+					counter_ref_pack++;
+					if (counter_ref_pack>=200){
+						warnx("Ricevuti 200 pacchetti reference.");
+						counter_ref_pack=0;
+						warnx("Posx: %.3f - Posy: %.3f - Posz: %.3f - YawREF: %.3f", Model_GS_U.REF_POS[0], Model_GS_U.REF_POS[1], Model_GS_U.REF_POS[2], Model_GS_U.REF_YAW[0]);
+					}
 				}
 
 				// gestione pacchetto OPTITRACK ricevuto dal Topic unibo_optitrack
@@ -490,48 +466,59 @@ int unibo_control_thread_main(int argc, char *argv[])
 					Model_GS_U.OPTITRACK[10] = temp_opti.timestamp / 1000000.f;
 					Model_GS_U.OPTITRACK[11] = 0;
 					//warnx("Optitrack from topic: %d %d %d\n",temp_opti.pos_x,temp_opti.pos_y,temp_opti.pos_z);
-//					counter_opti_pack++;
-//					if (counter_opti_pack>=50){
-//						warnx("Ricevuti 50 pacchetti OPTITRACK.");
-//						counter_opti_pack=0;
-//					}
+					counter_opti_pack++;
+					if (counter_opti_pack>=200){
+						warnx("Ricevuti 200 pacchetti OPTITRACK.");
+						counter_opti_pack=0;
+					}
 				}
 
-				// gestione pacchetto parameters ricevuto dal Topic unibo_optitrack
-//				orb_check(parameters_sub_fd, &updated);
-//				if (updated){
-//					struct unibo_parameters_s temp_PAR;
-//					orb_copy(ORB_ID(unibo_parameters),parameters_sub_fd,&temp_PAR);
-//					Model_GS_U.PARAMETERS[0] = 0;
-//					Model_GS_U.PARAMETERS[1] = 0;
-//					Model_GS_U.PARAMETERS[2] = temp_PAR.in1;
-//					Model_GS_U.PARAMETERS[3] = temp_PAR.in2;
-//					Model_GS_U.PARAMETERS[4] = temp_PAR.in3;
-//					Model_GS_U.PARAMETERS[5] = temp_PAR.in4;
-//					Model_GS_U.PARAMETERS[6] = temp_PAR.in5;
-//					Model_GS_U.PARAMETERS[7] = temp_PAR.in6;
-//					Model_GS_U.PARAMETERS[8] = temp_PAR.in7;
-//					Model_GS_U.PARAMETERS[9] = temp_PAR.in8;
-//					Model_GS_U.PARAMETERS[10] = temp_PAR.in9;
-//					Model_GS_U.PARAMETERS[11] = temp_PAR.in10;
-//					Model_GS_U.PARAMETERS[12] = temp_PAR.in11;
-//					Model_GS_U.PARAMETERS[13] = temp_PAR.in12;
-//					Model_GS_U.PARAMETERS[14] = temp_PAR.in13;
-//					Model_GS_U.PARAMETERS[15] = temp_PAR.in14;
-//					Model_GS_U.PARAMETERS[16] = temp_PAR.in15;
-//					Model_GS_U.PARAMETERS[17] = temp_PAR.in16;
-//					Model_GS_U.PARAMETERS[18] = temp_PAR.in17;
-//					Model_GS_U.PARAMETERS[19] = temp_PAR.in18;
-//					Model_GS_U.PARAMETERS[20] = temp_PAR.in19;
-//					Model_GS_U.PARAMETERS[21] = temp_PAR.in20;
-//					Model_GS_U.PARAMETERS[22] = temp_PAR.in21;
-//					Model_GS_U.PARAMETERS[23] = temp_PAR.in22;
-//					Model_GS_U.PARAMETERS[24] = temp_PAR.in23;
-//					Model_GS_U.PARAMETERS[25] = temp_PAR.in24;
-//					Model_GS_U.PARAMETERS[26] = 0;
-//					Model_GS_U.PARAMETERS[27] = 0;
-//					//warnx("Parameters from topic: %d %d %d\n",temp_PAR.in1,temp_PAR.in2,temp_PAR.in3);
-//				}
+				//gestione pacchetto parameters ricevuto dal Topic unibo_optitrack
+				orb_check(parameters_sub_fd, &updated);
+				if (updated){
+					struct unibo_parameters_s temp_PAR;
+					orb_copy(ORB_ID(unibo_parameters),parameters_sub_fd,&temp_PAR);
+					Model_GS_U.PARAMETERS[0] = 0;
+					Model_GS_U.PARAMETERS[1] = 0;
+					Model_GS_U.PARAMETERS[2] = temp_PAR.in1;
+					Model_GS_U.PARAMETERS[3] = temp_PAR.in2;
+					Model_GS_U.PARAMETERS[4] = temp_PAR.in3;
+					Model_GS_U.PARAMETERS[5] = temp_PAR.in4;
+					Model_GS_U.PARAMETERS[6] = temp_PAR.in5;
+					Model_GS_U.PARAMETERS[7] = temp_PAR.in6;
+					Model_GS_U.PARAMETERS[8] = temp_PAR.in7;
+					Model_GS_U.PARAMETERS[9] = temp_PAR.in8;
+					Model_GS_U.PARAMETERS[10] = temp_PAR.in9;
+					Model_GS_U.PARAMETERS[11] = temp_PAR.in10;
+					Model_GS_U.PARAMETERS[12] = temp_PAR.in11;
+					Model_GS_U.PARAMETERS[13] = temp_PAR.in12;
+					Model_GS_U.PARAMETERS[14] = temp_PAR.in13;
+					Model_GS_U.PARAMETERS[15] = temp_PAR.in14;
+					Model_GS_U.PARAMETERS[16] = temp_PAR.in15;
+					Model_GS_U.PARAMETERS[17] = temp_PAR.in16;
+					Model_GS_U.PARAMETERS[18] = temp_PAR.in17;
+					Model_GS_U.PARAMETERS[19] = temp_PAR.in18;
+					Model_GS_U.PARAMETERS[20] = temp_PAR.in19;
+					Model_GS_U.PARAMETERS[21] = temp_PAR.in20;
+					Model_GS_U.PARAMETERS[22] = temp_PAR.in21;
+					Model_GS_U.PARAMETERS[23] = temp_PAR.in22;
+					Model_GS_U.PARAMETERS[24] = temp_PAR.in23;
+					Model_GS_U.PARAMETERS[25] = temp_PAR.in24;
+					Model_GS_U.PARAMETERS[26] = 0;
+					Model_GS_U.PARAMETERS[27] = 0;
+					Model_GS_U.YAWOFFSET = temp_PAR.in24;
+					//warnx("Parameters from topic: %d %d %d\n",temp_PAR.in1,temp_PAR.in2,temp_PAR.in3);
+
+					counter_pars_pack++;
+					if (counter_pars_pack>=10){
+						warnx("\nRicevuti 10 pacchetti PARAMETERS.");
+						warnx("Parameters from topic: %.3f %.3f %.3f %.3f %.3f %.3f %.3f %.3f %.3f %.3f",temp_PAR.in1,temp_PAR.in2,temp_PAR.in3,temp_PAR.in4,temp_PAR.in5,temp_PAR.in6,temp_PAR.in7,temp_PAR.in8,temp_PAR.in9,temp_PAR.in10);
+						warnx("  --> %.3f %.3f %.3f %.3f %.3f %.3f %.3f %.3f %.3f %.3f",temp_PAR.in11,temp_PAR.in12,temp_PAR.in13,temp_PAR.in14,temp_PAR.in15,temp_PAR.in16,temp_PAR.in17,temp_PAR.in18,temp_PAR.in19,temp_PAR.in20);
+						warnx("  --> %.3f %.3f %.3f %.3f",temp_PAR.in21,temp_PAR.in22,temp_PAR.in23,temp_PAR.in24);
+						warnx("\n");
+						counter_pars_pack=0;
+					}
+				}
 
 
 
@@ -600,12 +587,14 @@ int unibo_control_thread_main(int argc, char *argv[])
 				}
 
 
+				/*
 				print_counter2++;
 				if(print_counter2 >= 1)
 				{
 					usleep(2000);
 					print_counter2 = 0;
 				}
+				*/
 
 			} //End of file descriptor [SENSOR COMBINED id=1]
 

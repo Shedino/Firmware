@@ -5,7 +5,7 @@
  *
  * Model version              : 1.3955
  * Simulink Coder version : 8.3 (R2012b) 20-Jul-2012
- * C source code generated on : Wed May 07 12:09:56 2014
+ * C source code generated on : Thu May 08 13:03:55 2014
  *
  * Target selection: grt.tlc
  * Note: GRT includes extra infrastructure and instrumentation for prototyping
@@ -435,11 +435,11 @@ static void TRAJECTORY_GENERATOR_APP_output(void)
     TRAJECTORY_GENERATOR_APP_B.p_ref[2];
 
   /* DiscreteTransferFcn: '<S26>/Discrete Transfer Fcn7' */
-  TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn7 = 0.067606180094051782 *
+  TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn7 = 0.18126924692201812 *
     TRAJECTORY_GENERATOR_APP_DWork.DiscreteTransferFcn7_states;
 
   /* DiscreteTransferFcn: '<S27>/Discrete Transfer Fcn7' */
-  TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn7_o = 0.067606180094051782 *
+  TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn7_o = 0.18126924692201812 *
     TRAJECTORY_GENERATOR_APP_DWork.DiscreteTransferFcn7_states_a;
 
   /* MATLAB Function: '<S5>/BODY to INERTIAL' incorporates:
@@ -474,7 +474,7 @@ static void TRAJECTORY_GENERATOR_APP_output(void)
   /* End of MATLAB Function: '<S5>/BODY to INERTIAL' */
 
   /* DiscreteTransferFcn: '<S29>/Discrete Transfer Fcn7' */
-  TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn7_a = 0.067606180094051782 *
+  TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn7_a = 0.18126924692201812 *
     TRAJECTORY_GENERATOR_APP_DWork.DiscreteTransferFcn7_states_f;
 
   /* Sum: '<S1>/Sum2' */
@@ -641,7 +641,7 @@ static void TRAJECTORY_GENERATOR_APP_output(void)
 
   /* DiscreteTransferFcn: '<S28>/Discrete Transfer Fcn7' */
   /* '<S35>:1:14' */
-  TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn7_e = 0.067606180094051782 *
+  TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn7_e = 0.18126924692201812 *
     TRAJECTORY_GENERATOR_APP_DWork.DiscreteTransferFcn7_states_c;
 
   /* Derivative: '<S25>/Derivative3' */
@@ -773,115 +773,115 @@ static void TRAJECTORY_GENERATOR_APP_output(void)
     &TRAJECTORY_GENERATOR_APP_B.sf_SWITCHLATMODE_i);
 
   /* DiscreteTransferFcn: '<S26>/Discrete Transfer Fcn' */
-  TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn = 0.067606180094051782 *
+  TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn = 0.18126924692201812 *
     TRAJECTORY_GENERATOR_APP_DWork.DiscreteTransferFcn_states;
 
   /* DiscreteTransferFcn: '<S26>/Discrete Transfer Fcn1' */
-  TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn1 = 0.067606180094051782 *
+  TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn1 = 0.18126924692201812 *
     TRAJECTORY_GENERATOR_APP_DWork.DiscreteTransferFcn1_states;
 
   /* DiscreteTransferFcn: '<S26>/Discrete Transfer Fcn2' */
-  TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn2 = 0.067606180094051782 *
+  TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn2 = 0.18126924692201812 *
     TRAJECTORY_GENERATOR_APP_DWork.DiscreteTransferFcn2_states;
 
   /* DiscreteTransferFcn: '<S26>/Discrete Transfer Fcn3' */
-  TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn3 = 0.067606180094051782 *
+  TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn3 = 0.18126924692201812 *
     TRAJECTORY_GENERATOR_APP_DWork.DiscreteTransferFcn3_states;
 
   /* DiscreteTransferFcn: '<S26>/Discrete Transfer Fcn4' */
-  TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn4 = 0.067606180094051782 *
+  TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn4 = 0.18126924692201812 *
     TRAJECTORY_GENERATOR_APP_DWork.DiscreteTransferFcn4_states;
 
   /* DiscreteTransferFcn: '<S26>/Discrete Transfer Fcn5' */
-  TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn5 = 0.067606180094051782 *
+  TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn5 = 0.18126924692201812 *
     TRAJECTORY_GENERATOR_APP_DWork.DiscreteTransferFcn5_states;
 
   /* DiscreteTransferFcn: '<S26>/Discrete Transfer Fcn6' */
-  TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn6 = 0.067606180094051782 *
+  TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn6 = 0.18126924692201812 *
     TRAJECTORY_GENERATOR_APP_DWork.DiscreteTransferFcn6_states;
 
   /* DiscreteTransferFcn: '<S27>/Discrete Transfer Fcn' */
-  TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn_m = 0.067606180094051782 *
+  TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn_m = 0.18126924692201812 *
     TRAJECTORY_GENERATOR_APP_DWork.DiscreteTransferFcn_states_c;
 
   /* DiscreteTransferFcn: '<S27>/Discrete Transfer Fcn1' */
-  TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn1_h = 0.067606180094051782 *
+  TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn1_h = 0.18126924692201812 *
     TRAJECTORY_GENERATOR_APP_DWork.DiscreteTransferFcn1_states_o;
 
   /* DiscreteTransferFcn: '<S27>/Discrete Transfer Fcn2' */
-  TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn2_i = 0.067606180094051782 *
+  TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn2_i = 0.18126924692201812 *
     TRAJECTORY_GENERATOR_APP_DWork.DiscreteTransferFcn2_states_l;
 
   /* DiscreteTransferFcn: '<S27>/Discrete Transfer Fcn3' */
-  TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn3_e = 0.067606180094051782 *
+  TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn3_e = 0.18126924692201812 *
     TRAJECTORY_GENERATOR_APP_DWork.DiscreteTransferFcn3_states_f;
 
   /* DiscreteTransferFcn: '<S27>/Discrete Transfer Fcn4' */
-  TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn4_j = 0.067606180094051782 *
+  TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn4_j = 0.18126924692201812 *
     TRAJECTORY_GENERATOR_APP_DWork.DiscreteTransferFcn4_states_c;
 
   /* DiscreteTransferFcn: '<S27>/Discrete Transfer Fcn5' */
-  TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn5_e = 0.067606180094051782 *
+  TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn5_e = 0.18126924692201812 *
     TRAJECTORY_GENERATOR_APP_DWork.DiscreteTransferFcn5_states_i;
 
   /* DiscreteTransferFcn: '<S27>/Discrete Transfer Fcn6' */
-  TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn6_j = 0.067606180094051782 *
+  TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn6_j = 0.18126924692201812 *
     TRAJECTORY_GENERATOR_APP_DWork.DiscreteTransferFcn6_states_j;
 
   /* DiscreteTransferFcn: '<S28>/Discrete Transfer Fcn' */
-  TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn_b = 0.067606180094051782 *
+  TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn_b = 0.18126924692201812 *
     TRAJECTORY_GENERATOR_APP_DWork.DiscreteTransferFcn_states_cv;
 
   /* DiscreteTransferFcn: '<S28>/Discrete Transfer Fcn1' */
-  TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn1_f = 0.067606180094051782 *
+  TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn1_f = 0.18126924692201812 *
     TRAJECTORY_GENERATOR_APP_DWork.DiscreteTransferFcn1_states_b;
 
   /* DiscreteTransferFcn: '<S28>/Discrete Transfer Fcn2' */
-  TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn2_c = 0.067606180094051782 *
+  TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn2_c = 0.18126924692201812 *
     TRAJECTORY_GENERATOR_APP_DWork.DiscreteTransferFcn2_states_b;
 
   /* DiscreteTransferFcn: '<S28>/Discrete Transfer Fcn3' */
-  TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn3_a = 0.067606180094051782 *
+  TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn3_a = 0.18126924692201812 *
     TRAJECTORY_GENERATOR_APP_DWork.DiscreteTransferFcn3_states_j;
 
   /* DiscreteTransferFcn: '<S28>/Discrete Transfer Fcn4' */
-  TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn4_b = 0.067606180094051782 *
+  TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn4_b = 0.18126924692201812 *
     TRAJECTORY_GENERATOR_APP_DWork.DiscreteTransferFcn4_states_n;
 
   /* DiscreteTransferFcn: '<S28>/Discrete Transfer Fcn5' */
-  TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn5_i = 0.067606180094051782 *
+  TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn5_i = 0.18126924692201812 *
     TRAJECTORY_GENERATOR_APP_DWork.DiscreteTransferFcn5_states_k;
 
   /* DiscreteTransferFcn: '<S28>/Discrete Transfer Fcn6' */
-  TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn6_n = 0.067606180094051782 *
+  TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn6_n = 0.18126924692201812 *
     TRAJECTORY_GENERATOR_APP_DWork.DiscreteTransferFcn6_states_g;
 
   /* DiscreteTransferFcn: '<S29>/Discrete Transfer Fcn' */
-  TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn_d = 0.067606180094051782 *
+  TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn_d = 0.18126924692201812 *
     TRAJECTORY_GENERATOR_APP_DWork.DiscreteTransferFcn_states_cb;
 
   /* DiscreteTransferFcn: '<S29>/Discrete Transfer Fcn1' */
-  TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn1_g = 0.067606180094051782 *
+  TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn1_g = 0.18126924692201812 *
     TRAJECTORY_GENERATOR_APP_DWork.DiscreteTransferFcn1_states_k;
 
   /* DiscreteTransferFcn: '<S29>/Discrete Transfer Fcn2' */
-  TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn2_b = 0.067606180094051782 *
+  TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn2_b = 0.18126924692201812 *
     TRAJECTORY_GENERATOR_APP_DWork.DiscreteTransferFcn2_states_a;
 
   /* DiscreteTransferFcn: '<S29>/Discrete Transfer Fcn3' */
-  TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn3_f = 0.067606180094051782 *
+  TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn3_f = 0.18126924692201812 *
     TRAJECTORY_GENERATOR_APP_DWork.DiscreteTransferFcn3_states_a;
 
   /* DiscreteTransferFcn: '<S29>/Discrete Transfer Fcn4' */
-  TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn4_o = 0.067606180094051782 *
+  TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn4_o = 0.18126924692201812 *
     TRAJECTORY_GENERATOR_APP_DWork.DiscreteTransferFcn4_states_j;
 
   /* DiscreteTransferFcn: '<S29>/Discrete Transfer Fcn5' */
-  TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn5_j = 0.067606180094051782 *
+  TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn5_j = 0.18126924692201812 *
     TRAJECTORY_GENERATOR_APP_DWork.DiscreteTransferFcn5_states_iv;
 
   /* DiscreteTransferFcn: '<S29>/Discrete Transfer Fcn6' */
-  TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn6_g = 0.067606180094051782 *
+  TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn6_g = 0.18126924692201812 *
     TRAJECTORY_GENERATOR_APP_DWork.DiscreteTransferFcn6_states_a;
 
   /* MATLAB Function: '<S24>/moving___x' incorporates:
@@ -989,7 +989,7 @@ static void TRAJECTORY_GENERATOR_APP_update(void)
 
   /* Update for DiscreteIntegrator: '<S34>/X_REF' */
   TRAJECTORY_GENERATOR_APP_DWork.X_REF_IC_LOADING = 0U;
-  TRAJECTORY_GENERATOR_APP_DWork.X_REF_DSTATE += 0.01 *
+  TRAJECTORY_GENERATOR_APP_DWork.X_REF_DSTATE += 0.02 *
     TRAJECTORY_GENERATOR_APP_B.dx_i;
   if (TRAJECTORY_GENERATOR_APP_B.DataTypeConversion1) {
     TRAJECTORY_GENERATOR_APP_DWork.X_REF_PrevResetState = 1;
@@ -1001,7 +1001,7 @@ static void TRAJECTORY_GENERATOR_APP_update(void)
 
   /* Update for DiscreteIntegrator: '<S34>/Y_REF' */
   TRAJECTORY_GENERATOR_APP_DWork.Y_REF_IC_LOADING = 0U;
-  TRAJECTORY_GENERATOR_APP_DWork.Y_REF_DSTATE += 0.01 *
+  TRAJECTORY_GENERATOR_APP_DWork.Y_REF_DSTATE += 0.02 *
     TRAJECTORY_GENERATOR_APP_B.dy_i;
   if (TRAJECTORY_GENERATOR_APP_B.DataTypeConversion1) {
     TRAJECTORY_GENERATOR_APP_DWork.Y_REF_PrevResetState = 1;
@@ -1013,7 +1013,7 @@ static void TRAJECTORY_GENERATOR_APP_update(void)
 
   /* Update for DiscreteIntegrator: '<S34>/Z_REF' */
   TRAJECTORY_GENERATOR_APP_DWork.Z_REF_IC_LOADING = 0U;
-  TRAJECTORY_GENERATOR_APP_DWork.Z_REF_DSTATE += 0.01 *
+  TRAJECTORY_GENERATOR_APP_DWork.Z_REF_DSTATE += 0.02 *
     TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn7_a;
   if (TRAJECTORY_GENERATOR_APP_B.DataTypeConversion1) {
     TRAJECTORY_GENERATOR_APP_DWork.Z_REF_PrevResetState = 1;
@@ -1045,17 +1045,17 @@ static void TRAJECTORY_GENERATOR_APP_update(void)
 
   /* Update for DiscreteTransferFcn: '<S26>/Discrete Transfer Fcn7' */
   TRAJECTORY_GENERATOR_APP_DWork.DiscreteTransferFcn7_states =
-    TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn5 - -0.93239381990594827 *
+    TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn5 - -0.81873075307798182 *
     TRAJECTORY_GENERATOR_APP_DWork.DiscreteTransferFcn7_states;
 
   /* Update for DiscreteTransferFcn: '<S27>/Discrete Transfer Fcn7' */
   TRAJECTORY_GENERATOR_APP_DWork.DiscreteTransferFcn7_states_a =
-    TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn5_e - -0.93239381990594827 *
+    TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn5_e - -0.81873075307798182 *
     TRAJECTORY_GENERATOR_APP_DWork.DiscreteTransferFcn7_states_a;
 
   /* Update for DiscreteTransferFcn: '<S29>/Discrete Transfer Fcn7' */
   TRAJECTORY_GENERATOR_APP_DWork.DiscreteTransferFcn7_states_f =
-    TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn5_j - -0.93239381990594827 *
+    TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn5_j - -0.81873075307798182 *
     TRAJECTORY_GENERATOR_APP_DWork.DiscreteTransferFcn7_states_f;
 
   /* Update for Derivative: '<S25>/Derivative' */
@@ -1138,7 +1138,7 @@ static void TRAJECTORY_GENERATOR_APP_update(void)
 
   /* Update for DiscreteIntegrator: '<S34>/PSI_REF' */
   TRAJECTORY_GENERATOR_APP_DWork.PSI_REF_IC_LOADING = 0U;
-  TRAJECTORY_GENERATOR_APP_DWork.PSI_REF_DSTATE += 0.01 *
+  TRAJECTORY_GENERATOR_APP_DWork.PSI_REF_DSTATE += 0.02 *
     TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn7_e;
   if (TRAJECTORY_GENERATOR_APP_B.DataTypeConversion1) {
     TRAJECTORY_GENERATOR_APP_DWork.PSI_REF_PrevResetState = 1;
@@ -1150,7 +1150,7 @@ static void TRAJECTORY_GENERATOR_APP_update(void)
 
   /* Update for DiscreteTransferFcn: '<S28>/Discrete Transfer Fcn7' */
   TRAJECTORY_GENERATOR_APP_DWork.DiscreteTransferFcn7_states_c =
-    TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn5_i - -0.93239381990594827 *
+    TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn5_i - -0.81873075307798182 *
     TRAJECTORY_GENERATOR_APP_DWork.DiscreteTransferFcn7_states_c;
 
   /* Update for Derivative: '<S25>/Derivative3' */
@@ -1195,142 +1195,142 @@ static void TRAJECTORY_GENERATOR_APP_update(void)
 
   /* Update for DiscreteTransferFcn: '<S26>/Discrete Transfer Fcn' */
   TRAJECTORY_GENERATOR_APP_DWork.DiscreteTransferFcn_states =
-    TRAJECTORY_GENERATOR_APP_B.moving_e - -0.93239381990594827 *
+    TRAJECTORY_GENERATOR_APP_B.moving_e - -0.81873075307798182 *
     TRAJECTORY_GENERATOR_APP_DWork.DiscreteTransferFcn_states;
 
   /* Update for DiscreteTransferFcn: '<S26>/Discrete Transfer Fcn1' */
   TRAJECTORY_GENERATOR_APP_DWork.DiscreteTransferFcn1_states =
-    TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn2 - -0.93239381990594827 *
+    TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn2 - -0.81873075307798182 *
     TRAJECTORY_GENERATOR_APP_DWork.DiscreteTransferFcn1_states;
 
   /* Update for DiscreteTransferFcn: '<S26>/Discrete Transfer Fcn2' */
   TRAJECTORY_GENERATOR_APP_DWork.DiscreteTransferFcn2_states =
-    TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn - -0.93239381990594827 *
+    TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn - -0.81873075307798182 *
     TRAJECTORY_GENERATOR_APP_DWork.DiscreteTransferFcn2_states;
 
   /* Update for DiscreteTransferFcn: '<S26>/Discrete Transfer Fcn3' */
   TRAJECTORY_GENERATOR_APP_DWork.DiscreteTransferFcn3_states =
-    TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn1 - -0.93239381990594827 *
+    TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn1 - -0.81873075307798182 *
     TRAJECTORY_GENERATOR_APP_DWork.DiscreteTransferFcn3_states;
 
   /* Update for DiscreteTransferFcn: '<S26>/Discrete Transfer Fcn4' */
   TRAJECTORY_GENERATOR_APP_DWork.DiscreteTransferFcn4_states =
-    TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn3 - -0.93239381990594827 *
+    TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn3 - -0.81873075307798182 *
     TRAJECTORY_GENERATOR_APP_DWork.DiscreteTransferFcn4_states;
 
   /* Update for DiscreteTransferFcn: '<S26>/Discrete Transfer Fcn5' */
   TRAJECTORY_GENERATOR_APP_DWork.DiscreteTransferFcn5_states =
-    TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn6 - -0.93239381990594827 *
+    TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn6 - -0.81873075307798182 *
     TRAJECTORY_GENERATOR_APP_DWork.DiscreteTransferFcn5_states;
 
   /* Update for DiscreteTransferFcn: '<S26>/Discrete Transfer Fcn6' */
   TRAJECTORY_GENERATOR_APP_DWork.DiscreteTransferFcn6_states =
-    TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn4 - -0.93239381990594827 *
+    TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn4 - -0.81873075307798182 *
     TRAJECTORY_GENERATOR_APP_DWork.DiscreteTransferFcn6_states;
 
   /* Update for DiscreteTransferFcn: '<S27>/Discrete Transfer Fcn' */
   TRAJECTORY_GENERATOR_APP_DWork.DiscreteTransferFcn_states_c =
-    TRAJECTORY_GENERATOR_APP_B.moving_k - -0.93239381990594827 *
+    TRAJECTORY_GENERATOR_APP_B.moving_k - -0.81873075307798182 *
     TRAJECTORY_GENERATOR_APP_DWork.DiscreteTransferFcn_states_c;
 
   /* Update for DiscreteTransferFcn: '<S27>/Discrete Transfer Fcn1' */
   TRAJECTORY_GENERATOR_APP_DWork.DiscreteTransferFcn1_states_o =
-    TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn2_i - -0.93239381990594827 *
+    TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn2_i - -0.81873075307798182 *
     TRAJECTORY_GENERATOR_APP_DWork.DiscreteTransferFcn1_states_o;
 
   /* Update for DiscreteTransferFcn: '<S27>/Discrete Transfer Fcn2' */
   TRAJECTORY_GENERATOR_APP_DWork.DiscreteTransferFcn2_states_l =
-    TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn_m - -0.93239381990594827 *
+    TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn_m - -0.81873075307798182 *
     TRAJECTORY_GENERATOR_APP_DWork.DiscreteTransferFcn2_states_l;
 
   /* Update for DiscreteTransferFcn: '<S27>/Discrete Transfer Fcn3' */
   TRAJECTORY_GENERATOR_APP_DWork.DiscreteTransferFcn3_states_f =
-    TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn1_h - -0.93239381990594827 *
+    TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn1_h - -0.81873075307798182 *
     TRAJECTORY_GENERATOR_APP_DWork.DiscreteTransferFcn3_states_f;
 
   /* Update for DiscreteTransferFcn: '<S27>/Discrete Transfer Fcn4' */
   TRAJECTORY_GENERATOR_APP_DWork.DiscreteTransferFcn4_states_c =
-    TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn3_e - -0.93239381990594827 *
+    TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn3_e - -0.81873075307798182 *
     TRAJECTORY_GENERATOR_APP_DWork.DiscreteTransferFcn4_states_c;
 
   /* Update for DiscreteTransferFcn: '<S27>/Discrete Transfer Fcn5' */
   TRAJECTORY_GENERATOR_APP_DWork.DiscreteTransferFcn5_states_i =
-    TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn6_j - -0.93239381990594827 *
+    TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn6_j - -0.81873075307798182 *
     TRAJECTORY_GENERATOR_APP_DWork.DiscreteTransferFcn5_states_i;
 
   /* Update for DiscreteTransferFcn: '<S27>/Discrete Transfer Fcn6' */
   TRAJECTORY_GENERATOR_APP_DWork.DiscreteTransferFcn6_states_j =
-    TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn4_j - -0.93239381990594827 *
+    TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn4_j - -0.81873075307798182 *
     TRAJECTORY_GENERATOR_APP_DWork.DiscreteTransferFcn6_states_j;
 
   /* Update for DiscreteTransferFcn: '<S28>/Discrete Transfer Fcn' */
   TRAJECTORY_GENERATOR_APP_DWork.DiscreteTransferFcn_states_cv =
-    TRAJECTORY_GENERATOR_APP_B.moving_f - -0.93239381990594827 *
+    TRAJECTORY_GENERATOR_APP_B.moving_f - -0.81873075307798182 *
     TRAJECTORY_GENERATOR_APP_DWork.DiscreteTransferFcn_states_cv;
 
   /* Update for DiscreteTransferFcn: '<S28>/Discrete Transfer Fcn1' */
   TRAJECTORY_GENERATOR_APP_DWork.DiscreteTransferFcn1_states_b =
-    TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn2_c - -0.93239381990594827 *
+    TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn2_c - -0.81873075307798182 *
     TRAJECTORY_GENERATOR_APP_DWork.DiscreteTransferFcn1_states_b;
 
   /* Update for DiscreteTransferFcn: '<S28>/Discrete Transfer Fcn2' */
   TRAJECTORY_GENERATOR_APP_DWork.DiscreteTransferFcn2_states_b =
-    TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn_b - -0.93239381990594827 *
+    TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn_b - -0.81873075307798182 *
     TRAJECTORY_GENERATOR_APP_DWork.DiscreteTransferFcn2_states_b;
 
   /* Update for DiscreteTransferFcn: '<S28>/Discrete Transfer Fcn3' */
   TRAJECTORY_GENERATOR_APP_DWork.DiscreteTransferFcn3_states_j =
-    TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn1_f - -0.93239381990594827 *
+    TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn1_f - -0.81873075307798182 *
     TRAJECTORY_GENERATOR_APP_DWork.DiscreteTransferFcn3_states_j;
 
   /* Update for DiscreteTransferFcn: '<S28>/Discrete Transfer Fcn4' */
   TRAJECTORY_GENERATOR_APP_DWork.DiscreteTransferFcn4_states_n =
-    TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn3_a - -0.93239381990594827 *
+    TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn3_a - -0.81873075307798182 *
     TRAJECTORY_GENERATOR_APP_DWork.DiscreteTransferFcn4_states_n;
 
   /* Update for DiscreteTransferFcn: '<S28>/Discrete Transfer Fcn5' */
   TRAJECTORY_GENERATOR_APP_DWork.DiscreteTransferFcn5_states_k =
-    TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn6_n - -0.93239381990594827 *
+    TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn6_n - -0.81873075307798182 *
     TRAJECTORY_GENERATOR_APP_DWork.DiscreteTransferFcn5_states_k;
 
   /* Update for DiscreteTransferFcn: '<S28>/Discrete Transfer Fcn6' */
   TRAJECTORY_GENERATOR_APP_DWork.DiscreteTransferFcn6_states_g =
-    TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn4_b - -0.93239381990594827 *
+    TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn4_b - -0.81873075307798182 *
     TRAJECTORY_GENERATOR_APP_DWork.DiscreteTransferFcn6_states_g;
 
   /* Update for DiscreteTransferFcn: '<S29>/Discrete Transfer Fcn' */
   TRAJECTORY_GENERATOR_APP_DWork.DiscreteTransferFcn_states_cb =
-    TRAJECTORY_GENERATOR_APP_B.moving - -0.93239381990594827 *
+    TRAJECTORY_GENERATOR_APP_B.moving - -0.81873075307798182 *
     TRAJECTORY_GENERATOR_APP_DWork.DiscreteTransferFcn_states_cb;
 
   /* Update for DiscreteTransferFcn: '<S29>/Discrete Transfer Fcn1' */
   TRAJECTORY_GENERATOR_APP_DWork.DiscreteTransferFcn1_states_k =
-    TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn2_b - -0.93239381990594827 *
+    TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn2_b - -0.81873075307798182 *
     TRAJECTORY_GENERATOR_APP_DWork.DiscreteTransferFcn1_states_k;
 
   /* Update for DiscreteTransferFcn: '<S29>/Discrete Transfer Fcn2' */
   TRAJECTORY_GENERATOR_APP_DWork.DiscreteTransferFcn2_states_a =
-    TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn_d - -0.93239381990594827 *
+    TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn_d - -0.81873075307798182 *
     TRAJECTORY_GENERATOR_APP_DWork.DiscreteTransferFcn2_states_a;
 
   /* Update for DiscreteTransferFcn: '<S29>/Discrete Transfer Fcn3' */
   TRAJECTORY_GENERATOR_APP_DWork.DiscreteTransferFcn3_states_a =
-    TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn1_g - -0.93239381990594827 *
+    TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn1_g - -0.81873075307798182 *
     TRAJECTORY_GENERATOR_APP_DWork.DiscreteTransferFcn3_states_a;
 
   /* Update for DiscreteTransferFcn: '<S29>/Discrete Transfer Fcn4' */
   TRAJECTORY_GENERATOR_APP_DWork.DiscreteTransferFcn4_states_j =
-    TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn3_f - -0.93239381990594827 *
+    TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn3_f - -0.81873075307798182 *
     TRAJECTORY_GENERATOR_APP_DWork.DiscreteTransferFcn4_states_j;
 
   /* Update for DiscreteTransferFcn: '<S29>/Discrete Transfer Fcn5' */
   TRAJECTORY_GENERATOR_APP_DWork.DiscreteTransferFcn5_states_iv =
-    TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn6_g - -0.93239381990594827 *
+    TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn6_g - -0.81873075307798182 *
     TRAJECTORY_GENERATOR_APP_DWork.DiscreteTransferFcn5_states_iv;
 
   /* Update for DiscreteTransferFcn: '<S29>/Discrete Transfer Fcn6' */
   TRAJECTORY_GENERATOR_APP_DWork.DiscreteTransferFcn6_states_a =
-    TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn4_o - -0.93239381990594827 *
+    TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn4_o - -0.81873075307798182 *
     TRAJECTORY_GENERATOR_APP_DWork.DiscreteTransferFcn6_states_a;
 
   /* Update absolute time for base rate */
@@ -1353,7 +1353,7 @@ static void TRAJECTORY_GENERATOR_APP_update(void)
     TRAJECTORY_GENERATOR_APP_M->Timing.stepSize0 * 4294967296.0;
 
   {
-    /* Update absolute timer for sample time: [0.01s, 0.0s] */
+    /* Update absolute timer for sample time: [0.02s, 0.0s] */
     /* The "clockTick1" counts the number of times the code of this task has
      * been executed. The absolute time is the multiplication of "clockTick1"
      * and "Timing.stepSize1". Size of "clockTick1" ensures timer will not
@@ -1628,7 +1628,7 @@ RT_MODEL_TRAJECTORY_GENERATOR_A *TRAJECTORY_GENERATOR_APP(void)
 
     /* task periods */
     TRAJECTORY_GENERATOR_APP_M->Timing.sampleTimes[0] = (0.0);
-    TRAJECTORY_GENERATOR_APP_M->Timing.sampleTimes[1] = (0.01);
+    TRAJECTORY_GENERATOR_APP_M->Timing.sampleTimes[1] = (0.02);
 
     /* task offsets */
     TRAJECTORY_GENERATOR_APP_M->Timing.offsetTimes[0] = (0.0);
@@ -1646,12 +1646,12 @@ RT_MODEL_TRAJECTORY_GENERATOR_A *TRAJECTORY_GENERATOR_APP(void)
   }
 
   rtmSetTFinal(TRAJECTORY_GENERATOR_APP_M, -1);
-  TRAJECTORY_GENERATOR_APP_M->Timing.stepSize0 = 0.01;
-  TRAJECTORY_GENERATOR_APP_M->Timing.stepSize1 = 0.01;
+  TRAJECTORY_GENERATOR_APP_M->Timing.stepSize0 = 0.02;
+  TRAJECTORY_GENERATOR_APP_M->Timing.stepSize1 = 0.02;
   TRAJECTORY_GENERATOR_APP_M->solverInfoPtr =
     (&TRAJECTORY_GENERATOR_APP_M->solverInfo);
-  TRAJECTORY_GENERATOR_APP_M->Timing.stepSize = (0.01);
-  rtsiSetFixedStepSize(&TRAJECTORY_GENERATOR_APP_M->solverInfo, 0.01);
+  TRAJECTORY_GENERATOR_APP_M->Timing.stepSize = (0.02);
+  rtsiSetFixedStepSize(&TRAJECTORY_GENERATOR_APP_M->solverInfo, 0.02);
   rtsiSetSolverMode(&TRAJECTORY_GENERATOR_APP_M->solverInfo,
                     SOLVER_MODE_SINGLETASKING);
 

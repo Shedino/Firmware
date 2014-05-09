@@ -3,9 +3,9 @@
  *
  * Code generation for model "Model_GS".
  *
- * Model version              : 1.2425
+ * Model version              : 1.2428
  * Simulink Coder version : 8.3 (R2012b) 20-Jul-2012
- * C source code generated on : Wed May 07 10:44:47 2014
+ * C source code generated on : Fri May 09 09:36:48 2014
  *
  * Target selection: grt.tlc
  * Note: GRT includes extra infrastructure and instrumentation for prototyping
@@ -59,7 +59,6 @@ static void Model_GS_output(void)
   real_T absxk;
   real_T t;
   real_T sigma[3];
-  real_T b_x;
   real_T Rx[9];
   real_T Ry[9];
   real_T Rz[9];
@@ -91,16 +90,17 @@ static void Model_GS_output(void)
   real_T tmp_2[9];
   real_T rtb_TmpSignalConversionAtSFun_0[12];
   real32_T T_0;
+  real_T q_offset_idx;
+  real_T q_offset_idx_0;
+  real_T q_offset_idx_1;
   real32_T U_idx;
   real32_T U_idx_0;
   real32_T U_idx_1;
   real_T rtb_q_n_idx;
   real_T rtb_q_n_idx_0;
   real_T rtb_q_n_idx_1;
-  real_T y_idx;
   real_T q_error_idx;
   real_T q_error_idx_0;
-  real_T y_idx_0;
   real_T q_error_idx_1;
 
   /* MATLAB Function: '<S8>/setpoint_conversion1' incorporates:
@@ -117,25 +117,25 @@ static void Model_GS_output(void)
   rtb_setpoint[17] = Model_GS_U.REF_YAW[2];
 
   /* MATLAB Function: '<S20>/v* from p*, p'* and p''+' */
-  /* MATLAB Function 'LOW-LEVEL CONTROL/CONTROL/NON LINEAR CONTROL LAW/Controller OK/Reference generation/v* from p*, p\'* and p\'\'*': '<S24>:1' */
+  /* MATLAB Function 'LOW-LEVEL CONTROL/CONTROL/NON LINEAR CONTROL LAW/Controller OK/Reference generation/v* from p*, p\'* and p\'\'*': '<S25>:1' */
   /* % Written on 22th Aug. 2013 */
   /*  (from in  R. Naldi, M. Furci, R. Sanfelice, L. Marconi 'Robust Global Trajectory Tracking for Underactuated  */
   /*   VTOL Aerial Vehicles using Inner-Outer Loop Control Paradigms') */
-  /* '<S24>:1:8' */
+  /* '<S25>:1:8' */
   /* % Control force vector definition v* */
-  /* '<S24>:1:12' */
+  /* '<S25>:1:12' */
   rtb_v_star[0] = 0.0 - 1.05 * rtb_setpoint[6];
   rtb_v_star[1] = 0.0 - 1.05 * rtb_setpoint[7];
   rtb_v_star[2] = 10.300500000000001 - 1.05 * rtb_setpoint[8];
 
-  /* MATLAB Function: '<S31>/parser' incorporates:
+  /* MATLAB Function: '<S32>/parser' incorporates:
    *  Inport: '<Root>/OPTITRACK'
-   *  Memory: '<S31>/Memory3'
-   *  Memory: '<S31>/Memory4'
-   *  Memory: '<S31>/Memory6'
+   *  Memory: '<S32>/Memory3'
+   *  Memory: '<S32>/Memory4'
+   *  Memory: '<S32>/Memory6'
    */
-  /* MATLAB Function 'LOW-LEVEL CONTROL/STATE & REFERENCES/OPTITRACK/parser': '<S37>:1' */
-  /* '<S37>:1:3' */
+  /* MATLAB Function 'LOW-LEVEL CONTROL/STATE & REFERENCES/OPTITRACK/parser': '<S38>:1' */
+  /* '<S38>:1:3' */
   scale = 2.2250738585072014E-308;
   absxk = fabs(Model_GS_U.OPTITRACK[2]);
   if (absxk > 2.2250738585072014E-308) {
@@ -169,107 +169,107 @@ static void Model_GS_output(void)
   Model_GS_B.normaP = scale * sqrt(Model_GS_B.normaP);
   if ((Model_GS_U.OPTITRACK[2] != 0.0) && (Model_GS_U.OPTITRACK[3] != 0.0) &&
       (Model_GS_U.OPTITRACK[4] != 0.0)) {
-    /* '<S37>:1:5' */
+    /* '<S38>:1:5' */
     /*  CHECK OPTITRACK ERRORS (POSITIONS GO TO ZERO) */
-    /* '<S37>:1:6' */
+    /* '<S38>:1:6' */
     Model_GS_B.p[0] = Model_GS_U.OPTITRACK[2];
     Model_GS_B.p[1] = Model_GS_U.OPTITRACK[3];
     Model_GS_B.p[2] = Model_GS_U.OPTITRACK[4];
 
     /* Outport: '<Root>/Q_OPTI' */
-    /* '<S37>:1:7' */
+    /* '<S38>:1:7' */
     Model_GS_Y.Q_OPTI[0] = Model_GS_U.OPTITRACK[5];
     Model_GS_Y.Q_OPTI[1] = Model_GS_U.OPTITRACK[6];
     Model_GS_Y.Q_OPTI[2] = Model_GS_U.OPTITRACK[7];
     Model_GS_Y.Q_OPTI[3] = Model_GS_U.OPTITRACK[8];
 
-    /* '<S37>:1:8' */
+    /* '<S38>:1:8' */
     Model_GS_B.Tstamp = Model_GS_U.OPTITRACK[10];
   } else {
-    /* '<S37>:1:10' */
+    /* '<S38>:1:10' */
     Model_GS_B.p[0] = Model_GS_DWork.Memory6_PreviousInput[0];
     Model_GS_B.p[1] = Model_GS_DWork.Memory6_PreviousInput[1];
     Model_GS_B.p[2] = Model_GS_DWork.Memory6_PreviousInput[2];
 
     /* Outport: '<Root>/Q_OPTI' incorporates:
-     *  Memory: '<S31>/Memory5'
-     *  Memory: '<S31>/Memory6'
+     *  Memory: '<S32>/Memory5'
+     *  Memory: '<S32>/Memory6'
      */
-    /* '<S37>:1:11' */
+    /* '<S38>:1:11' */
     Model_GS_Y.Q_OPTI[0] = Model_GS_DWork.Memory5_PreviousInput[0];
     Model_GS_Y.Q_OPTI[1] = Model_GS_DWork.Memory5_PreviousInput[1];
     Model_GS_Y.Q_OPTI[2] = Model_GS_DWork.Memory5_PreviousInput[2];
     Model_GS_Y.Q_OPTI[3] = Model_GS_DWork.Memory5_PreviousInput[3];
 
-    /* '<S37>:1:12' */
+    /* '<S38>:1:12' */
     Model_GS_B.Tstamp = Model_GS_DWork.Memory4_PreviousInput;
 
-    /* '<S37>:1:13' */
+    /* '<S38>:1:13' */
     Model_GS_B.normaP = Model_GS_DWork.Memory3_PreviousInput;
   }
 
-  /* End of MATLAB Function: '<S31>/parser' */
+  /* End of MATLAB Function: '<S32>/parser' */
 
-  /* DiscreteTransferFcn: '<S34>/Bessel LPF dX' */
+  /* DiscreteTransferFcn: '<S35>/Bessel LPF dX' */
   numAccum = 0.041166186246621314 * Model_GS_DWork.BesselLPFdX_states[0] +
     0.034330643623440855 * Model_GS_DWork.BesselLPFdX_states[1];
 
-  /* DiscreteTransferFcn: '<S34>/Bessel LPF dY' */
+  /* DiscreteTransferFcn: '<S35>/Bessel LPF dY' */
   numAccum_0 = 0.041166186246621314 * Model_GS_DWork.BesselLPFdY_states[0] +
     0.034330643623440855 * Model_GS_DWork.BesselLPFdY_states[1];
 
-  /* DiscreteTransferFcn: '<S34>/Bessel LPF dZ' */
+  /* DiscreteTransferFcn: '<S35>/Bessel LPF dZ' */
   numAccum_1 = 0.041166186246621314 * Model_GS_DWork.BesselLPFdZ_states[0] +
     0.034330643623440855 * Model_GS_DWork.BesselLPFdZ_states[1];
 
-  /* MATLAB Function: '<S25>/Embedded MATLAB Function' incorporates:
-   *  Memory: '<S29>/Memory3'
+  /* MATLAB Function: '<S26>/Embedded MATLAB Function' incorporates:
+   *  Memory: '<S30>/Memory3'
    */
-  /* MATLAB Function 'LOW-LEVEL CONTROL/LOW LEVEL SUPERVISOR/SUPERVISOR/Embedded MATLAB Function': '<S26>:1' */
-  /* '<S26>:1:3' */
-  /* '<S26>:1:4' */
+  /* MATLAB Function 'LOW-LEVEL CONTROL/LOW LEVEL SUPERVISOR/SUPERVISOR/Embedded MATLAB Function': '<S27>:1' */
+  /* '<S27>:1:3' */
+  /* '<S27>:1:4' */
   if (Model_GS_DWork.Memory3_PreviousInput_h == 4.0) {
-    /* '<S26>:1:12' */
-    /* '<S26>:1:13' */
+    /* '<S27>:1:12' */
+    /* '<S27>:1:13' */
     rtb_RESET_j = 1;
   } else {
-    /* '<S26>:1:15' */
+    /* '<S27>:1:15' */
     rtb_RESET_j = 0;
   }
 
-  /* End of MATLAB Function: '<S25>/Embedded MATLAB Function' */
+  /* End of MATLAB Function: '<S26>/Embedded MATLAB Function' */
 
-  /* MATLAB Function: '<S25>/RESET CIRCUIT' incorporates:
-   *  DataTypeConversion: '<S25>/Data Type Conversion1'
-   *  Memory: '<S25>/Memory'
+  /* MATLAB Function: '<S26>/RESET CIRCUIT' incorporates:
+   *  DataTypeConversion: '<S26>/Data Type Conversion1'
+   *  Memory: '<S26>/Memory'
    */
-  /* MATLAB Function 'LOW-LEVEL CONTROL/LOW LEVEL SUPERVISOR/SUPERVISOR/RESET CIRCUIT': '<S28>:1' */
-  /* '<S28>:1:4' */
+  /* MATLAB Function 'LOW-LEVEL CONTROL/LOW LEVEL SUPERVISOR/SUPERVISOR/RESET CIRCUIT': '<S29>:1' */
+  /* '<S29>:1:4' */
   scale = 0.0;
 
-  /* '<S28>:1:5' */
+  /* '<S29>:1:5' */
   Model_GS_B.countNew = -1.0;
   if (rtb_RESET_j != 0) {
-    /* '<S28>:1:7' */
-    /* '<S28>:1:8' */
+    /* '<S29>:1:7' */
+    /* '<S29>:1:8' */
     Model_GS_B.countNew = 20.0;
 
-    /* '<S28>:1:9' */
+    /* '<S29>:1:9' */
     scale = 1.0;
   }
 
   if (Model_GS_DWork.Memory_PreviousInput > 0.0) {
-    /* '<S28>:1:12' */
-    /* '<S28>:1:13' */
+    /* '<S29>:1:12' */
+    /* '<S29>:1:13' */
     scale = Model_GS_DWork.Memory_PreviousInput - floor
       (Model_GS_DWork.Memory_PreviousInput / 4.0) * 4.0;
 
-    /* '<S28>:1:14' */
+    /* '<S29>:1:14' */
     Model_GS_B.countNew = Model_GS_DWork.Memory_PreviousInput - 1.0;
   }
 
-  /* DataTypeConversion: '<S25>/Data Type Conversion3' incorporates:
-   *  MATLAB Function: '<S25>/RESET CIRCUIT'
+  /* DataTypeConversion: '<S26>/Data Type Conversion3' incorporates:
+   *  MATLAB Function: '<S26>/RESET CIRCUIT'
    */
   Model_GS_B.DataTypeConversion3 = (scale != 0.0);
 
@@ -285,9 +285,9 @@ static void Model_GS_output(void)
 
   /* MATLAB Function: '<S12>/Position controller' incorporates:
    *  DiscreteIntegrator: '<S8>/Discrete-Time Integrator1'
-   *  DiscreteTransferFcn: '<S34>/Bessel LPF dX'
-   *  DiscreteTransferFcn: '<S34>/Bessel LPF dY'
-   *  DiscreteTransferFcn: '<S34>/Bessel LPF dZ'
+   *  DiscreteTransferFcn: '<S35>/Bessel LPF dX'
+   *  DiscreteTransferFcn: '<S35>/Bessel LPF dY'
+   *  DiscreteTransferFcn: '<S35>/Bessel LPF dZ'
    *  Inport: '<Root>/PARAMETERS'
    *  MATLAB Function: '<S1>/PARAM'
    */
@@ -382,52 +382,52 @@ static void Model_GS_output(void)
     Model_GS_DWork.DiscreteTimeIntegrator1_DSTATE[2];
 
   /* '<S18>:1:32' */
-  absxk = rtb_kappa[0];
+  q_error_idx = rtb_kappa[0];
 
   /* '<S18>:1:32' */
   if (fabs(rtb_kappa[0]) >= 1.0) {
     /* '<S18>:1:33' */
     /* '<S18>:1:34' */
     if (rtb_kappa[0] < 0.0) {
-      absxk = -1.0;
+      q_error_idx = -1.0;
     } else if (rtb_kappa[0] > 0.0) {
-      absxk = 1.0;
+      q_error_idx = 1.0;
     } else {
-      absxk = rtb_kappa[0];
+      q_error_idx = rtb_kappa[0];
     }
   }
 
   /* '<S18>:1:32' */
-  rtb_kappa[0] = absxk;
-  absxk = rtb_kappa[1];
+  rtb_kappa[0] = q_error_idx;
+  q_error_idx = rtb_kappa[1];
 
   /* '<S18>:1:32' */
   if (fabs(rtb_kappa[1]) >= 1.0) {
     /* '<S18>:1:33' */
     /* '<S18>:1:34' */
     if (rtb_kappa[1] < 0.0) {
-      absxk = -1.0;
+      q_error_idx = -1.0;
     } else if (rtb_kappa[1] > 0.0) {
-      absxk = 1.0;
+      q_error_idx = 1.0;
     } else {
-      absxk = rtb_kappa[1];
+      q_error_idx = rtb_kappa[1];
     }
   }
 
   /* '<S18>:1:32' */
-  rtb_kappa[1] = absxk;
-  absxk = rtb_kappa[2];
+  rtb_kappa[1] = q_error_idx;
+  q_error_idx = rtb_kappa[2];
 
   /* '<S18>:1:32' */
   if (fabs(rtb_kappa[2]) >= 1.0) {
     /* '<S18>:1:33' */
     /* '<S18>:1:34' */
     if (rtb_kappa[2] < 0.0) {
-      absxk = -1.0;
+      q_error_idx = -1.0;
     } else if (rtb_kappa[2] > 0.0) {
-      absxk = 1.0;
+      q_error_idx = 1.0;
     } else {
-      absxk = rtb_kappa[2];
+      q_error_idx = rtb_kappa[2];
     }
   }
 
@@ -447,14 +447,14 @@ static void Model_GS_output(void)
   /*  kappa = p_error + 2*dp_error; % Less oscillations and faster than with saturation */
   rtb_kappa[0] += rtb_v_star[0];
   rtb_kappa[1] += rtb_v_star[1];
-  absxk = t * absxk + rtb_v_star[2];
-  rtb_kappa[2] = absxk;
+  q_error_idx = t * q_error_idx + rtb_v_star[2];
+  rtb_kappa[2] = q_error_idx;
 
-  /* MATLAB Function: '<S25>/MOTOR CONTROL' incorporates:
+  /* MATLAB Function: '<S26>/MOTOR CONTROL' incorporates:
    *  Inport: '<Root>/PARAMETERS'
    *  MATLAB Function: '<S12>/Abs(v*)'
    *  MATLAB Function: '<S1>/PARAM'
-   *  Memory: '<S29>/Memory1'
+   *  Memory: '<S30>/Memory1'
    */
   /* MATLAB Function 'LOW-LEVEL CONTROL/CONTROL/NON LINEAR CONTROL LAW/Controller OK/Abs(v*)': '<S15>:1' */
   /* % Written on 23th Aug. 2013 */
@@ -462,107 +462,114 @@ static void Model_GS_output(void)
   /*  (from Naldi R., Furci, Sanfelice, Marconi 'Robust Global Trajectory Tracking for Underactuated  */
   /*   VTOL Aerial Vehicles using Inner-Outer Loop Control Paradigms') */
   /* '<S15>:1:9' */
-  /* MATLAB Function 'LOW-LEVEL CONTROL/LOW LEVEL SUPERVISOR/SUPERVISOR/MOTOR CONTROL': '<S27>:1' */
-  /* '<S27>:1:6' */
-  /* '<S27>:1:7' */
-  /* '<S27>:1:8' */
-  /* '<S27>:1:9' */
-  /* '<S27>:1:10' */
-  /* '<S27>:1:12' */
-  /* '<S27>:1:13' */
-  /* '<S27>:1:14' */
+  /* MATLAB Function 'LOW-LEVEL CONTROL/LOW LEVEL SUPERVISOR/SUPERVISOR/MOTOR CONTROL': '<S28>:1' */
+  /* '<S28>:1:6' */
+  /* '<S28>:1:7' */
+  /* '<S28>:1:8' */
+  /* '<S28>:1:9' */
+  /* '<S28>:1:10' */
+  /* '<S28>:1:12' */
+  /* '<S28>:1:13' */
+  /* '<S28>:1:14' */
   /*  DEFAULT */
-  /* '<S27>:1:17' */
+  /* '<S28>:1:17' */
   rtb_T = 0.0F;
   if (Model_GS_DWork.Memory1_PreviousInput == 2.0) {
-    /* '<S27>:1:19' */
+    /* '<S28>:1:19' */
     rtb_T = (real32_T)(6.8100000000000005 + Model_GS_U.PARAMETERS[2]);
   }
 
   if (Model_GS_DWork.Memory1_PreviousInput == 1.0) {
-    /* '<S27>:1:20' */
+    /* '<S28>:1:20' */
     rtb_T = (real32_T)(6.8100000000000005 + Model_GS_U.PARAMETERS[2]);
   }
 
   if (Model_GS_DWork.Memory1_PreviousInput == 3.0) {
-    /* '<S27>:1:21' */
+    /* '<S28>:1:21' */
     rtb_T = (real32_T)(sqrt((pow(rtb_kappa[0], 2.0) + pow(rtb_kappa[1], 2.0)) +
-      pow(absxk, 2.0)) + Model_GS_U.PARAMETERS[2]);
+      pow(q_error_idx, 2.0)) + Model_GS_U.PARAMETERS[2]);
   }
 
   if (Model_GS_DWork.Memory1_PreviousInput == 5.0) {
-    /* '<S27>:1:22' */
+    /* '<S28>:1:22' */
     rtb_T = (real32_T)(8.81 + Model_GS_U.PARAMETERS[2]);
   }
 
   /*  CHECK T NEGATIVA */
   if (rtb_T < 0.0F) {
-    /* '<S27>:1:25' */
+    /* '<S28>:1:25' */
     rtb_T = 0.0F;
   }
 
-  /* End of MATLAB Function: '<S25>/MOTOR CONTROL' */
+  /* End of MATLAB Function: '<S26>/MOTOR CONTROL' */
 
   /* MATLAB Function: '<S5>/mounting' incorporates:
    *  Inport: '<Root>/Attitude'
    */
-  /* MATLAB Function 'LOW-LEVEL CONTROL/STATE & REFERENCES/mounting': '<S32>:1' */
+  /* MATLAB Function 'LOW-LEVEL CONTROL/STATE & REFERENCES/mounting': '<S33>:1' */
   /* offset in rad for mounting */
-  /* '<S32>:1:7' */
-  /* '<S32>:1:23' */
-  /* '<S32>:1:8' */
-  t = sqrt(((pow(Model_GS_U.Attitude[0], 2.0) + pow(Model_GS_U.Attitude[1], 2.0))
-            + pow(Model_GS_U.Attitude[2], 2.0)) + pow(Model_GS_U.Attitude[3],
-            2.0));
-  scale = Model_GS_U.Attitude[3] / t;
+  /* '<S33>:1:7' */
+  /* '<S33>:1:23' */
+  /* '<S33>:1:8' */
+  absxk = sqrt(((pow(Model_GS_U.Attitude[0], 2.0) + pow(Model_GS_U.Attitude[1],
+    2.0)) + pow(Model_GS_U.Attitude[2], 2.0)) + pow(Model_GS_U.Attitude[3], 2.0));
+  t = Model_GS_U.Attitude[3] / absxk;
 
   /* normalization */
   /* pitch offset in rad for mounting */
-  /* '<S32>:1:13' */
-  /* '<S32>:1:23' */
-  /* '<S32>:1:14' */
-  b_x = sqrt(((pow(Model_GS_U.Attitude[0] / t, 2.0) + pow(Model_GS_U.Attitude[1]
-    / t, 2.0)) + pow(Model_GS_U.Attitude[2] / t, 2.0)) + pow(scale, 2.0));
-  rtb_q_n_idx = Model_GS_U.Attitude[0] / t / b_x;
-  rtb_q_n_idx_0 = Model_GS_U.Attitude[1] / t / b_x;
-  rtb_q_n_idx_1 = Model_GS_U.Attitude[2] / t / b_x;
-  scale /= b_x;
+  /* '<S33>:1:13' */
+  /* '<S33>:1:23' */
+  /* '<S33>:1:14' */
+  q_offset_idx_1 = sqrt(((pow(Model_GS_U.Attitude[0] / absxk, 2.0) + pow
+    (Model_GS_U.Attitude[1] / absxk, 2.0)) + pow(Model_GS_U.Attitude[2] / absxk,
+    2.0)) + pow(t, 2.0));
+  rtb_q_n_idx = Model_GS_U.Attitude[0] / absxk / q_offset_idx_1;
+  rtb_q_n_idx_0 = Model_GS_U.Attitude[1] / absxk / q_offset_idx_1;
+  rtb_q_n_idx_1 = Model_GS_U.Attitude[2] / absxk / q_offset_idx_1;
+  t /= q_offset_idx_1;
 
-  /* MATLAB Function: '<S5>/z rotation' */
+  /* MATLAB Function: '<S5>/z rotation' incorporates:
+   *  Inport: '<Root>/YAWOFFSET'
+   */
   /* normalization */
-  /* MATLAB Function 'LOW-LEVEL CONTROL/STATE & REFERENCES/z rotation': '<S33>:1' */
-  /* yaw offset in rad beetween IMU reference and OptiTrack reference */
-  /* '<S33>:1:6' */
-  /* '<S33>:1:25' */
-  Model_GS_Y.C_Q[0] = 0.72537437101228774 * rtb_q_n_idx - 0.68835457569375391 *
-    scale;
-  Model_GS_Y.C_Q[1] = (0.0 - 0.68835457569375391 * rtb_q_n_idx_1) +
-    0.72537437101228774 * rtb_q_n_idx_0;
-  Model_GS_Y.C_Q[2] = 0.72537437101228774 * rtb_q_n_idx_1 + 0.68835457569375391 *
-    rtb_q_n_idx_0;
-  Model_GS_Y.C_Q[3] = 0.72537437101228774 * scale + rtb_q_n_idx *
-    0.68835457569375391;
+  /* MATLAB Function 'LOW-LEVEL CONTROL/STATE & REFERENCES/z rotation': '<S34>:1' */
+  /* '<S34>:1:4' */
+  scale = Model_GS_U.YAWOFFSET * 3.1415926535897931 / 180.0;
 
-  /* '<S33>:1:7' */
-  t = sqrt(((pow(Model_GS_Y.C_Q[0], 2.0) + pow(Model_GS_Y.C_Q[1], 2.0)) + pow
-            (Model_GS_Y.C_Q[2], 2.0)) + pow(Model_GS_Y.C_Q[3], 2.0));
-  Model_GS_Y.C_Q[0] /= t;
-  Model_GS_Y.C_Q[1] /= t;
-  Model_GS_Y.C_Q[2] /= t;
-  Model_GS_Y.C_Q[3] /= t;
+  /* yaw offset in rad beetween IMU reference and OptiTrack reference */
+  /* '<S34>:1:6' */
+  q_offset_idx = cos(scale / 2.0);
+  q_offset_idx_1 = sin(scale / 2.0);
+
+  /* '<S34>:1:7' */
+  /* '<S34>:1:26' */
+  Model_GS_Y.C_Q[0] = q_offset_idx * rtb_q_n_idx - q_offset_idx_1 * t;
+  Model_GS_Y.C_Q[1] = (0.0 - q_offset_idx_1 * rtb_q_n_idx_1) + q_offset_idx *
+    rtb_q_n_idx_0;
+  Model_GS_Y.C_Q[2] = q_offset_idx * rtb_q_n_idx_1 + q_offset_idx_1 *
+    rtb_q_n_idx_0;
+  Model_GS_Y.C_Q[3] = q_offset_idx * t + rtb_q_n_idx * q_offset_idx_1;
+
+  /* '<S34>:1:8' */
+  absxk = sqrt(((pow(Model_GS_Y.C_Q[0], 2.0) + pow(Model_GS_Y.C_Q[1], 2.0)) +
+                pow(Model_GS_Y.C_Q[2], 2.0)) + pow(Model_GS_Y.C_Q[3], 2.0));
+  Model_GS_Y.C_Q[0] /= absxk;
+  Model_GS_Y.C_Q[1] /= absxk;
+  Model_GS_Y.C_Q[2] /= absxk;
+  Model_GS_Y.C_Q[3] /= absxk;
 
   /* MATLAB Function: '<S12>/R* from v* and psi*1' incorporates:
    *  Inport: '<Root>/REF_YAW'
    *  MATLAB Function: '<S8>/setpoint_conversion1'
    */
   /* normalization */
-  /* '<S33>:1:9' */
-  /* '<S33>:1:12' */
+  /* '<S34>:1:10' */
+  /* '<S34>:1:13' */
   /*  EULER ANGLES */
-  /* '<S33>:1:15' */
-  /* '<S33>:1:16' */
-  /* '<S33>:1:17' */
-  /* '<S33>:1:18' */
+  /* '<S34>:1:16' */
+  /* '<S34>:1:17' */
+  /* '<S34>:1:18' */
+  /* '<S34>:1:19' */
   /* MATLAB Function 'LOW-LEVEL CONTROL/CONTROL/NON LINEAR CONTROL LAW/Controller OK/R* from v* and psi*1': '<S19>:1' */
   /* % Written on 22th Aug. 2013 */
   /* '<S19>:1:5' */
@@ -571,10 +578,11 @@ static void Model_GS_output(void)
   /*  (all computation from R. Naldi, M. Furci, R. Sanfelice, L. Marconi 'Robust Global Trajectory Tracking for Underactuated  */
   /*   VTOL Aerial Vehicles using Inner-Outer Loop Control Paradigms') */
   /* '<S19>:1:12' */
-  t = sqrt((pow(rtb_kappa[0], 2.0) + pow(rtb_kappa[1], 2.0)) + pow(absxk, 2.0));
-  sigma[0] = rtb_kappa[0] / t;
-  sigma[1] = rtb_kappa[1] / t;
-  sigma[2] = absxk / t;
+  absxk = sqrt((pow(rtb_kappa[0], 2.0) + pow(rtb_kappa[1], 2.0)) + pow
+               (q_error_idx, 2.0));
+  sigma[0] = rtb_kappa[0] / absxk;
+  sigma[1] = rtb_kappa[1] / absxk;
+  sigma[2] = q_error_idx / absxk;
 
   /*  equal to R(t)e3 */
   /*  Euler angle: two ways to build R allowing to avoid singularity (27/08/2013) */
@@ -738,21 +746,21 @@ static void Model_GS_output(void)
 
   /* '<S21>:1:30' */
   Model_GS_Y.C_QC[3] = sqrt(0.25 * scale);
-  y_idx = sqrt(pow(Model_GS_Y.C_QC[0], 2.0));
-  y_idx_0 = sqrt(pow(Model_GS_Y.C_QC[1], 2.0));
-  b_x = sqrt(pow(Model_GS_Y.C_QC[2], 2.0));
+  q_offset_idx = sqrt(pow(Model_GS_Y.C_QC[0], 2.0));
+  t = sqrt(pow(Model_GS_Y.C_QC[1], 2.0));
+  q_offset_idx_0 = sqrt(pow(Model_GS_Y.C_QC[2], 2.0));
   rtb_RESET_j = 1;
-  if (y_idx_0 > y_idx) {
-    y_idx = y_idx_0;
+  if (t > q_offset_idx) {
+    q_offset_idx = t;
     rtb_RESET_j = 2;
   }
 
-  if (b_x > y_idx) {
-    y_idx = b_x;
+  if (q_offset_idx_0 > q_offset_idx) {
+    q_offset_idx = q_offset_idx_0;
     rtb_RESET_j = 3;
   }
 
-  if (sqrt(pow(Model_GS_Y.C_QC[3], 2.0)) > y_idx) {
+  if (sqrt(pow(Model_GS_Y.C_QC[3], 2.0)) > q_offset_idx) {
     rtb_RESET_j = 4;
   }
 
@@ -798,59 +806,106 @@ static void Model_GS_output(void)
   }
 
   /* '<S21>:1:54' */
-  t = sqrt(((pow(Model_GS_Y.C_QC[0], 2.0) + pow(Model_GS_Y.C_QC[1], 2.0)) + pow
-            (Model_GS_Y.C_QC[2], 2.0)) + pow(Model_GS_Y.C_QC[3], 2.0));
-  Model_GS_Y.C_QC[0] /= t;
-  Model_GS_Y.C_QC[1] /= t;
-  Model_GS_Y.C_QC[2] /= t;
-  Model_GS_Y.C_QC[3] /= t;
+  absxk = sqrt(((pow(Model_GS_Y.C_QC[0], 2.0) + pow(Model_GS_Y.C_QC[1], 2.0)) +
+                pow(Model_GS_Y.C_QC[2], 2.0)) + pow(Model_GS_Y.C_QC[3], 2.0));
+  Model_GS_Y.C_QC[0] /= absxk;
+  Model_GS_Y.C_QC[1] /= absxk;
+  Model_GS_Y.C_QC[2] /= absxk;
+  Model_GS_Y.C_QC[3] /= absxk;
 
   /* End of MATLAB Function: '<S17>/DCM to quaternion ' */
+
+  /* MATLAB Function: '<S17>/Quaternion choice1' incorporates:
+   *  Memory: '<S17>/Memory2'
+   */
+  /* MATLAB Function 'LOW-LEVEL CONTROL/CONTROL/NON LINEAR CONTROL LAW/Controller OK/DCM to consistent Quaternion /Quaternion choice1': '<S22>:1' */
+  /* % Path-lifting of quaternion ensure consistency of it */
+  /*  (from Mayhew C., Sanfelice R., and Teel A. 'On Path-lifting Mechanisms */
+  /*  and Unwinding in Quaternion-based Attitude Control') */
+  /* '<S22>:1:7' */
+  if ((fabs(Model_GS_DWork.Memory2_PreviousInput[0]) > 0.3) && (fabs
+       (Model_GS_Y.C_QC[0]) > 0.3)) {
+    /* '<S22>:1:9' */
+    if (fabs(Model_GS_DWork.Memory2_PreviousInput[0] - Model_GS_Y.C_QC[0]) >=
+        fabs(Model_GS_DWork.Memory2_PreviousInput[0] + Model_GS_Y.C_QC[0])) {
+      /* Outport: '<Root>/C_QC' */
+      /* '<S22>:1:10' */
+      /* '<S22>:1:11' */
+      Model_GS_Y.C_QC[0] = -Model_GS_Y.C_QC[0];
+      Model_GS_Y.C_QC[1] = -Model_GS_Y.C_QC[1];
+      Model_GS_Y.C_QC[2] = -Model_GS_Y.C_QC[2];
+      Model_GS_Y.C_QC[3] = -Model_GS_Y.C_QC[3];
+    }
+  } else {
+    if ((Model_GS_DWork.Memory2_PreviousInput[1] * Model_GS_Y.C_QC[1] +
+         Model_GS_DWork.Memory2_PreviousInput[2] * Model_GS_Y.C_QC[2]) +
+        Model_GS_DWork.Memory2_PreviousInput[3] * Model_GS_Y.C_QC[3] < 0.0) {
+      /* Outport: '<Root>/C_QC' */
+      /* '<S22>:1:14' */
+      /* '<S22>:1:15' */
+      Model_GS_Y.C_QC[0] = -Model_GS_Y.C_QC[0];
+      Model_GS_Y.C_QC[1] = -Model_GS_Y.C_QC[1];
+      Model_GS_Y.C_QC[2] = -Model_GS_Y.C_QC[2];
+      Model_GS_Y.C_QC[3] = -Model_GS_Y.C_QC[3];
+    }
+
+    /* '<S22>:1:17' */
+    absxk = sqrt(((pow(Model_GS_Y.C_QC[0], 2.0) + pow(Model_GS_Y.C_QC[1], 2.0))
+                  + pow(Model_GS_Y.C_QC[2], 2.0)) + pow(Model_GS_Y.C_QC[3], 2.0));
+
+    /* Outport: '<Root>/C_QC' */
+    Model_GS_Y.C_QC[0] /= absxk;
+    Model_GS_Y.C_QC[1] /= absxk;
+    Model_GS_Y.C_QC[2] /= absxk;
+    Model_GS_Y.C_QC[3] /= absxk;
+  }
+
+  /* End of MATLAB Function: '<S17>/Quaternion choice1' */
 
   /* MATLAB Function: '<S20>/R* from v* and psi+' incorporates:
    *  Inport: '<Root>/REF_YAW'
    *  MATLAB Function: '<S8>/setpoint_conversion1'
    */
-  /* MATLAB Function 'LOW-LEVEL CONTROL/CONTROL/NON LINEAR CONTROL LAW/Controller OK/Reference generation/R* from v* and psi*': '<S22>:1' */
+  /* MATLAB Function 'LOW-LEVEL CONTROL/CONTROL/NON LINEAR CONTROL LAW/Controller OK/Reference generation/R* from v* and psi*': '<S23>:1' */
   /* % Written on 22th Aug. 2013 */
-  /* '<S22>:1:5' */
-  /* '<S22>:1:6' */
+  /* '<S23>:1:5' */
+  /* '<S23>:1:6' */
   /* % R(t) from p(t), p'(t), p''(t) %% */
   /*  ( from R. Naldi, M. Furci, R. Sanfelice, L. Marconi 'Robust Global Trajectory Tracking for Underactuated  */
   /*   VTOL Aerial Vehicles using Inner-Outer Loop Control Paradigms') */
-  /* '<S22>:1:12' */
-  t = sqrt((pow(rtb_v_star[0], 2.0) + pow(rtb_v_star[1], 2.0)) + pow(rtb_v_star
-            [2], 2.0));
-  sigma[0] = rtb_v_star[0] / t;
-  sigma[1] = rtb_v_star[1] / t;
-  sigma[2] = rtb_v_star[2] / t;
+  /* '<S23>:1:12' */
+  absxk = sqrt((pow(rtb_v_star[0], 2.0) + pow(rtb_v_star[1], 2.0)) + pow
+               (rtb_v_star[2], 2.0));
+  sigma[0] = rtb_v_star[0] / absxk;
+  sigma[1] = rtb_v_star[1] / absxk;
+  sigma[2] = rtb_v_star[2] / absxk;
 
   /*  equal to R(t)e3 */
   /*  Euler angle: two ways to build R allowing to avoid singularity (27/08/2013) */
   if ((fabs(sigma[2]) < 0.01) && (fabs(sigma[1]) < 0.01)) {
-    /* '<S22>:1:15' */
-    /* '<S22>:1:16' */
+    /* '<S23>:1:15' */
+    /* '<S23>:1:16' */
     scale = asin(-sigma[1]);
 
-    /* '<S22>:1:17' */
+    /* '<S23>:1:17' */
     absxk = atan2(sigma[0], sigma[2]);
 
     /*  4-quadrant atan */
-    /* '<S22>:1:18' */
+    /* '<S23>:1:18' */
     rtb_RESET_j = 1;
   } else {
-    /* '<S22>:1:20' */
+    /* '<S23>:1:20' */
     scale = atan2(-sigma[1], sigma[2]);
 
-    /* '<S22>:1:21' */
+    /* '<S23>:1:21' */
     absxk = asin(sigma[0]);
 
-    /* '<S22>:1:22' */
+    /* '<S23>:1:22' */
     rtb_RESET_j = 0;
   }
 
   /*  Rotation matrices in x y z */
-  /* '<S22>:1:26' */
+  /* '<S23>:1:26' */
   Rx[0] = 1.0;
   Rx[3] = 0.0;
   Rx[6] = 0.0;
@@ -861,7 +916,7 @@ static void Model_GS_output(void)
   Rx[5] = sin(scale);
   Rx[8] = cos(scale);
 
-  /* '<S22>:1:27' */
+  /* '<S23>:1:27' */
   Ry[0] = cos(absxk);
   Ry[3] = 0.0;
   Ry[6] = sin(absxk);
@@ -872,7 +927,7 @@ static void Model_GS_output(void)
   Ry[5] = 0.0;
   Ry[8] = cos(absxk);
 
-  /* '<S22>:1:28' */
+  /* '<S23>:1:28' */
   Rz[0] = cos(Model_GS_U.REF_YAW[0]);
   Rz[3] = -sin(Model_GS_U.REF_YAW[0]);
   Rz[6] = 0.0;
@@ -885,8 +940,8 @@ static void Model_GS_output(void)
 
   /*  Final rotation matrix */
   if (rtb_RESET_j == 0) {
-    /* '<S22>:1:31' */
-    /* '<S22>:1:32' */
+    /* '<S23>:1:31' */
+    /* '<S23>:1:32' */
     for (rtb_RESET_j = 0; rtb_RESET_j < 3; rtb_RESET_j++) {
       for (i = 0; i < 3; i++) {
         Rx_0[rtb_RESET_j + 3 * i] = 0.0;
@@ -911,7 +966,7 @@ static void Model_GS_output(void)
       }
     }
   } else {
-    /* '<S22>:1:34' */
+    /* '<S23>:1:34' */
     for (rtb_RESET_j = 0; rtb_RESET_j < 3; rtb_RESET_j++) {
       for (i = 0; i < 3; i++) {
         Ry_0[rtb_RESET_j + 3 * i] = 0.0;
@@ -943,27 +998,27 @@ static void Model_GS_output(void)
    *  Inport: '<Root>/REF_YAW'
    *  MATLAB Function: '<S8>/setpoint_conversion1'
    */
-  /* MATLAB Function 'LOW-LEVEL CONTROL/CONTROL/NON LINEAR CONTROL LAW/Controller OK/Reference generation/R* from v* and psi*1': '<S23>:1' */
+  /* MATLAB Function 'LOW-LEVEL CONTROL/CONTROL/NON LINEAR CONTROL LAW/Controller OK/Reference generation/R* from v* and psi*1': '<S24>:1' */
   /* % Written on 28th Aug. 2013 */
   /*  (from R. Naldi, M. Furci, R. Sanfelice, L. Marconi 'Robust Global Trajectory Tracking for Underactuated  */
   /*   VTOL Aerial Vehicles using Inner-Outer Loop Control Paradigms') */
-  /* '<S23>:1:7' */
-  /* '<S23>:1:8' */
-  /* '<S23>:1:9' */
-  /* '<S23>:1:10' */
+  /* '<S24>:1:7' */
+  /* '<S24>:1:8' */
+  /* '<S24>:1:9' */
+  /* '<S24>:1:10' */
   /*  Reference angular velocity and its derivative */
   /*  Formulae demonstrated in the simulator description */
-  /* '<S23>:1:16' */
-  t = sqrt((pow(rtb_v_star[0], 2.0) + pow(rtb_v_star[1], 2.0)) + pow(rtb_v_star
-            [2], 2.0));
+  /* '<S24>:1:16' */
+  absxk = sqrt((pow(rtb_v_star[0], 2.0) + pow(rtb_v_star[1], 2.0)) + pow
+               (rtb_v_star[2], 2.0));
   scale = pow((pow(rtb_v_star[0], 2.0) + pow(rtb_v_star[1], 2.0)) + pow
               (rtb_v_star[2], 2.0), 1.5);
   for (rtb_RESET_j = 0; rtb_RESET_j < 3; rtb_RESET_j++) {
-    Rx[rtb_RESET_j] = (real_T)A[rtb_RESET_j] / t - rtb_v_star[rtb_RESET_j] *
+    Rx[rtb_RESET_j] = (real_T)A[rtb_RESET_j] / absxk - rtb_v_star[rtb_RESET_j] *
       rtb_v_star[0] / scale;
-    Rx[rtb_RESET_j + 3] = (real_T)A[rtb_RESET_j + 3] / t -
+    Rx[rtb_RESET_j + 3] = (real_T)A[rtb_RESET_j + 3] / absxk -
       rtb_v_star[rtb_RESET_j] * rtb_v_star[1] / scale;
-    Rx[rtb_RESET_j + 6] = (real_T)A[rtb_RESET_j + 6] / t -
+    Rx[rtb_RESET_j + 6] = (real_T)A[rtb_RESET_j + 6] / absxk -
       rtb_v_star[rtb_RESET_j] * rtb_v_star[2] / scale;
   }
 
@@ -973,9 +1028,9 @@ static void Model_GS_output(void)
        * Rx[rtb_RESET_j]);
   }
 
-  /* '<S23>:1:17' */
-  b_x = sqrt((pow(rtb_v_star[0], 2.0) + pow(rtb_v_star[1], 2.0)) + pow
-             (rtb_v_star[2], 2.0));
+  /* '<S24>:1:17' */
+  q_offset_idx_1 = sqrt((pow(rtb_v_star[0], 2.0) + pow(rtb_v_star[1], 2.0)) +
+                        pow(rtb_v_star[2], 2.0));
   scale = pow((pow(rtb_v_star[0], 2.0) + pow(rtb_v_star[1], 2.0)) + pow
               (rtb_v_star[2], 2.0), 1.5);
   absxk = ((-1.05 * rtb_setpoint[9] * rtb_v_star[0] + -1.05 * rtb_setpoint[10] *
@@ -984,15 +1039,15 @@ static void Model_GS_output(void)
       2.0));
   t = pow((pow(rtb_v_star[0], 2.0) + pow(rtb_v_star[1], 2.0)) + pow(rtb_v_star[2],
            2.0), 2.0);
-  y_idx = (pow(rtb_v_star[0], 2.0) + pow(rtb_v_star[1], 2.0)) + pow(rtb_v_star[2],
-    2.0);
+  q_error_idx = (pow(rtb_v_star[0], 2.0) + pow(rtb_v_star[1], 2.0)) + pow
+    (rtb_v_star[2], 2.0);
   sigma[0] = pow(rtb_v_star[0], 2.0);
   sigma[1] = pow(rtb_v_star[1], 2.0);
   sigma[2] = pow(rtb_v_star[2], 2.0);
-  y_idx_0 = pow(sqrt((sigma[0] + pow(rtb_v_star[1], 2.0)) + pow(rtb_v_star[2],
-    2.0)), 3.0);
+  q_offset_idx_0 = pow(sqrt((sigma[0] + pow(rtb_v_star[1], 2.0)) + pow
+    (rtb_v_star[2], 2.0)), 3.0);
 
-  /* '<S23>:1:20' */
+  /* '<S24>:1:20' */
   for (rtb_RESET_j = 0; rtb_RESET_j < 3; rtb_RESET_j++) {
     for (i = 0; i < 3; i++) {
       Rx[rtb_RESET_j + 3 * i] = 0.0;
@@ -1008,10 +1063,10 @@ static void Model_GS_output(void)
       (Rx[rtb_RESET_j + 3] * rtb_kappa[1] + Rx[rtb_RESET_j] * rtb_kappa[0]);
   }
 
-  /* '<S23>:1:21' */
+  /* '<S24>:1:21' */
   /*  One degree of freedom */
-  /* '<S23>:1:22' */
-  /* '<S23>:1:27' */
+  /* '<S24>:1:22' */
+  /* '<S24>:1:27' */
   tmp[0] = 0.0;
   tmp[3] = -Model_GS_U.REF_YAW[1];
   tmp[6] = rtb_w_star[1];
@@ -1040,11 +1095,11 @@ static void Model_GS_output(void)
   }
 
   for (rtb_RESET_j = 0; rtb_RESET_j < 3; rtb_RESET_j++) {
-    Rx[rtb_RESET_j] = (real_T)A[rtb_RESET_j] / b_x - rtb_v_star[rtb_RESET_j] *
-      rtb_v_star[0] / scale;
-    Rx[rtb_RESET_j + 3] = (real_T)A[rtb_RESET_j + 3] / b_x -
+    Rx[rtb_RESET_j] = (real_T)A[rtb_RESET_j] / q_offset_idx_1 -
+      rtb_v_star[rtb_RESET_j] * rtb_v_star[0] / scale;
+    Rx[rtb_RESET_j + 3] = (real_T)A[rtb_RESET_j + 3] / q_offset_idx_1 -
       rtb_v_star[rtb_RESET_j] * rtb_v_star[1] / scale;
-    Rx[rtb_RESET_j + 6] = (real_T)A[rtb_RESET_j + 6] / b_x -
+    Rx[rtb_RESET_j + 6] = (real_T)A[rtb_RESET_j + 6] / q_offset_idx_1 -
       rtb_v_star[rtb_RESET_j] * rtb_v_star[2] / scale;
   }
 
@@ -1068,14 +1123,14 @@ static void Model_GS_output(void)
 
   for (rtb_RESET_j = 0; rtb_RESET_j < 3; rtb_RESET_j++) {
     Rx_0[3 * rtb_RESET_j] = (Rz[3 * rtb_RESET_j] * 3.0 / t - (real_T)A[3 *
-      rtb_RESET_j] / y_idx) * absxk - (Ry_0[3 * rtb_RESET_j] + Ry[3 *
-      rtb_RESET_j]) / y_idx_0;
+      rtb_RESET_j] / q_error_idx) * absxk - (Ry_0[3 * rtb_RESET_j] + Ry[3 *
+      rtb_RESET_j]) / q_offset_idx_0;
     Rx_0[1 + 3 * rtb_RESET_j] = (Rz[3 * rtb_RESET_j + 1] * 3.0 / t - (real_T)A[3
-      * rtb_RESET_j + 1] / y_idx) * absxk - (Ry_0[3 * rtb_RESET_j + 1] + Ry[3 *
-      rtb_RESET_j + 1]) / y_idx_0;
+      * rtb_RESET_j + 1] / q_error_idx) * absxk - (Ry_0[3 * rtb_RESET_j + 1] +
+      Ry[3 * rtb_RESET_j + 1]) / q_offset_idx_0;
     Rx_0[2 + 3 * rtb_RESET_j] = (Rz[3 * rtb_RESET_j + 2] * 3.0 / t - (real_T)A[3
-      * rtb_RESET_j + 2] / y_idx) * absxk - (Ry_0[3 * rtb_RESET_j + 2] + Ry[3 *
-      rtb_RESET_j + 2]) / y_idx_0;
+      * rtb_RESET_j + 2] / q_error_idx) * absxk - (Ry_0[3 * rtb_RESET_j + 2] +
+      Ry[3 * rtb_RESET_j + 2]) / q_offset_idx_0;
   }
 
   for (rtb_RESET_j = 0; rtb_RESET_j < 3; rtb_RESET_j++) {
@@ -1120,7 +1175,7 @@ static void Model_GS_output(void)
    *  MATLAB Function: '<S8>/setpoint_conversion1'
    *  Memory: '<S12>/Memory'
    */
-  /* '<S23>:1:23' */
+  /* '<S24>:1:23' */
   /*  One degree of freedom */
   /* MATLAB Function 'LOW-LEVEL CONTROL/CONTROL/NON LINEAR CONTROL LAW/Controller OK/Attitude controller': '<S16>:1' */
   /* '<S16>:1:3' */
@@ -1144,41 +1199,41 @@ static void Model_GS_output(void)
   /*  (from the definition (11)(39)(40) in  R. Naldi, M. Furci, R. Sanfelice, L. Marconi 'Robust Global Trajectory Tracking for Underactuated  */
   /*   VTOL Aerial Vehicles using Inner-Outer Loop Control Paradigms') */
   /* '<S16>:1:13' */
-  t = sqrt(((pow(Model_GS_Y.C_Q[0], 2.0) + pow(Model_GS_Y.C_Q[1], 2.0)) + pow
-            (Model_GS_Y.C_Q[2], 2.0)) + pow(Model_GS_Y.C_Q[3], 2.0));
-  y_idx = Model_GS_Y.C_Q[0] / t;
-  y_idx_0 = Model_GS_Y.C_Q[1] / t;
-  b_x = Model_GS_Y.C_Q[2] / t;
-  absxk = Model_GS_Y.C_Q[3] / t;
+  absxk = sqrt(((pow(Model_GS_Y.C_Q[0], 2.0) + pow(Model_GS_Y.C_Q[1], 2.0)) +
+                pow(Model_GS_Y.C_Q[2], 2.0)) + pow(Model_GS_Y.C_Q[3], 2.0));
+  rtb_q_n_idx = Model_GS_Y.C_Q[0] / absxk;
+  rtb_q_n_idx_0 = Model_GS_Y.C_Q[1] / absxk;
+  rtb_q_n_idx_1 = Model_GS_Y.C_Q[2] / absxk;
+  absxk = Model_GS_Y.C_Q[3] / absxk;
 
   /*  Inverse of quaternion (from 'Quaternion' article on Wikipedia.org, wrong definition in Grossekatthofer paper) */
   /*  Multiplication of quaternions (from Grossekatthofer K. 'Introduction into quaternions for spacecraft attitude representation' p9) */
   /* '<S16>:1:17' */
   scale = ((pow(Model_GS_Y.C_QC[0], 2.0) + pow(Model_GS_Y.C_QC[1], 2.0)) + pow
            (Model_GS_Y.C_QC[2], 2.0)) + pow(Model_GS_Y.C_QC[3], 2.0);
-  rtb_q_n_idx = Model_GS_Y.C_QC[0] / scale;
-  rtb_q_n_idx_0 = -Model_GS_Y.C_QC[1] / scale;
-  rtb_q_n_idx_1 = -Model_GS_Y.C_QC[2] / scale;
-  t = -Model_GS_Y.C_QC[3] / scale;
+  q_offset_idx = Model_GS_Y.C_QC[0] / scale;
+  t = -Model_GS_Y.C_QC[1] / scale;
+  q_offset_idx_0 = -Model_GS_Y.C_QC[2] / scale;
+  q_offset_idx_1 = -Model_GS_Y.C_QC[3] / scale;
 
   /* '<S16>:1:18' */
-  q_error_idx = rtb_q_n_idx * y_idx - ((rtb_q_n_idx_0 * y_idx_0 + rtb_q_n_idx_1 *
-    b_x) + t * absxk);
-  q_error_idx_0 = (rtb_q_n_idx * y_idx_0 + y_idx * rtb_q_n_idx_0) +
-    (rtb_q_n_idx_1 * absxk - t * b_x);
-  q_error_idx_1 = (rtb_q_n_idx * b_x + y_idx * rtb_q_n_idx_1) + (t * y_idx_0 -
-    rtb_q_n_idx_0 * absxk);
-  scale = (rtb_q_n_idx * absxk + y_idx * t) + (rtb_q_n_idx_0 * b_x -
-    rtb_q_n_idx_1 * y_idx_0);
+  q_error_idx = q_offset_idx * rtb_q_n_idx - ((t * rtb_q_n_idx_0 +
+    q_offset_idx_0 * rtb_q_n_idx_1) + q_offset_idx_1 * absxk);
+  q_error_idx_0 = (q_offset_idx * rtb_q_n_idx_0 + rtb_q_n_idx * t) +
+    (q_offset_idx_0 * absxk - q_offset_idx_1 * rtb_q_n_idx_1);
+  q_error_idx_1 = (q_offset_idx * rtb_q_n_idx_1 + rtb_q_n_idx * q_offset_idx_0)
+    + (q_offset_idx_1 * rtb_q_n_idx_0 - t * absxk);
+  scale = (q_offset_idx * absxk + rtb_q_n_idx * q_offset_idx_1) + (t *
+    rtb_q_n_idx_1 - q_offset_idx_0 * rtb_q_n_idx_0);
 
   /* q_error = myquatmultiply(qc_inv',q')'; */
   /* '<S16>:1:21' */
-  b_x = sqrt(((pow(q_error_idx, 2.0) + pow(q_error_idx_0, 2.0)) + pow
-              (q_error_idx_1, 2.0)) + pow(scale, 2.0));
-  q_error_idx /= b_x;
-  q_error_idx_0 /= b_x;
-  q_error_idx_1 /= b_x;
-  scale /= b_x;
+  q_offset_idx_1 = sqrt(((pow(q_error_idx, 2.0) + pow(q_error_idx_0, 2.0)) + pow
+                         (q_error_idx_1, 2.0)) + pow(scale, 2.0));
+  q_error_idx /= q_offset_idx_1;
+  q_error_idx_0 /= q_offset_idx_1;
+  q_error_idx_1 /= q_offset_idx_1;
+  scale /= q_offset_idx_1;
 
   /*  Quaternion to DCM representation */
   /*  (from Grossekatthofer K. 'Introduction into quaternions for spacecraft attitude representation' p13) */
@@ -1294,7 +1349,7 @@ static void Model_GS_output(void)
 
   /* MATLAB Function: '<S7>/ALLOCATION' incorporates:
    *  Inport: '<Root>/REF_BUTTONS'
-   *  Memory: '<S29>/Memory1'
+   *  Memory: '<S30>/Memory1'
    */
   /* MATLAB Function 'LOW-LEVEL CONTROL/CONTROL/R&p_fromstate': '<S9>:1' */
   /* '<S9>:1:4' */
@@ -1469,14 +1524,21 @@ static void Model_GS_output(void)
   /* '<S10>:1:75' */
   /*  8in prop */
   /* '<S10>:1:73' */
-  rtb_q_n_idx = (real32_T)pow(T[0] / 500.0F + 0.0625F, 0.5F) * 1000.0F - 250.0F;
+  q_offset_idx = (real32_T)pow(T[0] / 500.0F + 0.0625F, 0.5F) * 1000.0F - 250.0F;
 
   /* '<S10>:1:73' */
   /*      pwm(i) = (50000*((81*T(i))/25000 + 1/16)^(1/2))/81 - 12500/81; % 10in prop */
   /* '<S10>:1:75' */
   /*  8in prop */
   /* '<S10>:1:73' */
-  rtb_q_n_idx_0 = (real32_T)pow(T[1] / 500.0F + 0.0625F, 0.5F) * 1000.0F -
+  t = (real32_T)pow(T[1] / 500.0F + 0.0625F, 0.5F) * 1000.0F - 250.0F;
+
+  /* '<S10>:1:73' */
+  /*      pwm(i) = (50000*((81*T(i))/25000 + 1/16)^(1/2))/81 - 12500/81; % 10in prop */
+  /* '<S10>:1:75' */
+  /*  8in prop */
+  /* '<S10>:1:73' */
+  q_offset_idx_0 = (real32_T)pow(T[2] / 500.0F + 0.0625F, 0.5F) * 1000.0F -
     250.0F;
 
   /* '<S10>:1:73' */
@@ -1484,32 +1546,25 @@ static void Model_GS_output(void)
   /* '<S10>:1:75' */
   /*  8in prop */
   /* '<S10>:1:73' */
-  rtb_q_n_idx_1 = (real32_T)pow(T[2] / 500.0F + 0.0625F, 0.5F) * 1000.0F -
+  q_offset_idx_1 = (real32_T)pow(T_0 / 500.0F + 0.0625F, 0.5F) * 1000.0F -
     250.0F;
-
-  /* '<S10>:1:73' */
-  /*      pwm(i) = (50000*((81*T(i))/25000 + 1/16)^(1/2))/81 - 12500/81; % 10in prop */
-  /* '<S10>:1:75' */
-  /*  8in prop */
-  /* '<S10>:1:73' */
-  t = (real32_T)pow(T_0 / 500.0F + 0.0625F, 0.5F) * 1000.0F - 250.0F;
   if (Model_GS_U.REF_BUTTONS == 2) {
     /* '<S10>:1:83' */
     /* '<S10>:1:84' */
     /* '<S10>:1:85' */
-    rtb_q_n_idx = 1000.0;
-
-    /* '<S10>:1:84' */
-    /* '<S10>:1:85' */
-    rtb_q_n_idx_0 = 1000.0;
-
-    /* '<S10>:1:84' */
-    /* '<S10>:1:85' */
-    rtb_q_n_idx_1 = 1000.0;
+    q_offset_idx = 1000.0;
 
     /* '<S10>:1:84' */
     /* '<S10>:1:85' */
     t = 1000.0;
+
+    /* '<S10>:1:84' */
+    /* '<S10>:1:85' */
+    q_offset_idx_0 = 1000.0;
+
+    /* '<S10>:1:84' */
+    /* '<S10>:1:85' */
+    q_offset_idx_1 = 1000.0;
 
     /* '<S10>:1:84' */
   }
@@ -1536,7 +1591,7 @@ static void Model_GS_output(void)
    *  DataTypeConversion: '<Root>/Data Type Conversion4'
    *  Inport: '<Root>/TIME_STAMP'
    */
-  scale = rt_roundd(rtb_q_n_idx);
+  scale = rt_roundd(q_offset_idx);
   if (scale < 65536.0) {
     /* Outport: '<Root>/CINPUTS' */
     Model_GS_Y.CINPUTS[4] = (uint16_T)scale;
@@ -1545,7 +1600,7 @@ static void Model_GS_output(void)
     Model_GS_Y.CINPUTS[4] = MAX_uint16_T;
   }
 
-  scale = rt_roundd(rtb_q_n_idx_0);
+  scale = rt_roundd(t);
   if (scale < 65536.0) {
     /* Outport: '<Root>/CINPUTS' */
     Model_GS_Y.CINPUTS[5] = (uint16_T)scale;
@@ -1554,7 +1609,7 @@ static void Model_GS_output(void)
     Model_GS_Y.CINPUTS[5] = MAX_uint16_T;
   }
 
-  scale = rt_roundd(rtb_q_n_idx_1);
+  scale = rt_roundd(q_offset_idx_0);
   if (scale < 65536.0) {
     /* Outport: '<Root>/CINPUTS' */
     Model_GS_Y.CINPUTS[6] = (uint16_T)scale;
@@ -1563,7 +1618,7 @@ static void Model_GS_output(void)
     Model_GS_Y.CINPUTS[6] = MAX_uint16_T;
   }
 
-  scale = rt_roundd(t);
+  scale = rt_roundd(q_offset_idx_1);
   if (scale < 65536.0) {
     /* Outport: '<Root>/CINPUTS' */
     Model_GS_Y.CINPUTS[7] = (uint16_T)scale;
@@ -1593,9 +1648,9 @@ static void Model_GS_output(void)
   Model_GS_Y.CINPUTS[10] = MAX_uint16_T;
 
   /* SignalConversion: '<S6>/TmpSignal ConversionAt SFunction Inport1' incorporates:
-   *  DiscreteTransferFcn: '<S34>/Bessel LPF dX'
-   *  DiscreteTransferFcn: '<S34>/Bessel LPF dY'
-   *  DiscreteTransferFcn: '<S34>/Bessel LPF dZ'
+   *  DiscreteTransferFcn: '<S35>/Bessel LPF dX'
+   *  DiscreteTransferFcn: '<S35>/Bessel LPF dY'
+   *  DiscreteTransferFcn: '<S35>/Bessel LPF dZ'
    *  Inport: '<Root>/AngSpeed'
    *  MATLAB Function: '<S1>/UAV_STATE'
    */
@@ -1668,112 +1723,112 @@ static void Model_GS_output(void)
   Model_GS_B.Sum[1] = Model_GS_B.p[1] - Model_GS_U.REF_POS[1];
   Model_GS_B.Sum[2] = Model_GS_B.p[2] - Model_GS_U.REF_POS[2];
 
-  /* MATLAB Function: '<S29>/STATE TRANSITIONS' incorporates:
+  /* MATLAB Function: '<S30>/STATE TRANSITIONS' incorporates:
    *  Inport: '<Root>/REF_BUTTONS'
-   *  Memory: '<S29>/Memory1'
+   *  Memory: '<S30>/Memory1'
    */
-  /* MATLAB Function 'LOW-LEVEL CONTROL/LOW LEVEL SUPERVISOR/SUPERVISOR/STATE MACHINE/STATE TRANSITIONS': '<S30>:1' */
-  /* '<S30>:1:3' */
-  /* '<S30>:1:5' */
-  /* '<S30>:1:6' */
-  /* '<S30>:1:7' */
-  /* '<S30>:1:8' */
-  /* '<S30>:1:9' */
-  /* '<S30>:1:10' */
-  /* '<S30>:1:12' */
-  /* '<S30>:1:13' */
-  /* '<S30>:1:14' */
-  /* '<S30>:1:15' */
-  /* '<S30>:1:16' */
-  /* '<S30>:1:17' */
+  /* MATLAB Function 'LOW-LEVEL CONTROL/LOW LEVEL SUPERVISOR/SUPERVISOR/STATE MACHINE/STATE TRANSITIONS': '<S31>:1' */
+  /* '<S31>:1:3' */
+  /* '<S31>:1:5' */
+  /* '<S31>:1:6' */
+  /* '<S31>:1:7' */
+  /* '<S31>:1:8' */
+  /* '<S31>:1:9' */
+  /* '<S31>:1:10' */
+  /* '<S31>:1:12' */
+  /* '<S31>:1:13' */
+  /* '<S31>:1:14' */
+  /* '<S31>:1:15' */
+  /* '<S31>:1:16' */
+  /* '<S31>:1:17' */
   /*  BUTTON_TRAJECTORY = 1; */
   /*  BUTTON_FLY = 128; */
   /*  BUTTON_LAT_MODE = 512; */
   /*  DEFAULT: */
-  /* '<S30>:1:23' */
+  /* '<S31>:1:23' */
   Model_GS_B.nextState = 0.0;
 
-  /* '<S30>:1:24' */
+  /* '<S31>:1:24' */
   Model_GS_B.nextResetState = 0.0;
 
   /*  MANAGE TRANSITIONS */
   if ((Model_GS_U.REF_BUTTONS == 32) || (Model_GS_U.REF_BUTTONS == 48)) {
-    /* '<S30>:1:27' */
-    /* '<S30>:1:28' */
+    /* '<S31>:1:27' */
+    /* '<S31>:1:28' */
     Model_GS_B.nextResetState = 4.0;
   }
 
   if (Model_GS_DWork.Memory1_PreviousInput == 1.0) {
-    /* '<S30>:1:30' */
-    /* '<S30>:1:31' */
+    /* '<S31>:1:30' */
+    /* '<S31>:1:31' */
     Model_GS_B.nextState = 1.0;
   }
 
   if (Model_GS_DWork.Memory1_PreviousInput == 3.0) {
-    /* '<S30>:1:33' */
-    /* '<S30>:1:34' */
+    /* '<S31>:1:33' */
+    /* '<S31>:1:34' */
     Model_GS_B.nextState = 3.0;
   }
 
   /*  LANDING LOGIC */
   if (Model_GS_DWork.Memory1_PreviousInput == 5.0) {
-    /* '<S30>:1:38' */
-    /* '<S30>:1:39' */
+    /* '<S31>:1:38' */
+    /* '<S31>:1:39' */
     Model_GS_B.nextState = 0.0;
   }
 
   if ((Model_GS_U.REF_BUTTONS == 16) || (Model_GS_U.REF_BUTTONS == 48)) {
-    /* '<S30>:1:41' */
-    /* '<S30>:1:42' */
+    /* '<S31>:1:41' */
+    /* '<S31>:1:42' */
     Model_GS_B.nextState = 5.0;
   }
 
   if ((Model_GS_DWork.Memory1_PreviousInput == 2.0) && (Model_GS_U.REF_BUTTONS
        != 160)) {
-    /* '<S30>:1:44' */
-    /* '<S30>:1:45' */
+    /* '<S31>:1:44' */
+    /* '<S31>:1:45' */
     Model_GS_B.nextState = 3.0;
   }
 
   if (Model_GS_U.REF_BUTTONS == 4) {
-    /* '<S30>:1:47' */
-    /* '<S30>:1:48' */
+    /* '<S31>:1:47' */
+    /* '<S31>:1:48' */
     Model_GS_B.nextState = 0.0;
   } else if ((Model_GS_U.REF_BUTTONS == 8) &&
              (Model_GS_DWork.Memory1_PreviousInput == 0.0)) {
-    /* '<S30>:1:49' */
-    /* '<S30>:1:50' */
+    /* '<S31>:1:49' */
+    /* '<S31>:1:50' */
     Model_GS_B.nextState = 1.0;
   } else {
     if (Model_GS_U.REF_BUTTONS == 160) {
-      /* '<S30>:1:51' */
-      /* '<S30>:1:52' */
+      /* '<S31>:1:51' */
+      /* '<S31>:1:52' */
       Model_GS_B.nextState = 2.0;
 
-      /* '<S30>:1:53' */
+      /* '<S31>:1:53' */
       Model_GS_B.nextResetState = 4.0;
     }
   }
 
-  /* End of MATLAB Function: '<S29>/STATE TRANSITIONS' */
+  /* End of MATLAB Function: '<S30>/STATE TRANSITIONS' */
 
-  /* MATLAB Function: '<S31>/VELOCITY' incorporates:
-   *  Memory: '<S31>/Memory'
-   *  Memory: '<S31>/Memory1'
-   *  Memory: '<S31>/Memory2'
+  /* MATLAB Function: '<S32>/VELOCITY' incorporates:
+   *  Memory: '<S32>/Memory'
+   *  Memory: '<S32>/Memory1'
+   *  Memory: '<S32>/Memory2'
    */
-  /* MATLAB Function 'LOW-LEVEL CONTROL/STATE & REFERENCES/OPTITRACK/VELOCITY': '<S35>:1' */
+  /* MATLAB Function 'LOW-LEVEL CONTROL/STATE & REFERENCES/OPTITRACK/VELOCITY': '<S36>:1' */
   /* TODO check overflow */
   if ((Model_GS_B.Tstamp != Model_GS_DWork.Memory1_PreviousInput_g) &&
       (Model_GS_B.Tstamp > Model_GS_DWork.Memory1_PreviousInput_g)) {
-    /* '<S35>:1:5' */
-    /* '<S35>:1:6' */
+    /* '<S36>:1:5' */
+    /* '<S36>:1:6' */
     scale = Model_GS_B.Tstamp - Model_GS_DWork.Memory1_PreviousInput_g;
 
-    /* '<S35>:1:7' */
-    /* '<S35>:1:8' */
-    /* '<S35>:1:9' */
-    /* '<S35>:1:10' */
+    /* '<S36>:1:7' */
+    /* '<S36>:1:8' */
+    /* '<S36>:1:9' */
+    /* '<S36>:1:10' */
     Model_GS_B.dp[0] = (Model_GS_B.p[0] - Model_GS_DWork.Memory_PreviousInput_o
                         [0]) / scale;
     Model_GS_B.dp[1] = (Model_GS_B.p[1] - Model_GS_DWork.Memory_PreviousInput_o
@@ -1781,21 +1836,21 @@ static void Model_GS_output(void)
     Model_GS_B.dp[2] = (Model_GS_B.p[2] - Model_GS_DWork.Memory_PreviousInput_o
                         [2]) / scale;
   } else {
-    /* '<S35>:1:12' */
-    Model_GS_B.dp[0] = Model_GS_DWork.Memory2_PreviousInput[0];
-    Model_GS_B.dp[1] = Model_GS_DWork.Memory2_PreviousInput[1];
-    Model_GS_B.dp[2] = Model_GS_DWork.Memory2_PreviousInput[2];
+    /* '<S36>:1:12' */
+    Model_GS_B.dp[0] = Model_GS_DWork.Memory2_PreviousInput_k[0];
+    Model_GS_B.dp[1] = Model_GS_DWork.Memory2_PreviousInput_k[1];
+    Model_GS_B.dp[2] = Model_GS_DWork.Memory2_PreviousInput_k[2];
   }
 
-  /* End of MATLAB Function: '<S31>/VELOCITY' */
+  /* End of MATLAB Function: '<S32>/VELOCITY' */
 
-  /* MATLAB Function: '<S36>/High-Gain Observer' incorporates:
-   *  DiscreteIntegrator: '<S36>/x1hat'
-   *  DiscreteIntegrator: '<S36>/x2hat'
+  /* MATLAB Function: '<S37>/High-Gain Observer' incorporates:
+   *  DiscreteIntegrator: '<S37>/x1hat'
+   *  DiscreteIntegrator: '<S37>/x2hat'
    */
-  /* MATLAB Function 'LOW-LEVEL CONTROL/STATE & REFERENCES/OPTITRACK/dP Observer/High-Gain Observer': '<S39>:1' */
+  /* MATLAB Function 'LOW-LEVEL CONTROL/STATE & REFERENCES/OPTITRACK/dP Observer/High-Gain Observer': '<S40>:1' */
   /*  HIGH-GAIN OBSERVER - KAHLIL */
-  /* '<S39>:1:5' */
+  /* '<S40>:1:5' */
   Model_GS_B.dx1hat[0] = Model_GS_DWork.x2hat_DSTATE[0] -
     (Model_GS_DWork.x1hat_DSTATE[0] - (real32_T)Model_GS_B.p[0]) * 40.0F;
   Model_GS_B.dx1hat[1] = Model_GS_DWork.x2hat_DSTATE[1] -
@@ -1803,7 +1858,7 @@ static void Model_GS_output(void)
   Model_GS_B.dx1hat[2] = Model_GS_DWork.x2hat_DSTATE[2] -
     (Model_GS_DWork.x1hat_DSTATE[2] - (real32_T)Model_GS_B.p[2]) * 40.0F;
 
-  /* '<S39>:1:6' */
+  /* '<S40>:1:6' */
   Model_GS_B.dx2hat[0] = 400.0F;
   Model_GS_B.dx2hat[1] = 400.0F;
   Model_GS_B.dx2hat[2] = 400.0F;
@@ -1820,51 +1875,51 @@ static void Model_GS_update(void)
 {
   real_T denAccum;
 
-  /* Update for Memory: '<S31>/Memory6' */
+  /* Update for Memory: '<S32>/Memory6' */
   Model_GS_DWork.Memory6_PreviousInput[0] = Model_GS_B.p[0];
   Model_GS_DWork.Memory6_PreviousInput[1] = Model_GS_B.p[1];
   Model_GS_DWork.Memory6_PreviousInput[2] = Model_GS_B.p[2];
 
-  /* Update for Memory: '<S31>/Memory5' */
+  /* Update for Memory: '<S32>/Memory5' */
   Model_GS_DWork.Memory5_PreviousInput[0] = Model_GS_Y.Q_OPTI[0];
   Model_GS_DWork.Memory5_PreviousInput[1] = Model_GS_Y.Q_OPTI[1];
   Model_GS_DWork.Memory5_PreviousInput[2] = Model_GS_Y.Q_OPTI[2];
   Model_GS_DWork.Memory5_PreviousInput[3] = Model_GS_Y.Q_OPTI[3];
 
-  /* Update for Memory: '<S31>/Memory4' */
+  /* Update for Memory: '<S32>/Memory4' */
   Model_GS_DWork.Memory4_PreviousInput = Model_GS_B.Tstamp;
 
-  /* Update for Memory: '<S31>/Memory3' */
+  /* Update for Memory: '<S32>/Memory3' */
   Model_GS_DWork.Memory3_PreviousInput = Model_GS_B.normaP;
 
-  /* Update for DiscreteTransferFcn: '<S34>/Bessel LPF dX' */
+  /* Update for DiscreteTransferFcn: '<S35>/Bessel LPF dX' */
   denAccum = (Model_GS_B.dp[0] - -1.5048439425786611 *
               Model_GS_DWork.BesselLPFdX_states[0]) - 0.58034077244872317 *
     Model_GS_DWork.BesselLPFdX_states[1];
   Model_GS_DWork.BesselLPFdX_states[1] = Model_GS_DWork.BesselLPFdX_states[0];
   Model_GS_DWork.BesselLPFdX_states[0] = denAccum;
 
-  /* Update for DiscreteTransferFcn: '<S34>/Bessel LPF dY' */
+  /* Update for DiscreteTransferFcn: '<S35>/Bessel LPF dY' */
   denAccum = (Model_GS_B.dp[1] - -1.5048439425786611 *
               Model_GS_DWork.BesselLPFdY_states[0]) - 0.58034077244872317 *
     Model_GS_DWork.BesselLPFdY_states[1];
   Model_GS_DWork.BesselLPFdY_states[1] = Model_GS_DWork.BesselLPFdY_states[0];
   Model_GS_DWork.BesselLPFdY_states[0] = denAccum;
 
-  /* Update for DiscreteTransferFcn: '<S34>/Bessel LPF dZ' */
+  /* Update for DiscreteTransferFcn: '<S35>/Bessel LPF dZ' */
   denAccum = (Model_GS_B.dp[2] - -1.5048439425786611 *
               Model_GS_DWork.BesselLPFdZ_states[0]) - 0.58034077244872317 *
     Model_GS_DWork.BesselLPFdZ_states[1];
   Model_GS_DWork.BesselLPFdZ_states[1] = Model_GS_DWork.BesselLPFdZ_states[0];
   Model_GS_DWork.BesselLPFdZ_states[0] = denAccum;
 
-  /* Update for Memory: '<S29>/Memory1' */
+  /* Update for Memory: '<S30>/Memory1' */
   Model_GS_DWork.Memory1_PreviousInput = Model_GS_B.nextState;
 
-  /* Update for Memory: '<S29>/Memory3' */
+  /* Update for Memory: '<S30>/Memory3' */
   Model_GS_DWork.Memory3_PreviousInput_h = Model_GS_B.nextResetState;
 
-  /* Update for Memory: '<S25>/Memory' */
+  /* Update for Memory: '<S26>/Memory' */
   Model_GS_DWork.Memory_PreviousInput = Model_GS_B.countNew;
 
   /* Update for DiscreteIntegrator: '<S8>/Discrete-Time Integrator1' */
@@ -1879,28 +1934,34 @@ static void Model_GS_update(void)
 
   /* End of Update for DiscreteIntegrator: '<S8>/Discrete-Time Integrator1' */
 
+  /* Update for Memory: '<S17>/Memory2' */
+  Model_GS_DWork.Memory2_PreviousInput[0] = Model_GS_Y.C_QC[0];
+  Model_GS_DWork.Memory2_PreviousInput[1] = Model_GS_Y.C_QC[1];
+  Model_GS_DWork.Memory2_PreviousInput[2] = Model_GS_Y.C_QC[2];
+  Model_GS_DWork.Memory2_PreviousInput[3] = Model_GS_Y.C_QC[3];
+
   /* Update for Memory: '<S12>/Memory' */
   Model_GS_DWork.Memory_PreviousInput_g = Model_GS_Y.C_H;
 
-  /* Update for Memory: '<S31>/Memory' */
+  /* Update for Memory: '<S32>/Memory' */
   Model_GS_DWork.Memory_PreviousInput_o[0] = Model_GS_B.p[0];
   Model_GS_DWork.Memory_PreviousInput_o[1] = Model_GS_B.p[1];
   Model_GS_DWork.Memory_PreviousInput_o[2] = Model_GS_B.p[2];
 
-  /* Update for Memory: '<S31>/Memory1' */
+  /* Update for Memory: '<S32>/Memory1' */
   Model_GS_DWork.Memory1_PreviousInput_g = Model_GS_B.Tstamp;
 
-  /* Update for Memory: '<S31>/Memory2' */
-  Model_GS_DWork.Memory2_PreviousInput[0] = Model_GS_B.dp[0];
-  Model_GS_DWork.Memory2_PreviousInput[1] = Model_GS_B.dp[1];
-  Model_GS_DWork.Memory2_PreviousInput[2] = Model_GS_B.dp[2];
+  /* Update for Memory: '<S32>/Memory2' */
+  Model_GS_DWork.Memory2_PreviousInput_k[0] = Model_GS_B.dp[0];
+  Model_GS_DWork.Memory2_PreviousInput_k[1] = Model_GS_B.dp[1];
+  Model_GS_DWork.Memory2_PreviousInput_k[2] = Model_GS_B.dp[2];
 
-  /* Update for DiscreteIntegrator: '<S36>/x1hat' */
+  /* Update for DiscreteIntegrator: '<S37>/x1hat' */
   Model_GS_DWork.x1hat_DSTATE[0] += 0.005F * Model_GS_B.dx1hat[0];
   Model_GS_DWork.x1hat_DSTATE[1] += 0.005F * Model_GS_B.dx1hat[1];
   Model_GS_DWork.x1hat_DSTATE[2] += 0.005F * Model_GS_B.dx1hat[2];
 
-  /* Update for DiscreteIntegrator: '<S36>/x2hat' */
+  /* Update for DiscreteIntegrator: '<S37>/x2hat' */
   Model_GS_DWork.x2hat_DSTATE[0] += 0.005F * Model_GS_B.dx2hat[0];
   Model_GS_DWork.x2hat_DSTATE[1] += 0.005F * Model_GS_B.dx2hat[1];
   Model_GS_DWork.x2hat_DSTATE[2] += 0.005F * Model_GS_B.dx2hat[2];
@@ -1926,42 +1987,42 @@ static void Model_GS_update(void)
 /* Model initialize function */
 void Model_GS_initialize(void)
 {
-  /* InitializeConditions for Memory: '<S31>/Memory6' */
+  /* InitializeConditions for Memory: '<S32>/Memory6' */
   Model_GS_DWork.Memory6_PreviousInput[0] = 0.0;
   Model_GS_DWork.Memory6_PreviousInput[1] = 0.0;
   Model_GS_DWork.Memory6_PreviousInput[2] = 0.0;
 
-  /* InitializeConditions for Memory: '<S31>/Memory5' */
+  /* InitializeConditions for Memory: '<S32>/Memory5' */
   Model_GS_DWork.Memory5_PreviousInput[0] = 1.0;
   Model_GS_DWork.Memory5_PreviousInput[1] = 0.0;
   Model_GS_DWork.Memory5_PreviousInput[2] = 0.0;
   Model_GS_DWork.Memory5_PreviousInput[3] = 0.0;
 
-  /* InitializeConditions for Memory: '<S31>/Memory4' */
+  /* InitializeConditions for Memory: '<S32>/Memory4' */
   Model_GS_DWork.Memory4_PreviousInput = 0.0;
 
-  /* InitializeConditions for Memory: '<S31>/Memory3' */
+  /* InitializeConditions for Memory: '<S32>/Memory3' */
   Model_GS_DWork.Memory3_PreviousInput = 0.0;
 
-  /* InitializeConditions for DiscreteTransferFcn: '<S34>/Bessel LPF dX' */
+  /* InitializeConditions for DiscreteTransferFcn: '<S35>/Bessel LPF dX' */
   Model_GS_DWork.BesselLPFdX_states[0] = 0.0;
   Model_GS_DWork.BesselLPFdX_states[1] = 0.0;
 
-  /* InitializeConditions for DiscreteTransferFcn: '<S34>/Bessel LPF dY' */
+  /* InitializeConditions for DiscreteTransferFcn: '<S35>/Bessel LPF dY' */
   Model_GS_DWork.BesselLPFdY_states[0] = 0.0;
   Model_GS_DWork.BesselLPFdY_states[1] = 0.0;
 
-  /* InitializeConditions for DiscreteTransferFcn: '<S34>/Bessel LPF dZ' */
+  /* InitializeConditions for DiscreteTransferFcn: '<S35>/Bessel LPF dZ' */
   Model_GS_DWork.BesselLPFdZ_states[0] = 0.0;
   Model_GS_DWork.BesselLPFdZ_states[1] = 0.0;
 
-  /* InitializeConditions for Memory: '<S29>/Memory1' */
+  /* InitializeConditions for Memory: '<S30>/Memory1' */
   Model_GS_DWork.Memory1_PreviousInput = 0.0;
 
-  /* InitializeConditions for Memory: '<S29>/Memory3' */
+  /* InitializeConditions for Memory: '<S30>/Memory3' */
   Model_GS_DWork.Memory3_PreviousInput_h = 0.0;
 
-  /* InitializeConditions for Memory: '<S25>/Memory' */
+  /* InitializeConditions for Memory: '<S26>/Memory' */
   Model_GS_DWork.Memory_PreviousInput = 0.0;
 
   /* InitializeConditions for DiscreteIntegrator: '<S8>/Discrete-Time Integrator1' */
@@ -1970,28 +2031,34 @@ void Model_GS_initialize(void)
   Model_GS_DWork.DiscreteTimeIntegrator1_DSTATE[2] = 0.0;
   Model_GS_DWork.DiscreteTimeIntegrator1_PrevRes = 2;
 
+  /* InitializeConditions for Memory: '<S17>/Memory2' */
+  Model_GS_DWork.Memory2_PreviousInput[0] = 1.0;
+  Model_GS_DWork.Memory2_PreviousInput[1] = 1.0;
+  Model_GS_DWork.Memory2_PreviousInput[2] = 1.0;
+  Model_GS_DWork.Memory2_PreviousInput[3] = 1.0;
+
   /* InitializeConditions for Memory: '<S12>/Memory' */
   Model_GS_DWork.Memory_PreviousInput_g = 1.0;
 
-  /* InitializeConditions for Memory: '<S31>/Memory' */
+  /* InitializeConditions for Memory: '<S32>/Memory' */
   Model_GS_DWork.Memory_PreviousInput_o[0] = 0.0;
   Model_GS_DWork.Memory_PreviousInput_o[1] = 0.0;
   Model_GS_DWork.Memory_PreviousInput_o[2] = 0.0;
 
-  /* InitializeConditions for Memory: '<S31>/Memory1' */
+  /* InitializeConditions for Memory: '<S32>/Memory1' */
   Model_GS_DWork.Memory1_PreviousInput_g = 0.0;
 
-  /* InitializeConditions for Memory: '<S31>/Memory2' */
-  Model_GS_DWork.Memory2_PreviousInput[0] = 0.0;
-  Model_GS_DWork.Memory2_PreviousInput[1] = 0.0;
-  Model_GS_DWork.Memory2_PreviousInput[2] = 0.0;
+  /* InitializeConditions for Memory: '<S32>/Memory2' */
+  Model_GS_DWork.Memory2_PreviousInput_k[0] = 0.0;
+  Model_GS_DWork.Memory2_PreviousInput_k[1] = 0.0;
+  Model_GS_DWork.Memory2_PreviousInput_k[2] = 0.0;
 
-  /* InitializeConditions for DiscreteIntegrator: '<S36>/x1hat' */
+  /* InitializeConditions for DiscreteIntegrator: '<S37>/x1hat' */
   Model_GS_DWork.x1hat_DSTATE[0] = 0.0F;
   Model_GS_DWork.x1hat_DSTATE[1] = 0.0F;
   Model_GS_DWork.x1hat_DSTATE[2] = 0.0F;
 
-  /* InitializeConditions for DiscreteIntegrator: '<S36>/x2hat' */
+  /* InitializeConditions for DiscreteIntegrator: '<S37>/x2hat' */
   Model_GS_DWork.x2hat_DSTATE[0] = 0.0F;
   Model_GS_DWork.x2hat_DSTATE[1] = 0.0F;
   Model_GS_DWork.x2hat_DSTATE[2] = 0.0F;
@@ -2110,11 +2177,11 @@ RT_MODEL_Model_GS *Model_GS(void)
   /* Initialize Sizes */
   Model_GS_M->Sizes.numContStates = (0);/* Number of continuous states */
   Model_GS_M->Sizes.numY = (39);       /* Number of model outputs */
-  Model_GS_M->Sizes.numU = (67);       /* Number of model inputs */
+  Model_GS_M->Sizes.numU = (68);       /* Number of model inputs */
   Model_GS_M->Sizes.sysDirFeedThru = (1);/* The model is direct feedthrough */
   Model_GS_M->Sizes.numSampTimes = (1);/* Number of sample times */
-  Model_GS_M->Sizes.numBlocks = (81);  /* Number of blocks */
-  Model_GS_M->Sizes.numBlockIO = (13); /* Number of block outputs */
+  Model_GS_M->Sizes.numBlocks = (84);  /* Number of blocks */
+  Model_GS_M->Sizes.numBlockIO = (14); /* Number of block outputs */
   return Model_GS_M;
 }
 

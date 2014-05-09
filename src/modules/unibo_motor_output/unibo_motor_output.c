@@ -44,6 +44,7 @@
 #include <drivers/drv_pwm_output.h>
 
 // numero di motori effettivamente collegati
+#define MOTORS_START 4
 #define MOTORS_NUMBER 8
 
 /* Deamon libraries? */
@@ -95,7 +96,7 @@ void unibo_motor_output_init()
 		exit(1);
 	}
 	int i;
-	for(i = 0; i < MOTORS_NUMBER; i++)
+	for(i = MOTORS_START; i < MOTORS_NUMBER; i++)
 	{
 		ioctl(pwm_fd, PWM_SERVO_SET(i), 900);
 	}
@@ -123,13 +124,13 @@ void unibo_motor_output_test()
 	int i, k;
 	for(i = 0; i < 3; i++)
 	{
-		for(k = 0; k < MOTORS_NUMBER; k++)
+		for(k = MOTORS_START; k < MOTORS_NUMBER; k++)
 		{
 			ioctl(pwm_fd, PWM_SERVO_SET(k), 0);
 		}
 		sleep(1);
 
-		for(k = 0; k < MOTORS_NUMBER; k++)
+		for(k = MOTORS_START; k < MOTORS_NUMBER; k++)
 		{
 			ioctl(pwm_fd, PWM_SERVO_SET(k), 1200);
 		}
@@ -235,7 +236,7 @@ int unibo_motor_output_thread_main(int argc, char *argv[])
 	struct motor_output_s pwm_values;
 
 	// PWM to 0 initially
-	for(i = 0; i < MOTORS_NUMBER; i++)
+	for(i = MOTORS_START; i < MOTORS_NUMBER; i++)
 	{
 		ioctl(pwm_fd, PWM_SERVO_SET(i), 0);
 	}
@@ -254,7 +255,7 @@ int unibo_motor_output_thread_main(int argc, char *argv[])
 				orb_copy(ORB_ID(motor_output), motor_output_fd, &pwm_values);
 
 				// scrittura su pin output
-				for(i = 0; i < MOTORS_NUMBER; i++)
+				for(i = MOTORS_START; i < MOTORS_NUMBER; i++)
 				{
 					ioctl(pwm_fd, PWM_SERVO_SET(i), pwm_values.outputs[i]);
 				}

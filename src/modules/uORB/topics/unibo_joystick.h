@@ -19,7 +19,9 @@
 struct unibo_joystick_s
 {
 	uint64_t timestamp;
-	int16_t raw_joystick[8];
+	int16_t axis[4];
+	int16_t extras[4];
+	uint32_t buttons;
 };
 
 /* register this as object request broker structure */

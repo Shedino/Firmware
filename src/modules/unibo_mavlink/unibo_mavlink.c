@@ -570,11 +570,15 @@ int unibo_mavlink_thread_main(int argc, char *argv[])
 								break;
 							case MAVLINK_MSG_ID_RC_CHANNELS_SCALED:
 								mavlink_msg_rc_channels_scaled_decode(&msg, &unibo_rc);
-								joy.raw_joystick[0] = unibo_rc.chan1_scaled / 19.5 +512;	//-10000/+10000  -->  -512/+512
-								joy.raw_joystick[1] = unibo_rc.chan2_scaled / 19.5 +512;
-								joy.raw_joystick[2] = unibo_rc.chan3_scaled / 19.5 +512;
-								joy.raw_joystick[3] = unibo_rc.chan4_scaled / 19.5 +512;
-								joy.raw_joystick[7] = unibo_rc.chan8_scaled / 30;         //button is (Button_number-1)^2*30
+								joy.axis[0] = unibo_rc.chan1_scaled / 19.5 +512;	//-10000/+10000  -->  -512/+512
+								joy.axis[1] = unibo_rc.chan2_scaled / 19.5 +512;
+								joy.axis[2] = unibo_rc.chan3_scaled / 19.5 +512;
+								joy.axis[3] = unibo_rc.chan4_scaled / 19.5 +512;
+								joy.extras[0] = 0;
+								joy.extras[1] = 0;
+								joy.extras[2] = 0;
+								joy.extras[3] = 0;
+								joy.buttons = unibo_rc.chan8_scaled / 30;         //button is (Button_number-1)^2*30
 								orb_publish(ORB_ID(unibo_joystick), unibo_joy_pub_fd, &joy);
 								//warnx("Joystick pachet received: CH1: %d - CH2: %d - CH3: %d - CH4: %d BUTTON: %d",joy.raw_joystick[0],joy.raw_joystick[1],joy.raw_joystick[2],joy.raw_joystick[3],joy.raw_joystick[7]);
 								break;

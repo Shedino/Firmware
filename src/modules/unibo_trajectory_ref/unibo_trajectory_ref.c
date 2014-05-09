@@ -54,6 +54,7 @@
 #include <uORB/topics/unibo_reference.h>
 #include <uORB/topics/vehicle_local_position.h>
 #include <uORB/topics/unibo_optitrack.h>
+#include <uORB/topics/unibo_parameters.h>
 
 /* Deamon libraries? */
 #include <systemlib/systemlib.h>
@@ -131,7 +132,7 @@ int unibo_trajectory_ref_main(int argc, char *argv[])
 					 SCHED_DEFAULT,
 					 //SCHED_PRIORITY_DEFAULT,
 					 SCHED_PRIORITY_MAX - 20,
-					 4096,
+					 2048,
 					 unibo_trajectory_ref_thread_main,
 					 (argv) ? (const char **)&argv[2] : (const char **)NULL);
 		warnx("Thread started PID: %d",trajectory_ref_task);
@@ -172,12 +173,15 @@ int unibo_trajectory_ref_thread_main(int argc, char *argv[])
 	/* subscribe to attitude topic */
 	int vehicle_attitude_fd = orb_subscribe(ORB_ID(vehicle_attitude));
 
-	/* subscribe to attitude topic */
+	/* subscribe to joystick topic */
 	int joystick_fd = orb_subscribe(ORB_ID(unibo_joystick));
 	orb_set_interval(joystick_fd, 10); //1000 = 1Hz (ms)   100 HZ!!
 
 	/* subscribe to position topic */
 	int unibo_optitrack_fd = orb_subscribe(ORB_ID(unibo_optitrack));
+
+	/* subscribe to parameters topic */
+	int unibo_parameters_fd = orb_subscribe(ORB_ID(unibo_parameters));
 
 
 	/* advertise reference topic */
@@ -208,6 +212,7 @@ int unibo_trajectory_ref_thread_main(int argc, char *argv[])
 	struct vehicle_attitude_s ahrs;
 	struct unibo_joystick_s joystick;
 	struct unibo_optitrack_s position;                       //TODO change to local position
+	struct unibo_parameters_s param;
 
 	TRAJ_start();
 	//	TRAJ_control();
@@ -217,6 +222,7 @@ int unibo_trajectory_ref_thread_main(int argc, char *argv[])
 	/* Bool for topics update */
 	bool updated;
 
+	float yawoffset = 0;   //offset between onboard yaw and optitrack yaw
 
 	static bool FirstFlg = true;
 
@@ -230,7 +236,7 @@ int unibo_trajectory_ref_thread_main(int argc, char *argv[])
 	while (!thread_should_exit) {
 		/* wait for sensor update of 1 file descriptor for 1000 ms (1 second) */
 		//Imposto solo 10 ms
-		int poll_ret = poll(fds, 1, 10); //filedescr, number of file descriptor to wait for, timeout in ms
+		int poll_ret = poll(fds, 1, 200); //filedescr, number of file descriptor to wait for, timeout in ms
 
 		/* handle the poll result */
 		if (poll_ret == 0) {
@@ -246,22 +252,28 @@ int unibo_trajectory_ref_thread_main(int argc, char *argv[])
 			error_counter++;
 		} else {
 			if (fds[0].revents & POLLIN) {
-				//TECNICAMENTE SIAMO GIA' A ??HZ, freq del topic di joystick
+				//TECNICAMENTE SIAMO GIA' A 50HZ, freq del topic di joystick (default 50HZ)
 
 				/* copy raw JOYSTICK data into local buffer */
 				orb_copy(ORB_ID(unibo_joystick), joystick_fd, &joystick);
 				for  (int i = 0; i<4;i++){
-					TRAJECTORY_GENERATOR_APP_U.JOYSTICK[i] = joystick.raw_joystick[i];        //position and yaw command
+					TRAJECTORY_GENERATOR_APP_U.JOYSTICK[i] = joystick.axis[i];        //position and yaw command
 				}
-				TRAJECTORY_GENERATOR_APP_U.JOYSTICK[4] = joystick.raw_joystick[7];          //button
+				TRAJECTORY_GENERATOR_APP_U.JOYSTICK[4] = joystick.buttons;          //button
 
-				//warnx("Joystick pachet received: CH1: %d - CH2: %d - CH3: %d - CH4: %d BUTTON: %d",joystick.raw_joystick[0],joystick.raw_joystick[1],joystick.raw_joystick[2],joystick.raw_joystick[3],joystick.raw_joystick[7]);
+				//warnx("Joystick pachet received: CH1: %d - CH2: %d - CH3: %d - CH4: %d BUTTON: %d",joystick.axis[0],joystick.axis[1],joystick.axis[2],joystick.axis[3],joystick.buttons);
+
+				orb_check(unibo_parameters_fd, &updated);   //TODO
+				if (updated){
+					orb_copy(ORB_ID(unibo_parameters), unibo_parameters_fd, &param);
+					yawoffset = param.in24;
+				}
 
 				/* copy sensors raw data into local buffer */
 				orb_check(vehicle_attitude_fd, &updated);
 				if (updated){
 					orb_copy(ORB_ID(vehicle_attitude), vehicle_attitude_fd, &ahrs);
-					TRAJECTORY_GENERATOR_APP_U.PSI = ahrs.yaw;
+					TRAJECTORY_GENERATOR_APP_U.PSI = ahrs.yaw + yawoffset/180*3.14;
 				}
 
 				/* copy position data into local buffer */                 //TODO change to local position for compatibility
@@ -325,6 +337,7 @@ int unibo_trajectory_ref_thread_main(int argc, char *argv[])
 
 				//publishing references
 				orb_publish(ORB_ID(unibo_reference), reference_pub_fd, &reference);
+				//warnx("Actual yaw: %.3f - YawREF: %.3f - DYawREF: %.3f - D2YawREF: %.3f", TRAJECTORY_GENERATOR_APP_U.PSI, reference.psi, reference.d_psi, reference.dd_psi);
 			}
 
 
