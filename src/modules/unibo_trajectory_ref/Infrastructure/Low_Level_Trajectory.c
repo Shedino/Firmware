@@ -8,7 +8,7 @@
  *  	Author: Paolo Di Febbo
  */
 
-#include "../include/Low_Level_Free_Flight_Control.h"
+#include "../include/Low_Level_Trajectory.h"
 //#include <iostream>
 //using std::cout;
 
@@ -17,7 +17,6 @@ void TRAJ_control() {
 
 	MdlInitializeSampleTimes();
 	MdlUpdate(1);
-	//warnx("PostUpdate\n");
 	MdlOutputs(1);
 
 }
@@ -26,9 +25,4 @@ void TRAJ_start(){
 	MdlStart();
 }
 
-//void LLFFC_updateModelAtomTime(unsigned long int tAtom)
-//{
-//	Model_GS_U.TIME_ATOM = (int16_T)tAtom;
-//
-//}
 

@@ -42,7 +42,7 @@
 #include <stdio.h>
 #include <errno.h>
 
-#include <TRAJECTORY_GENERATOR_APP_types.h>
+//#include <TRAJECTORY_GENERATOR_APP_types.h>
 #include <TRAJECTORY_GENERATOR_APP.h>
 
 #include <unistd.h>
@@ -190,14 +190,14 @@ int unibo_trajectory_ref_thread_main(int argc, char *argv[])
 	int reference_pub_fd = orb_advertise(ORB_ID(unibo_reference), &reference);
 
 	/* one could wait for multiple topics with this technique, just using one here */
-	struct pollfd fds[] = {
-		{ .fd = joystick_fd,   .events = POLLIN },                                //CAMBIARE in joystick
-		/* there could be more file descriptors here, in the form like:
-		 * { .fd = other_sub_fd,   .events = POLLIN },
-		 */
-	};
-
-	int error_counter = 0;
+//	struct pollfd fds[] = {
+//		{ .fd = joystick_fd,   .events = POLLIN },                                //CAMBIARE in joystick
+//		/* there could be more file descriptors here, in the form like:
+//		 * { .fd = other_sub_fd,   .events = POLLIN },
+//		 */
+//	};
+//
+//	int error_counter = 0;
 
 
 	/*
@@ -214,6 +214,10 @@ int unibo_trajectory_ref_thread_main(int argc, char *argv[])
 	struct unibo_optitrack_s position;                       //TODO change to local position
 	struct unibo_parameters_s param;
 
+	static uint64_t time_pre = 0;
+	float deltaT;
+
+
 	TRAJ_start();
 	//	TRAJ_control();
 
@@ -224,7 +228,6 @@ int unibo_trajectory_ref_thread_main(int argc, char *argv[])
 
 	float yawoffset = 0;   //offset between onboard yaw and optitrack yaw
 
-	static bool FirstFlg = true;
 
 	/*
 	 * |-----------------------------------------------------|
@@ -234,115 +237,105 @@ int unibo_trajectory_ref_thread_main(int argc, char *argv[])
 
 
 	while (!thread_should_exit) {
-		/* wait for sensor update of 1 file descriptor for 1000 ms (1 second) */
-		//Imposto solo 10 ms
-		int poll_ret = poll(fds, 1, 200); //filedescr, number of file descriptor to wait for, timeout in ms
+		//TECNICAMENTE SIAMO GIA' A 50HZ, freq del topic di joystick (default 50HZ)
 
-		/* handle the poll result */
-		if (poll_ret == 0) {
-			/* this means none of our providers is giving us data */
-			//warnx("[unibo_trajectory_ref_thread] Got no data within poll interval\n"); //i 10 ms impostati poco sopra, il topic cmq dovrebbe arrivare a 500hz (2ms)
-		} else if (poll_ret < 0) {
-			/* this is seriously bad - should be an emergency */
-			if (error_counter < 10 || error_counter % 50 == 0) {
-				/* use a counter to prevent flooding (and slowing us down) */
-				warnx("[unibo_trajectory_ref_thread] ERROR return value from poll(): %d\n"
-					, poll_ret);
-			}
-			error_counter++;
-		} else {
-			if (fds[0].revents & POLLIN) {
-				//TECNICAMENTE SIAMO GIA' A 50HZ, freq del topic di joystick (default 50HZ)
+		deltaT = (hrt_absolute_time()-time_pre)/1000.0f;
+		if (deltaT>=20){              //50 Hz
+			time_pre = hrt_absolute_time();
+			//warnx("Trajectory APP: deltaT = %.2f",deltaT);    //milliseconds deltaT, should be 20
 
-				/* copy raw JOYSTICK data into local buffer */
+			/* copy raw JOYSTICK data into local buffer */
+			orb_check(joystick_fd, &updated);
+			if (updated){
 				orb_copy(ORB_ID(unibo_joystick), joystick_fd, &joystick);
 				for  (int i = 0; i<4;i++){
 					TRAJECTORY_GENERATOR_APP_U.JOYSTICK[i] = joystick.axis[i];        //position and yaw command
 				}
 				TRAJECTORY_GENERATOR_APP_U.JOYSTICK[4] = joystick.buttons;          //button
-
-				//warnx("Joystick pachet received: CH1: %d - CH2: %d - CH3: %d - CH4: %d BUTTON: %d",joystick.axis[0],joystick.axis[1],joystick.axis[2],joystick.axis[3],joystick.buttons);
-
-				orb_check(unibo_parameters_fd, &updated);   //TODO
-				if (updated){
-					orb_copy(ORB_ID(unibo_parameters), unibo_parameters_fd, &param);
-					yawoffset = param.in24;
-				}
-
-				/* copy sensors raw data into local buffer */
-				orb_check(vehicle_attitude_fd, &updated);
-				if (updated){
-					orb_copy(ORB_ID(vehicle_attitude), vehicle_attitude_fd, &ahrs);
-					TRAJECTORY_GENERATOR_APP_U.PSI = ahrs.yaw + yawoffset/180*3.14;
-				}
-
-				/* copy position data into local buffer */                 //TODO change to local position for compatibility
-				orb_check(unibo_optitrack_fd, &updated);
-				if (updated){
-					orb_copy(ORB_ID(unibo_optitrack), unibo_optitrack_fd, &position);
-					TRAJECTORY_GENERATOR_APP_U.Position [0] = position.pos_x;
-					TRAJECTORY_GENERATOR_APP_U.Position [1] = position.pos_y;
-					TRAJECTORY_GENERATOR_APP_U.Position [2] = position.pos_z;
-				}
-
-				TRAJECTORY_GENERATOR_APP_U.BODY_INERT = true;      //position references in body frame (take into account actual yaw)
-				TRAJECTORY_GENERATOR_APP_U.TSTAMP = 0;             //TODO add timestamp
-
-
-
-				/*
-				 * |-----------------------------------------------------|
-				 * |                EXECUTION LOOP!                      |
-				 * |-----------------------------------------------------|
-				 */
-
-
-
-				// ----------- EXECUTION -----------
-				TRAJ_control();
-
-
-
-				/* Fill References structure and write into topic*/
-				reference.p_x = TRAJECTORY_GENERATOR_APP_Y.REF_POS[0];       //Position
-				reference.p_y = TRAJECTORY_GENERATOR_APP_Y.REF_POS[1];
-				reference.p_z = TRAJECTORY_GENERATOR_APP_Y.REF_POS[2];
-				reference.dp_x = TRAJECTORY_GENERATOR_APP_Y.REF_POS[3];      //Velocity
-				reference.dp_x = TRAJECTORY_GENERATOR_APP_Y.REF_POS[4];
-				reference.dp_x = TRAJECTORY_GENERATOR_APP_Y.REF_POS[5];
-				reference.ddp_x = TRAJECTORY_GENERATOR_APP_Y.REF_POS[6];     //Acceleration
-				reference.ddp_y = TRAJECTORY_GENERATOR_APP_Y.REF_POS[7];
-				reference.ddp_z = TRAJECTORY_GENERATOR_APP_Y.REF_POS[8];
-				reference.d3p_x = 0;     //Jerk
-				reference.d3p_y = 0;
-				reference.d3p_z = 0;
-				reference.d4p_x = 0;    //Snap
-				reference.d4p_y = 0;
-				reference.d4p_z = 0;
-//				reference.d3p_x = TRAJECTORY_GENERATOR_APP_Y.REF_POS[9];     //Jerk
-//				reference.d3p_y = TRAJECTORY_GENERATOR_APP_Y.REF_POS[10];
-//				reference.d3p_z = TRAJECTORY_GENERATOR_APP_Y.REF_POS[11];
-//				reference.d4p_x = TRAJECTORY_GENERATOR_APP_Y.REF_POS[12];    //Snap
-//				reference.d4p_y = TRAJECTORY_GENERATOR_APP_Y.REF_POS[13];
-//				reference.d4p_z = TRAJECTORY_GENERATOR_APP_Y.REF_POS[14];
-
-				reference.psi = TRAJECTORY_GENERATOR_APP_Y.REF_YAW[0];       //Yaw
-				reference.d_psi = TRAJECTORY_GENERATOR_APP_Y.REF_YAW[1];
-				reference.dd_psi = TRAJECTORY_GENERATOR_APP_Y.REF_YAW[2];
-
-				reference.button = TRAJECTORY_GENERATOR_APP_Y.REF_BUTTONS;   //Button
-
-				reference.timestamp = TRAJECTORY_GENERATOR_APP_Y.REF_TSTAMP; //Tstamp
-				/*End Filling Reference        */
-
-				//publishing references
-				orb_publish(ORB_ID(unibo_reference), reference_pub_fd, &reference);
-				//warnx("Actual yaw: %.3f - YawREF: %.3f - DYawREF: %.3f - D2YawREF: %.3f", TRAJECTORY_GENERATOR_APP_U.PSI, reference.psi, reference.d_psi, reference.dd_psi);
 			}
 
 
+			//warnx("Joystick pachet received: CH1: %d - CH2: %d - CH3: %d - CH4: %d BUTTON: %d",joystick.axis[0],joystick.axis[1],joystick.axis[2],joystick.axis[3],joystick.buttons);
+
+			orb_check(unibo_parameters_fd, &updated);   //TODO
+			if (updated){
+				orb_copy(ORB_ID(unibo_parameters), unibo_parameters_fd, &param);
+				yawoffset = param.in24;
+			}
+
+			/* copy sensors raw data into local buffer */
+			orb_check(vehicle_attitude_fd, &updated);
+			if (updated){
+				orb_copy(ORB_ID(vehicle_attitude), vehicle_attitude_fd, &ahrs);
+				TRAJECTORY_GENERATOR_APP_U.PSI = ahrs.yaw + yawoffset/180*3.14;
+			}
+
+			/* copy position data into local buffer */                 //TODO change to local position for compatibility
+			orb_check(unibo_optitrack_fd, &updated);
+			if (updated){
+				orb_copy(ORB_ID(unibo_optitrack), unibo_optitrack_fd, &position);
+				TRAJECTORY_GENERATOR_APP_U.Position [0] = position.pos_x;
+				TRAJECTORY_GENERATOR_APP_U.Position [1] = position.pos_y;
+				TRAJECTORY_GENERATOR_APP_U.Position [2] = position.pos_z;
+			}
+
+			TRAJECTORY_GENERATOR_APP_U.BODY_INERT = true;      //position references in body frame (take into account actual yaw)
+			TRAJECTORY_GENERATOR_APP_U.TSTAMP = 0;             //TODO add timestamp
+
+
+
+			/*
+			 * |-----------------------------------------------------|
+			 * |                EXECUTION LOOP!                      |
+			 * |-----------------------------------------------------|
+			 */
+
+
+
+			// ----------- EXECUTION -----------
+			TRAJ_control();
+
+
+
+			/* Fill References structure and write into topic*/
+			reference.p_x = TRAJECTORY_GENERATOR_APP_Y.REF_POS[0];       //Position
+			reference.p_y = TRAJECTORY_GENERATOR_APP_Y.REF_POS[1];
+			reference.p_z = TRAJECTORY_GENERATOR_APP_Y.REF_POS[2];
+			reference.dp_x = TRAJECTORY_GENERATOR_APP_Y.REF_POS[3];      //Velocity
+			reference.dp_x = TRAJECTORY_GENERATOR_APP_Y.REF_POS[4];
+			reference.dp_x = TRAJECTORY_GENERATOR_APP_Y.REF_POS[5];
+			reference.ddp_x = TRAJECTORY_GENERATOR_APP_Y.REF_POS[6];     //Acceleration
+			reference.ddp_y = TRAJECTORY_GENERATOR_APP_Y.REF_POS[7];
+			reference.ddp_z = TRAJECTORY_GENERATOR_APP_Y.REF_POS[8];
+			reference.d3p_x = 0;     //Jerk
+			reference.d3p_y = 0;
+			reference.d3p_z = 0;
+			reference.d4p_x = 0;    //Snap
+			reference.d4p_y = 0;
+			reference.d4p_z = 0;
+	//		reference.d3p_x = TRAJECTORY_GENERATOR_APP_Y.REF_POS[9];     //Jerk
+	//		reference.d3p_y = TRAJECTORY_GENERATOR_APP_Y.REF_POS[10];
+	//		reference.d3p_z = TRAJECTORY_GENERATOR_APP_Y.REF_POS[11];
+	//		reference.d4p_x = TRAJECTORY_GENERATOR_APP_Y.REF_POS[12];    //Snap
+	//		reference.d4p_y = TRAJECTORY_GENERATOR_APP_Y.REF_POS[13];
+	//		reference.d4p_z = TRAJECTORY_GENERATOR_APP_Y.REF_POS[14];
+
+			reference.psi = TRAJECTORY_GENERATOR_APP_Y.REF_YAW[0];       //Yaw
+			reference.d_psi = TRAJECTORY_GENERATOR_APP_Y.REF_YAW[1];
+			reference.dd_psi = TRAJECTORY_GENERATOR_APP_Y.REF_YAW[2];
+
+			reference.button = TRAJECTORY_GENERATOR_APP_Y.REF_BUTTONS;   //Button
+
+			reference.timestamp = TRAJECTORY_GENERATOR_APP_Y.REF_TSTAMP; //Tstamp
+			/*End Filling Reference        */
+
+			//publishing references
+			orb_publish(ORB_ID(unibo_reference), reference_pub_fd, &reference);
+			//warnx("Actual yaw: %.3f - YawREF: %.3f - DYawREF: %.3f - D2YawREF: %.3f", TRAJECTORY_GENERATOR_APP_U.PSI, reference.psi, reference.d_psi, reference.dd_psi);
 
 		}
+		usleep(1000);
+
 	}
 
 	warnx("[unibo_trajectory_ref_daemon] exiting.\n");
