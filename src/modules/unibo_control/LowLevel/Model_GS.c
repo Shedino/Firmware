@@ -3,9 +3,9 @@
  *
  * Code generation for model "Model_GS".
  *
- * Model version              : 1.2428
+ * Model version              : 1.2433
  * Simulink Coder version : 8.3 (R2012b) 20-Jul-2012
- * C source code generated on : Fri May 09 09:36:48 2014
+ * C source code generated on : Wed May 14 17:52:15 2014
  *
  * Target selection: grt.tlc
  * Note: GRT includes extra infrastructure and instrumentation for prototyping
@@ -66,10 +66,17 @@ static void Model_GS_output(void)
 
   static const int8_T A[9] = { 1, 0, 0, 0, 1, 0, 0, 0, 1 };
 
+  real_T A_0[16];
   real32_T T[4];
-  static const real32_T b[16] = { 0.25F, 0.25F, 0.25F, 0.25F, 1.17851126F,
-    -1.17851126F, -1.17851126F, 1.17851126F, 1.17851126F, 1.17851126F,
-    -1.17851126F, -1.17851126F, 2.5F, -2.5F, 2.5F, -2.5F };
+  static const real_T b[16] = { 0.25, 0.25, 0.25, 0.25, 1.1785113019775795,
+    -1.1785113019775795, -1.1785113019775795, 1.1785113019775795,
+    1.1785113019775795, 1.1785113019775795, -1.1785113019775795,
+    -1.1785113019775795, 2.5, -2.5, 2.5, -2.5 };
+
+  static const real_T c[16] = { 0.25, 0.25, 0.25, 0.25, 1.1785113019775795,
+    -1.1785113019775795, -1.1785113019775795, 1.1785113019775795,
+    1.1785113019775795, 1.1785113019775795, -1.1785113019775795,
+    -1.1785113019775795, -2.5, 2.5, -2.5, 2.5 };
 
   int32_T rtb_RESET_j;
   real_T rtb_v_star[3];
@@ -1348,6 +1355,7 @@ static void Model_GS_output(void)
   /* End of MATLAB Function: '<S12>/Attitude controller' */
 
   /* MATLAB Function: '<S7>/ALLOCATION' incorporates:
+   *  Inport: '<Root>/CW_CCW'
    *  Inport: '<Root>/REF_BUTTONS'
    *  Memory: '<S30>/Memory1'
    */
@@ -1368,10 +1376,23 @@ static void Model_GS_output(void)
   /* [g], 8in prop */
   /* '<S10>:1:13' */
   /* '<S10>:1:14' */
+  for (rtb_RESET_j = 0; rtb_RESET_j < 16; rtb_RESET_j++) {
+    if (Model_GS_U.CW_CCW) {
+      /* '<S10>:1:16' */
+      /* our quad */
+      /* '<S10>:1:17' */
+      A_0[rtb_RESET_j] = b[rtb_RESET_j];
+    } else {
+      /* IRIS */
+      /* '<S10>:1:22' */
+      A_0[rtb_RESET_j] = c[rtb_RESET_j];
+    }
+  }
+
   switch ((int32_T)Model_GS_DWork.Memory1_PreviousInput) {
    case 0:
     /* STOP */
-    /* '<S10>:1:22' */
+    /* '<S10>:1:30' */
     rtb_T = 0.0F;
     U_idx = 0.0F;
     U_idx_0 = 0.0F;
@@ -1380,7 +1401,7 @@ static void Model_GS_output(void)
 
    case 1:
     /* START */
-    /* '<S10>:1:24' */
+    /* '<S10>:1:32' */
     U_idx = 0.0F;
     U_idx_0 = 0.0F;
     U_idx_1 = 0.0F;
@@ -1388,7 +1409,7 @@ static void Model_GS_output(void)
 
    case 2:
     /* TAKEOFF */
-    /* '<S10>:1:26' */
+    /* '<S10>:1:34' */
     U_idx = (real32_T)Model_GS_Y.C_TORQUES[0];
     U_idx_0 = (real32_T)Model_GS_Y.C_TORQUES[1];
     U_idx_1 = (real32_T)Model_GS_Y.C_TORQUES[2];
@@ -1396,7 +1417,7 @@ static void Model_GS_output(void)
 
    case 3:
     /* NORMAL */
-    /* '<S10>:1:28' */
+    /* '<S10>:1:36' */
     U_idx = (real32_T)Model_GS_Y.C_TORQUES[0];
     U_idx_0 = (real32_T)Model_GS_Y.C_TORQUES[1];
     U_idx_1 = (real32_T)Model_GS_Y.C_TORQUES[2];
@@ -1404,24 +1425,25 @@ static void Model_GS_output(void)
 
    case 5:
     /* LANDING */
-    /* '<S10>:1:30' */
+    /* '<S10>:1:38' */
     U_idx = (real32_T)Model_GS_Y.C_TORQUES[0];
     U_idx_0 = (real32_T)Model_GS_Y.C_TORQUES[1];
     U_idx_1 = (real32_T)Model_GS_Y.C_TORQUES[2];
     break;
 
    default:
-    /* '<S10>:1:32' */
+    /* '<S10>:1:40' */
     U_idx = (real32_T)Model_GS_Y.C_TORQUES[0];
     U_idx_0 = (real32_T)Model_GS_Y.C_TORQUES[1];
     U_idx_1 = (real32_T)Model_GS_Y.C_TORQUES[2];
     break;
   }
 
-  /* '<S10>:1:35' */
+  /* '<S10>:1:43' */
   for (rtb_RESET_j = 0; rtb_RESET_j < 4; rtb_RESET_j++) {
-    T_0 = b[rtb_RESET_j + 12] * U_idx_1 + (b[rtb_RESET_j + 8] * U_idx_0 +
-      (b[rtb_RESET_j + 4] * U_idx + b[rtb_RESET_j] * rtb_T));
+    T_0 = (real32_T)A_0[rtb_RESET_j + 12] * U_idx_1 + ((real32_T)A_0[rtb_RESET_j
+      + 8] * U_idx_0 + ((real32_T)A_0[rtb_RESET_j + 4] * U_idx + (real32_T)
+                        A_0[rtb_RESET_j] * rtb_T));
     T[rtb_RESET_j] = T_0;
   }
 
@@ -1448,125 +1470,125 @@ static void Model_GS_output(void)
   /*  end */
   /* %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% */
   /*  Newton to grams */
-  /* '<S10>:1:63' */
-  /* '<S10>:1:64' */
+  /* '<S10>:1:71' */
+  /* '<S10>:1:72' */
   T_0 = 101.936798F * T[0];
   if (T_0 < 0.0F) {
-    /* '<S10>:1:65' */
-    /* '<S10>:1:66' */
+    /* '<S10>:1:73' */
+    /* '<S10>:1:74' */
     T_0 = 0.0F;
   } else {
     if (T_0 > 750.0F) {
-      /* '<S10>:1:67' */
-      /* '<S10>:1:68' */
+      /* '<S10>:1:75' */
+      /* '<S10>:1:76' */
       T_0 = 750.0F;
     }
   }
 
-  /* '<S10>:1:63' */
+  /* '<S10>:1:71' */
   T[0] = T_0;
 
-  /* '<S10>:1:63' */
-  /* '<S10>:1:64' */
+  /* '<S10>:1:71' */
+  /* '<S10>:1:72' */
   T_0 = 101.936798F * T[1];
   if (T_0 < 0.0F) {
-    /* '<S10>:1:65' */
-    /* '<S10>:1:66' */
+    /* '<S10>:1:73' */
+    /* '<S10>:1:74' */
     T_0 = 0.0F;
   } else {
     if (T_0 > 750.0F) {
-      /* '<S10>:1:67' */
-      /* '<S10>:1:68' */
+      /* '<S10>:1:75' */
+      /* '<S10>:1:76' */
       T_0 = 750.0F;
     }
   }
 
-  /* '<S10>:1:63' */
+  /* '<S10>:1:71' */
   T[1] = T_0;
 
-  /* '<S10>:1:63' */
-  /* '<S10>:1:64' */
+  /* '<S10>:1:71' */
+  /* '<S10>:1:72' */
   T_0 = 101.936798F * T[2];
   if (T_0 < 0.0F) {
-    /* '<S10>:1:65' */
-    /* '<S10>:1:66' */
+    /* '<S10>:1:73' */
+    /* '<S10>:1:74' */
     T_0 = 0.0F;
   } else {
     if (T_0 > 750.0F) {
-      /* '<S10>:1:67' */
-      /* '<S10>:1:68' */
+      /* '<S10>:1:75' */
+      /* '<S10>:1:76' */
       T_0 = 750.0F;
     }
   }
 
-  /* '<S10>:1:63' */
+  /* '<S10>:1:71' */
   T[2] = T_0;
 
-  /* '<S10>:1:63' */
-  /* '<S10>:1:64' */
+  /* '<S10>:1:71' */
+  /* '<S10>:1:72' */
   T_0 = 101.936798F * T[3];
   if (T_0 < 0.0F) {
-    /* '<S10>:1:65' */
-    /* '<S10>:1:66' */
+    /* '<S10>:1:73' */
+    /* '<S10>:1:74' */
     T_0 = 0.0F;
   } else {
     if (T_0 > 750.0F) {
-      /* '<S10>:1:67' */
-      /* '<S10>:1:68' */
+      /* '<S10>:1:75' */
+      /* '<S10>:1:76' */
       T_0 = 750.0F;
     }
   }
 
-  /* '<S10>:1:63' */
-  /* '<S10>:1:72' */
-  /* '<S10>:1:73' */
+  /* '<S10>:1:71' */
+  /* '<S10>:1:80' */
+  /* '<S10>:1:81' */
   /*      pwm(i) = (50000*((81*T(i))/25000 + 1/16)^(1/2))/81 - 12500/81; % 10in prop */
-  /* '<S10>:1:75' */
+  /* '<S10>:1:83' */
   /*  8in prop */
-  /* '<S10>:1:73' */
+  /* '<S10>:1:81' */
   q_offset_idx = (real32_T)pow(T[0] / 500.0F + 0.0625F, 0.5F) * 1000.0F - 250.0F;
 
-  /* '<S10>:1:73' */
+  /* '<S10>:1:81' */
   /*      pwm(i) = (50000*((81*T(i))/25000 + 1/16)^(1/2))/81 - 12500/81; % 10in prop */
-  /* '<S10>:1:75' */
+  /* '<S10>:1:83' */
   /*  8in prop */
-  /* '<S10>:1:73' */
+  /* '<S10>:1:81' */
   t = (real32_T)pow(T[1] / 500.0F + 0.0625F, 0.5F) * 1000.0F - 250.0F;
 
-  /* '<S10>:1:73' */
+  /* '<S10>:1:81' */
   /*      pwm(i) = (50000*((81*T(i))/25000 + 1/16)^(1/2))/81 - 12500/81; % 10in prop */
-  /* '<S10>:1:75' */
+  /* '<S10>:1:83' */
   /*  8in prop */
-  /* '<S10>:1:73' */
+  /* '<S10>:1:81' */
   q_offset_idx_0 = (real32_T)pow(T[2] / 500.0F + 0.0625F, 0.5F) * 1000.0F -
     250.0F;
 
-  /* '<S10>:1:73' */
+  /* '<S10>:1:81' */
   /*      pwm(i) = (50000*((81*T(i))/25000 + 1/16)^(1/2))/81 - 12500/81; % 10in prop */
-  /* '<S10>:1:75' */
+  /* '<S10>:1:83' */
   /*  8in prop */
-  /* '<S10>:1:73' */
+  /* '<S10>:1:81' */
   q_offset_idx_1 = (real32_T)pow(T_0 / 500.0F + 0.0625F, 0.5F) * 1000.0F -
     250.0F;
-  if (Model_GS_U.REF_BUTTONS == 2) {
-    /* '<S10>:1:83' */
-    /* '<S10>:1:84' */
-    /* '<S10>:1:85' */
+  if (Model_GS_U.REF_BUTTONS == 16) {
+    /* '<S10>:1:91' */
+    /* '<S10>:1:92' */
+    /* '<S10>:1:93' */
     q_offset_idx = 1000.0;
 
-    /* '<S10>:1:84' */
-    /* '<S10>:1:85' */
+    /* '<S10>:1:92' */
+    /* '<S10>:1:93' */
     t = 1000.0;
 
-    /* '<S10>:1:84' */
-    /* '<S10>:1:85' */
+    /* '<S10>:1:92' */
+    /* '<S10>:1:93' */
     q_offset_idx_0 = 1000.0;
 
-    /* '<S10>:1:84' */
-    /* '<S10>:1:85' */
+    /* '<S10>:1:92' */
+    /* '<S10>:1:93' */
     q_offset_idx_1 = 1000.0;
 
-    /* '<S10>:1:84' */
+    /* '<S10>:1:92' */
   }
 
   /* End of MATLAB Function: '<S7>/ALLOCATION' */
@@ -2177,7 +2199,7 @@ RT_MODEL_Model_GS *Model_GS(void)
   /* Initialize Sizes */
   Model_GS_M->Sizes.numContStates = (0);/* Number of continuous states */
   Model_GS_M->Sizes.numY = (39);       /* Number of model outputs */
-  Model_GS_M->Sizes.numU = (68);       /* Number of model inputs */
+  Model_GS_M->Sizes.numU = (69);       /* Number of model inputs */
   Model_GS_M->Sizes.sysDirFeedThru = (1);/* The model is direct feedthrough */
   Model_GS_M->Sizes.numSampTimes = (1);/* Number of sample times */
   Model_GS_M->Sizes.numBlocks = (84);  /* Number of blocks */

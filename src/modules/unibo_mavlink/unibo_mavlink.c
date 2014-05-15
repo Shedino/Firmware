@@ -47,6 +47,8 @@
 #include <uORB/topics/unibo_telemetry.h>
 #include <uORB/topics/sensor_combined.h>
 #include <uORB/topics/unibo_joystick.h>
+#include <uORB/topics/vehicle_local_position.h>
+
 #include <poll.h>
 ////
 #include <systemlib/systemlib.h>
@@ -333,6 +335,7 @@ int unibo_mavlink_thread_main(int argc, char *argv[])
 	int unibo_param_pub_fd;
 	int unibo_opti_pub_fd;
 	int unibo_joy_pub_fd;
+	int loc_pos_pub_fd;
 	/* default values for arguments */
 
 	// use (ttyS2) for UART5 in px4fum_v1
@@ -439,6 +442,11 @@ int unibo_mavlink_thread_main(int argc, char *argv[])
 	memset(&joy, 0, sizeof(joy));
 	unibo_joy_pub_fd = orb_advertise(ORB_ID(unibo_joystick), &joy);
 
+	struct vehicle_local_position_s loc_pos;
+	memset(&loc_pos, 0, sizeof(loc_pos));
+	loc_pos_pub_fd = orb_advertise(ORB_ID(vehicle_local_position), &loc_pos);
+
+
 	mavlink_unibo_references_t unibo_ref_mav;
 	mavlink_unibo_parameters_t unibo_par_mav;
 	mavlink_vicon_position_estimate_t unibo_opti_mav;
@@ -495,18 +503,24 @@ int unibo_mavlink_thread_main(int argc, char *argv[])
 								mavlink_msg_vicon_position_estimate_decode(&msg, &unibo_opti_mav);
 								//MAV2topic
 								if (!silent) warnx("Received Optitrack Packet: %.3f %.3f %.3f, %.3f %.3f %.3f", unibo_opti_mav.x, unibo_opti_mav.y, unibo_opti_mav.z, unibo_opti_mav.roll, unibo_opti_mav.pitch, unibo_opti_mav.yaw);
-								opti.pos_x=unibo_opti_mav.x;
-								opti.pos_y=unibo_opti_mav.y;
-								opti.pos_z=unibo_opti_mav.z;
+								opti.pos_x = unibo_opti_mav.x;
+								opti.pos_y = unibo_opti_mav.y;
+								opti.pos_z = unibo_opti_mav.z;
 								opti.q0 = 0;
 								opti.q1 = 0;
 								opti.q2 = 0;
 								opti.q3 = 0;
-								opti.err=0;
-								opti.timestamp=unibo_opti_mav.usec;
+								opti.err = 0;
+								opti.timestamp = unibo_opti_mav.usec;
 								opti.valid=1;
 								orb_publish(ORB_ID(unibo_optitrack), unibo_opti_pub_fd, &opti);
 								if (!silent) warnx("Pubblicato optitrack!");
+
+								loc_pos.x = unibo_opti_mav.x;          //Write to local position topic too
+								loc_pos.y = unibo_opti_mav.y;
+								loc_pos.z = unibo_opti_mav.z;
+								loc_pos.timestamp = unibo_opti_mav.usec;
+								orb_publish(ORB_ID(vehicle_local_position), loc_pos_pub_fd, &loc_pos);
 //								counter_opti++;
 //								if (counter_opti>=50){
 //									warnx("50 packets optitrack received");

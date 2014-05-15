@@ -30,6 +30,9 @@ struct unibo_telemetry_s
 	int wx;
 	int wy;
 	int wz;
+	int extra1;
+	int extra2;
+	int extra3;
 	uint16_t cinput1;
 	uint16_t cinput2;
 	uint16_t cinput3;

@@ -53,6 +53,7 @@
 #include <uORB/topics/unibo_parameters.h>
 #include <uORB/topics/unibo_optitrack.h>
 #include <uORB/topics/unibo_telemetry.h>
+#include <uORB/topics/vehicle_local_position.h>
 
 /* Deamon libraries? */
 #include <systemlib/systemlib.h>
@@ -61,6 +62,14 @@
 static bool uniboc_thread_should_exit = false;		/**< daemon exit flag */
 static bool uniboc_thread_running = false;		/**< daemon status flag */
 static int uniboc_unibo_control_task;				/**< Handle of daemon task / thread */
+
+#ifdef CONFIG_ARCH_BOARD_PX4FMU_V1
+#define	HW_ARCH "PX4FMU_V1"
+#endif
+
+#ifdef CONFIG_ARCH_BOARD_PX4FMU_V2
+#define	HW_ARCH "PX4FMU_V2"
+#endif
 
 
 //#include <mavlink\mavlink_bridge_header.h>
@@ -193,11 +202,13 @@ int unibo_control_thread_main(int argc, char *argv[])
 	/* subscribe to unibo_parameters topic */
 	int parameters_sub_fd = orb_subscribe(ORB_ID(unibo_parameters));
 
+	/* subscribe to local position topic */
+	int loc_pos_sub_fd = orb_subscribe(ORB_ID(vehicle_local_position));
+
 	/* advertize telemetry topic */
 	struct unibo_telemetry_s telem;
 	memset(&telem, 0, sizeof(telem));
 	int unibo_telem_pub_fd = orb_advertise(ORB_ID(unibo_telemetry), &telem);
-
 
 
 	/* advertise motor output topic */
@@ -226,6 +237,11 @@ int unibo_control_thread_main(int argc, char *argv[])
 
 	// inizializzazione middle-layer
 	struct vehicle_attitude_s ahrs;
+	struct vehicle_local_position_s loc_pos;
+	struct unibo_reference_s temp_ref;
+	struct unibo_optitrack_s temp_opti;
+	struct unibo_parameters_s temp_PAR;
+
 	cInputs_s cinputs;
 
 	//printf("STARTING...\n");
@@ -316,7 +332,6 @@ int unibo_control_thread_main(int argc, char *argv[])
 		/* wait for sensor update of 1 file descriptor for 1000 ms (1 second) */
 		//Imposto solo 10 ms
 		int poll_ret = poll(fds, 1, 10); //filedescr, number of file descriptor to wait for, timeout in ms
-		//TODO: INSERIRE QUI INIZIALIZZAZIONI PRE-LOOP AD OGNI LOOP
 
 		/* handle the poll result */
 		if (poll_ret == 0) {
@@ -412,7 +427,6 @@ int unibo_control_thread_main(int argc, char *argv[])
 				// gestione pacchetto REFERENCES ricevuto dal Topic unibo_reference
 				orb_check(reference_sub_fd, &updated);
 				if (updated){
-					struct unibo_reference_s temp_ref;
 					orb_copy(ORB_ID(unibo_reference),reference_sub_fd,&temp_ref);
 					Model_GS_U.REF_POS[0] = temp_ref.p_x;
 					Model_GS_U.REF_POS[1] = temp_ref.p_y;
@@ -442,33 +456,56 @@ int unibo_control_thread_main(int argc, char *argv[])
 					//warnx("Button: %d",temp_ref.button);
 					counter_ref_pack++;
 					if (counter_ref_pack>=200){
-						warnx("Ricevuti 200 pacchetti reference.");
+						//warnx("Ricevuti 200 pacchetti reference.");
 						counter_ref_pack=0;
-						warnx("Posx: %.3f - Posy: %.3f - Posz: %.3f - YawREF: %.3f", Model_GS_U.REF_POS[0], Model_GS_U.REF_POS[1], Model_GS_U.REF_POS[2], Model_GS_U.REF_YAW[0]);
+						//warnx("Posx: %.3f - Posy: %.3f - Posz: %.3f - YawREF: %.3f", Model_GS_U.REF_POS[0], Model_GS_U.REF_POS[1], Model_GS_U.REF_POS[2], Model_GS_U.REF_YAW[0]);
 					}
 				}
 
-				// gestione pacchetto OPTITRACK ricevuto dal Topic unibo_optitrack
-				orb_check(optitrack_sub_fd, &updated);
+//				// gestione pacchetto OPTITRACK ricevuto dal Topic unibo_optitrack
+//				orb_check(optitrack_sub_fd, &updated);
+//				if (updated){
+//					orb_copy(ORB_ID(unibo_optitrack),optitrack_sub_fd,&temp_opti);
+//					Model_GS_U.OPTITRACK[0] = 0;
+//					Model_GS_U.OPTITRACK[1] = 0;
+//					Model_GS_U.OPTITRACK[2] = temp_opti.pos_x;
+//					Model_GS_U.OPTITRACK[3] = temp_opti.pos_y;
+//					Model_GS_U.OPTITRACK[4] = temp_opti.pos_z;
+//					Model_GS_U.OPTITRACK[5] = temp_opti.q0;
+//					Model_GS_U.OPTITRACK[6] = temp_opti.q1;
+//					Model_GS_U.OPTITRACK[7] = temp_opti.q2;
+//					Model_GS_U.OPTITRACK[8] = temp_opti.q3;
+//					Model_GS_U.OPTITRACK[9] = temp_opti.err;
+//					Model_GS_U.OPTITRACK[10] = temp_opti.timestamp / 1000000.f;
+//					Model_GS_U.OPTITRACK[11] = 0;
+//					//warnx("Optitrack from topic: %d %d %d\n",temp_opti.pos_x,temp_opti.pos_y,temp_opti.pos_z);
+//					counter_opti_pack++;
+//					if (counter_opti_pack>=200){
+//						warnx("Ricevuti 200 pacchetti OPTITRACK.");
+//						counter_opti_pack=0;
+//					}
+//				}
+
+				// gestione pacchetto OPTITRACK ricevuto dal Topic vehicle_local_position (gli scrive unibo_mavlink)
+				orb_check(loc_pos_sub_fd, &updated);
 				if (updated){
-					struct unibo_optitrack_s temp_opti;
-					orb_copy(ORB_ID(unibo_optitrack),optitrack_sub_fd,&temp_opti);
+					orb_copy(ORB_ID(vehicle_local_position),loc_pos_sub_fd,&loc_pos);
 					Model_GS_U.OPTITRACK[0] = 0;
 					Model_GS_U.OPTITRACK[1] = 0;
-					Model_GS_U.OPTITRACK[2] = temp_opti.pos_x;
-					Model_GS_U.OPTITRACK[3] = temp_opti.pos_y;
-					Model_GS_U.OPTITRACK[4] = temp_opti.pos_z;
-					Model_GS_U.OPTITRACK[5] = temp_opti.q0;
-					Model_GS_U.OPTITRACK[6] = temp_opti.q1;
-					Model_GS_U.OPTITRACK[7] = temp_opti.q2;
-					Model_GS_U.OPTITRACK[8] = temp_opti.q3;
-					Model_GS_U.OPTITRACK[9] = temp_opti.err;
-					Model_GS_U.OPTITRACK[10] = temp_opti.timestamp / 1000000.f;
+					Model_GS_U.OPTITRACK[2] = loc_pos.x;
+					Model_GS_U.OPTITRACK[3] = loc_pos.y;
+					Model_GS_U.OPTITRACK[4] = loc_pos.z;
+					Model_GS_U.OPTITRACK[5] = 0;
+					Model_GS_U.OPTITRACK[6] = 0;
+					Model_GS_U.OPTITRACK[7] = 0;
+					Model_GS_U.OPTITRACK[8] = 0;
+					Model_GS_U.OPTITRACK[9] = 0;
+					Model_GS_U.OPTITRACK[10] = loc_pos.timestamp / 1000000.f;
 					Model_GS_U.OPTITRACK[11] = 0;
 					//warnx("Optitrack from topic: %d %d %d\n",temp_opti.pos_x,temp_opti.pos_y,temp_opti.pos_z);
 					counter_opti_pack++;
 					if (counter_opti_pack>=200){
-						warnx("Ricevuti 200 pacchetti OPTITRACK.");
+						//warnx("Ricevuti 200 pacchetti OPTITRACK.");
 						counter_opti_pack=0;
 					}
 				}
@@ -476,7 +513,6 @@ int unibo_control_thread_main(int argc, char *argv[])
 				//gestione pacchetto parameters ricevuto dal Topic unibo_optitrack
 				orb_check(parameters_sub_fd, &updated);
 				if (updated){
-					struct unibo_parameters_s temp_PAR;
 					orb_copy(ORB_ID(unibo_parameters),parameters_sub_fd,&temp_PAR);
 					Model_GS_U.PARAMETERS[0] = 0;
 					Model_GS_U.PARAMETERS[1] = 0;
@@ -507,15 +543,24 @@ int unibo_control_thread_main(int argc, char *argv[])
 					Model_GS_U.PARAMETERS[26] = 0;
 					Model_GS_U.PARAMETERS[27] = 0;
 					Model_GS_U.YAWOFFSET = temp_PAR.in24;
+
+
+					Model_GS_U.CW_CCW = 1;
+//					if (HW_ARCH=='PX4FMU_V1'){
+//						Model_GS_U.CW_CCW = 1;              // TODO maybe put this in another position and use check on vehicle type
+//					}
+//					else if (HW_ARCH=='PX4FMU_V2'){
+//						Model_GS_U.CW_CCW = 0;
+//					}
 					//warnx("Parameters from topic: %d %d %d\n",temp_PAR.in1,temp_PAR.in2,temp_PAR.in3);
 
 					counter_pars_pack++;
 					if (counter_pars_pack>=10){
-						warnx("\nRicevuti 10 pacchetti PARAMETERS.");
-						warnx("Parameters from topic: %.3f %.3f %.3f %.3f %.3f %.3f %.3f %.3f %.3f %.3f",temp_PAR.in1,temp_PAR.in2,temp_PAR.in3,temp_PAR.in4,temp_PAR.in5,temp_PAR.in6,temp_PAR.in7,temp_PAR.in8,temp_PAR.in9,temp_PAR.in10);
-						warnx("  --> %.3f %.3f %.3f %.3f %.3f %.3f %.3f %.3f %.3f %.3f",temp_PAR.in11,temp_PAR.in12,temp_PAR.in13,temp_PAR.in14,temp_PAR.in15,temp_PAR.in16,temp_PAR.in17,temp_PAR.in18,temp_PAR.in19,temp_PAR.in20);
-						warnx("  --> %.3f %.3f %.3f %.3f",temp_PAR.in21,temp_PAR.in22,temp_PAR.in23,temp_PAR.in24);
-						warnx("\n");
+//						warnx("\nRicevuti 10 pacchetti PARAMETERS.");
+//						warnx("Parameters from topic: %.3f %.3f %.3f %.3f %.3f %.3f %.3f %.3f %.3f %.3f",temp_PAR.in1,temp_PAR.in2,temp_PAR.in3,temp_PAR.in4,temp_PAR.in5,temp_PAR.in6,temp_PAR.in7,temp_PAR.in8,temp_PAR.in9,temp_PAR.in10);
+//						warnx("  --> %.3f %.3f %.3f %.3f %.3f %.3f %.3f %.3f %.3f %.3f",temp_PAR.in11,temp_PAR.in12,temp_PAR.in13,temp_PAR.in14,temp_PAR.in15,temp_PAR.in16,temp_PAR.in17,temp_PAR.in18,temp_PAR.in19,temp_PAR.in20);
+//						warnx("  --> %.3f %.3f %.3f %.3f",temp_PAR.in21,temp_PAR.in22,temp_PAR.in23,temp_PAR.in24);
+//						warnx("\n");
 						counter_pars_pack=0;
 					}
 				}
@@ -540,7 +585,7 @@ int unibo_control_thread_main(int argc, char *argv[])
 
 
 				//TELEMETRIA UART
-				if (telemetry_counter >= 8){                     //25Hz if running at 200 Hz
+				if (telemetry_counter >= 5){                     //40Hz if running at 200 Hz
 					telemetry_counter=0;
 					telem.x = Model_GS_Y.STATE[0];
 					telem.y = Model_GS_Y.STATE[1];
@@ -554,6 +599,9 @@ int unibo_control_thread_main(int argc, char *argv[])
 					telem.wx = Model_GS_Y.C_QC[2]*10000;
 					telem.wy = Model_GS_Y.C_QC[3]*10000;
 					telem.wz = (int)Model_GS_Y.C_H;
+					telem.extra1 = Model_GS_Y.STATE[9];
+					telem.extra2 = Model_GS_Y.STATE[10];
+					telem.extra3 = Model_GS_Y.STATE[11];
 //					telem.dx = Model_GS_Y.STATE[3];           //ORIGINAL
 //					telem.dy = Model_GS_Y.STATE[4];
 //					telem.dz = Model_GS_Y.STATE[5];
@@ -563,6 +611,9 @@ int unibo_control_thread_main(int argc, char *argv[])
 //					telem.wx = Model_GS_Y.STATE[9];
 //					telem.wy = Model_GS_Y.STATE[10];
 //					telem.wz = Model_GS_Y.STATE[11];
+//					telem.extra1 = 0;
+//					telem.extra2 = 0;
+//					telem.extra3 = 0;
 					telem.cinput1 = cinputs.u[0];
 					telem.cinput2 = cinputs.u[1];
 					telem.cinput3 = cinputs.u[2];

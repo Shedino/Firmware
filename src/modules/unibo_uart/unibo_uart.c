@@ -239,8 +239,8 @@ bool serial_write(int fd, struct unibo_telemetry_s telem)
 {
 	//warnx("Entrato in write");
 	char string[LENGTH];
-	sprintf(string,"S %d %d %d %d %d %d %d %d %d %d %d %d %u %u %u %u E",telem.x,telem.y,telem.z,telem.dx,telem.dy,telem.dz
-			,telem.phi,telem.theta,telem.psi,telem.wx,telem.wy,telem.wz,telem.cinput1,telem.cinput2,telem.cinput3,telem.cinput4);
+	sprintf(string,"S %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %u %u %u %u E",telem.x,telem.y,telem.z,telem.dx,telem.dy,telem.dz
+			,telem.phi,telem.theta,telem.psi,telem.wx,telem.wy,telem.wz,telem.extra1, telem.extra2, telem.extra3, telem.cinput1,telem.cinput2,telem.cinput3,telem.cinput4);
 	//warnx("String to print: %s\n",string);
 	int strlgt=1;
 	while (string[strlgt-1]!='E' && strlgt<LENGTH){
