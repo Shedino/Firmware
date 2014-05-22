@@ -87,10 +87,9 @@ int unibo_trajectory_ref_thread_main(int argc, char *argv[]);
  * |-----------------------------------------------------|
  */
 
-
+#include "traj_includes.h"
 
 RT_MODEL_TRAJECTORY_GENERATOR_A* model;
-
 
 
 /**
@@ -167,7 +166,6 @@ int unibo_trajectory_ref_thread_main(int argc, char *argv[])
 
 	thread_running = true;
 
-
 	model = TRAJECTORY_GENERATOR_APP(); //Init model!
 
 	/* subscribe to attitude topic */
@@ -215,6 +213,7 @@ int unibo_trajectory_ref_thread_main(int argc, char *argv[])
 	struct unibo_parameters_s param;
 
 	static uint64_t time_pre = 0;
+	static uint64_t nowT = 0;
 	float deltaT;
 
 
@@ -239,9 +238,10 @@ int unibo_trajectory_ref_thread_main(int argc, char *argv[])
 	while (!thread_should_exit) {
 		//TECNICAMENTE SIAMO GIA' A 50HZ, freq del topic di joystick (default 50HZ)
 
-		deltaT = (hrt_absolute_time()-time_pre)/1000.0f;
+		nowT = hrt_absolute_time();
+		deltaT = (nowT-time_pre)/1000.0f;
 		if (deltaT>=20){              //50 Hz
-			time_pre = hrt_absolute_time();
+			time_pre = nowT;
 			//warnx("Trajectory APP: deltaT = %.2f",deltaT);    //milliseconds deltaT, should be 20
 
 			/* copy raw JOYSTICK data into local buffer */

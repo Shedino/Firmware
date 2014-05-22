@@ -7,8 +7,8 @@
  *  Version 0.2: 24/04/2013
  *  	Author: Paolo Di Febbo
  */
-#ifndef TRAJECTORY_GENERATOR_APP_H
-#define TRAJECTORY_GENERATOR_APP_H
+#ifndef LL_TRAJ_H
+#define LL_TRAJ_H
 #include "../LowLevelGenerated/TRAJECTORY_GENERATOR_APP.h"
 #endif
 

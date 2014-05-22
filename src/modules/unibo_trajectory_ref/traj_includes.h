@@ -11,7 +11,7 @@
 #define NUMST 4
 #define NCSTATES 0
 
-/////#define SAMPLE_TIME 0.002
+/////#define SAMPLE_TIME 0.02
 #define NS_MS 1000000
 //#define RST_TCOUNT 1000
 //#define RTAI
@@ -41,21 +41,20 @@
 
 /* Packets includes */
 
-#ifndef EXTERNALFUNCTION_H
-#define EXTERNALFUNCTION_H
-#include "./ECF_codgen/ExternalFunction.h"
+#ifndef TRAJ_EXTERNALFUNCTION_H
+#define TRAJ_EXTERNALFUNCTION_H
+#include "./LowLevelGenerated/ExternalFunction.h"
 #endif
-#ifndef ahrs_EKF_H
-#define ahrs_EKF_H
-#include "./ECF_codgen/ECF_stand_q.h"
+#ifndef TRAJ_APP_H
+#define TRAJ_APP_H
+#include "./LowLevelGenerated/TRAJECTORY_GENERATOR_APP.h"
 #endif
 
 //INFRASTRUCTURE
-#ifndef LOW_LEVEL_FREE_FLIGHT_CONTROL_H
-#define LOW_LEVEL_FREE_FLIGHT_CONTROL_H
-#include <Low_Level_Free_Flight_Control.h>
+#ifndef LOW_LEVEL_TRAJECTORY_H
+#define LOW_LEVEL_TRAJECTORY_H
+#include <Low_Level_Trajectory.h>
 #endif
-
 
 //DEFINITIONS
 #define max(a,b) ((a) > (b) ? (a) : (b))

@@ -11,8 +11,9 @@
 #define NUMST 4
 #define NCSTATES 0
 
-#define SAMPLE_TIME 0.005
+/////#define SAMPLE_TIME 0.005
 #define NS_MS 1000000
+
 #define RST_TCOUNT 1000
 //#define RTAI
 //#define GSEXT
