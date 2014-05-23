@@ -177,6 +177,7 @@ int unibo_trajectory_ref_thread_main(int argc, char *argv[])
 
 	/* subscribe to position topic */
 	int unibo_optitrack_fd = orb_subscribe(ORB_ID(unibo_optitrack));
+	int local_position_fd = orb_subscribe(ORB_ID(vehicle_local_position));
 
 	/* subscribe to parameters topic */
 	int unibo_parameters_fd = orb_subscribe(ORB_ID(unibo_parameters));
@@ -209,7 +210,7 @@ int unibo_trajectory_ref_thread_main(int argc, char *argv[])
 	// inizializzazione middle-layer
 	struct vehicle_attitude_s ahrs;
 	struct unibo_joystick_s joystick;
-	struct unibo_optitrack_s position;                       //TODO change to local position
+	struct vehicle_local_position_s position;
 	struct unibo_parameters_s param;
 
 	static uint64_t time_pre = 0;
@@ -271,12 +272,12 @@ int unibo_trajectory_ref_thread_main(int argc, char *argv[])
 			}
 
 			/* copy position data into local buffer */                 //TODO change to local position for compatibility
-			orb_check(unibo_optitrack_fd, &updated);
+			orb_check(local_position_fd, &updated);
 			if (updated){
-				orb_copy(ORB_ID(unibo_optitrack), unibo_optitrack_fd, &position);
-				TRAJECTORY_GENERATOR_APP_U.Position [0] = position.pos_x;
-				TRAJECTORY_GENERATOR_APP_U.Position [1] = position.pos_y;
-				TRAJECTORY_GENERATOR_APP_U.Position [2] = position.pos_z;
+				orb_copy(ORB_ID(vehicle_local_position), local_position_fd, &position);
+				TRAJECTORY_GENERATOR_APP_U.Position [0] = position.x;
+				TRAJECTORY_GENERATOR_APP_U.Position [1] = position.y;
+				TRAJECTORY_GENERATOR_APP_U.Position [2] = position.z;
 			}
 
 			TRAJECTORY_GENERATOR_APP_U.BODY_INERT = true;      //position references in body frame (take into account actual yaw)
@@ -302,23 +303,23 @@ int unibo_trajectory_ref_thread_main(int argc, char *argv[])
 			reference.p_y = TRAJECTORY_GENERATOR_APP_Y.REF_POS[1];
 			reference.p_z = TRAJECTORY_GENERATOR_APP_Y.REF_POS[2];
 			reference.dp_x = TRAJECTORY_GENERATOR_APP_Y.REF_POS[3];      //Velocity
-			reference.dp_x = TRAJECTORY_GENERATOR_APP_Y.REF_POS[4];
-			reference.dp_x = TRAJECTORY_GENERATOR_APP_Y.REF_POS[5];
+			reference.dp_y = TRAJECTORY_GENERATOR_APP_Y.REF_POS[4];
+			reference.dp_z = TRAJECTORY_GENERATOR_APP_Y.REF_POS[5];
 			reference.ddp_x = TRAJECTORY_GENERATOR_APP_Y.REF_POS[6];     //Acceleration
 			reference.ddp_y = TRAJECTORY_GENERATOR_APP_Y.REF_POS[7];
 			reference.ddp_z = TRAJECTORY_GENERATOR_APP_Y.REF_POS[8];
-			reference.d3p_x = 0;     //Jerk
-			reference.d3p_y = 0;
-			reference.d3p_z = 0;
-			reference.d4p_x = 0;    //Snap
-			reference.d4p_y = 0;
-			reference.d4p_z = 0;
-	//		reference.d3p_x = TRAJECTORY_GENERATOR_APP_Y.REF_POS[9];     //Jerk
-	//		reference.d3p_y = TRAJECTORY_GENERATOR_APP_Y.REF_POS[10];
-	//		reference.d3p_z = TRAJECTORY_GENERATOR_APP_Y.REF_POS[11];
-	//		reference.d4p_x = TRAJECTORY_GENERATOR_APP_Y.REF_POS[12];    //Snap
-	//		reference.d4p_y = TRAJECTORY_GENERATOR_APP_Y.REF_POS[13];
-	//		reference.d4p_z = TRAJECTORY_GENERATOR_APP_Y.REF_POS[14];
+//			reference.d3p_x = 0;     //Jerk
+//			reference.d3p_y = 0;
+//			reference.d3p_z = 0;
+//			reference.d4p_x = 0;    //Snap
+//			reference.d4p_y = 0;
+//			reference.d4p_z = 0;
+			reference.d3p_x = TRAJECTORY_GENERATOR_APP_Y.REF_POS[9];     //Jerk
+			reference.d3p_y = TRAJECTORY_GENERATOR_APP_Y.REF_POS[10];
+			reference.d3p_z = TRAJECTORY_GENERATOR_APP_Y.REF_POS[11];
+			reference.d4p_x = TRAJECTORY_GENERATOR_APP_Y.REF_POS[12];    //Snap
+			reference.d4p_y = TRAJECTORY_GENERATOR_APP_Y.REF_POS[13];
+			reference.d4p_z = TRAJECTORY_GENERATOR_APP_Y.REF_POS[14];
 
 			reference.psi = TRAJECTORY_GENERATOR_APP_Y.REF_YAW[0];       //Yaw
 			reference.d_psi = TRAJECTORY_GENERATOR_APP_Y.REF_YAW[1];
@@ -329,6 +330,7 @@ int unibo_trajectory_ref_thread_main(int argc, char *argv[])
 			reference.timestamp = TRAJECTORY_GENERATOR_APP_Y.REF_TSTAMP; //Tstamp
 			/*End Filling Reference        */
 
+			//warnx("Posx: %.2f - Velx: %.2f - Accx: %.2f - Jerk: %.2f - Snap: %.2f", reference.p_x, reference.dp_x, reference.ddp_x, TRAJECTORY_GENERATOR_APP_Y.REF_POS[9],TRAJECTORY_GENERATOR_APP_Y.REF_POS[12]);
 			//publishing references
 			orb_publish(ORB_ID(unibo_reference), reference_pub_fd, &reference);
 			//warnx("Actual yaw: %.3f - YawREF: %.3f - DYawREF: %.3f - D2YawREF: %.3f", TRAJECTORY_GENERATOR_APP_U.PSI, reference.psi, reference.d_psi, reference.dd_psi);

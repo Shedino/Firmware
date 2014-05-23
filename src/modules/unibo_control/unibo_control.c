@@ -452,11 +452,12 @@ int unibo_control_thread_main(int argc, char *argv[])
 
 					Model_GS_U.TIME_STAMP = temp_ref.timestamp;
 					//warnx("Actual yaw: %.3f - YawREF: %.3f - DYawREF: %.3f - D2YawREF: %.3f", ahrs.yaw, Model_GS_U.REF_YAW[0], Model_GS_U.REF_YAW[1], Model_GS_U.REF_YAW[2]);
-					//warnx("Posx: %.3f - Posy: %.3f - Posz: %.3f - YawREF: %.3f", Model_GS_U.REF_POS[0], Model_GS_U.REF_POS[1], Model_GS_U.REF_POS[2], Model_GS_U.REF_YAW[0]);
+					//warnx("Posx: %.3f - Velx: %.3f - Accx: %.3f", Model_GS_U.REF_POS[0], Model_GS_U.REF_POS[3], Model_GS_U.REF_POS[6]);
 					//warnx("Button: %d",temp_ref.button);
 					counter_ref_pack++;
-					if (counter_ref_pack>=200){
-						//warnx("Ricevuti 200 pacchetti reference.");
+					if (counter_ref_pack>=5){
+						//warnx("Ricevuti 5 pacchetti reference.");
+						//warnx("Posx: %.3f - Velx: %.3f - Accx: %.3f", Model_GS_U.REF_POS[0], Model_GS_U.REF_POS[3], Model_GS_U.REF_POS[6]);
 						counter_ref_pack=0;
 						//warnx("Posx: %.3f - Posy: %.3f - Posz: %.3f - YawREF: %.3f", Model_GS_U.REF_POS[0], Model_GS_U.REF_POS[1], Model_GS_U.REF_POS[2], Model_GS_U.REF_YAW[0]);
 					}
@@ -505,7 +506,7 @@ int unibo_control_thread_main(int argc, char *argv[])
 					//warnx("Optitrack from topic: %d %d %d\n",temp_opti.pos_x,temp_opti.pos_y,temp_opti.pos_z);
 					counter_opti_pack++;
 					if (counter_opti_pack>=200){
-						//warnx("Ricevuti 200 pacchetti OPTITRACK.");
+						warnx("Ricevuti 200 pacchetti OPTITRACK.");
 						counter_opti_pack=0;
 					}
 				}
@@ -545,7 +546,7 @@ int unibo_control_thread_main(int argc, char *argv[])
 					Model_GS_U.YAWOFFSET = temp_PAR.in24;
 
 
-					Model_GS_U.CW_CCW = 1;
+					Model_GS_U.CW_CCW = 1;           //1 for our quad, 0 for IRIS with inverted propeller rotation
 //					if (HW_ARCH=='PX4FMU_V1'){
 //						Model_GS_U.CW_CCW = 1;              // TODO maybe put this in another position and use check on vehicle type
 //					}
