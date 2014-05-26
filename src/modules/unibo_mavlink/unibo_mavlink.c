@@ -78,6 +78,14 @@
 //#include <sys/time.h>
 //#include <time.h>
 ////
+#ifdef CONFIG_ARCH_BOARD_PX4FMU_V1
+#define	HW_ARCH "PX4FMU_V1"
+#endif
+
+#ifdef CONFIG_ARCH_BOARD_PX4FMU_V2
+#define	HW_ARCH "PX4FMU_V2"
+#endif
+
 #define MAV_MODE_UNINIT 0
 
 
@@ -147,6 +155,8 @@ bool setup_port(int fd, int baud, int data_bits, int stop_bits, bool parity, boo
 			break;
 		}
 
+if (HW_ARCH == "PX4FMU_V1"){
+
 		//
 		// Input flags - Turn off input processing
 		// convert break to null byte, no CR to NL translation,
@@ -200,6 +210,35 @@ bool setup_port(int fd, int baud, int data_bits, int stop_bits, bool parity, boo
 
 		// Get the current options for the port
 		//tcgetattr(fd, &options);
+
+}
+if (HW_ARCH == "PX4FMU_V2"){
+
+		config.c_iflag &= ~(IGNBRK | BRKINT | ICRNL |
+		                    INLCR | PARMRK | INPCK | ISTRIP | IXON);
+
+
+		config.c_oflag &= ~(OCRNL | ONLCR | ONLRET |
+		                     ONOCR | OFILL | OPOST);
+
+		#ifdef OLCUC
+	  		config.c_oflag &= ~OLCUC;
+		#endif
+
+	  	#ifdef ONOEOT
+	  		config.c_oflag &= ~ONOEOT;
+	  	#endif
+
+		config.c_lflag &= ~(ECHO | ECHONL | ICANON | IEXTEN | ISIG);
+
+
+		config.c_cflag &= ~(CSIZE | PARENB);
+		config.c_cflag |= CS8;
+
+
+		config.c_cc[VMIN]  = 1;
+		config.c_cc[VTIME] = 10; // was 0
+}
 
 
 		//Set Baud rate
@@ -336,10 +375,17 @@ int unibo_mavlink_thread_main(int argc, char *argv[])
 	int unibo_opti_pub_fd;
 	int unibo_joy_pub_fd;
 	int loc_pos_pub_fd;
+	char *uart_name;
 	/* default values for arguments */
 
-	// use (ttyS2) for UART5 in px4fum_v1
-	char *uart_name = (char*)"/dev/ttyS2";      //(ttyS2)--> UART5, px4fum_v1
+	// use (ttyS2) for UART5 in px4fum_v1 and use (ttyS6) for UART 4
+	if (HW_ARCH=='PX4FMU_V1'){
+		uart_name = (char*)"/dev/ttyS2";      //(ttyS2)--> UART5, px4fum_v1
+	}
+	else if (HW_ARCH=='PX4FMU_V2'){
+		uart_name = (char*)"/dev/ttyS6";      //(ttyS6)--> UART4, px4fum_v2
+	}
+
 	int baudrate = 115200;
 	const char *commandline_usage = "\tusage: %s -d <devicename> -b <baudrate> [-v/--verbose] [--debug]\n\t\tdefault: -d %s -b %i\n";
 

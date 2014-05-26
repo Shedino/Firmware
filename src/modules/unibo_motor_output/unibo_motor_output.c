@@ -43,9 +43,19 @@
 
 #include <drivers/drv_pwm_output.h>
 
+#if !defined(ATECH) && !defined(IRIS)
+	#error "You must define ATECH or IRIS macros"
+#endif
+
 // numero di motori effettivamente collegati
-#define MOTORS_START 4
-#define MOTORS_NUMBER 8
+#ifdef ATECH
+	#define MOTORS_START 4
+	#define MOTORS_NUMBER 8
+#endif
+#ifdef IRIS
+	#define MOTORS_START 0
+	#define MOTORS_NUMBER 4
+#endif
 
 /* Deamon libraries? */
 #include <systemlib/systemlib.h>
@@ -221,6 +231,7 @@ int unibo_motor_output_main(int argc, char *argv[])
 // thread principale con loop
 int unibo_motor_output_thread_main(int argc, char *argv[])
 {
+	int count=0;
 	warnx("[unibo_motor_output] starting\n");
 	unibomo_thread_running = true;
 
@@ -233,6 +244,7 @@ int unibo_motor_output_thread_main(int argc, char *argv[])
 	unibo_motor_output_init();
 
 	int i;
+	int motor_mapping; // mapping dei motori differente fra l'IRIS e il quadrotor UNIBO
 	struct motor_output_s pwm_values;
 
 	// PWM to 0 initially
@@ -255,9 +267,29 @@ int unibo_motor_output_thread_main(int argc, char *argv[])
 				orb_copy(ORB_ID(motor_output), motor_output_fd, &pwm_values);
 
 				// scrittura su pin output
+				count++;
 				for(i = MOTORS_START; i < MOTORS_NUMBER; i++)
 				{
-					ioctl(pwm_fd, PWM_SERVO_SET(i), pwm_values.outputs[i]);
+#ifdef ATECH
+					motor_mapping = i;
+#endif
+#ifdef IRIS
+					switch (i){
+						case 0:
+							motor_mapping = 2;
+							break;
+						case 1:
+							motor_mapping = 0;
+							break;
+						case 2:
+							motor_mapping = 3;
+							break;
+						case 3:
+							motor_mapping = 1;
+							break;
+					}
+#endif
+					ioctl(pwm_fd, PWM_SERVO_SET(motor_mapping), pwm_values.outputs[i]);
 				}
 			}
 		}

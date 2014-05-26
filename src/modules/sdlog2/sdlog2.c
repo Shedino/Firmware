@@ -897,16 +897,17 @@ int sdlog2_thread_main(int argc, char *argv[])
 	bool dist_bottom_present = false;
 
 	/* enable logging on start if needed */
-	if (log_on_start) {
-		/* check GPS topic to get GPS time */
-		if (log_name_timestamp) {
-			if (copy_if_updated(ORB_ID(vehicle_gps_position), subs.gps_pos_sub, &buf_gps_pos)) {
-				gps_time = buf_gps_pos.time_gps_usec;
-			}
-		}
-
+	//////COMMENTATA RICERCA GPS X TEMPO ASSOLUTO X FAR PARTIRE I LOG
+//	if (log_on_start) {
+//		/* check GPS topic to get GPS time */
+//		if (log_name_timestamp) {
+//			if (copy_if_updated(ORB_ID(vehicle_gps_position), subs.gps_pos_sub, &buf_gps_pos)) {
+//				gps_time = buf_gps_pos.time_gps_usec;
+//			}
+//		}
+		warnx("sono arrivato prima di start_log");
 		sdlog2_start_log();
-	}
+//	}
 
 	while (!main_thread_should_exit) {
 		usleep(sleep_delay);

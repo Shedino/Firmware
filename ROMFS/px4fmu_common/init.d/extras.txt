@@ -1,0 +1,68 @@
+attitude_estimator_ekf stop
+		
+pwm rate -c1234 -r400
+		
+
+#pwm rate -g1 -r400
+		
+#pwm rate -r400
+		
+
+pwm min -c1234 -p1001
+		
+
+pwm max -c1234 -p2000
+		
+
+pwm disarmed -c1234 -p1000
+		#print pwm informations
+pwm info
+
+#Disable mavlink
+		
+#
+# Start the attitude estimator
+#
+
+attitude_estimator_so3 start
+
+
+		#
+# Start uart communication
+#
+
+unibo_mavlink start
+		
+#unibo_uart start -d /dev/ttyS1 -b 57600
+
+#
+# Start trajectory APP
+#
+		
+unibo_trajectory_ref start
+		
+
+#
+# Start control
+#
+		
+unibo_control start
+
+
+		#
+# Start motor output
+#
+		
+unibo_motor_output start
+		
+
+#
+# Start logging
+#
+
+sdlog2 start -r 50
+
+#start optical_flow module
+mavlink start -d /dev/ttyS2 -b 115200 -m custom
+mavlink stream -d /dev/ttyS1 -s OPTICAL_FLOW -r 2
+

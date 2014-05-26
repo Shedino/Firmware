@@ -71,6 +71,10 @@ static int uniboc_unibo_control_task;				/**< Handle of daemon task / thread */
 #define	HW_ARCH "PX4FMU_V2"
 #endif
 
+#if !defined(ATECH) && !defined(IRIS)
+	#error "You must define ATECH or IRIS macros"
+#endif
+
 
 //#include <mavlink\mavlink_bridge_header.h>
 //#include <mavlink_onboard\mavlink_bridge_header.h>
@@ -210,6 +214,10 @@ int unibo_control_thread_main(int argc, char *argv[])
 	memset(&telem, 0, sizeof(telem));
 	int unibo_telem_pub_fd = orb_advertise(ORB_ID(unibo_telemetry), &telem);
 
+	/* advertize local position topic */
+	struct vehicle_local_position_s local_pos;
+	memset(&local_pos, 0, sizeof(local_pos));
+	int local_pos_pub_fd = orb_advertise(ORB_ID(vehicle_local_position), &local_pos);
 
 	/* advertise motor output topic */
 	struct motor_output_s mout;
@@ -261,12 +269,6 @@ int unibo_control_thread_main(int argc, char *argv[])
 	static int print_counter2 = 0;
 	static int log_counter = 0;
 	//len = sizeof(struct sockaddr_in);
-	static int writtenChars = 0;
-	static unsigned long tAtom = 0;
-	static unsigned long tTime = 0;
-	static unsigned long tTimeOld = 0;
-	static unsigned long tTimeDiff = 0;
-	static int count_missed = 0;
 
 	// variabili input serial PX4
 	//mavlink_status_t px4_lastStatus;
@@ -291,17 +293,10 @@ int unibo_control_thread_main(int argc, char *argv[])
 
 	static long AckDiff[ACKDLEN];
 	memset(AckDiff,0,sizeof(AckDiff));
-	static long AckDiffMin = 1000000000L;
-	static long AckDiffMax = 0;
-	// int ackbcount = 0; TODO usata da ACK
-
-	static unsigned long loopMaxTime = 0;
 	static int resetTimeCounter = 0;
 
 	static long imuTime[ACKDLEN];
 	memset(imuTime,0,sizeof(imuTime));
-	static long imuTimeMin = 1000000000L;
-	static long imuTimeMax = 0;
 
 	int telemetry_counter=0;
 
@@ -382,16 +377,6 @@ int unibo_control_thread_main(int argc, char *argv[])
 				 */
 
 				print_counter++;
-				// XXX copiate
-				if (resetTimeCounter > RST_TCOUNT){
-					AckDiffMin = 1000000000L;
-					AckDiffMax = 0;
-					loopMaxTime = 0;
-					imuTimeMin = 1000000000L;
-					imuTimeMax = 0;
-
-					resetTimeCounter = 0;
-				}
 
 //				tTime = getMyTime();
 //				tAtom = tTime/1000 % 30000;
@@ -455,13 +440,14 @@ int unibo_control_thread_main(int argc, char *argv[])
 					//warnx("Posx: %.3f - Velx: %.3f - Accx: %.3f", Model_GS_U.REF_POS[0], Model_GS_U.REF_POS[3], Model_GS_U.REF_POS[6]);
 					//warnx("Button: %d",temp_ref.button);
 					counter_ref_pack++;
-					if (counter_ref_pack>=5){
-						//warnx("Ricevuti 5 pacchetti reference.");
+					if (counter_ref_pack>=50){
+						//warnx("Ricevuti 50 pacchetti reference.");
 						//warnx("Posx: %.3f - Velx: %.3f - Accx: %.3f", Model_GS_U.REF_POS[0], Model_GS_U.REF_POS[3], Model_GS_U.REF_POS[6]);
 						counter_ref_pack=0;
 						//warnx("Posx: %.3f - Posy: %.3f - Posz: %.3f - YawREF: %.3f", Model_GS_U.REF_POS[0], Model_GS_U.REF_POS[1], Model_GS_U.REF_POS[2], Model_GS_U.REF_YAW[0]);
 					}
 				}
+
 
 //				// gestione pacchetto OPTITRACK ricevuto dal Topic unibo_optitrack
 //				orb_check(optitrack_sub_fd, &updated);
@@ -545,14 +531,12 @@ int unibo_control_thread_main(int argc, char *argv[])
 					Model_GS_U.PARAMETERS[27] = 0;
 					Model_GS_U.YAWOFFSET = temp_PAR.in24;
 
-
+#ifdef ATECH
 					Model_GS_U.CW_CCW = 1;           //1 for our quad, 0 for IRIS with inverted propeller rotation
-//					if (HW_ARCH=='PX4FMU_V1'){
-//						Model_GS_U.CW_CCW = 1;              // TODO maybe put this in another position and use check on vehicle type
-//					}
-//					else if (HW_ARCH=='PX4FMU_V2'){
-//						Model_GS_U.CW_CCW = 0;
-//					}
+#endif
+#ifdef IRIS
+					Model_GS_U.CW_CCW = 0;           //1 for our quad, 0 for IRIS with inverted propeller rotation
+#endif
 					//warnx("Parameters from topic: %d %d %d\n",temp_PAR.in1,temp_PAR.in2,temp_PAR.in3);
 
 					counter_pars_pack++;
@@ -628,6 +612,11 @@ int unibo_control_thread_main(int argc, char *argv[])
 					//warnx("Attitude quaternion: %.4f %.4f %.4f %.4f", ahrs.q[0],ahrs.q[1],ahrs.q[2],ahrs.q[3]);
 					orb_publish(ORB_ID(unibo_telemetry), unibo_telem_pub_fd, &telem);
 					//warnx("Publishing telemetry topic.\n");
+					local_pos.vx = Model_GS_Y.STATE[3];
+					local_pos.vy = Model_GS_Y.STATE[4];
+					local_pos.vz = Model_GS_Y.STATE[5];
+					orb_publish(ORB_ID(vehicle_local_position), local_pos_pub_fd, &local_pos);
+
 				}
 
 
