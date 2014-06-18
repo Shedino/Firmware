@@ -34,6 +34,7 @@
 #
 # Makefile to build the sensor data collector
 #
+export EXTRADEFINES := $(EXTRADEFINES) -DRT -DIRIS
 
 MODULE_COMMAND	= sensors
 MODULE_PRIORITY	= "SCHED_PRIORITY_MAX-5"

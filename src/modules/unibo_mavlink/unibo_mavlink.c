@@ -375,14 +375,15 @@ int unibo_mavlink_thread_main(int argc, char *argv[])
 	int unibo_opti_pub_fd;
 	int unibo_joy_pub_fd;
 	int loc_pos_pub_fd;
+	int loc_pos_sub_fd;
 	char *uart_name;
 	/* default values for arguments */
 
 	// use (ttyS2) for UART5 in px4fum_v1 and use (ttyS6) for UART 4
-	if (HW_ARCH=='PX4FMU_V1'){
+	if (HW_ARCH=="PX4FMU_V1"){
 		uart_name = (char*)"/dev/ttyS2";      //(ttyS2)--> UART5, px4fum_v1
 	}
-	else if (HW_ARCH=='PX4FMU_V2'){
+	else if (HW_ARCH=="PX4FMU_V2"){
 		uart_name = (char*)"/dev/ttyS6";      //(ttyS6)--> UART4, px4fum_v2
 	}
 
@@ -491,6 +492,7 @@ int unibo_mavlink_thread_main(int argc, char *argv[])
 	struct vehicle_local_position_s loc_pos;
 	memset(&loc_pos, 0, sizeof(loc_pos));
 	loc_pos_pub_fd = orb_advertise(ORB_ID(vehicle_local_position), &loc_pos);
+	loc_pos_sub_fd = orb_subscribe(ORB_ID(vehicle_local_position));
 
 
 	mavlink_unibo_references_t unibo_ref_mav;
@@ -562,10 +564,12 @@ int unibo_mavlink_thread_main(int argc, char *argv[])
 								orb_publish(ORB_ID(unibo_optitrack), unibo_opti_pub_fd, &opti);
 								if (!silent) warnx("Pubblicato optitrack!");
 
+								orb_copy(ORB_ID(vehicle_local_position), loc_pos_sub_fd, &loc_pos);  //copy actual local_position for velocities
 								loc_pos.x = unibo_opti_mav.x;          //Write to local position topic too
 								loc_pos.y = unibo_opti_mav.y;
 								loc_pos.z = unibo_opti_mav.z;
 								loc_pos.timestamp = unibo_opti_mav.usec;
+								loc_pos.v_xy_valid = false;
 								orb_publish(ORB_ID(vehicle_local_position), loc_pos_pub_fd, &loc_pos);
 //								counter_opti++;
 //								if (counter_opti>=50){
@@ -602,7 +606,7 @@ int unibo_mavlink_thread_main(int argc, char *argv[])
 								if (!silent) warnx("Received PAR Packet. XYmult: %f",unibo_par_mav.XY_Multiplier);
 								if (!silent) warnx("Parametri: Offset_T %.3f - latmode %.3f - k1 %.3f - L1 %.3f - KpAttx %.3f", unibo_par_mav.Offset_T, unibo_par_mav.lat_mode, unibo_par_mav.K1, unibo_par_mav.L1, unibo_par_mav.KpAttX);
 								param.in1=unibo_par_mav.Offset_T;
-								param.in2=unibo_par_mav.lat_mode;
+								param.in2=unibo_par_mav.lat_mode;   //is mass parameter
 								param.in3=unibo_par_mav.delta;
 								param.in4=unibo_par_mav.K1;
 								param.in5=unibo_par_mav.L1;
@@ -622,9 +626,9 @@ int unibo_mavlink_thread_main(int argc, char *argv[])
 								param.in19=unibo_par_mav.GE;
 								param.in20=unibo_par_mav.epsilon;
 								param.in21=unibo_par_mav.XY_Multiplier;
-								param.in22=unibo_par_mav.offset_x;
-								param.in23=unibo_par_mav.offset_y;
-								param.in24=unibo_par_mav.offset_z;
+								param.in22=unibo_par_mav.offset_x;              //is J_xy
+								param.in23=unibo_par_mav.offset_y;              //is J_z
+								param.in24=unibo_par_mav.offset_z;              //is yaw offset
 								param.valid=1;
 								orb_publish(ORB_ID(unibo_parameters), unibo_param_pub_fd, &param);
 								break;

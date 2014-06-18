@@ -55,6 +55,8 @@
 #include <uORB/topics/vehicle_local_position.h>
 #include <uORB/topics/unibo_optitrack.h>
 #include <uORB/topics/unibo_parameters.h>
+#include <uORB/topics/vehicle_local_position_setpoint.h>
+#include <uORB/topics/position_setpoint_triplet.h>
 
 /* Deamon libraries? */
 #include <systemlib/systemlib.h>
@@ -176,7 +178,6 @@ int unibo_trajectory_ref_thread_main(int argc, char *argv[])
 	orb_set_interval(joystick_fd, 10); //1000 = 1Hz (ms)   100 HZ!!
 
 	/* subscribe to position topic */
-	int unibo_optitrack_fd = orb_subscribe(ORB_ID(unibo_optitrack));
 	int local_position_fd = orb_subscribe(ORB_ID(vehicle_local_position));
 
 	/* subscribe to parameters topic */
@@ -187,6 +188,16 @@ int unibo_trajectory_ref_thread_main(int argc, char *argv[])
 	struct unibo_reference_s reference;
 	memset(&reference, 0, sizeof(reference));
 	int reference_pub_fd = orb_advertise(ORB_ID(unibo_reference), &reference);
+
+	/* advertise local_pos_setpoint topic */
+	struct vehicle_local_position_setpoint_s setpoint;
+	memset(&setpoint, 0, sizeof(setpoint));
+	int setpoint_pub_fd = orb_advertise(ORB_ID(vehicle_local_position_setpoint), &setpoint);
+
+	/* advertise local_pos_setpoint topic */
+	struct position_setpoint_s setpoint_triplet;
+	memset(&setpoint_triplet, 0, sizeof(setpoint_triplet));
+	int setpoint_triplet_pub_fd = orb_advertise(ORB_ID(position_setpoint_triplet), &setpoint_triplet);
 
 	/* one could wait for multiple topics with this technique, just using one here */
 //	struct pollfd fds[] = {
@@ -219,7 +230,7 @@ int unibo_trajectory_ref_thread_main(int argc, char *argv[])
 
 
 	TRAJ_start();
-	//	TRAJ_control();
+	TRAJ_control();
 
 
 
@@ -256,7 +267,7 @@ int unibo_trajectory_ref_thread_main(int argc, char *argv[])
 			}
 
 
-			//warnx("Joystick pachet received: CH1: %d - CH2: %d - CH3: %d - CH4: %d BUTTON: %d",joystick.axis[0],joystick.axis[1],joystick.axis[2],joystick.axis[3],joystick.buttons);
+			//warnx("Joystick packet received: CH1: %d - CH2: %d - CH3: %d - CH4: %d BUTTON: %d",joystick.axis[0],joystick.axis[1],joystick.axis[2],joystick.axis[3],joystick.buttons);
 
 			orb_check(unibo_parameters_fd, &updated);   //TODO
 			if (updated){
@@ -264,7 +275,7 @@ int unibo_trajectory_ref_thread_main(int argc, char *argv[])
 				yawoffset = param.in24;
 			}
 
-			/* copy sensors raw data into local buffer */
+			/* copy attitude into local buffer */
 			orb_check(vehicle_attitude_fd, &updated);
 			if (updated){
 				orb_copy(ORB_ID(vehicle_attitude), vehicle_attitude_fd, &ahrs);
@@ -335,6 +346,19 @@ int unibo_trajectory_ref_thread_main(int argc, char *argv[])
 			orb_publish(ORB_ID(unibo_reference), reference_pub_fd, &reference);
 			//warnx("Actual yaw: %.3f - YawREF: %.3f - DYawREF: %.3f - D2YawREF: %.3f", TRAJECTORY_GENERATOR_APP_U.PSI, reference.psi, reference.d_psi, reference.dd_psi);
 
+			setpoint.x = reference.p_x;             //publish in vehicle_setpoint
+			setpoint.y = reference.p_y;
+			setpoint.z = reference.p_z;
+			setpoint.yaw = reference.psi;
+			orb_publish(ORB_ID(vehicle_local_position_setpoint), setpoint_pub_fd, &setpoint);
+
+			setpoint_triplet.type = SETPOINT_TYPE_NORMAL;	   //publish in setpoint_triplet
+			setpoint_triplet.lat = reference.p_x;              //lat-->x
+			setpoint_triplet.lon = reference.p_y;              //lon-->y
+			setpoint_triplet.alt = reference.p_z;              //alt-->z
+			setpoint_triplet.valid = true;
+			setpoint_triplet.yaw = reference.psi;
+			orb_publish(ORB_ID(position_setpoint_triplet), setpoint_triplet_pub_fd, &setpoint_triplet);
 		}
 		usleep(1000);
 

@@ -578,22 +578,13 @@ int attitude_estimator_so3_thread_main(int argc, char *argv[])
 					// NOTE : Accelerometer is reversed.
 					// Because proper mount of PX4 will give you a reversed accelerometer readings.
 
-#ifdef ATECH
-					NonlinearSO3AHRSupdate(-gyro[0],gyro[1],-gyro[2],          //UNIBO mounting
-										   acc[0],-acc[1],acc[2],
-															-mag[0], mag[1], -mag[2],
-															so3_comp_params.Kp,
-															so3_comp_params.Ki,
-															dt);
-#endif
-#ifdef IRIS
+
 					NonlinearSO3AHRSupdate(gyro[0], gyro[1], gyro[2],
 										-acc[0], -acc[1], -acc[2],
 										mag[0], mag[1], mag[2],
 										so3_comp_params.Kp,
 										so3_comp_params.Ki,
 										dt);
-#endif
 
 					// Convert q->R, This R converts inertial frame to body frame.
 					Rot_matrix[0] = q0q0 + q1q1 - q2q2 - q3q3;// 11
@@ -654,16 +645,10 @@ int attitude_estimator_so3_thread_main(int argc, char *argv[])
 					att.yawspeed = 2.0f*(-q3*dq0 -q2*dq1 + q1*dq2 + q0*dq3);
 					*/
 
-#ifdef ATECH
-					att.rollspeed = -gyro[0];                          //UNIBO MOUNTING
-					att.pitchspeed = gyro[1];
-					att.yawspeed = -gyro[2];
-#endif
-#ifdef IRIS
 					att.rollspeed = gyro[0];
 					att.pitchspeed = gyro[1];
 					att.yawspeed = gyro[2];
-#endif					
+
 
 					att.rollacc = 0;
 					att.pitchacc = 0;

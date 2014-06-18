@@ -450,12 +450,6 @@ then
 		gps start
 	fi
 
-	#TODO: FIX EXTRAS (Prima o poi...)
-	if hw_ver compare PX4FMU_V2
-		echo "[init] start extras"
-		sh /fs/microsd/etc/extras.txt
-		sh extras.txt
-	fi
 	
 	#
 	# Start up ARDrone Motor interface

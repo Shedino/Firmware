@@ -54,6 +54,7 @@
 #include <uORB/topics/unibo_optitrack.h>
 #include <uORB/topics/unibo_telemetry.h>
 #include <uORB/topics/vehicle_local_position.h>
+#include <uORB/topics/vehicle_gps_position.h>
 
 /* Deamon libraries? */
 #include <systemlib/systemlib.h>
@@ -190,7 +191,37 @@ int unibo_control_thread_main(int argc, char *argv[])
 	uniboc_thread_running = true;
 
 	warnx("Hello Sky!\n");
+	Model_GS_U.PARAMETERS[0] = 0;
+	Model_GS_U.PARAMETERS[1] = 0;
+	Model_GS_U.PARAMETERS[2] = 0.01;
+	Model_GS_U.PARAMETERS[3] = 1;
+	Model_GS_U.PARAMETERS[4] = 0.1;
+	Model_GS_U.PARAMETERS[5] = 7;
+	Model_GS_U.PARAMETERS[6] = 18;
+	Model_GS_U.PARAMETERS[7] = 0.02;
+	Model_GS_U.PARAMETERS[8] = 70;
+	Model_GS_U.PARAMETERS[9] = 200;
+	Model_GS_U.PARAMETERS[10] = 0.06;
+	Model_GS_U.PARAMETERS[11] = 2.5;
+	Model_GS_U.PARAMETERS[12] = 2.4;
+	Model_GS_U.PARAMETERS[13] = 2;
+	Model_GS_U.PARAMETERS[14] = 0.19;
+	Model_GS_U.PARAMETERS[15] = 0.19;
+	Model_GS_U.PARAMETERS[16] = 0.19;
+	Model_GS_U.PARAMETERS[17] = 0;
+	Model_GS_U.PARAMETERS[18] = 0;
+	Model_GS_U.PARAMETERS[19] = 0;
+	Model_GS_U.PARAMETERS[20] = 0;
+	Model_GS_U.PARAMETERS[21] = 0.06;
+	Model_GS_U.PARAMETERS[22] = 1;
+	Model_GS_U.PARAMETERS[23] = 0;
+	Model_GS_U.PARAMETERS[24] = 0;
+	Model_GS_U.PARAMETERS[25] = 80;
+	Model_GS_U.PARAMETERS[26] = 0;
+	Model_GS_U.PARAMETERS[27] = 0;
+	Model_GS_U.YAWOFFSET = 0;
 	model = Model_GS(); //Init model!
+	LLFFC_control();
 
 	/* subscribe to attitude topic */
 	int sensor_sub_fd = orb_subscribe(ORB_ID(vehicle_attitude));
@@ -209,6 +240,10 @@ int unibo_control_thread_main(int argc, char *argv[])
 	/* subscribe to local position topic */
 	int loc_pos_sub_fd = orb_subscribe(ORB_ID(vehicle_local_position));
 
+	/* subscribe to GPS topic */
+	int GPS_pos_sub_fd = orb_subscribe(ORB_ID(vehicle_gps_position));
+	struct vehicle_gps_position_s GPS;
+
 	/* advertize telemetry topic */
 	struct unibo_telemetry_s telem;
 	memset(&telem, 0, sizeof(telem));
@@ -223,6 +258,11 @@ int unibo_control_thread_main(int argc, char *argv[])
 	struct motor_output_s mout;
 	memset(&mout, 0, sizeof(mout));
 	int mout_pub_fd = orb_advertise(ORB_ID(motor_output), &mout);
+
+	/* advertize gps position topic for log modifica */
+	struct vehicle_gps_position_s log;
+	memset(&log, 0, sizeof(log));
+	int gps_pos_pub_fd = orb_advertise(ORB_ID(vehicle_gps_position), &log);
 
 	/* one could wait for multiple topics with this technique, just using one here */
 	struct pollfd fds[] = {
@@ -268,6 +308,7 @@ int unibo_control_thread_main(int argc, char *argv[])
 	static int print_counter = 0;
 	static int print_counter2 = 0;
 	static int log_counter = 0;
+	static int gps_counter = 0;
 	//len = sizeof(struct sockaddr_in);
 
 	// variabili input serial PX4
@@ -358,7 +399,7 @@ int unibo_control_thread_main(int argc, char *argv[])
 				Model_GS_U.AngSpeed[1] = ahrs.pitchspeed;
 				Model_GS_U.AngSpeed[2] = ahrs.yawspeed;
 				if (txtcounter>200){
-//					warnx("RPY:\t%1.4f %1.4f %1.4f - %1.4f %1.4f %1.4f %1.4f\n",
+//					warnx("RPY:\t%1.4f %1.4f %1.4f - %1.4f %1.4f %1.4f %1.4f",
 //						(double)ahrs.roll,
 //						(double)ahrs.pitch,
 //						(double)ahrs.yaw,
@@ -366,7 +407,7 @@ int unibo_control_thread_main(int argc, char *argv[])
 //						(double)ahrs.q[1],
 //						(double)ahrs.q[2],
 //						(double)ahrs.q[3]);
-					//warnx(".");
+//					warnx(".");
 					txtcounter = 0;
 				}
 
@@ -438,9 +479,10 @@ int unibo_control_thread_main(int argc, char *argv[])
 					Model_GS_U.TIME_STAMP = temp_ref.timestamp;
 					//warnx("Actual yaw: %.3f - YawREF: %.3f - DYawREF: %.3f - D2YawREF: %.3f", ahrs.yaw, Model_GS_U.REF_YAW[0], Model_GS_U.REF_YAW[1], Model_GS_U.REF_YAW[2]);
 					//warnx("Posx: %.3f - Velx: %.3f - Accx: %.3f", Model_GS_U.REF_POS[0], Model_GS_U.REF_POS[3], Model_GS_U.REF_POS[6]);
+					//warnx("Posy: %.3f - Vely: %.3f - Accy: %.3f", Model_GS_U.REF_POS[1], Model_GS_U.REF_POS[4], Model_GS_U.REF_POS[7]);
 					//warnx("Button: %d",temp_ref.button);
 					counter_ref_pack++;
-					if (counter_ref_pack>=50){
+					if (counter_ref_pack>=10){
 						//warnx("Ricevuti 50 pacchetti reference.");
 						//warnx("Posx: %.3f - Velx: %.3f - Accx: %.3f", Model_GS_U.REF_POS[0], Model_GS_U.REF_POS[3], Model_GS_U.REF_POS[6]);
 						counter_ref_pack=0;
@@ -489,13 +531,30 @@ int unibo_control_thread_main(int argc, char *argv[])
 					Model_GS_U.OPTITRACK[9] = 0;
 					Model_GS_U.OPTITRACK[10] = loc_pos.timestamp / 1000000.f;
 					Model_GS_U.OPTITRACK[11] = 0;
+
+					Model_GS_U.VELOCITY[0] = loc_pos.vx;
+					Model_GS_U.VELOCITY[1] = loc_pos.vy;
+					Model_GS_U.VELOCITY[2] = loc_pos.vz;
+					Model_GS_U.VELOCITY[3] = loc_pos.v_xy_valid;
+
 					//warnx("Optitrack from topic: %d %d %d\n",temp_opti.pos_x,temp_opti.pos_y,temp_opti.pos_z);
 					counter_opti_pack++;
 					if (counter_opti_pack>=200){
-						warnx("Ricevuti 200 pacchetti OPTITRACK.");
+						//warnx("Ricevuti 200 pacchetti OPTITRACK. X: %.3f - Y: %.3f - Z: %.3f", loc_pos.x, loc_pos.y, loc_pos.z);
+						//warnx("Ricevuti 200 pacchetti OPTITRACK. VX: %.3f - VY: %.3f - VZ: %.3f", loc_pos.vx, loc_pos.vy, loc_pos.vz);
 						counter_opti_pack=0;
 					}
 				}
+
+//				orb_check(GPS_pos_sub_fd, &updated);
+//				if (updated){
+//					gps_counter ++;
+//					if (gps_counter >= 15){
+//						orb_copy(ORB_ID(vehicle_gps_position),GPS_pos_sub_fd,&GPS);
+//						warnx("Ricevuto GPS: LAT: %d - LONG: %d - ALT: %d - SATELLITES: %d - PosAcc: %.2f", GPS.lat, GPS.lon, GPS.alt, GPS.satellites_visible, GPS.p_variance_m);
+//						gps_counter = 0;
+//					}
+//				}
 
 				//gestione pacchetto parameters ricevuto dal Topic unibo_optitrack
 				orb_check(parameters_sub_fd, &updated);
@@ -531,17 +590,19 @@ int unibo_control_thread_main(int argc, char *argv[])
 					Model_GS_U.PARAMETERS[27] = 0;
 					Model_GS_U.YAWOFFSET = temp_PAR.in24;
 
-#ifdef ATECH
-					Model_GS_U.CW_CCW = 1;           //1 for our quad, 0 for IRIS with inverted propeller rotation
-#endif
-#ifdef IRIS
-					Model_GS_U.CW_CCW = 0;           //1 for our quad, 0 for IRIS with inverted propeller rotation
-#endif
+					#ifdef ATECH
+										Model_GS_U.CW_CCW = 1;           //1 for our quad, 0 for IRIS with inverted propeller rotation
+					#endif
+					#ifdef IRIS
+										Model_GS_U.CW_CCW = 0;           //1 for our quad, 0 for IRIS with inverted propeller rotation
+					#endif
+
 					//warnx("Parameters from topic: %d %d %d\n",temp_PAR.in1,temp_PAR.in2,temp_PAR.in3);
 
 					counter_pars_pack++;
 					if (counter_pars_pack>=10){
 //						warnx("\nRicevuti 10 pacchetti PARAMETERS.");
+//						warnx("Parameters from topic: Kp_pos: %.2f - Kd_pos: %.2f",temp_PAR.in4,temp_PAR.in7);
 //						warnx("Parameters from topic: %.3f %.3f %.3f %.3f %.3f %.3f %.3f %.3f %.3f %.3f",temp_PAR.in1,temp_PAR.in2,temp_PAR.in3,temp_PAR.in4,temp_PAR.in5,temp_PAR.in6,temp_PAR.in7,temp_PAR.in8,temp_PAR.in9,temp_PAR.in10);
 //						warnx("  --> %.3f %.3f %.3f %.3f %.3f %.3f %.3f %.3f %.3f %.3f",temp_PAR.in11,temp_PAR.in12,temp_PAR.in13,temp_PAR.in14,temp_PAR.in15,temp_PAR.in16,temp_PAR.in17,temp_PAR.in18,temp_PAR.in19,temp_PAR.in20);
 //						warnx("  --> %.3f %.3f %.3f %.3f",temp_PAR.in21,temp_PAR.in22,temp_PAR.in23,temp_PAR.in24);
@@ -612,18 +673,37 @@ int unibo_control_thread_main(int argc, char *argv[])
 					//warnx("Attitude quaternion: %.4f %.4f %.4f %.4f", ahrs.q[0],ahrs.q[1],ahrs.q[2],ahrs.q[3]);
 					orb_publish(ORB_ID(unibo_telemetry), unibo_telem_pub_fd, &telem);
 					//warnx("Publishing telemetry topic.\n");
-					local_pos.vx = Model_GS_Y.STATE[3];
-					local_pos.vy = Model_GS_Y.STATE[4];
-					local_pos.vz = Model_GS_Y.STATE[5];
-					orb_publish(ORB_ID(vehicle_local_position), local_pos_pub_fd, &local_pos);
 
+					//scrivo sul topic local_position per loggare velocità e posizioni in sdglog2   Problemi timestamp, togliere!
+//					local_pos.x = (float)Model_GS_Y.STATE[0]/1000.0f;
+//					local_pos.y = (float)Model_GS_Y.STATE[1]/1000.0f;
+//					local_pos.z = (float)Model_GS_Y.STATE[2]/1000.0f;
+//					local_pos.vx = (float)Model_GS_Y.STATE[3]/1000.0f;
+//					local_pos.vy = (float)Model_GS_Y.STATE[4]/1000.0f;
+//					local_pos.vz = (float)Model_GS_Y.STATE[5]/1000.0f;
+//					local_pos.vx = Model_GS_Y.C_Q[0];
+//					local_pos.vy = Model_GS_Y.C_Q[1];
+//					local_pos.vz = Model_GS_Y.C_Q[2];
+//					local_pos.v_xy_valid=true;
+//					local_pos.xy_valid=true;
+					//orb_publish(ORB_ID(vehicle_local_position), local_pos_pub_fd, &local_pos);
+
+					//scrivo sul topic gps in modo da avere i log sulla sd
+					log.lat= (float)Model_GS_Y.STATE[0]/1000.0f;//x
+					log.lon= (float)Model_GS_Y.STATE[1]/1000.0f;//y
+					log.vel_m_s= (float)Model_GS_Y.STATE[2]/1000.0f; // variabile di appoggio per z
+					log.vel_n_m_s= (float)Model_GS_Y.STATE[3]/1000.0f; //vx
+					log.vel_e_m_s = (float)Model_GS_Y.STATE[4]/1000.0f; // vy
+					log.vel_d_m_s = (float)Model_GS_Y.STATE[5]/1000.0f; //vz
+					orb_publish(ORB_ID(vehicle_gps_position), gps_pos_pub_fd, &log);
 				}
 
 
-
 				if (log_counter>=200){
-					//warnx("CINPUTS: %d %d %d %d\n",CInputs_getU0(&cinputs),CInputs_getU1(&cinputs),CInputs_getU2(&cinputs),CInputs_getU3(&cinputs));
+					//warnx("CINPUTS: %d %d %d %d",CInputs_getU0(&cinputs),CInputs_getU1(&cinputs),CInputs_getU2(&cinputs),CInputs_getU3(&cinputs));
+					//warnx("Yaw: %d ",Model_GS_Y.STATE[8]);
 					//warnx("PWMOUTPUTS: %d %d %d %d %d %d %d %d\n",mout.outputs[0],mout.outputs[1],mout.outputs[2],mout.outputs[3],mout.outputs[4],mout.outputs[5],mout.outputs[6],mout.outputs[7]);
+					//warnx("Position: %.3f - %.3f - %.3f",local_pos.x, local_pos.y, local_pos.z);
 					log_counter=0;
 				}
 

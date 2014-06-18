@@ -932,13 +932,34 @@ Sensors::accel_poll(struct sensor_combined_s &raw)
 		math::Vector<3> vect(accel_report.x, accel_report.y, accel_report.z);
 		vect = _board_rotation * vect;
 
-		raw.accelerometer_m_s2[0] = vect(0);
-		raw.accelerometer_m_s2[1] = vect(1);
-		raw.accelerometer_m_s2[2] = vect(2);
+//		raw.accelerometer_m_s2[0] = vect(0);
+//		raw.accelerometer_m_s2[1] = vect(1);
+//		raw.accelerometer_m_s2[2] = vect(2);
+//		raw.accelerometer_raw[0] = accel_report.x_raw;
+//		raw.accelerometer_raw[1] = accel_report.y_raw;
+//		raw.accelerometer_raw[2] = accel_report.z_raw;
 
-		raw.accelerometer_raw[0] = accel_report.x_raw;
-		raw.accelerometer_raw[1] = accel_report.y_raw;
-		raw.accelerometer_raw[2] = accel_report.z_raw;
+		#ifdef ATECH
+				raw.accelerometer_m_s2[0] = -vect(0);		//UNIBO mounting
+				raw.accelerometer_m_s2[1] = vect(1);
+				raw.accelerometer_m_s2[2] = -vect(2);
+
+				raw.accelerometer_raw[0] = -accel_report.x_raw;
+				raw.accelerometer_raw[1] = accel_report.y_raw;
+				raw.accelerometer_raw[2] = -accel_report.z_raw;
+
+		#endif
+		#ifdef IRIS
+				raw.accelerometer_m_s2[0] = vect(0);
+				raw.accelerometer_m_s2[1] = vect(1);
+				raw.accelerometer_m_s2[2] = vect(2);
+
+				raw.accelerometer_raw[0] = accel_report.x_raw;
+				raw.accelerometer_raw[1] = accel_report.y_raw;
+				raw.accelerometer_raw[2] = accel_report.z_raw;
+		#endif
+
+
 
 		raw.accelerometer_timestamp = accel_report.timestamp;
 	}
@@ -958,13 +979,35 @@ Sensors::gyro_poll(struct sensor_combined_s &raw)
 		math::Vector<3> vect(gyro_report.x, gyro_report.y, gyro_report.z);
 		vect = _board_rotation * vect;
 
-		raw.gyro_rad_s[0] = vect(0);
-		raw.gyro_rad_s[1] = vect(1);
-		raw.gyro_rad_s[2] = vect(2);
+//		raw.gyro_rad_s[0] = vect(0);
+//		raw.gyro_rad_s[1] = vect(1);
+//		raw.gyro_rad_s[2] = vect(2);
 
-		raw.gyro_raw[0] = gyro_report.x_raw;
-		raw.gyro_raw[1] = gyro_report.y_raw;
-		raw.gyro_raw[2] = gyro_report.z_raw;
+//		raw.gyro_raw[0] = gyro_report.x_raw;
+//		raw.gyro_raw[1] = gyro_report.y_raw;
+//		raw.gyro_raw[2] = gyro_report.z_raw;
+
+		#ifdef ATECH
+				raw.gyro_rad_s[0] = -vect(0);		//UNIBO mounting
+				raw.gyro_rad_s[1] = vect(1);
+				raw.gyro_rad_s[2] = -vect(2);
+
+				raw.gyro_raw[0] = -gyro_report.x_raw;
+				raw.gyro_raw[1] = gyro_report.y_raw;
+				raw.gyro_raw[2] = -gyro_report.z_raw;
+
+		#endif
+		#ifdef IRIS
+				raw.gyro_rad_s[0] = vect(0);
+				raw.gyro_rad_s[1] = vect(1);
+				raw.gyro_rad_s[2] = vect(2);
+
+				raw.gyro_raw[0] = gyro_report.x_raw;
+				raw.gyro_raw[1] = gyro_report.y_raw;
+				raw.gyro_raw[2] = gyro_report.z_raw;
+		#endif
+
+
 
 		raw.timestamp = gyro_report.timestamp;
 	}
@@ -988,13 +1031,35 @@ Sensors::mag_poll(struct sensor_combined_s &raw)
 		else
 			vect = _board_rotation * vect;
 
-		raw.magnetometer_ga[0] = vect(0);
-		raw.magnetometer_ga[1] = vect(1);
-		raw.magnetometer_ga[2] = vect(2);
+//		raw.magnetometer_ga[0] = vect(0);
+//		raw.magnetometer_ga[1] = vect(1);
+//		raw.magnetometer_ga[2] = vect(2);
 
-		raw.magnetometer_raw[0] = mag_report.x_raw;
-		raw.magnetometer_raw[1] = mag_report.y_raw;
-		raw.magnetometer_raw[2] = mag_report.z_raw;
+//		raw.magnetometer_raw[0] = mag_report.x_raw;
+//		raw.magnetometer_raw[1] = mag_report.y_raw;
+//		raw.magnetometer_raw[2] = mag_report.z_raw;
+
+		#ifdef ATECH
+				raw.magnetometer_ga[0] = -vect(0);   //UNIBO mounting
+				raw.magnetometer_ga[1] = vect(1);
+				raw.magnetometer_ga[2] = -vect(2);
+
+				raw.magnetometer_raw[0] = -mag_report.x_raw;
+				raw.magnetometer_raw[1] = mag_report.y_raw;
+				raw.magnetometer_raw[2] = -mag_report.z_raw;
+
+		#endif
+		#ifdef IRIS
+				raw.magnetometer_ga[0] = vect(0);
+				raw.magnetometer_ga[1] = vect(1);
+				raw.magnetometer_ga[2] = vect(2);
+
+				raw.magnetometer_raw[0] = mag_report.x_raw;
+				raw.magnetometer_raw[1] = mag_report.y_raw;
+				raw.magnetometer_raw[2] = mag_report.z_raw;
+		#endif
+
+
 
 		raw.magnetometer_timestamp = mag_report.timestamp;
 	}
