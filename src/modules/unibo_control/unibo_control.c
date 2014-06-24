@@ -688,14 +688,14 @@ int unibo_control_thread_main(int argc, char *argv[])
 //					local_pos.xy_valid=true;
 					//orb_publish(ORB_ID(vehicle_local_position), local_pos_pub_fd, &local_pos);
 
-					//scrivo sul topic gps in modo da avere i log sulla sd
+					//scrivo sul topic gps in modo da avere i log sulla sd                                  //TODO togliere se si usa GPS (solo per log)
 					log.lat= (float)Model_GS_Y.STATE[0]/1000.0f;//x
 					log.lon= (float)Model_GS_Y.STATE[1]/1000.0f;//y
 					log.vel_m_s= (float)Model_GS_Y.STATE[2]/1000.0f; // variabile di appoggio per z
 					log.vel_n_m_s= (float)Model_GS_Y.STATE[3]/1000.0f; //vx
 					log.vel_e_m_s = (float)Model_GS_Y.STATE[4]/1000.0f; // vy
 					log.vel_d_m_s = (float)Model_GS_Y.STATE[5]/1000.0f; //vz
-					orb_publish(ORB_ID(vehicle_gps_position), gps_pos_pub_fd, &log);
+					//orb_publish(ORB_ID(vehicle_gps_position), gps_pos_pub_fd, &log);
 				}
 
 

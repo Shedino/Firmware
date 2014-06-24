@@ -195,7 +195,7 @@ int unibo_trajectory_ref_thread_main(int argc, char *argv[])
 	int setpoint_pub_fd = orb_advertise(ORB_ID(vehicle_local_position_setpoint), &setpoint);
 
 	/* advertise local_pos_setpoint topic */
-	struct position_setpoint_s setpoint_triplet;
+	struct position_setpoint_triplet_s setpoint_triplet;
 	memset(&setpoint_triplet, 0, sizeof(setpoint_triplet));
 	int setpoint_triplet_pub_fd = orb_advertise(ORB_ID(position_setpoint_triplet), &setpoint_triplet);
 
@@ -352,12 +352,15 @@ int unibo_trajectory_ref_thread_main(int argc, char *argv[])
 			setpoint.yaw = reference.psi;
 			orb_publish(ORB_ID(vehicle_local_position_setpoint), setpoint_pub_fd, &setpoint);
 
-			setpoint_triplet.type = SETPOINT_TYPE_NORMAL;	   //publish in setpoint_triplet
-			setpoint_triplet.lat = reference.p_x;              //lat-->x
-			setpoint_triplet.lon = reference.p_y;              //lon-->y
-			setpoint_triplet.alt = reference.p_z;              //alt-->z
-			setpoint_triplet.valid = true;
-			setpoint_triplet.yaw = reference.psi;
+			setpoint_triplet.current.type = SETPOINT_TYPE_NORMAL;	   //publish in setpoint_triplet
+			setpoint_triplet.nav_state = NAV_STATE_NONE;
+			setpoint_triplet.current.lat = reference.p_x;              //lat-->x
+			setpoint_triplet.current.lon = reference.p_y;              //lon-->y
+			setpoint_triplet.current.alt = reference.p_z;              //alt-->z
+			setpoint_triplet.current.yaw = reference.psi;
+			setpoint_triplet.previous.valid = true;
+			setpoint_triplet.current.valid = true;
+			setpoint_triplet.next.valid = true;
 			orb_publish(ORB_ID(position_setpoint_triplet), setpoint_triplet_pub_fd, &setpoint_triplet);
 		}
 		usleep(1000);

@@ -348,7 +348,7 @@ int unibo_flow_thread_main(int argc, char *argv[])
 					local_pos.y = sumy;
 
 					local_pos.v_xy_valid=true;
-					//orb_publish(ORB_ID(vehicle_local_position), local_pos_pub_fd, &local_pos);   //TODO rimettere
+					//orb_publish(ORB_ID(vehicle_local_position), local_pos_pub_fd, &local_pos);   //TODO rimettere se si usa flow
 
 					//publish log value in global_position_topic              //TODO togliere se si usa topic GPS
 					log.vel_n = raw.flow_comp_x_m;
