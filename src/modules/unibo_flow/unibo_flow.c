@@ -81,17 +81,18 @@ static int unibo_flow_task;				/**< Handle of deamon task / thread */
 const float time_scale = powf(10.0f,-6.0f);
 static uint64_t time_last_flow = 0; // in ms
 static float dt = 0.0f; // seconds
-static float sonar_last = 0.0f;
+float thrs_dt=0.1f;
+static float sonar_last = 0.3f;
 static float sonar_lp = 0.0f;
 static float sumx = 0.0f;
 static float sumy = 0.0f;
 static float vx = 0.0f;
 static float vy = 0.0f;
-static int thrs_flow=200;
+static int thrs_flow=50; // was 150 with 50 almost every data
 static float thrs_low_sonar= 0.301f;
 static float thrs_up_sonar=3.0f;
-static float c_OFF=0.65f;
-static float last_sonar=0.301f;
+static float c_OFF=0.65f; //was 0.65
+static float last_sonar=-0.301f;
 static uint64_t time_last_sonar = 0; // in ms
 static float vz=0.0f;
 static float last_vz=0.0f;
@@ -99,11 +100,16 @@ static bool first_sonar = true;
 static float dt_sonar = 0.0f; // seconds
 float dz1;
 float dz2;
+float db;
+float b=0.0f;
 float z1 = -0.3;   //initial guessed position for complementary filter
 float z2 = 0;
-float k1 = 5;
-float k2 = 5;
+float k1 = 5.0f;
+float k2 = 6.0f;
+float k3 = 0.1f;
 float az;
+float sonar_diff;
+float pos_z_last=-0.3f;
 
 
 static void
@@ -116,10 +122,10 @@ usage(const char *reason)
 	exit(1);
 }
 
-float LowPassFilter(float value, float last, float cutOff){
-  float h = 0.01; //Sample time (approx)
-  float Tf= cutOff; //Cutoff frequency
-  float a = h/(h+Tf);
+float LowPassFilter(float value, float last, float cutOff, float dt_filt){
+  //float h = 0.01; //Sample time (approx)
+  float Tf= 1.0/(cutOff*2*3.14); //Cutoff frequency Hz
+  float a = dt_filt/(dt_filt+Tf);
   float val = a*value+(1-a)*last;
   return val;
 }
@@ -245,120 +251,150 @@ int unibo_flow_thread_main(int argc, char *argv[])
 				orb_copy(ORB_ID(sensor_combined), sensor_sub_fd, &sens);
 				orb_copy(ORB_ID(vehicle_attitude), attitude_sub_fd, &att);
 
-				az = att.R[2][0]*sens.accelerometer_m_s2[0]+att.R[2][1]*sens.accelerometer_m_s2[1]+att.R[2][2]*(sens.accelerometer_m_s2[2]+9.3f);
+				az = att.R[2][0]*sens.accelerometer_m_s2[0]+att.R[2][1]*sens.accelerometer_m_s2[1]+att.R[2][2]*sens.accelerometer_m_s2[2]+9.5f;
 
 				/* vehicle state estimation */
 				float sonar_new = raw.ground_distance_m;
+				warnx("z: %.3f", sonar_new);
 //				warnx("[RAW] Optical flow VX , VY , ALT:\t%.3f\t%.3f\t%.3f",
 //											raw.flow_comp_x_m,
 //											raw.flow_comp_y_m,
 //											raw.ground_distance_m);
 				/* calc dt between flow timestamps */
 					/* ignore first flow msg */
-					if(time_last_flow == 0)
-					{
-						time_last_flow = raw.timestamp;
 
-					}
-					else if(raw.quality>=thrs_flow && sonar_new>=thrs_low_sonar && sonar_new<= thrs_up_sonar)
+					if(raw.quality>=thrs_flow && sonar_new>=thrs_low_sonar && sonar_new<= thrs_up_sonar)
 					{
 
-						dt = (float)(raw.timestamp - time_last_flow) * time_scale ;
-						time_last_flow = raw.timestamp;
-
-
-						/* update filtered flow */
-						sumx = sumx + raw.flow_comp_x_m * dt;
-						sumy = sumy + raw.flow_comp_y_m * dt;
-						vx = raw.flow_comp_x_m;
-						vy = raw.flow_comp_y_m;
-
-						/* simple lowpass sonar filtering */
-						/* if new value or with sonar update frequency */
-						if (sonar_new != sonar_last || counter % 10 == 0)
+						if(time_last_flow == 0)
 						{
-							sonar_lp = 0.05f * sonar_new + 0.95f * sonar_lp;
-							sonar_last = sonar_new;
+							time_last_flow = raw.timestamp;
+
 						}
-
-						float height_diff = sonar_new - sonar_lp;
-
-						/* if over 1/2m spike follow lowpass */
-						if (height_diff < -0.2f || height_diff > 0.5f)
-						{
-							local_pos.z = -sonar_lp;
-						}
-						else
-						{
-							local_pos.z = -sonar_new;
-						}
-
-						local_pos.z_valid = true;
-
-						//calcolo VZ
 						if(first_sonar)
 						{
 							time_last_sonar=raw.timestamp;
-							last_sonar=local_pos.z;
+							last_sonar=-0.3f;
 							last_vz=0;
 							first_sonar=false;
 
 						}
 						else
 						{
-							dt_sonar = ((float)(raw.timestamp - time_last_sonar)) * time_scale ;
-							vz=(local_pos.z-last_sonar)/dt_sonar;
+						dt = (float)(raw.timestamp - time_last_flow) * time_scale ;
+						time_last_flow = raw.timestamp;
+						dt_sonar = ((float)(raw.timestamp - time_last_sonar)) * time_scale ;
+						time_last_sonar=raw.timestamp;
 
-							local_pos.vz=LowPassFilter(vz, last_vz, c_OFF); //filtro passa basso per ammorbidire la velocità
-
-							last_sonar=local_pos.z;
-							last_vz=local_pos.vz;
-							time_last_sonar=raw.timestamp;
-						}
-
-						//Complementary filter
-						dz1 = z2 - k1*(z1-local_pos.z);
-						dz2 = az - k2*(z2-local_pos.vz);
-						z1 = z1 + dz1*dt;
-						z2 = z2 + dz2*dt;
-
-						local_pos.z = z1;
-						local_pos.vz = z2;
-						//End compl. Filter
-
-						if(counter>=100)
+						if(dt <= thrs_dt) // se perdo qualità per piu di 0.1s rifaccio partire il dt
 						{
-//						warnx("[RAW] Optical flow VX , VY , ALT:\t%.3f\t%.3f\t%.3f\n",
-//							raw.flow_comp_x_m,
-//							raw.flow_comp_y_m,
-//							raw.ground_distance_m);
-						warnx("[RICALCOLATO] Optical flow X , Y , ALT, VZ:\t%.3f\t%.3f\t%.3f\t%.3f\n",
-							sumx,
-							sumy,
-							local_pos.z,
-							local_pos.vz);
-						counter=0;
+							/* update filtered flow */
+							sumx = sumx + raw.flow_comp_x_m * dt;
+							sumy = sumy + raw.flow_comp_y_m * dt;
+							vx = raw.flow_comp_x_m;
+							vy = raw.flow_comp_y_m;
+
+							/* simple lowpass sonar filtering */
+							/* if new value or with sonar update frequency */
+//							if (sonar_new != sonar_last || counter % 10 == 0)
+//							{
+//								sonar_lp = 0.05f * sonar_new + 0.95f * sonar_lp;
+//								sonar_last = sonar_new;
+//							}
+
+//							float height_diff = sonar_new - sonar_lp;
+//
+//							/* if over 1/2m spike follow lowpass */
+//							if (height_diff < -0.2f || height_diff > 0.5f)
+//							{
+//								local_pos.z = -sonar_lp;
+//							}
+//							else
+//							{
+//								local_pos.z = -sonar_new;
+//							}
+							sonar_diff=abs(sonar_new-sonar_last);
+
+							if (sonar_diff>0.3f)
+							{
+								local_pos.z = -sonar_last;
+							}
+							else
+							{
+								local_pos.z = -sonar_new;
+								sonar_last= sonar_new;
+							}
+							log.yaw=local_pos.z;
+							/* simple lowpass sonar filtering */
+
+							local_pos.z = 0.5f * local_pos.z + 0.5f * pos_z_last;
+							pos_z_last = local_pos.z;
+
+
+							local_pos.z_valid = true;
+
+							//calcolo VZ
+
+							if(!first_sonar)
+							{
+
+								vz=(local_pos.z-last_sonar)/dt_sonar;
+
+								local_pos.vz=LowPassFilter(vz, last_vz, c_OFF, dt_sonar); //filtro passa basso per ammorbidire la velocità
+
+								last_sonar=local_pos.z;
+								last_vz=local_pos.vz;
+								log.baro_alt=local_pos.vz;
+							}
+
+							//Complementary filter
+							dz1 = z2 - k1*(z1-local_pos.z);
+							db=-k3*(z2-local_pos.vz);
+							b=b+db*dt;
+							dz2 = az - k2*(z2-local_pos.vz)+b;
+							z1 = z1 + dz1*dt;
+							z2 = z2 + dz2*dt;
+							local_pos.z = z1;
+							local_pos.vz = z2;
+							//End compl. Filter
+
+							if(counter>=100)
+							{
+	//						warnx("[RAW] Optical flow VX , VY , ALT:\t%.3f\t%.3f\t%.3f\n",
+	//							raw.flow_comp_x_m,
+	//							raw.flow_comp_y_m,
+	//							raw.ground_distance_m);
+							warnx("Az - b: %.3f--%.3f", az, b);
+//							warnx("[RICALCOLATO] Optical flow X , Y , ALT, VZ:\t%.3f\t%.3f\t%.3f\t%.3f\n",
+//								sumx,
+//								sumy,
+//								local_pos.z,
+//								local_pos.vz);
+							counter=0;
+							}
+
+
+						/* set local_pos and publish this information for other apps */
+						local_pos.vx = raw.flow_comp_x_m;
+						local_pos.vy = raw.flow_comp_y_m;
+						local_pos.x = sumx;
+						local_pos.y = sumy;
+
+						local_pos.v_xy_valid=true;
+						orb_publish(ORB_ID(vehicle_local_position), local_pos_pub_fd, &local_pos);   //TODO rimettere
+
+						//publish log value in global_position_topic              //TODO togliere se si usa topic GPS
+						log.vel_n = raw.flow_comp_x_m;
+						log.vel_e = raw.flow_comp_y_m;
+						log.vel_d = local_pos.vz;
+						log.alt = local_pos.z;
+						log.lat=sumx; //fake lat as x and lon as y
+						log.lon=sumy;
+
+//						warnx("Vel_z: %.3f - z: %.3f", log.vel_d,log.alt);
+						orb_publish(ORB_ID(vehicle_global_position), global_pos_pub_fd, &log);
 						}
-
-
-					/* set local_pos and publish this information for other apps */
-					local_pos.vx = raw.flow_comp_x_m;
-					local_pos.vy = raw.flow_comp_y_m;
-					local_pos.x = sumx;
-					local_pos.y = sumy;
-
-					local_pos.v_xy_valid=true;
-					//orb_publish(ORB_ID(vehicle_local_position), local_pos_pub_fd, &local_pos);   //TODO rimettere se si usa flow
-
-					//publish log value in global_position_topic              //TODO togliere se si usa topic GPS
-					log.vel_n = raw.flow_comp_x_m;
-					log.vel_e = raw.flow_comp_y_m;
-					log.vel_d = local_pos.vz;
-					log.alt = local_pos.z;
-					log.lat=sumx; //fake lat as x and lon as y
-					log.lon=sumy;
-					warnx("Vel_z: %.3f - z: %.3f", log.vel_d,log.alt);
-					orb_publish(ORB_ID(vehicle_global_position), global_pos_pub_fd, &log);
+					}
 					}
 			}
 			/* there could be more file descriptors here, in the form like:
