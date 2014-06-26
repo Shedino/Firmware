@@ -289,10 +289,12 @@ int unibo_flow_thread_main(int argc, char *argv[])
 						if(dt <= thrs_dt) // se perdo qualità per piu di 0.1s rifaccio partire il dt
 						{
 							/* update filtered flow */
-							sumx = sumx + raw.flow_comp_x_m * dt;
-							sumy = sumy + raw.flow_comp_y_m * dt;
-							vx = raw.flow_comp_x_m;
-							vy = raw.flow_comp_y_m;
+							//vx = raw.flow_comp_x_m;    without yaw comp
+							//vy = raw.flow_comp_y_m;    without yaw comp
+							vx = raw.flow_comp_x_m * cos(att.yaw) - raw.flow_comp_y_m * sin(att.yaw);
+							vy = raw.flow_comp_x_m * sin(att.yaw) + raw.flow_comp_y_m * cos(att.yaw);
+							sumx = sumx + vx * dt;
+							sumy = sumy + vy * dt;
 
 							/* simple lowpass sonar filtering */
 							/* if new value or with sonar update frequency */
@@ -375,21 +377,21 @@ int unibo_flow_thread_main(int argc, char *argv[])
 
 
 						/* set local_pos and publish this information for other apps */
-						local_pos.vx = raw.flow_comp_x_m;
-						local_pos.vy = raw.flow_comp_y_m;
+						local_pos.vx = vx;
+						local_pos.vy = vy;
 						local_pos.x = sumx;
 						local_pos.y = sumy;
 
 						local_pos.v_xy_valid=true;
 						orb_publish(ORB_ID(vehicle_local_position), local_pos_pub_fd, &local_pos);   //TODO rimettere
 
-						//publish log value in global_position_topic              //TODO togliere se si usa topic GPS
-						log.vel_n = raw.flow_comp_x_m;
-						log.vel_e = raw.flow_comp_y_m;
-						log.vel_d = local_pos.vz;
-						log.alt = local_pos.z;
-						log.lat=sumx; //fake lat as x and lon as y
-						log.lon=sumy;
+						//publish log value in global_position_topic for logging              //TODO togliere se si usa topic GPS
+//						log.vel_n = vx;
+//						log.vel_e = vy;
+//						log.vel_d = local_pos.vz;
+//						log.alt = local_pos.z;
+//						log.lat=sumx; //fake lat as x and lon as y
+//						log.lon=sumy;
 
 //						warnx("Vel_z: %.3f - z: %.3f", log.vel_d,log.alt);
 						orb_publish(ORB_ID(vehicle_global_position), global_pos_pub_fd, &log);

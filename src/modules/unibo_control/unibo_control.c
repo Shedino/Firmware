@@ -56,6 +56,8 @@
 #include <uORB/topics/vehicle_local_position.h>
 #include <uORB/topics/vehicle_gps_position.h>
 
+#define pi 3.14159
+
 /* Deamon libraries? */
 #include <systemlib/systemlib.h>
 #include <systemlib/err.h>
@@ -588,7 +590,7 @@ int unibo_control_thread_main(int argc, char *argv[])
 					Model_GS_U.PARAMETERS[25] = temp_PAR.in24;
 					Model_GS_U.PARAMETERS[26] = 0;
 					Model_GS_U.PARAMETERS[27] = 0;
-					Model_GS_U.YAWOFFSET = temp_PAR.in24;
+					//Model_GS_U.YAWOFFSET = temp_PAR.in24;
 
 					#ifdef ATECH
 										Model_GS_U.CW_CCW = 1;           //1 for our quad, 0 for IRIS with inverted propeller rotation
@@ -608,6 +610,39 @@ int unibo_control_thread_main(int argc, char *argv[])
 //						warnx("  --> %.3f %.3f %.3f %.3f",temp_PAR.in21,temp_PAR.in22,temp_PAR.in23,temp_PAR.in24);
 //						warnx("\n");
 						counter_pars_pack=0;
+					}
+				}
+
+
+				// gestione pacchetto OPTITRACK ricevuto dal Topic vehicle_local_position (gli scrive unibo_mavlink)
+				orb_check(optitrack_sub_fd, &updated);    //TODO
+				if (updated){
+					orb_copy(ORB_ID(unibo_optitrack),optitrack_sub_fd,&temp_opti);
+					float yawoffset = temp_PAR.in24;
+					Model_GS_U.OPTITRACK[0] = 0;
+					Model_GS_U.OPTITRACK[1] = 0;
+					Model_GS_U.OPTITRACK[2] = temp_opti.pos_x * cos(yawoffset*2*pi/360) - temp_opti.pos_y * sin(yawoffset*2*pi/360);
+					Model_GS_U.OPTITRACK[3] = temp_opti.pos_x * sin(yawoffset*2*pi/360) + temp_opti.pos_y * cos(yawoffset*2*pi/360);
+					Model_GS_U.OPTITRACK[4] = temp_opti.pos_z;
+					Model_GS_U.OPTITRACK[5] = 0;
+					Model_GS_U.OPTITRACK[6] = 0;
+					Model_GS_U.OPTITRACK[7] = 0;
+					Model_GS_U.OPTITRACK[8] = 0;
+					Model_GS_U.OPTITRACK[9] = 0;
+					Model_GS_U.OPTITRACK[10] = temp_opti.timestamp / 1000000.f;
+					Model_GS_U.OPTITRACK[11] = 0;
+
+					Model_GS_U.VELOCITY[0] = 0;
+					Model_GS_U.VELOCITY[1] = 0;
+					Model_GS_U.VELOCITY[2] = 0;
+					Model_GS_U.VELOCITY[3] = 0;
+
+					//warnx("Optitrack from topic: %d %d %d\n",temp_opti.pos_x,temp_opti.pos_y,temp_opti.pos_z);
+					counter_opti_pack++;
+					if (counter_opti_pack>=200){
+						//warnx("Ricevuti 200 pacchetti OPTITRACK. X: %.3f - Y: %.3f - Z: %.3f", loc_pos.x, loc_pos.y, loc_pos.z);
+						//warnx("Ricevuti 200 pacchetti OPTITRACK. VX: %.3f - VY: %.3f - VZ: %.3f", loc_pos.vx, loc_pos.vy, loc_pos.vz);
+						counter_opti_pack=0;
 					}
 				}
 
