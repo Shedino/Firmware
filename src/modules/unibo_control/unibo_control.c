@@ -493,10 +493,6 @@ int unibo_control_thread_main(int argc, char *argv[])
 				}
 
 
-<<<<<<< HEAD
-=======
-
->>>>>>> origin/master
 				// gestione pacchetto OPTITRACK ricevuto dal Topic vehicle_local_position (gli scrive unibo_mavlink)
 				orb_check(loc_pos_sub_fd, &updated);
 				if (updated){
