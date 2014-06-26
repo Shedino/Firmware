@@ -221,7 +221,6 @@ int unibo_control_thread_main(int argc, char *argv[])
 	Model_GS_U.PARAMETERS[25] = 80;
 	Model_GS_U.PARAMETERS[26] = 0;
 	Model_GS_U.PARAMETERS[27] = 0;
-	Model_GS_U.YAWOFFSET = 0;
 	model = Model_GS(); //Init model!
 	LLFFC_control();
 
@@ -493,7 +492,7 @@ int unibo_control_thread_main(int argc, char *argv[])
 				}
 
 
-				// gestione pacchetto OPTITRACK ricevuto dal Topic vehicle_local_position (gli scrive unibo_mavlink)
+				// gestione pacchetto Local Pos ricevuto dal Topic vehicle_local_position (gli scrive unibo_flow o inav)
 				orb_check(loc_pos_sub_fd, &updated);
 				if (updated){
 					orb_copy(ORB_ID(vehicle_local_position),loc_pos_sub_fd,&loc_pos);
@@ -591,7 +590,7 @@ int unibo_control_thread_main(int argc, char *argv[])
 
 
 				// gestione pacchetto OPTITRACK ricevuto dal Topic vehicle_local_position (gli scrive unibo_mavlink)
-				orb_check(optitrack_sub_fd, &updated);    //TODO
+				orb_check(optitrack_sub_fd, &updated);
 				if (updated){
 					orb_copy(ORB_ID(unibo_optitrack),optitrack_sub_fd,&temp_opti);
 					float yawoffset = temp_PAR.in24;
