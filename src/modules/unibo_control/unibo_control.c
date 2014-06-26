@@ -493,6 +493,10 @@ int unibo_control_thread_main(int argc, char *argv[])
 				}
 
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> origin/master
 				// gestione pacchetto OPTITRACK ricevuto dal Topic vehicle_local_position (gli scrive unibo_mavlink)
 				orb_check(loc_pos_sub_fd, &updated);
 				if (updated){
@@ -616,7 +620,7 @@ int unibo_control_thread_main(int argc, char *argv[])
 					//warnx("Optitrack from topic: %d %d %d\n",temp_opti.pos_x,temp_opti.pos_y,temp_opti.pos_z);
 					counter_opti_pack++;
 					if (counter_opti_pack>=200){
-						//warnx("Ricevuti 200 pacchetti OPTITRACK. X: %.3f - Y: %.3f - Z: %.3f", loc_pos.x, loc_pos.y, loc_pos.z);
+						warnx("Ricevuti 200 pacchetti OPTITRACK. X: %.3f - Y: %.3f - Z: %.3f", Model_GS_U.OPTITRACK[2], Model_GS_U.OPTITRACK[3], Model_GS_U.OPTITRACK[4]);
 						//warnx("Ricevuti 200 pacchetti OPTITRACK. VX: %.3f - VY: %.3f - VZ: %.3f", loc_pos.vx, loc_pos.vy, loc_pos.vz);
 						counter_opti_pack=0;
 					}
