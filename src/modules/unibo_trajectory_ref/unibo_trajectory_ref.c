@@ -279,7 +279,7 @@ int unibo_trajectory_ref_thread_main(int argc, char *argv[])
 			orb_check(vehicle_attitude_fd, &updated);
 			if (updated){
 				orb_copy(ORB_ID(vehicle_attitude), vehicle_attitude_fd, &ahrs);
-				TRAJECTORY_GENERATOR_APP_U.PSI = ahrs.yaw + yawoffset/180*3.14;
+				TRAJECTORY_GENERATOR_APP_U.PSI = ahrs.yaw;
 			}
 
 			/* copy position data into local buffer */                 //TODO change to local position for compatibility
