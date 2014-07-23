@@ -564,18 +564,18 @@ int unibo_mavlink_thread_main(int argc, char *argv[])
 								orb_publish(ORB_ID(unibo_optitrack), unibo_opti_pub_fd, &opti);
 								if (!silent) warnx("Pubblicato optitrack!");
 
-//								orb_copy(ORB_ID(vehicle_local_position), loc_pos_sub_fd, &loc_pos);  //copy actual local_position for velocities
-//								loc_pos.x = unibo_opti_mav.x;          //Write to local position topic too
-//								loc_pos.y = unibo_opti_mav.y;
-//								loc_pos.z = unibo_opti_mav.z;
-//								loc_pos.timestamp = unibo_opti_mav.usec;
-//								loc_pos.v_xy_valid = false;
-//								orb_publish(ORB_ID(vehicle_local_position), loc_pos_pub_fd, &loc_pos);
-//								counter_opti++;
-//								if (counter_opti>=50){
-//									warnx("50 packets optitrack received");
-//									counter_opti=0;
-//								}
+								orb_copy(ORB_ID(vehicle_local_position), loc_pos_sub_fd, &loc_pos);  //copy actual local_position for velocities
+								loc_pos.x = unibo_opti_mav.x;          //Write to local position topic too
+								loc_pos.y = unibo_opti_mav.y;
+								loc_pos.z = unibo_opti_mav.z;
+								loc_pos.timestamp = unibo_opti_mav.usec;
+								loc_pos.v_xy_valid = false;
+								orb_publish(ORB_ID(vehicle_local_position), loc_pos_pub_fd, &loc_pos);
+								counter_opti++;
+								if (counter_opti>=50){
+									warnx("50 packets optitrack received");
+									counter_opti=0;
+								}
 								break;
 							case MAVLINK_MSG_ID_UNIBO_REFERENCES:
 								//decoding

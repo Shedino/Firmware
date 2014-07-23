@@ -269,17 +269,17 @@ int unibo_trajectory_ref_thread_main(int argc, char *argv[])
 
 			//warnx("Joystick packet received: CH1: %d - CH2: %d - CH3: %d - CH4: %d BUTTON: %d",joystick.axis[0],joystick.axis[1],joystick.axis[2],joystick.axis[3],joystick.buttons);
 
-			orb_check(unibo_parameters_fd, &updated);   //TODO
-			if (updated){
-				orb_copy(ORB_ID(unibo_parameters), unibo_parameters_fd, &param);
-				yawoffset = param.in24;
-			}
+//			orb_check(unibo_parameters_fd, &updated);   //TODO
+//			if (updated){
+//				orb_copy(ORB_ID(unibo_parameters), unibo_parameters_fd, &param);
+//				yawoffset = param.in24;
+//			}
 
 			/* copy attitude into local buffer */
 			orb_check(vehicle_attitude_fd, &updated);
 			if (updated){
 				orb_copy(ORB_ID(vehicle_attitude), vehicle_attitude_fd, &ahrs);
-				TRAJECTORY_GENERATOR_APP_U.PSI = ahrs.yaw + yawoffset/180*3.14;
+				TRAJECTORY_GENERATOR_APP_U.PSI = ahrs.yaw;
 			}
 
 			/* copy position data into local buffer */                 //TODO change to local position for compatibility
