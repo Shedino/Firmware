@@ -135,6 +135,8 @@ MODULES		+= modules/unibo_control
 MODULES		+= modules/unibo_att_esti_ECF_s
 MODULES		+= modules/unibo_att_esti_ECF_c
 MODULES		+= modules/unibo_trajectory_ref
+MODULES		+= modules/ahrs_SO3_unibo
+MODULES		+= modules/unibo_INS
 #-----------
 
 #

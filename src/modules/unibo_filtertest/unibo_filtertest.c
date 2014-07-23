@@ -46,6 +46,8 @@
 #include <uORB/topics/unibo_optitrack.h>
 #include <uORB/topics/unibo_telemetry.h>
 #include <uORB/topics/sensor_combined.h>
+#include <uORB/topics/vehicle_attitude.h>
+#include <uORB/topics/vehicle_gps_position.h>
 ////
 #include <systemlib/systemlib.h>
 #include <systemlib/perf_counter.h>
@@ -235,12 +237,27 @@ void close_port(int fd)
 }
 
 
-bool serial_write(int fd, struct sensor_combined_s sens)
+bool serial_write(int fd, struct sensor_combined_s sens,struct vehicle_attitude_s att,struct vehicle_gps_position_s gps)
 {
 	char string[LENGTH];
-	sprintf(string,"S %d %d %d %d %d %d %d %d %d E",sens.gyro_raw[0],sens.gyro_raw[1],sens.gyro_raw[2]
-                                                       ,sens.accelerometer_raw[0],sens.accelerometer_raw[1],sens.accelerometer_raw[2]
-                                                       ,sens.magnetometer_raw[0],sens.magnetometer_raw[1],sens.magnetometer_raw[2]);
+	int vel_n,vel_e,vel_d;
+	int acc_x, acc_y, acc_z, roll,pitch ,yaw,alt_bar,press;
+
+	vel_n = gps.vel_n_m_s*1000;
+	vel_e = gps.vel_e_m_s*1000;
+	vel_d = gps.vel_d_m_s*1000;
+	acc_x = sens.accelerometer_m_s2[0]*1000;
+	acc_y = sens.accelerometer_m_s2[1]*1000;
+	acc_z = sens.accelerometer_m_s2[2]*1000;
+	roll = att.roll*1000;
+	pitch = att.pitch*1000;
+	yaw = att.yaw*1000;
+	alt_bar = sens.baro_alt_meter*1000;
+	press = sens.baro_pres_mbar*1000;
+
+	sprintf(string,"S %d %d  E",
+            alt_bar,press);
+
 	//warnx("String to print: %s\n",string);
 	int strlgt=1;
 	while (string[strlgt-1]!='E' && strlgt<LENGTH){
@@ -473,7 +490,7 @@ int unibo_filtertest_thread_main(int argc, char *argv[])
 	/* default values for arguments */
 
 	// use (ttyS2) for UART5 in px4fum_v1
-	char *uart_name = (char*)"/dev/ttyS5";      //(ttyS2)--> UART5,
+	char *uart_name = (char*)"/dev/ttyS6";      //(ttyS2)--> UART5,
 	int baudrate = 115200;
 	const char *commandline_usage = "\tusage: %s -d <devicename> -b <baudrate> [-v/--verbose] [--debug]\n\t\tdefault: -d %s -b %i\n";
 
@@ -574,6 +591,10 @@ int unibo_filtertest_thread_main(int argc, char *argv[])
 
 	int sensor_sub_fd = orb_subscribe(ORB_ID(sensor_combined));
 	orb_set_interval(sensor_sub_fd, 10);
+	int gps_sub_fd = orb_subscribe(ORB_ID(vehicle_gps_position));
+	orb_set_interval(gps_sub_fd, 200);
+	int att_sub_fd = orb_subscribe(ORB_ID(vehicle_attitude));
+	orb_set_interval(att_sub_fd, 10);
 
 	// Run indefinitely while the serial loop handles data
 	warnx("\nREADY, waiting for serial data.\n");
@@ -585,8 +606,17 @@ int unibo_filtertest_thread_main(int argc, char *argv[])
 				if (updated){
 					struct sensor_combined_s sens;
 					orb_copy(ORB_ID(sensor_combined),sensor_sub_fd,&sens);
-					serial_write(fd, sens);
+					struct vehicle_attitude_s att;
+					orb_copy(ORB_ID(vehicle_attitude),att_sub_fd,&att);
+					struct vehicle_gps_position_s gps;
+					orb_copy(ORB_ID(vehicle_gps_position),gps_sub_fd,&gps);
+					serial_write(fd, sens,att,gps);
+
+
 				}
+
+
+
 
 		//usleep(20000);
 
