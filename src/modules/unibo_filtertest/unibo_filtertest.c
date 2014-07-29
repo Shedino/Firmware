@@ -255,8 +255,8 @@ bool serial_write(int fd, struct sensor_combined_s sens,struct vehicle_attitude_
 	alt_bar = sens.baro_alt_meter*1000;
 	press = sens.baro_pres_mbar*1000;
 
-	sprintf(string,"S %d %d  E",
-            alt_bar,press);
+	sprintf(string,"S %d %d %d E",
+            acc_x,acc_y,acc_z);
 
 	//warnx("String to print: %s\n",string);
 	int strlgt=1;

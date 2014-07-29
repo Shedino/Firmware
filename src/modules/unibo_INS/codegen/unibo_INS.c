@@ -3,9 +3,9 @@
  *
  * Code generation for model "unibo_INS".
  *
- * Model version              : 1.2456
+ * Model version              : 1.2460
  * Simulink Coder version : 8.4 (R2013a) 13-Feb-2013
- * C source code generated on : Wed Jul 23 11:27:49 2014
+ * C source code generated on : Thu Jul 24 14:59:23 2014
  *
  * Target selection: grt.tlc
  * Note: GRT includes extra infrastructure and instrumentation for prototyping
@@ -46,13 +46,13 @@ static void unibo_INS_sat(const real_T x[3], real_T delta, real_T y[3])
   /*  The function return x if |x|<delta */
   /*  otherwise return +-delta, according to x sign */
   if ((x[0] == 0.0) && (x[1] == 0.0) && (x[2] == 0.0)) {
-    /* '<S5>:1:22' */
-    /* '<S5>:1:23' */
+    /* '<S6>:1:23' */
+    /* '<S6>:1:24' */
     y[0] = 0.0;
     y[1] = 0.0;
     y[2] = 0.0;
   } else {
-    /* '<S5>:1:25' */
+    /* '<S6>:1:26' */
     scale = 2.2250738585072014E-308;
     absxk = fabs(x[0]);
     if (absxk > 2.2250738585072014E-308) {
@@ -100,7 +100,7 @@ static void unibo_INS_output(void)
 {
   real_T rtb_p_tb[3];
   real_T rtb_Init[3];
-  real_T rtb_Init_j[3];
+  real_T rtb_Init_i[3];
   int8_T rtb_EN[6];
   real_T rtb_Rbn_y[9];
   int32_T i;
@@ -111,35 +111,35 @@ static void unibo_INS_output(void)
   real_T unnamed_idx;
   real_T unnamed_idx_0;
   real_T unnamed_idx_1;
-  real_T rtb_Init_d_idx;
-  real_T rtb_Init_d_idx_0;
-  real_T rtb_Init_d_idx_1;
+  real_T rtb_Init_k_idx;
+  real_T rtb_Init_k_idx_0;
+  real_T rtb_Init_k_idx_1;
 
-  /* RelationalOperator: '<S14>/Relational Operator' incorporates:
+  /* RelationalOperator: '<S15>/Relational Operator' incorporates:
    *  Inport: '<Root>/simulation_par'
-   *  UnitDelay: '<S14>/Unit Delay'
+   *  UnitDelay: '<S15>/Unit Delay'
    */
   unibo_INS_B.RelationalOperator = (unibo_INS_U.simulation_par[1] >=
     unibo_INS_DW.UnitDelay_DSTATE);
 
   /* Outputs for Enabled SubSystem: '<S3>/Initial Cartesian Position' incorporates:
-   *  EnablePort: '<S15>/Enable'
+   *  EnablePort: '<S16>/Enable'
    */
   if (unibo_INS_B.RelationalOperator) {
     /* Outport: '<Root>/p0_sf' incorporates:
-     *  Memory: '<S17>/y(tk-1)'
+     *  Memory: '<S18>/y(tk-1)'
      */
     unibo_INS_Y.p0_sf[0] = unibo_INS_DW.ytk1_PreviousInput[0];
     unibo_INS_Y.p0_sf[1] = unibo_INS_DW.ytk1_PreviousInput[1];
     unibo_INS_Y.p0_sf[2] = unibo_INS_DW.ytk1_PreviousInput[2];
 
-    /* Sum: '<S17>/Sum' incorporates:
-     *  Bias: '<S17>/Bias'
+    /* Sum: '<S18>/Sum' incorporates:
+     *  Bias: '<S18>/Bias'
      *  Inport: '<Root>/pos_meas'
      *  Inport: '<Root>/simulation_par'
-     *  Product: '<S17>/Product'
-     *  Product: '<S17>/Product1'
-     *  UnaryMinus: '<S17>/Unary Minus'
+     *  Product: '<S18>/Product'
+     *  Product: '<S18>/Product1'
+     *  UnaryMinus: '<S18>/Unary Minus'
      */
     unibo_INS_B.Sum[0] = (-unibo_INS_U.simulation_par[2] + 1.0) *
       unibo_INS_Y.p0_sf[0] + unibo_INS_U.pos_meas[0] *
@@ -151,30 +151,32 @@ static void unibo_INS_output(void)
       unibo_INS_Y.p0_sf[2] + unibo_INS_U.pos_meas[2] *
       unibo_INS_U.simulation_par[2];
 
-    /* MATLAB Function: '<S15>/spherical2cartesian1' incorporates:
-     *  Inport: '<Root>/earth_par'
+    /* MATLAB Function: '<S16>/spherical2cartesian1' incorporates:
      *  Inport: '<Root>/simulation_par'
-     *  RelationalOperator: '<S15>/Relational Operator1'
-     *  UnitDelay: '<S14>/Unit Delay'
+     *  RelationalOperator: '<S16>/Relational Operator1'
+     *  UnitDelay: '<S15>/Unit Delay'
      */
-    /* MATLAB Function ' Filter /Local position from GPS/Initial Cartesian Position/spherical2cartesian1': '<S19>:1' */
+    /* MATLAB Function ' Filter /Local position from GPS/Initial Cartesian Position/spherical2cartesian1': '<S20>:1' */
     /*  The function convert GPS spherical coordinates(phi,lambda,h) */
     /*  to ECEF cartesian coordinate system (x,y,z) */
     if ((unibo_INS_U.simulation_par[1] == unibo_INS_DW.UnitDelay_DSTATE) == 1) {
-      /* '<S19>:1:5' */
-      /* '<S19>:1:6' */
-      /* '<S19>:1:7' */
-      /* '<S19>:1:8' */
-      /* '<S19>:1:9' */
-      unibo_INS_B.p_xyz[0] = (unibo_INS_U.earth_par[0] + unibo_INS_Y.p0_sf[2]) *
-        cos(unibo_INS_Y.p0_sf[0]) * cos(unibo_INS_Y.p0_sf[1]);
-      unibo_INS_B.p_xyz[1] = (unibo_INS_U.earth_par[0] + unibo_INS_Y.p0_sf[2]) *
-        cos(unibo_INS_Y.p0_sf[0]) * sin(unibo_INS_Y.p0_sf[1]);
-      unibo_INS_B.p_xyz[2] = ((1.0 - unibo_INS_U.earth_par[1] *
+      /* Outport: '<Root>/p0_cart' incorporates:
+       *  Inport: '<Root>/earth_par'
+       */
+      /* '<S20>:1:5' */
+      /* '<S20>:1:6' */
+      /* '<S20>:1:7' */
+      /* '<S20>:1:8' */
+      /* '<S20>:1:9' */
+      unibo_INS_Y.p0_cart[0] = (unibo_INS_U.earth_par[0] + unibo_INS_Y.p0_sf[2])
+        * cos(unibo_INS_Y.p0_sf[0]) * cos(unibo_INS_Y.p0_sf[1]);
+      unibo_INS_Y.p0_cart[1] = (unibo_INS_U.earth_par[0] + unibo_INS_Y.p0_sf[2])
+        * cos(unibo_INS_Y.p0_sf[0]) * sin(unibo_INS_Y.p0_sf[1]);
+      unibo_INS_Y.p0_cart[2] = ((1.0 - unibo_INS_U.earth_par[1] *
         unibo_INS_U.earth_par[1]) * unibo_INS_U.earth_par[0] +
         unibo_INS_Y.p0_sf[2]) * sin(unibo_INS_Y.p0_sf[0]);
 
-      /* '<S19>:1:10' */
+      /* '<S20>:1:10' */
       unibo_INS_B.R_et[0] = -sin(unibo_INS_Y.p0_sf[0]) * cos(unibo_INS_Y.p0_sf[1]);
       unibo_INS_B.R_et[3] = -sin(unibo_INS_Y.p0_sf[0]) * sin(unibo_INS_Y.p0_sf[1]);
       unibo_INS_B.R_et[6] = cos(unibo_INS_Y.p0_sf[0]);
@@ -185,47 +187,48 @@ static void unibo_INS_output(void)
       unibo_INS_B.R_et[5] = -cos(unibo_INS_Y.p0_sf[0]) * sin(unibo_INS_Y.p0_sf[1]);
       unibo_INS_B.R_et[8] = -sin(unibo_INS_Y.p0_sf[0]);
 
-      /* '<S19>:1:11' */
+      /* '<S20>:1:11' */
       unibo_INS_B.EN1 = 1.0;
     } else {
-      /* '<S19>:1:13' */
-      unibo_INS_B.p_xyz[0] = 0.0;
-      unibo_INS_B.p_xyz[1] = 0.0;
-      unibo_INS_B.p_xyz[2] = 0.0;
+      /* Outport: '<Root>/p0_cart' */
+      /* '<S20>:1:13' */
+      unibo_INS_Y.p0_cart[0] = 0.0;
+      unibo_INS_Y.p0_cart[1] = 0.0;
+      unibo_INS_Y.p0_cart[2] = 0.0;
 
-      /* '<S19>:1:14' */
+      /* '<S20>:1:14' */
       memset(&unibo_INS_B.R_et[0], 0, 9U * sizeof(real_T));
       unibo_INS_B.R_et[0] = 1.0;
       unibo_INS_B.R_et[4] = 1.0;
       unibo_INS_B.R_et[8] = 1.0;
 
-      /* '<S19>:1:15' */
+      /* '<S20>:1:15' */
       unibo_INS_B.EN1 = 0.0;
     }
 
-    /* End of MATLAB Function: '<S15>/spherical2cartesian1' */
+    /* End of MATLAB Function: '<S16>/spherical2cartesian1' */
 
-    /* Memory: '<S18>/y(tk-1)' */
-    unibo_INS_B.ytk1_i[0] = unibo_INS_DW.ytk1_PreviousInput_j[0];
-    unibo_INS_B.ytk1_i[1] = unibo_INS_DW.ytk1_PreviousInput_j[1];
-    unibo_INS_B.ytk1_i[2] = unibo_INS_DW.ytk1_PreviousInput_j[2];
+    /* Memory: '<S19>/y(tk-1)' */
+    unibo_INS_B.ytk1_n[0] = unibo_INS_DW.ytk1_PreviousInput_g[0];
+    unibo_INS_B.ytk1_n[1] = unibo_INS_DW.ytk1_PreviousInput_g[1];
+    unibo_INS_B.ytk1_n[2] = unibo_INS_DW.ytk1_PreviousInput_g[2];
 
-    /* Sum: '<S18>/Sum' incorporates:
-     *  Bias: '<S18>/Bias'
+    /* Sum: '<S19>/Sum' incorporates:
+     *  Bias: '<S19>/Bias'
      *  Inport: '<Root>/simulation_par'
      *  Inport: '<Root>/vel_meas'
-     *  Product: '<S18>/Product'
-     *  Product: '<S18>/Product1'
-     *  UnaryMinus: '<S18>/Unary Minus'
+     *  Product: '<S19>/Product'
+     *  Product: '<S19>/Product1'
+     *  UnaryMinus: '<S19>/Unary Minus'
      */
-    unibo_INS_B.Sum_e[0] = (-unibo_INS_U.simulation_par[3] + 1.0) *
-      unibo_INS_B.ytk1_i[0] + unibo_INS_U.vel_meas[0] *
+    unibo_INS_B.Sum_j[0] = (-unibo_INS_U.simulation_par[3] + 1.0) *
+      unibo_INS_B.ytk1_n[0] + unibo_INS_U.vel_meas[0] *
       unibo_INS_U.simulation_par[3];
-    unibo_INS_B.Sum_e[1] = (-unibo_INS_U.simulation_par[3] + 1.0) *
-      unibo_INS_B.ytk1_i[1] + unibo_INS_U.vel_meas[1] *
+    unibo_INS_B.Sum_j[1] = (-unibo_INS_U.simulation_par[3] + 1.0) *
+      unibo_INS_B.ytk1_n[1] + unibo_INS_U.vel_meas[1] *
       unibo_INS_U.simulation_par[3];
-    unibo_INS_B.Sum_e[2] = (-unibo_INS_U.simulation_par[3] + 1.0) *
-      unibo_INS_B.ytk1_i[2] + unibo_INS_U.vel_meas[2] *
+    unibo_INS_B.Sum_j[2] = (-unibo_INS_U.simulation_par[3] + 1.0) *
+      unibo_INS_B.ytk1_n[2] + unibo_INS_U.vel_meas[2] *
       unibo_INS_U.simulation_par[3];
   }
 
@@ -235,25 +238,25 @@ static void unibo_INS_output(void)
    *  Inport: '<Root>/earth_par'
    *  Inport: '<Root>/pos_meas'
    */
-  /* MATLAB Function ' Filter /Local position from GPS/spherical2cartesian': '<S16>:1' */
+  /* MATLAB Function ' Filter /Local position from GPS/spherical2cartesian': '<S17>:1' */
   /*  The function convert GPS spherical coordinates(phi,lambda,h) */
   /*  to ECEF cartesian coordinate system (x,y,z) */
   if (unibo_INS_B.EN1 == 1.0) {
-    /* '<S16>:1:5' */
+    /* '<S17>:1:5' */
     /*      x = (Rn+p_gps(3))*cos(p_gps(1))*cos(p_gps(2)); */
     /*      y = (Rn+p_gps(3))*cos(p_gps(1))*sin(p_gps(2)); */
     /*      z = (Rn*(1-e^2)+p_gps(3))*sin(p_gps(1)); */
     /*    p_xyz = [x;y;z]; */
-    /* '<S16>:1:10' */
+    /* '<S17>:1:10' */
     unnamed_idx = (unibo_INS_U.earth_par[0] + unibo_INS_U.pos_meas[2]) * cos
       (unibo_INS_U.pos_meas[0]) * cos(unibo_INS_U.pos_meas[1]) -
-      unibo_INS_B.p_xyz[0];
+      unibo_INS_Y.p0_cart[0];
     unnamed_idx_0 = (unibo_INS_U.earth_par[0] + unibo_INS_U.pos_meas[2]) * cos
       (unibo_INS_U.pos_meas[0]) * sin(unibo_INS_U.pos_meas[1]) -
-      unibo_INS_B.p_xyz[1];
+      unibo_INS_Y.p0_cart[1];
     unnamed_idx_1 = ((1.0 - unibo_INS_U.earth_par[1] * unibo_INS_U.earth_par[1])
                      * unibo_INS_U.earth_par[0] + unibo_INS_U.pos_meas[2]) * sin
-      (unibo_INS_U.pos_meas[0]) - unibo_INS_B.p_xyz[2];
+      (unibo_INS_U.pos_meas[0]) - unibo_INS_Y.p0_cart[2];
     for (i = 0; i < 3; i++) {
       rtb_p_tb[i] = unibo_INS_B.R_et[i + 6] * unnamed_idx_1 +
         (unibo_INS_B.R_et[i + 3] * unnamed_idx_0 + unibo_INS_B.R_et[i] *
@@ -262,7 +265,7 @@ static void unibo_INS_output(void)
 
     /*    p_tb = [z-p0_cart(3) y-p0_cart(2) -(x-p0_cart(1))]'; */
   } else {
-    /* '<S16>:1:14' */
+    /* '<S17>:1:14' */
     rtb_p_tb[0] = 0.0;
     rtb_p_tb[1] = 0.0;
     rtb_p_tb[2] = 0.0;
@@ -273,7 +276,7 @@ static void unibo_INS_output(void)
   /* MATLAB Function: '<S1>/Reconstruct DCM' incorporates:
    *  Inport: '<Root>/Rnb'
    */
-  /* MATLAB Function ' Filter /Reconstruct DCM': '<S4>:1' */
+  /* MATLAB Function 'Reconstruct DCM': '<S4>:1' */
   /* '<S4>:1:4' */
   rtb_Rbn_y[0] = unibo_INS_U.Rnb[0];
   rtb_Rbn_y[1] = unibo_INS_U.Rnb[1];
@@ -298,89 +301,89 @@ static void unibo_INS_output(void)
      *  UnitDelay: '<S2>/Unit Delay5'
      *  UnitDelay: '<S2>/Unit Delay6'
      */
-    /* MATLAB Function ' Filter /Filtro lineare/MATLAB Function': '<S6>:1' */
+    /* MATLAB Function ' Filter /Filtro lineare/MATLAB Function': '<S7>:1' */
     /*  This mini-functions scales the hight frequencies to low-frequencies of */
     /*  gps */
-    /* '<S6>:1:5' */
+    /* '<S7>:1:5' */
     for (i = 0; i < 6; i++) {
       rtb_EN[i] = 0;
     }
 
-    /* '<S6>:1:6' */
+    /* '<S7>:1:6' */
     unibo_INS_B.g = unibo_INS_DW.UnitDelay6_DSTATE + 1.0;
 
-    /* '<S6>:1:7' */
+    /* '<S7>:1:7' */
     unibo_INS_B.h = unibo_INS_DW.UnitDelay5_DSTATE + 1.0;
 
-    /* '<S6>:1:8' */
+    /* '<S7>:1:8' */
     unibo_INS_B.i = unibo_INS_DW.UnitDelay4_DSTATE + 1.0;
 
-    /* '<S6>:1:9' */
+    /* '<S7>:1:9' */
     unibo_INS_B.l = unibo_INS_DW.UnitDelay2_DSTATE + 1.0;
 
-    /* '<S6>:1:10' */
+    /* '<S7>:1:10' */
     unibo_INS_B.m = unibo_INS_DW.UnitDelay1_DSTATE + 1.0;
 
-    /* '<S6>:1:11' */
+    /* '<S7>:1:11' */
     unibo_INS_B.n = unibo_INS_DW.UnitDelay3_DSTATE + 1.0;
     if (unibo_INS_DW.UnitDelay6_DSTATE + 1.0 > unibo_INS_U.filter_gain[12]) {
-      /* '<S6>:1:12' */
-      /* '<S6>:1:13' */
+      /* '<S7>:1:12' */
+      /* '<S7>:1:13' */
       unibo_INS_B.g = 0.0;
 
-      /* '<S6>:1:14' */
+      /* '<S7>:1:14' */
       rtb_EN[0] = 1;
     }
 
     if (unibo_INS_DW.UnitDelay5_DSTATE + 1.0 > unibo_INS_U.filter_gain[13]) {
-      /* '<S6>:1:16' */
-      /* '<S6>:1:17' */
+      /* '<S7>:1:16' */
+      /* '<S7>:1:17' */
       unibo_INS_B.h = 0.0;
 
-      /* '<S6>:1:18' */
+      /* '<S7>:1:18' */
       rtb_EN[1] = 1;
     }
 
     if (unibo_INS_DW.UnitDelay4_DSTATE + 1.0 > unibo_INS_U.filter_gain[14]) {
-      /* '<S6>:1:21' */
-      /* '<S6>:1:22' */
+      /* '<S7>:1:21' */
+      /* '<S7>:1:22' */
       unibo_INS_B.i = 0.0;
 
-      /* '<S6>:1:23' */
+      /* '<S7>:1:23' */
       rtb_EN[2] = 1;
     }
 
     if (unibo_INS_DW.UnitDelay2_DSTATE + 1.0 > unibo_INS_U.filter_gain[15]) {
-      /* '<S6>:1:26' */
-      /* '<S6>:1:27' */
+      /* '<S7>:1:26' */
+      /* '<S7>:1:27' */
       unibo_INS_B.l = 0.0;
 
-      /* '<S6>:1:28' */
+      /* '<S7>:1:28' */
       rtb_EN[3] = 1;
     }
 
     if (unibo_INS_DW.UnitDelay1_DSTATE + 1.0 > unibo_INS_U.filter_gain[16]) {
-      /* '<S6>:1:31' */
-      /* '<S6>:1:32' */
+      /* '<S7>:1:31' */
+      /* '<S7>:1:32' */
       unibo_INS_B.m = 0.0;
 
-      /* '<S6>:1:33' */
+      /* '<S7>:1:33' */
       rtb_EN[4] = 1;
     }
 
     if (unibo_INS_DW.UnitDelay3_DSTATE + 1.0 > unibo_INS_U.filter_gain[17]) {
-      /* '<S6>:1:36' */
-      /* '<S6>:1:37' */
+      /* '<S7>:1:36' */
+      /* '<S7>:1:37' */
       unibo_INS_B.n = 0.0;
 
-      /* '<S6>:1:38' */
+      /* '<S7>:1:38' */
       rtb_EN[5] = 1;
     }
 
     /* End of MATLAB Function: '<S2>/MATLAB Function' */
 
-    /* Switch: '<S9>/Init' incorporates:
-     *  UnitDelay: '<S9>/FixPt Unit Delay2'
+    /* Switch: '<S10>/Init' incorporates:
+     *  UnitDelay: '<S10>/FixPt Unit Delay2'
      */
     if (unibo_INS_DW.FixPtUnitDelay2_DSTATE != 0) {
       /* Outport: '<Root>/local_xyz' */
@@ -389,90 +392,90 @@ static void unibo_INS_output(void)
       unibo_INS_Y.local_xyz[2] = 0.0;
     } else {
       /* Outport: '<Root>/local_xyz' incorporates:
-       *  UnitDelay: '<S9>/FixPt Unit Delay1'
+       *  UnitDelay: '<S10>/FixPt Unit Delay1'
        */
       unibo_INS_Y.local_xyz[0] = unibo_INS_DW.FixPtUnitDelay1_DSTATE[0];
       unibo_INS_Y.local_xyz[1] = unibo_INS_DW.FixPtUnitDelay1_DSTATE[1];
       unibo_INS_Y.local_xyz[2] = unibo_INS_DW.FixPtUnitDelay1_DSTATE[2];
     }
 
-    /* End of Switch: '<S9>/Init' */
-
-    /* Switch: '<S7>/Init' incorporates:
-     *  UnitDelay: '<S7>/FixPt Unit Delay1'
-     *  UnitDelay: '<S7>/FixPt Unit Delay2'
-     */
-    if (unibo_INS_DW.FixPtUnitDelay2_DSTATE_l != 0) {
-      unibo_INS_B.Init_p[0] = unibo_INS_B.ytk1_i[0];
-      unibo_INS_B.Init_p[1] = unibo_INS_B.ytk1_i[1];
-      unibo_INS_B.Init_p[2] = unibo_INS_B.ytk1_i[2];
-    } else {
-      unibo_INS_B.Init_p[0] = unibo_INS_DW.FixPtUnitDelay1_DSTATE_k[0];
-      unibo_INS_B.Init_p[1] = unibo_INS_DW.FixPtUnitDelay1_DSTATE_k[1];
-      unibo_INS_B.Init_p[2] = unibo_INS_DW.FixPtUnitDelay1_DSTATE_k[2];
-    }
-
-    /* End of Switch: '<S7>/Init' */
+    /* End of Switch: '<S10>/Init' */
 
     /* Switch: '<S8>/Init' incorporates:
      *  UnitDelay: '<S8>/FixPt Unit Delay1'
      *  UnitDelay: '<S8>/FixPt Unit Delay2'
      */
     if (unibo_INS_DW.FixPtUnitDelay2_DSTATE_a != 0) {
-      rtb_Init[0] = 0.0;
-      rtb_Init[1] = 0.0;
-      rtb_Init[2] = 0.0;
+      unibo_INS_B.Init_g[0] = unibo_INS_B.ytk1_n[0];
+      unibo_INS_B.Init_g[1] = unibo_INS_B.ytk1_n[1];
+      unibo_INS_B.Init_g[2] = unibo_INS_B.ytk1_n[2];
     } else {
-      rtb_Init[0] = unibo_INS_DW.FixPtUnitDelay1_DSTATE_h[0];
-      rtb_Init[1] = unibo_INS_DW.FixPtUnitDelay1_DSTATE_h[1];
-      rtb_Init[2] = unibo_INS_DW.FixPtUnitDelay1_DSTATE_h[2];
+      unibo_INS_B.Init_g[0] = unibo_INS_DW.FixPtUnitDelay1_DSTATE_p[0];
+      unibo_INS_B.Init_g[1] = unibo_INS_DW.FixPtUnitDelay1_DSTATE_p[1];
+      unibo_INS_B.Init_g[2] = unibo_INS_DW.FixPtUnitDelay1_DSTATE_p[2];
     }
 
     /* End of Switch: '<S8>/Init' */
 
-    /* Switch: '<S11>/Init' incorporates:
-     *  UnitDelay: '<S11>/FixPt Unit Delay1'
-     *  UnitDelay: '<S11>/FixPt Unit Delay2'
+    /* Switch: '<S9>/Init' incorporates:
+     *  UnitDelay: '<S9>/FixPt Unit Delay1'
+     *  UnitDelay: '<S9>/FixPt Unit Delay2'
      */
-    if (unibo_INS_DW.FixPtUnitDelay2_DSTATE_d != 0) {
-      rtb_Init_j[0] = 0.0;
-      rtb_Init_j[1] = 0.0;
-      rtb_Init_j[2] = 0.0;
+    if (unibo_INS_DW.FixPtUnitDelay2_DSTATE_l != 0) {
+      rtb_Init[0] = 0.0;
+      rtb_Init[1] = 0.0;
+      rtb_Init[2] = 0.0;
     } else {
-      rtb_Init_j[0] = unibo_INS_DW.FixPtUnitDelay1_DSTATE_ka[0];
-      rtb_Init_j[1] = unibo_INS_DW.FixPtUnitDelay1_DSTATE_ka[1];
-      rtb_Init_j[2] = unibo_INS_DW.FixPtUnitDelay1_DSTATE_ka[2];
+      rtb_Init[0] = unibo_INS_DW.FixPtUnitDelay1_DSTATE_o[0];
+      rtb_Init[1] = unibo_INS_DW.FixPtUnitDelay1_DSTATE_o[1];
+      rtb_Init[2] = unibo_INS_DW.FixPtUnitDelay1_DSTATE_o[2];
     }
 
-    /* End of Switch: '<S11>/Init' */
-
-    /* Switch: '<S10>/Init' incorporates:
-     *  UnitDelay: '<S10>/FixPt Unit Delay1'
-     *  UnitDelay: '<S10>/FixPt Unit Delay2'
-     */
-    if (unibo_INS_DW.FixPtUnitDelay2_DSTATE_o != 0) {
-      rtb_Init_d_idx = unibo_INS_B.ytk1_i[0];
-      rtb_Init_d_idx_0 = unibo_INS_B.ytk1_i[1];
-      rtb_Init_d_idx_1 = unibo_INS_B.ytk1_i[2];
-    } else {
-      rtb_Init_d_idx = unibo_INS_DW.FixPtUnitDelay1_DSTATE_a[0];
-      rtb_Init_d_idx_0 = unibo_INS_DW.FixPtUnitDelay1_DSTATE_a[1];
-      rtb_Init_d_idx_1 = unibo_INS_DW.FixPtUnitDelay1_DSTATE_a[2];
-    }
-
-    /* End of Switch: '<S10>/Init' */
+    /* End of Switch: '<S9>/Init' */
 
     /* Switch: '<S12>/Init' incorporates:
      *  UnitDelay: '<S12>/FixPt Unit Delay1'
      *  UnitDelay: '<S12>/FixPt Unit Delay2'
      */
-    if (unibo_INS_DW.FixPtUnitDelay2_DSTATE_g != 0) {
-      unibo_INS_B.Init_j = unibo_INS_B.ytk1_i[2];
+    if (unibo_INS_DW.FixPtUnitDelay2_DSTATE_h != 0) {
+      rtb_Init_i[0] = 0.0;
+      rtb_Init_i[1] = 0.0;
+      rtb_Init_i[2] = 0.0;
     } else {
-      unibo_INS_B.Init_j = unibo_INS_DW.FixPtUnitDelay1_DSTATE_p;
+      rtb_Init_i[0] = unibo_INS_DW.FixPtUnitDelay1_DSTATE_c[0];
+      rtb_Init_i[1] = unibo_INS_DW.FixPtUnitDelay1_DSTATE_c[1];
+      rtb_Init_i[2] = unibo_INS_DW.FixPtUnitDelay1_DSTATE_c[2];
     }
 
     /* End of Switch: '<S12>/Init' */
+
+    /* Switch: '<S11>/Init' incorporates:
+     *  UnitDelay: '<S11>/FixPt Unit Delay1'
+     *  UnitDelay: '<S11>/FixPt Unit Delay2'
+     */
+    if (unibo_INS_DW.FixPtUnitDelay2_DSTATE_o != 0) {
+      rtb_Init_k_idx = unibo_INS_B.ytk1_n[0];
+      rtb_Init_k_idx_0 = unibo_INS_B.ytk1_n[1];
+      rtb_Init_k_idx_1 = unibo_INS_B.ytk1_n[2];
+    } else {
+      rtb_Init_k_idx = unibo_INS_DW.FixPtUnitDelay1_DSTATE_b[0];
+      rtb_Init_k_idx_0 = unibo_INS_DW.FixPtUnitDelay1_DSTATE_b[1];
+      rtb_Init_k_idx_1 = unibo_INS_DW.FixPtUnitDelay1_DSTATE_b[2];
+    }
+
+    /* End of Switch: '<S11>/Init' */
+
+    /* Switch: '<S13>/Init' incorporates:
+     *  UnitDelay: '<S13>/FixPt Unit Delay1'
+     *  UnitDelay: '<S13>/FixPt Unit Delay2'
+     */
+    if (unibo_INS_DW.FixPtUnitDelay2_DSTATE_g != 0) {
+      unibo_INS_B.Init_i = unibo_INS_B.ytk1_n[2];
+    } else {
+      unibo_INS_B.Init_i = unibo_INS_DW.FixPtUnitDelay1_DSTATE_bb;
+    }
+
+    /* End of Switch: '<S13>/Init' */
 
     /* MATLAB Function: '<S2>/Filtro Lineare' incorporates:
      *  Inport: '<Root>/acc_meas'
@@ -481,13 +484,13 @@ static void unibo_INS_output(void)
      *  Inport: '<Root>/simulation_par'
      *  Inport: '<Root>/vel_meas'
      */
-    /* MATLAB Function ' Filter /Filtro lineare/Filtro Lineare': '<S5>:1' */
+    /* MATLAB Function ' Filter /Filtro lineare/Filtro Lineare': '<S6>:1' */
     /*  Linear Filter, use low-frequencies position and velocity from sensor */
     /*  to correct the estimate given by accelerometer */
     /*  Predict the position by using the estimates of velocity to have an  */
     /*  hight-frequencies position measurement  or Update the position measure with low-frequencies measure */
     /*  f_rapp define the time of correction in iteration step */
-    /* '<S5>:1:9' */
+    /* '<S6>:1:9' */
     unnamed_idx = unibo_INS_U.acc_meas[0] - rtb_Init[0];
     unnamed_idx_0 = unibo_INS_U.acc_meas[1] - rtb_Init[1];
     unnamed_idx_1 = unibo_INS_U.acc_meas[2] - rtb_Init[2];
@@ -497,20 +500,20 @@ static void unibo_INS_output(void)
         unibo_INS_U.earth_par[2 + i] * unibo_INS_U.earth_par[5];
     }
 
-    unibo_INS_B.p2_gps[0] = ((1.0 - unibo_INS_U.filter_gain[6]) * rtb_Init_j[0]
+    unibo_INS_B.p2_gps[0] = ((1.0 - unibo_INS_U.filter_gain[6]) * rtb_Init_i[0]
       + rtb_p_tb[0] * unibo_INS_U.filter_gain[6]) * (real_T)rtb_EN[0] +
-      ((unibo_INS_U.simulation_par[0] * unibo_INS_B.Init_p[0] + rtb_Init_j[0]) +
+      ((unibo_INS_U.simulation_par[0] * unibo_INS_B.Init_g[0] + rtb_Init_i[0]) +
        unibo_INS_U.simulation_par[0] * rtb_Rbn_y_0[0]) * (1.0 - (real_T)rtb_EN[0]);
-    unibo_INS_B.p2_gps[1] = ((1.0 - unibo_INS_U.filter_gain[7]) * rtb_Init_j[1]
+    unibo_INS_B.p2_gps[1] = ((1.0 - unibo_INS_U.filter_gain[7]) * rtb_Init_i[1]
       + rtb_p_tb[1] * unibo_INS_U.filter_gain[7]) * (real_T)rtb_EN[1] +
-      ((unibo_INS_U.simulation_par[0] * unibo_INS_B.Init_p[1] + rtb_Init_j[1]) +
+      ((unibo_INS_U.simulation_par[0] * unibo_INS_B.Init_g[1] + rtb_Init_i[1]) +
        unibo_INS_U.simulation_par[0] * rtb_Rbn_y_0[1]) * (1.0 - (real_T)rtb_EN[1]);
-    unibo_INS_B.p2_gps[2] = ((1.0 - unibo_INS_U.filter_gain[8]) * rtb_Init_j[2]
+    unibo_INS_B.p2_gps[2] = ((1.0 - unibo_INS_U.filter_gain[8]) * rtb_Init_i[2]
       + rtb_p_tb[2] * unibo_INS_U.filter_gain[8]) * (real_T)rtb_EN[2] +
-      ((unibo_INS_U.simulation_par[0] * unibo_INS_B.Init_p[2] + rtb_Init_j[2]) +
+      ((unibo_INS_U.simulation_par[0] * unibo_INS_B.Init_g[2] + rtb_Init_i[2]) +
        unibo_INS_U.simulation_par[0] * rtb_Rbn_y_0[2]) * (1.0 - (real_T)rtb_EN[2]);
 
-    /* '<S5>:1:10' */
+    /* '<S6>:1:10' */
     unnamed_idx = unibo_INS_U.acc_meas[0] - rtb_Init[0];
     unnamed_idx_0 = unibo_INS_U.acc_meas[1] - rtb_Init[1];
     unnamed_idx_1 = unibo_INS_U.acc_meas[2] - rtb_Init[2];
@@ -520,22 +523,22 @@ static void unibo_INS_output(void)
         unibo_INS_U.earth_par[2 + i] * unibo_INS_U.earth_par[5];
     }
 
-    unibo_INS_B.v2_gps[0] = ((1.0 - unibo_INS_U.filter_gain[9]) * rtb_Init_d_idx
+    unibo_INS_B.v2_gps[0] = ((1.0 - unibo_INS_U.filter_gain[9]) * rtb_Init_k_idx
       + unibo_INS_U.vel_meas[0] * unibo_INS_U.filter_gain[9]) * (real_T)rtb_EN[3]
-      + (unibo_INS_U.simulation_par[0] * rtb_Rbn_y_0[0] + rtb_Init_d_idx) * (1.0
+      + (unibo_INS_U.simulation_par[0] * rtb_Rbn_y_0[0] + rtb_Init_k_idx) * (1.0
       - (real_T)rtb_EN[3]);
     unibo_INS_B.v2_gps[1] = ((1.0 - unibo_INS_U.filter_gain[10]) *
-      rtb_Init_d_idx_0 + unibo_INS_U.vel_meas[1] * unibo_INS_U.filter_gain[10]) *
+      rtb_Init_k_idx_0 + unibo_INS_U.vel_meas[1] * unibo_INS_U.filter_gain[10]) *
       (real_T)rtb_EN[4] + (unibo_INS_U.simulation_par[0] * rtb_Rbn_y_0[1] +
-      rtb_Init_d_idx_0) * (1.0 - (real_T)rtb_EN[4]);
+      rtb_Init_k_idx_0) * (1.0 - (real_T)rtb_EN[4]);
     unibo_INS_B.v2_gps[2] = ((1.0 - unibo_INS_U.filter_gain[11]) *
-      rtb_Init_d_idx_1 + unibo_INS_U.vel_meas[2] * unibo_INS_U.filter_gain[11]) *
+      rtb_Init_k_idx_1 + unibo_INS_U.vel_meas[2] * unibo_INS_U.filter_gain[11]) *
       (real_T)rtb_EN[5] + (unibo_INS_U.simulation_par[0] * rtb_Rbn_y_0[2] +
-      rtb_Init_d_idx_1) * (1.0 - (real_T)rtb_EN[5]);
+      rtb_Init_k_idx_1) * (1.0 - (real_T)rtb_EN[5]);
 
     /*  Update the estimate of position and velocity  */
-    /* '<S5>:1:13' */
-    rtb_Init_d_idx = 0.5 * unibo_INS_U.simulation_par[0];
+    /* '<S6>:1:12' */
+    rtb_Init_k_idx = 0.5 * unibo_INS_U.simulation_par[0];
     unnamed_idx = unibo_INS_U.acc_meas[0] - rtb_Init[0];
     unnamed_idx_0 = unibo_INS_U.acc_meas[1] - rtb_Init[1];
     unnamed_idx_1 = unibo_INS_U.acc_meas[2] - rtb_Init[2];
@@ -545,28 +548,29 @@ static void unibo_INS_output(void)
         unibo_INS_U.earth_par[2 + i] * unibo_INS_U.earth_par[5];
     }
 
-    unibo_INS_B.p_pos[0] = ((rtb_Init_d_idx * rtb_Rbn_y_0[0] +
-      unibo_INS_B.Init_p[0]) + (unibo_INS_B.p2_gps[0] - unibo_INS_Y.local_xyz[0])
+    unibo_INS_B.p_pos[0] = ((rtb_Init_k_idx * rtb_Rbn_y_0[0] +
+      unibo_INS_B.Init_g[0]) + (unibo_INS_B.p2_gps[0] - unibo_INS_Y.local_xyz[0])
       * unibo_INS_U.filter_gain[0]) * unibo_INS_U.simulation_par[0] +
       unibo_INS_Y.local_xyz[0];
-    unibo_INS_B.p_pos[1] = ((rtb_Init_d_idx * rtb_Rbn_y_0[1] +
-      unibo_INS_B.Init_p[1]) + (unibo_INS_B.p2_gps[1] - unibo_INS_Y.local_xyz[1])
+    unibo_INS_B.p_pos[1] = ((rtb_Init_k_idx * rtb_Rbn_y_0[1] +
+      unibo_INS_B.Init_g[1]) + (unibo_INS_B.p2_gps[1] - unibo_INS_Y.local_xyz[1])
       * unibo_INS_U.filter_gain[1]) * unibo_INS_U.simulation_par[0] +
       unibo_INS_Y.local_xyz[1];
-    unibo_INS_B.p_pos[2] = ((rtb_Init_d_idx * rtb_Rbn_y_0[2] +
-      unibo_INS_B.Init_p[2]) + (unibo_INS_B.p2_gps[2] - unibo_INS_Y.local_xyz[2])
+    unibo_INS_B.p_pos[2] = ((rtb_Init_k_idx * rtb_Rbn_y_0[2] +
+      unibo_INS_B.Init_g[2]) + (unibo_INS_B.p2_gps[2] - unibo_INS_Y.local_xyz[2])
       * unibo_INS_U.filter_gain[2]) * unibo_INS_U.simulation_par[0] +
       unibo_INS_Y.local_xyz[2];
 
-    /* '<S5>:1:14' */
+    /*  Update the estimate of velocity using position error */
+    /* '<S6>:1:14' */
     unnamed_idx = unibo_INS_U.acc_meas[0] - rtb_Init[0];
     unnamed_idx_0 = unibo_INS_U.acc_meas[1] - rtb_Init[1];
     unnamed_idx_1 = unibo_INS_U.acc_meas[2] - rtb_Init[2];
     tmp[0] = unibo_INS_B.v2_gps[0];
     tmp[1] = unibo_INS_B.v2_gps[1];
     tmp[2] = unibo_INS_B.p2_gps[2];
-    tmp_0[0] = unibo_INS_B.Init_p[0];
-    tmp_0[1] = unibo_INS_B.Init_p[1];
+    tmp_0[0] = unibo_INS_B.Init_g[0];
+    tmp_0[1] = unibo_INS_B.Init_g[1];
     tmp_0[2] = unibo_INS_Y.local_xyz[2];
     for (i = 0; i < 3; i++) {
       rtb_Rbn_y_0[i] = (((rtb_Rbn_y[i + 3] * unnamed_idx_0 + rtb_Rbn_y[i] *
@@ -576,27 +580,15 @@ static void unibo_INS_output(void)
     }
 
     unibo_INS_B.v_pos[0] = unibo_INS_U.simulation_par[0] * rtb_Rbn_y_0[0] +
-      unibo_INS_B.Init_p[0];
+      unibo_INS_B.Init_g[0];
     unibo_INS_B.v_pos[1] = unibo_INS_U.simulation_par[0] * rtb_Rbn_y_0[1] +
-      unibo_INS_B.Init_p[1];
+      unibo_INS_B.Init_g[1];
     unibo_INS_B.v_pos[2] = unibo_INS_U.simulation_par[0] * rtb_Rbn_y_0[2] +
-      unibo_INS_B.Init_p[2];
+      unibo_INS_B.Init_g[2];
 
-    /* '<S5>:1:15' */
-    unnamed_idx = unibo_INS_U.acc_meas[0] - rtb_Init[0];
-    unnamed_idx_0 = unibo_INS_U.acc_meas[1] - rtb_Init[1];
-    unnamed_idx_1 = unibo_INS_U.acc_meas[2] - rtb_Init[2];
-    for (i = 0; i < 3; i++) {
-      rtb_Init_j[i] = ((rtb_Rbn_y[i + 3] * unnamed_idx_0 + rtb_Rbn_y[i] *
-                        unnamed_idx) + rtb_Rbn_y[i + 6] * unnamed_idx_1) +
-        unibo_INS_U.earth_par[2 + i] * unibo_INS_U.earth_par[5];
-    }
-
-    rtb_Init_d_idx = rtb_Init_j[2];
-
-    /* '<S5>:1:16' */
-    unnamed_idx = unibo_INS_B.v2_gps[0] - unibo_INS_B.Init_p[0];
-    unnamed_idx_0 = unibo_INS_B.v2_gps[1] - unibo_INS_B.Init_p[1];
+    /* '<S6>:1:15' */
+    unnamed_idx = unibo_INS_B.v2_gps[0] - unibo_INS_B.Init_g[0];
+    unnamed_idx_0 = unibo_INS_B.v2_gps[1] - unibo_INS_B.Init_g[1];
     unnamed_idx_1 = unibo_INS_B.p2_gps[2] - unibo_INS_Y.local_xyz[2];
     for (i = 0; i < 3; i++) {
       unibo_INS_B.xa_pos[i] = 0.0;
@@ -605,16 +597,29 @@ static void unibo_INS_output(void)
       unibo_INS_B.xa_pos[i] += rtb_Rbn_y[3 * i + 2] * unnamed_idx_1;
     }
 
-    /* '<S5>:1:17' */
-    unnamed_idx = unibo_INS_B.v2_gps[0] - unibo_INS_B.Init_p[0];
-    unnamed_idx_0 = unibo_INS_B.v2_gps[1] - unibo_INS_B.Init_p[1];
-    unnamed_idx_1 = unibo_INS_B.v2_gps[2] - unibo_INS_B.Init_p[2];
+    /*  Update the estimate of velocity usign velocity error  */
+    /* '<S6>:1:17' */
+    unnamed_idx = unibo_INS_U.acc_meas[0] - rtb_Init[0];
+    unnamed_idx_0 = unibo_INS_U.acc_meas[1] - rtb_Init[1];
+    unnamed_idx_1 = unibo_INS_U.acc_meas[2] - rtb_Init[2];
     for (i = 0; i < 3; i++) {
-      rtb_Init_j[i] = rtb_Rbn_y[3 * i + 2] * unnamed_idx_1 + (rtb_Rbn_y[3 * i +
+      rtb_Init_i[i] = ((rtb_Rbn_y[i + 3] * unnamed_idx_0 + rtb_Rbn_y[i] *
+                        unnamed_idx) + rtb_Rbn_y[i + 6] * unnamed_idx_1) +
+        unibo_INS_U.earth_par[2 + i] * unibo_INS_U.earth_par[5];
+    }
+
+    rtb_Init_k_idx = rtb_Init_i[2];
+
+    /* '<S6>:1:18' */
+    unnamed_idx = unibo_INS_B.v2_gps[0] - unibo_INS_B.Init_g[0];
+    unnamed_idx_0 = unibo_INS_B.v2_gps[1] - unibo_INS_B.Init_g[1];
+    unnamed_idx_1 = unibo_INS_B.v2_gps[2] - unibo_INS_B.Init_g[2];
+    for (i = 0; i < 3; i++) {
+      rtb_Init_i[i] = rtb_Rbn_y[3 * i + 2] * unnamed_idx_1 + (rtb_Rbn_y[3 * i +
         1] * unnamed_idx_0 + rtb_Rbn_y[3 * i] * unnamed_idx);
     }
 
-    rtb_Init_d_idx_0 = 0.01 * rtb_Init_j[2];
+    rtb_Init_k_idx_0 = 0.01 * rtb_Init_i[2];
     unibo_INS_sat(rtb_Init, unibo_INS_U.filter_gain[22], unibo_INS_B.zxa_pos);
     unibo_INS_sat(rtb_Init, unibo_INS_U.filter_gain[22], tmp);
     unibo_INS_B.xa_pos[0] = ((-unibo_INS_U.filter_gain[18] * unibo_INS_B.xa_pos
@@ -629,71 +634,108 @@ static void unibo_INS_output(void)
       [2] - unibo_INS_U.filter_gain[21] * rtb_Init[2]) +
       unibo_INS_U.filter_gain[21] * tmp[2]) * unibo_INS_U.simulation_par[0] +
       rtb_Init[2];
-    unibo_INS_B.vz_pos = ((unibo_INS_B.v2_gps[2] - unibo_INS_B.Init_j) * 3.0 +
-                          rtb_Init_d_idx) * unibo_INS_U.simulation_par[0] +
-      unibo_INS_B.Init_j;
+    unibo_INS_B.vz_pos = ((unibo_INS_B.v2_gps[2] - unibo_INS_B.Init_i) * 3.0 +
+                          rtb_Init_k_idx) * unibo_INS_U.simulation_par[0] +
+      unibo_INS_B.Init_i;
 
-    /* Switch: '<S13>/Init' incorporates:
-     *  UnitDelay: '<S13>/FixPt Unit Delay2'
+    /* Switch: '<S14>/Init' incorporates:
+     *  UnitDelay: '<S14>/FixPt Unit Delay2'
      */
-    tmp_1 = (unibo_INS_DW.FixPtUnitDelay2_DSTATE_f != 0);
+    tmp_1 = (unibo_INS_DW.FixPtUnitDelay2_DSTATE_ok != 0);
 
     /* MATLAB Function: '<S2>/Filtro Lineare' incorporates:
      *  Inport: '<Root>/filter_gain'
      *  Inport: '<Root>/simulation_par'
-     *  Switch: '<S13>/Init'
-     *  UnitDelay: '<S13>/FixPt Unit Delay1'
+     *  Switch: '<S14>/Init'
+     *  UnitDelay: '<S14>/FixPt Unit Delay1'
      */
     if (tmp_1) {
-      rtb_Init_d_idx = 0.0;
+      rtb_Init_k_idx = 0.0;
     } else {
-      rtb_Init_d_idx = unibo_INS_DW.FixPtUnitDelay1_DSTATE_g[0];
+      rtb_Init_k_idx = unibo_INS_DW.FixPtUnitDelay1_DSTATE_e[0];
     }
 
-    unibo_INS_B.zxa_pos[0] = ((rtb_Init_d_idx_0 - unibo_INS_U.filter_gain[21] *
+    unibo_INS_B.zxa_pos[0] = ((rtb_Init_k_idx_0 - unibo_INS_U.filter_gain[21] *
       rtb_Init[0]) + unibo_INS_U.filter_gain[21] * unibo_INS_B.zxa_pos[0]) *
-      unibo_INS_U.simulation_par[0] + rtb_Init_d_idx;
+      unibo_INS_U.simulation_par[0] + rtb_Init_k_idx;
     if (tmp_1) {
-      rtb_Init_d_idx = 0.0;
+      rtb_Init_k_idx = 0.0;
     } else {
-      rtb_Init_d_idx = unibo_INS_DW.FixPtUnitDelay1_DSTATE_g[1];
+      rtb_Init_k_idx = unibo_INS_DW.FixPtUnitDelay1_DSTATE_e[1];
     }
 
-    unibo_INS_B.zxa_pos[1] = ((rtb_Init_d_idx_0 - unibo_INS_U.filter_gain[21] *
+    unibo_INS_B.zxa_pos[1] = ((rtb_Init_k_idx_0 - unibo_INS_U.filter_gain[21] *
       rtb_Init[1]) + unibo_INS_U.filter_gain[21] * unibo_INS_B.zxa_pos[1]) *
-      unibo_INS_U.simulation_par[0] + rtb_Init_d_idx;
+      unibo_INS_U.simulation_par[0] + rtb_Init_k_idx;
     if (tmp_1) {
-      rtb_Init_d_idx = 0.0;
+      rtb_Init_k_idx = 0.0;
     } else {
-      rtb_Init_d_idx = unibo_INS_DW.FixPtUnitDelay1_DSTATE_g[2];
+      rtb_Init_k_idx = unibo_INS_DW.FixPtUnitDelay1_DSTATE_e[2];
     }
 
-    unibo_INS_B.zxa_pos[2] = ((rtb_Init_d_idx_0 - unibo_INS_U.filter_gain[21] *
+    unibo_INS_B.zxa_pos[2] = ((rtb_Init_k_idx_0 - unibo_INS_U.filter_gain[21] *
       rtb_Init[2]) + unibo_INS_U.filter_gain[21] * unibo_INS_B.zxa_pos[2]) *
-      unibo_INS_U.simulation_par[0] + rtb_Init_d_idx;
+      unibo_INS_U.simulation_par[0] + rtb_Init_k_idx;
   }
 
   /* End of Outputs for SubSystem: '<S1>/Filtro lineare' */
 
   /* Outport: '<Root>/local_v' incorporates:
    *  Constant: '<S1>/Constant'
+   *  Constant: '<S1>/Constant1'
    *  Product: '<S1>/Product'
+   *  Product: '<S1>/Product1'
    *  Sum: '<S1>/Sum'
    */
-  unibo_INS_Y.local_v[0] = unibo_INS_B.Init_p[0];
-  unibo_INS_Y.local_v[1] = unibo_INS_B.Init_p[1];
-  unibo_INS_Y.local_v[2] = (unibo_INS_B.Init_p[2] + unibo_INS_B.Init_j) * 0.5;
+  unibo_INS_Y.local_v[0] = unibo_INS_B.Init_g[0];
+  unibo_INS_Y.local_v[1] = unibo_INS_B.Init_g[1];
+  unibo_INS_Y.local_v[2] = unibo_INS_B.Init_g[2] * 0.55 + unibo_INS_B.Init_i *
+    0.45;
 
-  /* Outport: '<Root>/global_xyz' incorporates:
-   *  Sum: '<S1>/Add'
+  /* MATLAB Function: '<S1>/cartesian2spherical' incorporates:
+   *  Inport: '<Root>/earth_par'
    */
-  unibo_INS_Y.global_xyz[0] = unibo_INS_B.p_xyz[0] + unibo_INS_Y.local_xyz[0];
-  unibo_INS_Y.global_xyz[1] = unibo_INS_B.p_xyz[1] + unibo_INS_Y.local_xyz[1];
-  unibo_INS_Y.global_xyz[2] = unibo_INS_B.p_xyz[2] + unibo_INS_Y.local_xyz[2];
+  /* MATLAB Function ' Filter /cartesian2spherical': '<S5>:1' */
+  /*  The function convert local cartesian coordinates */
+  /*  to global cartesian and sferical coordinates    */
+  /* '<S5>:1:5' */
+  unibo_INS_Y.global_xyz[0] = 0.0;
+  unibo_INS_Y.global_xyz[1] = 0.0;
+  unibo_INS_Y.global_xyz[2] = 0.0;
 
-  /* Sum: '<S14>/Add' incorporates:
-   *  Constant: '<S14>/Constant'
-   *  UnitDelay: '<S14>/Unit Delay'
+  /* '<S5>:1:6' */
+  unibo_INS_Y.global_sf[0] = 0.0;
+  unibo_INS_Y.global_sf[1] = 0.0;
+  unibo_INS_Y.global_sf[2] = 0.0;
+  if (unibo_INS_B.EN1 == 1.0) {
+    /* '<S5>:1:7' */
+    /* '<S5>:1:8' */
+    for (i = 0; i < 3; i++) {
+      unibo_INS_Y.global_xyz[i] = ((unibo_INS_B.R_et[3 * i + 1] *
+        unibo_INS_Y.local_xyz[1] + unibo_INS_B.R_et[3 * i] *
+        unibo_INS_Y.local_xyz[0]) + unibo_INS_B.R_et[3 * i + 2] *
+        unibo_INS_Y.local_xyz[2]) + unibo_INS_Y.p0_cart[i];
+    }
+
+    /* '<S5>:1:9' */
+    unibo_INS_Y.global_sf[0] = atan(unibo_INS_Y.global_xyz[2] / sqrt
+      (unibo_INS_Y.global_xyz[0] * unibo_INS_Y.global_xyz[0] +
+       unibo_INS_Y.global_xyz[1] * unibo_INS_Y.global_xyz[1]));
+
+    /* '<S5>:1:10' */
+    unibo_INS_Y.global_sf[1] = atan(unibo_INS_Y.global_xyz[1] /
+      unibo_INS_Y.global_xyz[0]);
+
+    /* '<S5>:1:11' */
+    unibo_INS_Y.global_sf[2] = unibo_INS_Y.global_xyz[2] / sin
+      (unibo_INS_Y.global_sf[0]) - unibo_INS_U.earth_par[0];
+  }
+
+  /* End of MATLAB Function: '<S1>/cartesian2spherical' */
+
+  /* Sum: '<S15>/Add' incorporates:
+   *  Constant: '<S15>/Constant'
+   *  UnitDelay: '<S15>/Unit Delay'
    */
   unibo_INS_B.Add = 1.0 + unibo_INS_DW.UnitDelay_DSTATE;
 }
@@ -701,22 +743,22 @@ static void unibo_INS_output(void)
 /* Model update function */
 static void unibo_INS_update(void)
 {
-  /* Update for UnitDelay: '<S14>/Unit Delay' */
+  /* Update for UnitDelay: '<S15>/Unit Delay' */
   unibo_INS_DW.UnitDelay_DSTATE = unibo_INS_B.Add;
 
   /* Update for Enabled SubSystem: '<S3>/Initial Cartesian Position' incorporates:
-   *  Update for EnablePort: '<S15>/Enable'
+   *  Update for EnablePort: '<S16>/Enable'
    */
   if (unibo_INS_B.RelationalOperator) {
-    /* Update for Memory: '<S17>/y(tk-1)' */
+    /* Update for Memory: '<S18>/y(tk-1)' */
     unibo_INS_DW.ytk1_PreviousInput[0] = unibo_INS_B.Sum[0];
     unibo_INS_DW.ytk1_PreviousInput[1] = unibo_INS_B.Sum[1];
     unibo_INS_DW.ytk1_PreviousInput[2] = unibo_INS_B.Sum[2];
 
-    /* Update for Memory: '<S18>/y(tk-1)' */
-    unibo_INS_DW.ytk1_PreviousInput_j[0] = unibo_INS_B.Sum_e[0];
-    unibo_INS_DW.ytk1_PreviousInput_j[1] = unibo_INS_B.Sum_e[1];
-    unibo_INS_DW.ytk1_PreviousInput_j[2] = unibo_INS_B.Sum_e[2];
+    /* Update for Memory: '<S19>/y(tk-1)' */
+    unibo_INS_DW.ytk1_PreviousInput_g[0] = unibo_INS_B.Sum_j[0];
+    unibo_INS_DW.ytk1_PreviousInput_g[1] = unibo_INS_B.Sum_j[1];
+    unibo_INS_DW.ytk1_PreviousInput_g[2] = unibo_INS_B.Sum_j[2];
   }
 
   /* End of Update for SubSystem: '<S3>/Initial Cartesian Position' */
@@ -743,25 +785,15 @@ static void unibo_INS_update(void)
     /* Update for UnitDelay: '<S2>/Unit Delay3' */
     unibo_INS_DW.UnitDelay3_DSTATE = unibo_INS_B.n;
 
-    /* Update for UnitDelay: '<S9>/FixPt Unit Delay2' incorporates:
-     *  Constant: '<S9>/FixPt Constant'
+    /* Update for UnitDelay: '<S10>/FixPt Unit Delay2' incorporates:
+     *  Constant: '<S10>/FixPt Constant'
      */
     unibo_INS_DW.FixPtUnitDelay2_DSTATE = 0U;
 
-    /* Update for UnitDelay: '<S9>/FixPt Unit Delay1' */
+    /* Update for UnitDelay: '<S10>/FixPt Unit Delay1' */
     unibo_INS_DW.FixPtUnitDelay1_DSTATE[0] = unibo_INS_B.p_pos[0];
     unibo_INS_DW.FixPtUnitDelay1_DSTATE[1] = unibo_INS_B.p_pos[1];
     unibo_INS_DW.FixPtUnitDelay1_DSTATE[2] = unibo_INS_B.p_pos[2];
-
-    /* Update for UnitDelay: '<S7>/FixPt Unit Delay2' incorporates:
-     *  Constant: '<S7>/FixPt Constant'
-     */
-    unibo_INS_DW.FixPtUnitDelay2_DSTATE_l = 0U;
-
-    /* Update for UnitDelay: '<S7>/FixPt Unit Delay1' */
-    unibo_INS_DW.FixPtUnitDelay1_DSTATE_k[0] = unibo_INS_B.v_pos[0];
-    unibo_INS_DW.FixPtUnitDelay1_DSTATE_k[1] = unibo_INS_B.v_pos[1];
-    unibo_INS_DW.FixPtUnitDelay1_DSTATE_k[2] = unibo_INS_B.v_pos[2];
 
     /* Update for UnitDelay: '<S8>/FixPt Unit Delay2' incorporates:
      *  Constant: '<S8>/FixPt Constant'
@@ -769,47 +801,57 @@ static void unibo_INS_update(void)
     unibo_INS_DW.FixPtUnitDelay2_DSTATE_a = 0U;
 
     /* Update for UnitDelay: '<S8>/FixPt Unit Delay1' */
-    unibo_INS_DW.FixPtUnitDelay1_DSTATE_h[0] = unibo_INS_B.xa_pos[0];
-    unibo_INS_DW.FixPtUnitDelay1_DSTATE_h[1] = unibo_INS_B.xa_pos[1];
-    unibo_INS_DW.FixPtUnitDelay1_DSTATE_h[2] = unibo_INS_B.xa_pos[2];
+    unibo_INS_DW.FixPtUnitDelay1_DSTATE_p[0] = unibo_INS_B.v_pos[0];
+    unibo_INS_DW.FixPtUnitDelay1_DSTATE_p[1] = unibo_INS_B.v_pos[1];
+    unibo_INS_DW.FixPtUnitDelay1_DSTATE_p[2] = unibo_INS_B.v_pos[2];
 
-    /* Update for UnitDelay: '<S11>/FixPt Unit Delay2' incorporates:
-     *  Constant: '<S11>/FixPt Constant'
+    /* Update for UnitDelay: '<S9>/FixPt Unit Delay2' incorporates:
+     *  Constant: '<S9>/FixPt Constant'
      */
-    unibo_INS_DW.FixPtUnitDelay2_DSTATE_d = 0U;
+    unibo_INS_DW.FixPtUnitDelay2_DSTATE_l = 0U;
 
-    /* Update for UnitDelay: '<S11>/FixPt Unit Delay1' */
-    unibo_INS_DW.FixPtUnitDelay1_DSTATE_ka[0] = unibo_INS_B.p2_gps[0];
-    unibo_INS_DW.FixPtUnitDelay1_DSTATE_ka[1] = unibo_INS_B.p2_gps[1];
-    unibo_INS_DW.FixPtUnitDelay1_DSTATE_ka[2] = unibo_INS_B.p2_gps[2];
-
-    /* Update for UnitDelay: '<S10>/FixPt Unit Delay2' incorporates:
-     *  Constant: '<S10>/FixPt Constant'
-     */
-    unibo_INS_DW.FixPtUnitDelay2_DSTATE_o = 0U;
-
-    /* Update for UnitDelay: '<S10>/FixPt Unit Delay1' */
-    unibo_INS_DW.FixPtUnitDelay1_DSTATE_a[0] = unibo_INS_B.v2_gps[0];
-    unibo_INS_DW.FixPtUnitDelay1_DSTATE_a[1] = unibo_INS_B.v2_gps[1];
-    unibo_INS_DW.FixPtUnitDelay1_DSTATE_a[2] = unibo_INS_B.v2_gps[2];
+    /* Update for UnitDelay: '<S9>/FixPt Unit Delay1' */
+    unibo_INS_DW.FixPtUnitDelay1_DSTATE_o[0] = unibo_INS_B.xa_pos[0];
+    unibo_INS_DW.FixPtUnitDelay1_DSTATE_o[1] = unibo_INS_B.xa_pos[1];
+    unibo_INS_DW.FixPtUnitDelay1_DSTATE_o[2] = unibo_INS_B.xa_pos[2];
 
     /* Update for UnitDelay: '<S12>/FixPt Unit Delay2' incorporates:
      *  Constant: '<S12>/FixPt Constant'
      */
-    unibo_INS_DW.FixPtUnitDelay2_DSTATE_g = 0U;
+    unibo_INS_DW.FixPtUnitDelay2_DSTATE_h = 0U;
 
     /* Update for UnitDelay: '<S12>/FixPt Unit Delay1' */
-    unibo_INS_DW.FixPtUnitDelay1_DSTATE_p = unibo_INS_B.vz_pos;
+    unibo_INS_DW.FixPtUnitDelay1_DSTATE_c[0] = unibo_INS_B.p2_gps[0];
+    unibo_INS_DW.FixPtUnitDelay1_DSTATE_c[1] = unibo_INS_B.p2_gps[1];
+    unibo_INS_DW.FixPtUnitDelay1_DSTATE_c[2] = unibo_INS_B.p2_gps[2];
+
+    /* Update for UnitDelay: '<S11>/FixPt Unit Delay2' incorporates:
+     *  Constant: '<S11>/FixPt Constant'
+     */
+    unibo_INS_DW.FixPtUnitDelay2_DSTATE_o = 0U;
+
+    /* Update for UnitDelay: '<S11>/FixPt Unit Delay1' */
+    unibo_INS_DW.FixPtUnitDelay1_DSTATE_b[0] = unibo_INS_B.v2_gps[0];
+    unibo_INS_DW.FixPtUnitDelay1_DSTATE_b[1] = unibo_INS_B.v2_gps[1];
+    unibo_INS_DW.FixPtUnitDelay1_DSTATE_b[2] = unibo_INS_B.v2_gps[2];
 
     /* Update for UnitDelay: '<S13>/FixPt Unit Delay2' incorporates:
      *  Constant: '<S13>/FixPt Constant'
      */
-    unibo_INS_DW.FixPtUnitDelay2_DSTATE_f = 0U;
+    unibo_INS_DW.FixPtUnitDelay2_DSTATE_g = 0U;
 
     /* Update for UnitDelay: '<S13>/FixPt Unit Delay1' */
-    unibo_INS_DW.FixPtUnitDelay1_DSTATE_g[0] = unibo_INS_B.zxa_pos[0];
-    unibo_INS_DW.FixPtUnitDelay1_DSTATE_g[1] = unibo_INS_B.zxa_pos[1];
-    unibo_INS_DW.FixPtUnitDelay1_DSTATE_g[2] = unibo_INS_B.zxa_pos[2];
+    unibo_INS_DW.FixPtUnitDelay1_DSTATE_bb = unibo_INS_B.vz_pos;
+
+    /* Update for UnitDelay: '<S14>/FixPt Unit Delay2' incorporates:
+     *  Constant: '<S14>/FixPt Constant'
+     */
+    unibo_INS_DW.FixPtUnitDelay2_DSTATE_ok = 0U;
+
+    /* Update for UnitDelay: '<S14>/FixPt Unit Delay1' */
+    unibo_INS_DW.FixPtUnitDelay1_DSTATE_e[0] = unibo_INS_B.zxa_pos[0];
+    unibo_INS_DW.FixPtUnitDelay1_DSTATE_e[1] = unibo_INS_B.zxa_pos[1];
+    unibo_INS_DW.FixPtUnitDelay1_DSTATE_e[2] = unibo_INS_B.zxa_pos[2];
   }
 
   /* End of Update for SubSystem: '<S1>/Filtro lineare' */
@@ -836,15 +878,15 @@ static void unibo_INS_update(void)
 void unibo_INS_initialize(void)
 {
   /* InitializeConditions for Enabled SubSystem: '<S3>/Initial Cartesian Position' */
-  /* InitializeConditions for Memory: '<S17>/y(tk-1)' */
+  /* InitializeConditions for Memory: '<S18>/y(tk-1)' */
   unibo_INS_DW.ytk1_PreviousInput[0] = 0.0;
   unibo_INS_DW.ytk1_PreviousInput[1] = 0.0;
   unibo_INS_DW.ytk1_PreviousInput[2] = 0.0;
 
-  /* InitializeConditions for Memory: '<S18>/y(tk-1)' */
-  unibo_INS_DW.ytk1_PreviousInput_j[0] = 0.0;
-  unibo_INS_DW.ytk1_PreviousInput_j[1] = 0.0;
-  unibo_INS_DW.ytk1_PreviousInput_j[2] = 0.0;
+  /* InitializeConditions for Memory: '<S19>/y(tk-1)' */
+  unibo_INS_DW.ytk1_PreviousInput_g[0] = 0.0;
+  unibo_INS_DW.ytk1_PreviousInput_g[1] = 0.0;
+  unibo_INS_DW.ytk1_PreviousInput_g[2] = 0.0;
 
   /* End of InitializeConditions for SubSystem: '<S3>/Initial Cartesian Position' */
 
@@ -867,63 +909,63 @@ void unibo_INS_initialize(void)
   /* InitializeConditions for UnitDelay: '<S2>/Unit Delay3' */
   unibo_INS_DW.UnitDelay3_DSTATE = 1000.0;
 
-  /* InitializeConditions for UnitDelay: '<S9>/FixPt Unit Delay2' */
+  /* InitializeConditions for UnitDelay: '<S10>/FixPt Unit Delay2' */
   unibo_INS_DW.FixPtUnitDelay2_DSTATE = 1U;
 
-  /* InitializeConditions for UnitDelay: '<S9>/FixPt Unit Delay1' */
+  /* InitializeConditions for UnitDelay: '<S10>/FixPt Unit Delay1' */
   unibo_INS_DW.FixPtUnitDelay1_DSTATE[0] = 0.0;
   unibo_INS_DW.FixPtUnitDelay1_DSTATE[1] = 0.0;
   unibo_INS_DW.FixPtUnitDelay1_DSTATE[2] = 0.0;
-
-  /* InitializeConditions for UnitDelay: '<S7>/FixPt Unit Delay2' */
-  unibo_INS_DW.FixPtUnitDelay2_DSTATE_l = 1U;
-
-  /* InitializeConditions for UnitDelay: '<S7>/FixPt Unit Delay1' */
-  unibo_INS_DW.FixPtUnitDelay1_DSTATE_k[0] = 0.0;
-  unibo_INS_DW.FixPtUnitDelay1_DSTATE_k[1] = 0.0;
-  unibo_INS_DW.FixPtUnitDelay1_DSTATE_k[2] = 0.0;
 
   /* InitializeConditions for UnitDelay: '<S8>/FixPt Unit Delay2' */
   unibo_INS_DW.FixPtUnitDelay2_DSTATE_a = 1U;
 
   /* InitializeConditions for UnitDelay: '<S8>/FixPt Unit Delay1' */
-  unibo_INS_DW.FixPtUnitDelay1_DSTATE_h[0] = 0.0;
-  unibo_INS_DW.FixPtUnitDelay1_DSTATE_h[1] = 0.0;
-  unibo_INS_DW.FixPtUnitDelay1_DSTATE_h[2] = 0.0;
+  unibo_INS_DW.FixPtUnitDelay1_DSTATE_p[0] = 0.0;
+  unibo_INS_DW.FixPtUnitDelay1_DSTATE_p[1] = 0.0;
+  unibo_INS_DW.FixPtUnitDelay1_DSTATE_p[2] = 0.0;
 
-  /* InitializeConditions for UnitDelay: '<S11>/FixPt Unit Delay2' */
-  unibo_INS_DW.FixPtUnitDelay2_DSTATE_d = 1U;
+  /* InitializeConditions for UnitDelay: '<S9>/FixPt Unit Delay2' */
+  unibo_INS_DW.FixPtUnitDelay2_DSTATE_l = 1U;
 
-  /* InitializeConditions for UnitDelay: '<S11>/FixPt Unit Delay1' */
-  unibo_INS_DW.FixPtUnitDelay1_DSTATE_ka[0] = 0.0;
-  unibo_INS_DW.FixPtUnitDelay1_DSTATE_ka[1] = 0.0;
-  unibo_INS_DW.FixPtUnitDelay1_DSTATE_ka[2] = 0.0;
-
-  /* InitializeConditions for UnitDelay: '<S10>/FixPt Unit Delay2' */
-  unibo_INS_DW.FixPtUnitDelay2_DSTATE_o = 1U;
-
-  /* InitializeConditions for UnitDelay: '<S10>/FixPt Unit Delay1' */
-  unibo_INS_DW.FixPtUnitDelay1_DSTATE_a[0] = 0.0;
-  unibo_INS_DW.FixPtUnitDelay1_DSTATE_a[1] = 0.0;
-  unibo_INS_DW.FixPtUnitDelay1_DSTATE_a[2] = 0.0;
+  /* InitializeConditions for UnitDelay: '<S9>/FixPt Unit Delay1' */
+  unibo_INS_DW.FixPtUnitDelay1_DSTATE_o[0] = 0.0;
+  unibo_INS_DW.FixPtUnitDelay1_DSTATE_o[1] = 0.0;
+  unibo_INS_DW.FixPtUnitDelay1_DSTATE_o[2] = 0.0;
 
   /* InitializeConditions for UnitDelay: '<S12>/FixPt Unit Delay2' */
-  unibo_INS_DW.FixPtUnitDelay2_DSTATE_g = 1U;
+  unibo_INS_DW.FixPtUnitDelay2_DSTATE_h = 1U;
 
   /* InitializeConditions for UnitDelay: '<S12>/FixPt Unit Delay1' */
-  unibo_INS_DW.FixPtUnitDelay1_DSTATE_p = 0.0;
+  unibo_INS_DW.FixPtUnitDelay1_DSTATE_c[0] = 0.0;
+  unibo_INS_DW.FixPtUnitDelay1_DSTATE_c[1] = 0.0;
+  unibo_INS_DW.FixPtUnitDelay1_DSTATE_c[2] = 0.0;
+
+  /* InitializeConditions for UnitDelay: '<S11>/FixPt Unit Delay2' */
+  unibo_INS_DW.FixPtUnitDelay2_DSTATE_o = 1U;
+
+  /* InitializeConditions for UnitDelay: '<S11>/FixPt Unit Delay1' */
+  unibo_INS_DW.FixPtUnitDelay1_DSTATE_b[0] = 0.0;
+  unibo_INS_DW.FixPtUnitDelay1_DSTATE_b[1] = 0.0;
+  unibo_INS_DW.FixPtUnitDelay1_DSTATE_b[2] = 0.0;
 
   /* InitializeConditions for UnitDelay: '<S13>/FixPt Unit Delay2' */
-  unibo_INS_DW.FixPtUnitDelay2_DSTATE_f = 1U;
+  unibo_INS_DW.FixPtUnitDelay2_DSTATE_g = 1U;
 
   /* InitializeConditions for UnitDelay: '<S13>/FixPt Unit Delay1' */
-  unibo_INS_DW.FixPtUnitDelay1_DSTATE_g[0] = 0.0;
-  unibo_INS_DW.FixPtUnitDelay1_DSTATE_g[1] = 0.0;
-  unibo_INS_DW.FixPtUnitDelay1_DSTATE_g[2] = 0.0;
+  unibo_INS_DW.FixPtUnitDelay1_DSTATE_bb = 0.0;
+
+  /* InitializeConditions for UnitDelay: '<S14>/FixPt Unit Delay2' */
+  unibo_INS_DW.FixPtUnitDelay2_DSTATE_ok = 1U;
+
+  /* InitializeConditions for UnitDelay: '<S14>/FixPt Unit Delay1' */
+  unibo_INS_DW.FixPtUnitDelay1_DSTATE_e[0] = 0.0;
+  unibo_INS_DW.FixPtUnitDelay1_DSTATE_e[1] = 0.0;
+  unibo_INS_DW.FixPtUnitDelay1_DSTATE_e[2] = 0.0;
 
   /* End of InitializeConditions for SubSystem: '<S1>/Filtro lineare' */
 
-  /* InitializeConditions for UnitDelay: '<S14>/Unit Delay' */
+  /* InitializeConditions for UnitDelay: '<S15>/Unit Delay' */
   unibo_INS_DW.UnitDelay_DSTATE = 0.0;
 }
 
@@ -1040,11 +1082,11 @@ RT_MODEL_unibo_INS_T *unibo_INS(void)
 
   /* Initialize Sizes */
   unibo_INS_M->Sizes.numContStates = (0);/* Number of continuous states */
-  unibo_INS_M->Sizes.numY = (12);      /* Number of model outputs */
+  unibo_INS_M->Sizes.numY = (18);      /* Number of model outputs */
   unibo_INS_M->Sizes.numU = (51);      /* Number of model inputs */
   unibo_INS_M->Sizes.sysDirFeedThru = (1);/* The model is direct feedthrough */
   unibo_INS_M->Sizes.numSampTimes = (1);/* Number of sample times */
-  unibo_INS_M->Sizes.numBlocks = (73); /* Number of blocks */
+  unibo_INS_M->Sizes.numBlocks = (78); /* Number of blocks */
   unibo_INS_M->Sizes.numBlockIO = (25);/* Number of block outputs */
   return unibo_INS_M;
 }

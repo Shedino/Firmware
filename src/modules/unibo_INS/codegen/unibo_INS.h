@@ -3,9 +3,9 @@
  *
  * Code generation for model "unibo_INS".
  *
- * Model version              : 1.2456
+ * Model version              : 1.2460
  * Simulink Coder version : 8.4 (R2013a) 13-Feb-2013
- * C source code generated on : Wed Jul 23 11:27:49 2014
+ * C source code generated on : Thu Jul 24 14:59:23 2014
  *
  * Target selection: grt.tlc
  * Note: GRT includes extra infrastructure and instrumentation for prototyping
@@ -768,15 +768,14 @@
 
 /* Block signals (auto storage) */
 typedef struct {
-  real_T Add;                          /* '<S14>/Add' */
-  real_T Sum[3];                       /* '<S17>/Sum' */
-  real_T ytk1_i[3];                    /* '<S18>/y(tk-1)' */
-  real_T Sum_e[3];                     /* '<S18>/Sum' */
-  real_T p_xyz[3];                     /* '<S15>/spherical2cartesian1' */
-  real_T R_et[9];                      /* '<S15>/spherical2cartesian1' */
-  real_T EN1;                          /* '<S15>/spherical2cartesian1' */
-  real_T Init_p[3];                    /* '<S7>/Init' */
-  real_T Init_j;                       /* '<S12>/Init' */
+  real_T Add;                          /* '<S15>/Add' */
+  real_T Sum[3];                       /* '<S18>/Sum' */
+  real_T ytk1_n[3];                    /* '<S19>/y(tk-1)' */
+  real_T Sum_j[3];                     /* '<S19>/Sum' */
+  real_T R_et[9];                      /* '<S16>/spherical2cartesian1' */
+  real_T EN1;                          /* '<S16>/spherical2cartesian1' */
+  real_T Init_g[3];                    /* '<S8>/Init' */
+  real_T Init_i;                       /* '<S13>/Init' */
   real_T g;                            /* '<S2>/MATLAB Function' */
   real_T h;                            /* '<S2>/MATLAB Function' */
   real_T i;                            /* '<S2>/MATLAB Function' */
@@ -790,34 +789,34 @@ typedef struct {
   real_T v2_gps[3];                    /* '<S2>/Filtro Lineare' */
   real_T vz_pos;                       /* '<S2>/Filtro Lineare' */
   real_T zxa_pos[3];                   /* '<S2>/Filtro Lineare' */
-  boolean_T RelationalOperator;        /* '<S14>/Relational Operator' */
+  boolean_T RelationalOperator;        /* '<S15>/Relational Operator' */
 } B_unibo_INS_T;
 
 /* Block states (auto storage) for system '<Root>' */
 typedef struct {
-  real_T UnitDelay_DSTATE;             /* '<S14>/Unit Delay' */
+  real_T UnitDelay_DSTATE;             /* '<S15>/Unit Delay' */
   real_T UnitDelay6_DSTATE;            /* '<S2>/Unit Delay6' */
   real_T UnitDelay5_DSTATE;            /* '<S2>/Unit Delay5' */
   real_T UnitDelay4_DSTATE;            /* '<S2>/Unit Delay4' */
   real_T UnitDelay2_DSTATE;            /* '<S2>/Unit Delay2' */
   real_T UnitDelay1_DSTATE;            /* '<S2>/Unit Delay1' */
   real_T UnitDelay3_DSTATE;            /* '<S2>/Unit Delay3' */
-  real_T FixPtUnitDelay1_DSTATE[3];    /* '<S9>/FixPt Unit Delay1' */
-  real_T FixPtUnitDelay1_DSTATE_k[3];  /* '<S7>/FixPt Unit Delay1' */
-  real_T FixPtUnitDelay1_DSTATE_h[3];  /* '<S8>/FixPt Unit Delay1' */
-  real_T FixPtUnitDelay1_DSTATE_ka[3]; /* '<S11>/FixPt Unit Delay1' */
-  real_T FixPtUnitDelay1_DSTATE_a[3];  /* '<S10>/FixPt Unit Delay1' */
-  real_T FixPtUnitDelay1_DSTATE_p;     /* '<S12>/FixPt Unit Delay1' */
-  real_T FixPtUnitDelay1_DSTATE_g[3];  /* '<S13>/FixPt Unit Delay1' */
-  real_T ytk1_PreviousInput[3];        /* '<S17>/y(tk-1)' */
-  real_T ytk1_PreviousInput_j[3];      /* '<S18>/y(tk-1)' */
-  uint8_T FixPtUnitDelay2_DSTATE;      /* '<S9>/FixPt Unit Delay2' */
-  uint8_T FixPtUnitDelay2_DSTATE_l;    /* '<S7>/FixPt Unit Delay2' */
+  real_T FixPtUnitDelay1_DSTATE[3];    /* '<S10>/FixPt Unit Delay1' */
+  real_T FixPtUnitDelay1_DSTATE_p[3];  /* '<S8>/FixPt Unit Delay1' */
+  real_T FixPtUnitDelay1_DSTATE_o[3];  /* '<S9>/FixPt Unit Delay1' */
+  real_T FixPtUnitDelay1_DSTATE_c[3];  /* '<S12>/FixPt Unit Delay1' */
+  real_T FixPtUnitDelay1_DSTATE_b[3];  /* '<S11>/FixPt Unit Delay1' */
+  real_T FixPtUnitDelay1_DSTATE_bb;    /* '<S13>/FixPt Unit Delay1' */
+  real_T FixPtUnitDelay1_DSTATE_e[3];  /* '<S14>/FixPt Unit Delay1' */
+  real_T ytk1_PreviousInput[3];        /* '<S18>/y(tk-1)' */
+  real_T ytk1_PreviousInput_g[3];      /* '<S19>/y(tk-1)' */
+  uint8_T FixPtUnitDelay2_DSTATE;      /* '<S10>/FixPt Unit Delay2' */
   uint8_T FixPtUnitDelay2_DSTATE_a;    /* '<S8>/FixPt Unit Delay2' */
-  uint8_T FixPtUnitDelay2_DSTATE_d;    /* '<S11>/FixPt Unit Delay2' */
-  uint8_T FixPtUnitDelay2_DSTATE_o;    /* '<S10>/FixPt Unit Delay2' */
-  uint8_T FixPtUnitDelay2_DSTATE_g;    /* '<S12>/FixPt Unit Delay2' */
-  uint8_T FixPtUnitDelay2_DSTATE_f;    /* '<S13>/FixPt Unit Delay2' */
+  uint8_T FixPtUnitDelay2_DSTATE_l;    /* '<S9>/FixPt Unit Delay2' */
+  uint8_T FixPtUnitDelay2_DSTATE_h;    /* '<S12>/FixPt Unit Delay2' */
+  uint8_T FixPtUnitDelay2_DSTATE_o;    /* '<S11>/FixPt Unit Delay2' */
+  uint8_T FixPtUnitDelay2_DSTATE_g;    /* '<S13>/FixPt Unit Delay2' */
+  uint8_T FixPtUnitDelay2_DSTATE_ok;   /* '<S14>/FixPt Unit Delay2' */
 } DW_unibo_INS_T;
 
 /* External inputs (root inport signals with auto storage) */
@@ -837,6 +836,8 @@ typedef struct {
   real_T local_v[3];                   /* '<Root>/local_v' */
   real_T p0_sf[3];                     /* '<Root>/p0_sf' */
   real_T global_xyz[3];                /* '<Root>/global_xyz' */
+  real_T p0_cart[3];                   /* '<Root>/p0_cart' */
+  real_T global_sf[3];                 /* '<Root>/global_sf' */
 } ExtY_unibo_INS_T;
 
 /* Backward compatible GRT Identifiers */
@@ -985,20 +986,21 @@ extern RT_MODEL_unibo_INS_T *const unibo_INS_M;
  * '<S2>'   : 'unibo_INS/ Filter /Filtro lineare'
  * '<S3>'   : 'unibo_INS/ Filter /Local position from GPS'
  * '<S4>'   : 'unibo_INS/ Filter /Reconstruct DCM'
- * '<S5>'   : 'unibo_INS/ Filter /Filtro lineare/Filtro Lineare'
- * '<S6>'   : 'unibo_INS/ Filter /Filtro lineare/MATLAB Function'
- * '<S7>'   : 'unibo_INS/ Filter /Filtro lineare/Unit Delay External IC1'
- * '<S8>'   : 'unibo_INS/ Filter /Filtro lineare/Unit Delay External IC2'
- * '<S9>'   : 'unibo_INS/ Filter /Filtro lineare/Unit Delay External IC3'
- * '<S10>'  : 'unibo_INS/ Filter /Filtro lineare/Unit Delay External IC4'
- * '<S11>'  : 'unibo_INS/ Filter /Filtro lineare/Unit Delay External IC5'
- * '<S12>'  : 'unibo_INS/ Filter /Filtro lineare/Unit Delay External IC6'
- * '<S13>'  : 'unibo_INS/ Filter /Filtro lineare/Unit Delay External IC7'
- * '<S14>'  : 'unibo_INS/ Filter /Local position from GPS/Activator'
- * '<S15>'  : 'unibo_INS/ Filter /Local position from GPS/Initial Cartesian Position'
- * '<S16>'  : 'unibo_INS/ Filter /Local position from GPS/spherical2cartesian'
- * '<S17>'  : 'unibo_INS/ Filter /Local position from GPS/Initial Cartesian Position/LPF p_gps'
- * '<S18>'  : 'unibo_INS/ Filter /Local position from GPS/Initial Cartesian Position/LPF v_gps'
- * '<S19>'  : 'unibo_INS/ Filter /Local position from GPS/Initial Cartesian Position/spherical2cartesian1'
+ * '<S5>'   : 'unibo_INS/ Filter /cartesian2spherical'
+ * '<S6>'   : 'unibo_INS/ Filter /Filtro lineare/Filtro Lineare'
+ * '<S7>'   : 'unibo_INS/ Filter /Filtro lineare/MATLAB Function'
+ * '<S8>'   : 'unibo_INS/ Filter /Filtro lineare/Unit Delay External IC1'
+ * '<S9>'   : 'unibo_INS/ Filter /Filtro lineare/Unit Delay External IC2'
+ * '<S10>'  : 'unibo_INS/ Filter /Filtro lineare/Unit Delay External IC3'
+ * '<S11>'  : 'unibo_INS/ Filter /Filtro lineare/Unit Delay External IC4'
+ * '<S12>'  : 'unibo_INS/ Filter /Filtro lineare/Unit Delay External IC5'
+ * '<S13>'  : 'unibo_INS/ Filter /Filtro lineare/Unit Delay External IC6'
+ * '<S14>'  : 'unibo_INS/ Filter /Filtro lineare/Unit Delay External IC7'
+ * '<S15>'  : 'unibo_INS/ Filter /Local position from GPS/Activator'
+ * '<S16>'  : 'unibo_INS/ Filter /Local position from GPS/Initial Cartesian Position'
+ * '<S17>'  : 'unibo_INS/ Filter /Local position from GPS/spherical2cartesian'
+ * '<S18>'  : 'unibo_INS/ Filter /Local position from GPS/Initial Cartesian Position/LPF p_gps'
+ * '<S19>'  : 'unibo_INS/ Filter /Local position from GPS/Initial Cartesian Position/LPF v_gps'
+ * '<S20>'  : 'unibo_INS/ Filter /Local position from GPS/Initial Cartesian Position/spherical2cartesian1'
  */
 #endif                                 /* RTW_HEADER_unibo_INS_h_ */

@@ -3,9 +3,9 @@
  *
  * Code generation for model "unibo_INS".
  *
- * Model version              : 1.2456
+ * Model version              : 1.2460
  * Simulink Coder version : 8.4 (R2013a) 13-Feb-2013
- * C source code generated on : Wed Jul 23 11:27:49 2014
+ * C source code generated on : Thu Jul 24 14:59:23 2014
  *
  * Target selection: grt.tlc
  * Note: GRT includes extra infrastructure and instrumentation for prototyping

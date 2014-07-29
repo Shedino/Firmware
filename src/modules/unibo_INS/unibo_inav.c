@@ -53,6 +53,8 @@
 #include <uORB/topics/vehicle_attitude.h>
 #include <uORB/topics/vehicle_gps_position.h>
 #include <uORB/topics/vehicle_local_position.h>
+#include <uORB/topics/unibo_parameters.h>
+#include <uORB/topics/vehicle_global_position.h>
 //#include "ahrs_SO3_unibo_params.h"
 
 
@@ -149,10 +151,11 @@ int unibo_INS_thread_main(int argc, char *argv[])
 {
 
 	warnx("[unibo_INS] starting\n");
+	warnx("Waiting for GPS fix");
 
 	thread_running = true;
 
-	warnx("Hello INS");
+
 	model = unibo_INS(); //Init model!
 	uint64_t last_measurement = 0;
 
@@ -166,6 +169,8 @@ int unibo_INS_thread_main(int argc, char *argv[])
 	int gps_sub_fd = orb_subscribe(ORB_ID(vehicle_gps_position));
 
 	int att_sub_fd = orb_subscribe(ORB_ID(vehicle_attitude));
+	int par_sub_fd = orb_subscribe(ORB_ID(unibo_parameters));
+
 	/* set data to 100Hz */
 
 
@@ -195,9 +200,13 @@ int unibo_INS_thread_main(int argc, char *argv[])
 	static struct vehicle_gps_position_s gps_position;
 	static struct vehicle_attitude_s attitude;
 	static struct vehicle_local_position_s local_position;
+	static struct unibo_parameters_s guadagni;
+	static struct vehicle_global_position_s global_position;
+	memset(&global_position,0,sizeof(global_position));
 	memset(&local_position,0,sizeof(local_position));
 	memset(&gps_position,0,sizeof(gps_position));
 	orb_advert_t lpos_pub = orb_advertise(ORB_ID(vehicle_local_position), &local_position);
+	orb_advert_t gpos_pub = orb_advertise(ORB_ID(vehicle_global_position), &global_position);
 	int inc = 0;
 
 	INS_start();
@@ -214,6 +223,22 @@ int unibo_INS_thread_main(int argc, char *argv[])
 	 * |-----------------------------------------------------|
 	 */
 
+	orb_copy(ORB_ID(vehicle_gps_position), gps_sub_fd, &gps_position);
+	while(gps_position.fix_type<3){
+			orb_check(gps_sub_fd, &updated);
+			if(updated){
+				orb_copy(ORB_ID(vehicle_gps_position), gps_sub_fd, &gps_position);}
+				usleep(300000);
+	}
+	/* Inizializzo i guadagni Kp */
+	unibo_INS_U.filter_gain[0] = 0.002;
+	unibo_INS_U.filter_gain[1] = 0.002;
+	unibo_INS_U.filter_gain[2] = 5;
+	/*Inizializzo i guadagni Kv*/
+	unibo_INS_U.filter_gain[3] = 2;
+	unibo_INS_U.filter_gain[4] = 2;
+	unibo_INS_U.filter_gain[5] = 0.2;
+	warnx("Hello INS - GPS acquired");
 	while (!thread_should_exit) {
 		/* wait for sensor update of 1 file descriptor for 1000 ms (1 second) */
 		//Imposto solo 10 ms
@@ -242,6 +267,10 @@ int unibo_INS_thread_main(int argc, char *argv[])
 
 				orb_copy(ORB_ID(vehicle_gps_position), gps_sub_fd, &gps_position);
 				orb_copy(ORB_ID(vehicle_attitude), att_sub_fd, &attitude);
+				orb_check(par_sub_fd,&updated);
+				if(updated){
+					orb_copy(ORB_ID(unibo_parameters),par_sub_fd,&guadagni);
+				}
 
 
 
@@ -265,13 +294,13 @@ int unibo_INS_thread_main(int argc, char *argv[])
 //
 				/* Guadagni del filtro */
 				/* Guadagni Kp in  xyz*/
-				unibo_INS_U.filter_gain[0] = 0.02;
-				unibo_INS_U.filter_gain[1] = 0.02;
-				unibo_INS_U.filter_gain[2] = 5;
+				unibo_INS_U.filter_gain[0] = guadagni.in16;//0.002;
+				unibo_INS_U.filter_gain[1] = guadagni.in16;//0.002;
+				unibo_INS_U.filter_gain[2] = guadagni.in17;//5;
 				/* Guadagni Kv*/
-				unibo_INS_U.filter_gain[3] = 2;
-				unibo_INS_U.filter_gain[4] = 1;
-				unibo_INS_U.filter_gain[5] = 0.2;
+				unibo_INS_U.filter_gain[3] = guadagni.in18;//2;
+				unibo_INS_U.filter_gain[4] = guadagni.in18;//2;
+				unibo_INS_U.filter_gain[5] = guadagni.in19;//0.2;
 				/* Guadagno K_gpsp*/
 				unibo_INS_U.filter_gain[6] = 0.2;
 				unibo_INS_U.filter_gain[7] = 0.2;
@@ -321,12 +350,9 @@ int unibo_INS_thread_main(int argc, char *argv[])
 				unibo_INS_U.Rnb[6] = attitude.R[2][0];
 				unibo_INS_U.Rnb[7] = attitude.R[2][1];
 				unibo_INS_U.Rnb[8] = attitude.R[2][2];
-//				warnx("%d %d %d %.3f %.3f %.3f %.3f %.3f %.3f %.3f %.3f %.3f %.3f %.3f %.3f %.3f %.3f %.3f %.3f %.3f",gps_position.lat,gps_position.lon,gps_position.alt,gps_position.vel_n_m_s,
-//						gps_position.vel_e_m_s,gps_position.vel_d_m_s,sensor_in.accelerometer_m_s2[0],sensor_in.accelerometer_m_s2[1],sensor_in.accelerometer_m_s2[2],
-//						unibo_INS_U.Rbn[0],unibo_INS_U.Rbn[1],unibo_INS_U.Rbn[2],unibo_INS_U.Rbn[3],unibo_INS_U.Rbn[4],unibo_INS_U.Rbn[5],unibo_INS_U.Rbn[6],unibo_INS_U.Rbn[7],unibo_INS_U.Rbn[8],
-//						sensor_in.baro_alt_meter,sensor_in.baro_pres_mbar);
-//				warnx("%.3f %.3f %.3f %.3f %.3f %.3f %.3f %.3f %.3f %.3f %.3f %.3f %.3f",attitude.R[0][0],attitude.R[0][1],attitude.R[0][2],attitude.R[1][0],attitude.R[1][1],attitude.R[1][2],
-//						attitude.R[2][0],attitude.R[2][1],attitude.R[2][2],attitude.q[0],attitude.q[1],attitude.q[2],attitude.q[3]);
+
+//
+//
 
 
 
@@ -369,6 +395,12 @@ int unibo_INS_thread_main(int argc, char *argv[])
 		local_position.z_valid= true;
 		local_position.yaw = attitude.yaw;
 
+		global_position.lat = unibo_INS_Y.global_sf[0];
+		global_position.lon = unibo_INS_Y.global_sf[1];
+		global_position.alt = unibo_INS_Y.global_sf[2];
+		global_position.vel_n = unibo_INS_Y.local_v[0];
+		global_position.vel_e = unibo_INS_Y.local_v[1];
+		global_position.vel_d = unibo_INS_Y.local_v[2];
 
 //if (inc>100){
 //	inc = 0;
@@ -390,9 +422,9 @@ int unibo_INS_thread_main(int argc, char *argv[])
 //}
 
 
-		if (lpos_pub > 0) {
+		if (lpos_pub > 0 ) {
 						 orb_publish(ORB_ID(vehicle_local_position), lpos_pub, &local_position);
-
+						 orb_publish(ORB_ID(vehicle_global_position),gpos_pub,&global_position);
 					     } else {
 						  warnx("NaN in roll/pitch/yaw estimate!");
 						  orb_advertise(ORB_ID(vehicle_local_position), &local_position);
