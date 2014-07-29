@@ -128,6 +128,8 @@ MODULES		+= modules/unibo_filtertest
 MODULES		+= modules/unibo_uart
 MODULES		+= modules/unibo_mavlink
 MODULES		+= modules/unibo_trajectory_ref
+MODULES		+= modules/unibo_INS
+MODULES		+= modules/ahrs_SO3_unibo
 
 #
 # Demo apps
