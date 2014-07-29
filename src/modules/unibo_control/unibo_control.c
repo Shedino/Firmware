@@ -565,6 +565,8 @@ int unibo_control_thread_main(int argc, char *argv[])
 					Model_GS_U.PARAMETERS[25] = temp_PAR.in24;
 					Model_GS_U.PARAMETERS[26] = 0;
 					Model_GS_U.PARAMETERS[27] = 0;
+
+
 					//Model_GS_U.YAWOFFSET = temp_PAR.in24;
 
 					#ifdef ATECH

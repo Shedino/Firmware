@@ -615,7 +615,7 @@ int unibo_mavlink_thread_main(int argc, char *argv[])
 							case MAVLINK_MSG_ID_UNIBO_PARAMETERS:
 								mavlink_msg_unibo_parameters_decode(&msg, &unibo_par_mav);
 								if (!silent) warnx("Received PAR Packet. XYmult: %f",unibo_par_mav.XY_Multiplier);
-								if (!silent) warnx("Parametri: Offset_T %.3f - latmode %.3f - k1 %.3f - L1 %.3f - KpAttx %.3f", unibo_par_mav.Offset_T, unibo_par_mav.lat_mode, unibo_par_mav.K1, unibo_par_mav.L1, unibo_par_mav.KpAttX);
+								warnx("Parametri: Offset_T %.3f - latmode %.3f - k1 %.3f - L1 %.3f - KpAttx %.3f", unibo_par_mav.Offset_T, unibo_par_mav.lat_mode, unibo_par_mav.K1, unibo_par_mav.L1, unibo_par_mav.KpAttX);
 								param.in1=unibo_par_mav.Offset_T;
 								param.in2=unibo_par_mav.lat_mode;   //is mass parameter
 								param.in3=unibo_par_mav.delta;
