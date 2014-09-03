@@ -42,7 +42,7 @@
 #include <stdio.h>
 #include <errno.h>
 
-#include <TRAJECTORY_GENERATOR_APP.h>
+#include <COMMANDER.h>
 
 #include <unistd.h>
 #include <poll.h>
@@ -111,7 +111,7 @@ usage(const char *reason)
  * The actual stack size should be set in the call
  * to task_create().
  */
-int unibo_commander_ref_main(int argc, char *argv[])
+int unibo_commander_main(int argc, char *argv[])
 {
 	if (argc < 1)
 		usage("missing command");
@@ -184,9 +184,9 @@ int unibo_commander_thread_main(int argc, char *argv[])
 
 
 	/* advertise local_pos_setpoint topic */                         //TODO sostituire con lo stato della macchina a stati
-	struct position_setpoint_triplet_s setpoint_triplet;
-	memset(&setpoint_triplet, 0, sizeof(setpoint_triplet));
-	int setpoint_triplet_pub_fd = orb_advertise(ORB_ID(position_setpoint_triplet), &setpoint_triplet);
+	//struct position_setpoint_triplet_s setpoint_triplet;
+	//memset(&setpoint_triplet, 0, sizeof(setpoint_triplet));
+	//int setpoint_triplet_pub_fd = orb_advertise(ORB_ID(position_setpoint_triplet), &setpoint_triplet);
 
 	/* one could wait for multiple topics with this technique, just using one here */
 //	struct pollfd fds[] = {
@@ -218,6 +218,7 @@ int unibo_commander_thread_main(int argc, char *argv[])
 	static uint64_t nowT = 0;
 	float deltaT;
 
+	int counter = 0;
 
 	COMM_start();
 	COMM_control();
@@ -289,8 +290,11 @@ int unibo_commander_thread_main(int argc, char *argv[])
 			// ----------- EXECUTION -----------
 			COMM_control();
 
+			if (counter >= 100){
+				warnx("State: %d",COMMANDER_Y.STATE);
+				counter = 0;
+			}
 
-			warnx("State: %d",COMMANDER_Y.STATE);
 			//publishing references
 			//orb_publish(ORB_ID(unibo_reference), reference_pub_fd, &reference);
 			//warnx("Actual yaw: %.3f - YawREF: %.3f - DYawREF: %.3f - D2YawREF: %.3f", TRAJECTORY_GENERATOR_APP_U.PSI, reference.psi, reference.d_psi, reference.dd_psi);

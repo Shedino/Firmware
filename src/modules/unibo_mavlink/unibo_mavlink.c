@@ -525,10 +525,23 @@ int unibo_mavlink_thread_main(int argc, char *argv[])
 	fds[0].events = POLLIN;
 	bool updated;
 
+	//time variables
+	static uint64_t time_pre = 0;
+	static uint64_t nowT = 0;
+	float deltaT;
+
 	ssize_t nread = 0;
 
 	/* Main loop*/
 	while (!unibomav_thread_should_exit) {
+
+		nowT = hrt_absolute_time();
+		deltaT = (nowT-time_pre)/1000.0f;
+		if (deltaT > 2000)    //2 seconds passed without messages
+		{
+			          //TODO mettere allarme
+			warnx("Lost Xbee!!!");
+		}
 
 		if (poll(fds, 1, timeout) > 0) {
 
@@ -543,6 +556,7 @@ int unibo_mavlink_thread_main(int argc, char *argv[])
 					if (mavlink_parse_char(MAVLINK_COMM_0, buf[i], &msg, &status)) {
 						/* handle generic messages and commands */
 						// Handle message
+						time_pre = hrt_absolute_time();
 						switch(msg.msgid)
 						{
 							case MAVLINK_MSG_ID_HEARTBEAT:
@@ -579,6 +593,8 @@ int unibo_mavlink_thread_main(int argc, char *argv[])
 								loc_pos.v_z_valid = true;
 								loc_pos.timestamp = unibo_opti_mav.usec;
 								loc_pos.v_xy_valid = false;
+								loc_pos.xy_valid = true;
+								loc_pos.z_valid = true;
 								orb_publish(ORB_ID(vehicle_local_position), loc_pos_pub_fd, &loc_pos);
 								counter_opti++;
 								if (counter_opti>=50){
