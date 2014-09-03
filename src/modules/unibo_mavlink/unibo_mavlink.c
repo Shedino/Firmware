@@ -534,10 +534,8 @@ int unibo_mavlink_thread_main(int argc, char *argv[])
 
 			/*non-blocking read. read may return negative values */
 			if ((nread = read(fd, buf, sizeof(buf))) < (ssize_t)sizeof(buf)) {
-				/* to avoid reading very small chunks wait for data before reading */
 
 
-//			nread = read(fd,charbuf,sizeof(char));
 			//if (!silent) warnx("buf: %s - Nread: %d", buf, nread);
 			//if(mavlink_parse_char(MAVLINK_COMM_0, charbuf, &msg, &status)) {
 				for (ssize_t i = 0; i < nread; i++) {
