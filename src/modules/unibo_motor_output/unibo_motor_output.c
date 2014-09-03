@@ -248,10 +248,10 @@ int unibo_motor_output_thread_main(int argc, char *argv[])
 	struct motor_output_s pwm_values;
 
 	// PWM to 0 initially
-	for(i = MOTORS_START; i < MOTORS_NUMBER; i++)
-	{
-		ioctl(pwm_fd, PWM_SERVO_SET(i), 0);
-	}
+//	for(i = MOTORS_START; i < MOTORS_NUMBER; i++)
+//	{
+//		ioctl(pwm_fd, PWM_SERVO_SET(i), 0);
+//	}
 
 	// loop dell'applicazione
 	while (!unibomo_thread_should_exit)
