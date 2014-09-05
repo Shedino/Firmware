@@ -53,6 +53,8 @@
 #include <uORB/topics/vehicle_local_position.h>
 #include <uORB/topics/unibo_parameters.h>
 #include <uORB/topics/actuator_armed.h>
+#include <uORB/topics/vehicle_status.h>
+#include <uORB/topics/unibo_vehicle_status.h>
 
 /* Deamon libraries? */
 #include <systemlib/systemlib.h>
@@ -132,7 +134,7 @@ int unibo_commander_main(int argc, char *argv[])
 					 2048,
 					 unibo_commander_thread_main,
 					 (argv) ? (const char **)&argv[2] : (const char **)NULL);
-		warnx("Thread started PID: %d",commander_task);
+		warnx("Thread -commander- started PID: %d",commander_task);
 		exit(0);
 	}
 
@@ -160,11 +162,12 @@ int unibo_commander_main(int argc, char *argv[])
 int unibo_commander_thread_main(int argc, char *argv[])
 //int simple_test_app_main(int argc, char *argv[])
 {
-	warnx("[unibo_commander] starting\n");
+	warnx("[unibo_commander] starting");
 
 	thread_running = true;
 
 	model = COMMANDER(); //Init model!
+
 
 	/* subscribe to attitude topic */
 	int vehicle_attitude_fd = orb_subscribe(ORB_ID(vehicle_attitude));
@@ -176,21 +179,24 @@ int unibo_commander_thread_main(int argc, char *argv[])
 	/* subscribe to position topic */
 	int local_position_fd = orb_subscribe(ORB_ID(vehicle_local_position));
 
-	/* subscribe to parameters topic */
-	int unibo_parameters_fd = orb_subscribe(ORB_ID(unibo_parameters));
-
 	/* subscribe to actuators armed topic */
 	int armed_fd = orb_subscribe(ORB_ID(actuator_armed));
 
+	/* subscribe to vehicle status topic */
+	int status_fd = orb_subscribe(ORB_ID(vehicle_status));
 
-	/* advertise local_pos_setpoint topic */                         //TODO sostituire con lo stato della macchina a stati
-	//struct position_setpoint_triplet_s setpoint_triplet;
-	//memset(&setpoint_triplet, 0, sizeof(setpoint_triplet));
-	//int setpoint_triplet_pub_fd = orb_advertise(ORB_ID(position_setpoint_triplet), &setpoint_triplet);
+	/* subscribe to unibo vehicle status topic */
+	int unibo_status_fd = orb_subscribe(ORB_ID(unibo_vehicle_status));
+
+
+	/* advertise unibo_vehicle_status topic */
+	struct unibo_vehicle_status_s unibo_status;
+	memset(&unibo_status, 0, sizeof(unibo_status));
+	int unibo_status_pub_fd = orb_advertise(ORB_ID(unibo_vehicle_status), &unibo_status);
 
 	/* one could wait for multiple topics with this technique, just using one here */
 //	struct pollfd fds[] = {
-//		{ .fd = joystick_fd,   .events = POLLIN },                                //CAMBIARE in joystick
+//		{ .fd = joystick_fd,   .events = POLLIN },
 //		/* there could be more file descriptors here, in the form like:
 //		 * { .fd = other_sub_fd,   .events = POLLIN },
 //		 */
@@ -211,14 +217,15 @@ int unibo_commander_thread_main(int argc, char *argv[])
 	struct vehicle_attitude_s ahrs;
 	struct unibo_joystick_s joystick;
 	struct vehicle_local_position_s position;
-	struct unibo_parameters_s param;
 	struct actuator_armed_s actuators;
+	struct vehicle_status_s vehicle_stat;
 
 	static uint64_t time_pre = 0;
 	static uint64_t nowT = 0;
 	float deltaT;
 
 	int counter = 0;
+	int temp_state = 0;
 
 	COMM_start();
 	COMM_control();
@@ -236,6 +243,7 @@ int unibo_commander_thread_main(int argc, char *argv[])
 	 */
 
 
+
 	while (!thread_should_exit) {
 		//TECNICAMENTE SIAMO GIA' A 50HZ, freq del topic di joystick (default 50HZ)
 
@@ -250,6 +258,15 @@ int unibo_commander_thread_main(int argc, char *argv[])
 			if (updated){
 				orb_copy(ORB_ID(unibo_joystick), joystick_fd, &joystick);
 				COMMANDER_U.BUTTON = joystick.buttons;          //button
+				if (counter >= 100){
+					warnx("Button: %d",COMMANDER_U.BUTTON);
+				}
+			}
+			/* copy status data into local buffer */
+			orb_check(unibo_status_fd, &updated);
+			if (updated){
+				orb_copy(ORB_ID(unibo_vehicle_status), unibo_status_fd, &unibo_status);
+				COMMANDER_U.NO_XBEE = unibo_status.xbee_lost;          //xbee lost status
 			}
 
 
@@ -264,18 +281,19 @@ int unibo_commander_thread_main(int argc, char *argv[])
 			orb_check(local_position_fd, &updated);
 			if (updated){
 				orb_copy(ORB_ID(vehicle_local_position), local_position_fd, &position);
-				//COMMANDER_U.LOC_POS_VALID = position.xy_valid;              //TODO change check x-y and z position too
-				COMMANDER_U.LOC_POS_VALID = true;
+				COMMANDER_U.LOC_POS_VALID = position.xy_valid;              //TODO change check x-y and z position too
+				//COMMANDER_U.LOC_POS_VALID = true;
 			}
 
-			/* copy actuators data into local buffer */
-			orb_check(armed_fd, &updated);
+			/* copy status data into local buffer */
+			orb_check(status_fd, &updated);
 			if (updated){
-				orb_copy(ORB_ID(actuator_armed), armed_fd, &actuators);
-				COMMANDER_U.ARMED = actuators.armed;
+				orb_copy(ORB_ID(vehicle_status), status_fd, &vehicle_stat);
+				//COMMANDER_U.ARMED = actuators.armed;
+				COMMANDER_U.ARMED = vehicle_stat.arming_state == ARMING_STATE_ARMED;
 			}
 
-			COMMANDER_U.NO_XBEE = 0;                 //TODO put the real watchdog on xbee
+			COMMANDER_U.ARMED = true;                //TODO put real one
 
 
 
@@ -289,19 +307,48 @@ int unibo_commander_thread_main(int argc, char *argv[])
 
 			// ----------- EXECUTION -----------
 			COMM_control();
+			counter++;
+
+			orb_copy(ORB_ID(unibo_vehicle_status), unibo_status_fd, &unibo_status); //copy unibo_status to override the state of state machine
+			switch (COMMANDER_Y.STATE) {
+			case 0:
+				unibo_status.flight_mode = FLIGHTMODE_STOP;
+				break;
+			case 10:
+				unibo_status.flight_mode = FLIGHTMODE_PREFLIGHT;
+				break;
+			case 20:
+				unibo_status.flight_mode = FLIGHTMODE_ATT_THRUST;
+				break;
+			case 30:
+				unibo_status.flight_mode = FLIGHTMODE_AUTO_LOWLEVEL;
+				break;
+			case 40:
+				unibo_status.flight_mode = FLIGHTMODE_AUTO_HIGHLEVEL;
+				break;
+			case 50:
+				unibo_status.flight_mode = FLIGHTMODE_AUTO_WAYPOINT;
+				break;
+			case 60:
+				unibo_status.flight_mode = FLIGHTMODE_COMM_LOST;
+				break;
+			default:
+				unibo_status.flight_mode = FLIGHTMODE_ERROR;
+				break;
+			}
+			orb_publish(ORB_ID(unibo_vehicle_status), unibo_status_pub_fd, &unibo_status);
 
 			if (counter >= 100){
-				warnx("State: %d",COMMANDER_Y.STATE);
+				warnx("State: %d",unibo_status.flight_mode);
+				warnx("Armed?: %d", vehicle_stat.arming_state == ARMING_STATE_ARMED);
+				//warnx("Attitude valid?: %d", COMMANDER_U.ATTITUDE_VALID);
+				warnx("Arming state: %d",vehicle_stat.arming_state);
+				warnx("Position Valid?: %d",COMMANDER_U.LOC_POS_VALID);
+				warnx("Xbee lost?: %d",unibo_status.xbee_lost);
 				counter = 0;
 			}
-
-			//publishing references
-			//orb_publish(ORB_ID(unibo_reference), reference_pub_fd, &reference);
-			//warnx("Actual yaw: %.3f - YawREF: %.3f - DYawREF: %.3f - D2YawREF: %.3f", TRAJECTORY_GENERATOR_APP_U.PSI, reference.psi, reference.d_psi, reference.dd_psi);
-
-
 		}
-		//usleep(1000);
+		usleep(10000);
 
 	}
 

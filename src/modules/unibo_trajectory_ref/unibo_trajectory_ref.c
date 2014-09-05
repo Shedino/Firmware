@@ -363,7 +363,7 @@ int unibo_trajectory_ref_thread_main(int argc, char *argv[])
 			setpoint_triplet.next.valid = true;
 			orb_publish(ORB_ID(position_setpoint_triplet), setpoint_triplet_pub_fd, &setpoint_triplet);
 		}
-		usleep(1000);
+		usleep(10000);
 
 	}
 

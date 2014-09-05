@@ -48,6 +48,7 @@
 #include <uORB/topics/sensor_combined.h>
 #include <uORB/topics/unibo_joystick.h>
 #include <uORB/topics/vehicle_local_position.h>
+#include <uORB/topics/unibo_vehicle_status.h>
 
 #include <poll.h>
 ////
@@ -379,6 +380,15 @@ int unibo_mavlink_thread_main(int argc, char *argv[])
 	int unibo_joy_pub_fd;
 	int loc_pos_pub_fd;
 	int loc_pos_sub_fd;
+
+	/* subscribe to unibo vehicle status topic */
+	int unibo_status_fd = orb_subscribe(ORB_ID(unibo_vehicle_status));
+	/* advertise unibo_vehicle_status topic */
+	struct unibo_vehicle_status_s unibo_status;
+	memset(&unibo_status, 0, sizeof(unibo_status));
+	int unibo_status_pub_fd = orb_advertise(ORB_ID(unibo_vehicle_status), &unibo_status);
+
+
 	char *uart_name;
 	/* default values for arguments */
 
@@ -539,8 +549,11 @@ int unibo_mavlink_thread_main(int argc, char *argv[])
 		deltaT = (nowT-time_pre)/1000.0f;
 		if (deltaT > 2000)    //2 seconds passed without messages
 		{
-			          //TODO mettere allarme
-			warnx("Lost Xbee!!!");
+			orb_copy(ORB_ID(unibo_vehicle_status), unibo_status_fd, &unibo_status); //copy unibo_status to override the state of xbee alarm
+			unibo_status.xbee_lost = true;
+			orb_publish(ORB_ID(unibo_vehicle_status), unibo_status_pub_fd, &unibo_status);
+
+			//warnx("Lost Xbee!!!");
 		}
 
 		if (poll(fds, 1, timeout) > 0) {
@@ -629,7 +642,7 @@ int unibo_mavlink_thread_main(int argc, char *argv[])
 							case MAVLINK_MSG_ID_UNIBO_PARAMETERS:
 								mavlink_msg_unibo_parameters_decode(&msg, &unibo_par_mav);
 								if (!silent) warnx("Received PAR Packet. XYmult: %f",unibo_par_mav.XY_Multiplier);
-								warnx("Parametri: Offset_T %.3f - latmode %.3f - k1 %.3f - L1 %.3f - KpAttx %.3f", unibo_par_mav.Offset_T, unibo_par_mav.lat_mode, unibo_par_mav.K1, unibo_par_mav.L1, unibo_par_mav.KpAttX);
+								//warnx("Parametri: Offset_T %.3f - latmode %.3f - k1 %.3f - L1 %.3f - KpAttx %.3f", unibo_par_mav.Offset_T, unibo_par_mav.lat_mode, unibo_par_mav.K1, unibo_par_mav.L1, unibo_par_mav.KpAttX);
 								param.in1=unibo_par_mav.Offset_T;
 								param.in2=unibo_par_mav.lat_mode;   //is mass parameter
 								param.in3=unibo_par_mav.delta;
