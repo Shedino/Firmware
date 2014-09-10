@@ -54,6 +54,7 @@
 #include <uORB/topics/unibo_parameters.h>
 #include <uORB/topics/actuator_armed.h>
 #include <uORB/topics/vehicle_status.h>
+#include <uORB/topics/safety.h>
 #include <uORB/topics/unibo_vehicle_status.h>
 
 /* Deamon libraries? */
@@ -179,11 +180,11 @@ int unibo_commander_thread_main(int argc, char *argv[])
 	/* subscribe to position topic */
 	int local_position_fd = orb_subscribe(ORB_ID(vehicle_local_position));
 
-	/* subscribe to actuators armed topic */
-	int armed_fd = orb_subscribe(ORB_ID(actuator_armed));
-
 	/* subscribe to vehicle status topic */
 	int status_fd = orb_subscribe(ORB_ID(vehicle_status));
+
+	/* subscribe to safety switch topic */
+	int safety_fd = orb_subscribe(ORB_ID(safety));
 
 	/* subscribe to unibo vehicle status topic */
 	int unibo_status_fd = orb_subscribe(ORB_ID(unibo_vehicle_status));
@@ -217,8 +218,8 @@ int unibo_commander_thread_main(int argc, char *argv[])
 	struct vehicle_attitude_s ahrs;
 	struct unibo_joystick_s joystick;
 	struct vehicle_local_position_s position;
-	struct actuator_armed_s actuators;
 	struct vehicle_status_s vehicle_stat;
+	struct safety_s safety;
 
 	static uint64_t time_pre = 0;
 	static uint64_t nowT = 0;
@@ -290,10 +291,18 @@ int unibo_commander_thread_main(int argc, char *argv[])
 			if (updated){
 				orb_copy(ORB_ID(vehicle_status), status_fd, &vehicle_stat);
 				//COMMANDER_U.ARMED = actuators.armed;
-				COMMANDER_U.ARMED = vehicle_stat.arming_state == ARMING_STATE_ARMED;
+				//COMMANDER_U.ARMED = vehicle_stat.arming_state == ARMING_STATE_ARMED;
 			}
 
-			COMMANDER_U.ARMED = true;                //TODO put real one
+			/* copy safety switch data into local buffer */
+			orb_check(safety_fd, &updated);
+			if (updated){
+				orb_copy(ORB_ID(safety), safety_fd, &safety);
+				//COMMANDER_U.ARMED = actuators.armed;
+				COMMANDER_U.ARMED = safety.safety_off;
+			}
+
+			//COMMANDER_U.ARMED = true;                //TODO put real one
 
 
 
@@ -340,7 +349,7 @@ int unibo_commander_thread_main(int argc, char *argv[])
 
 			if (counter >= 100){
 				warnx("State: %d",unibo_status.flight_mode);
-				//warnx("Armed?: %d", vehicle_stat.arming_state == ARMING_STATE_ARMED);
+				warnx("Armed?: %d", COMMANDER_U.ARMED);
 				//warnx("Attitude valid?: %d", COMMANDER_U.ATTITUDE_VALID);
 				//warnx("Arming state: %d",vehicle_stat.arming_state);
 				warnx("Position Valid?: %d",COMMANDER_U.LOC_POS_VALID);
