@@ -357,7 +357,7 @@ int unibo_trajectory_ref_thread_main(int argc, char *argv[])
 			setpoint_triplet.current.lat = reference.p_x;              //lat-->x
 			setpoint_triplet.current.lon = reference.p_y;              //lon-->y
 			setpoint_triplet.current.alt = reference.p_z;              //alt-->z
-			setpoint_triplet.current.yaw = reference.psi;
+			setpoint_triplet.current.yaw = reference.psi;			// IN MAVLINK MESSAGES VENGONO MANIPOLATI. ES: *1e7, lo yaw è trasformato, etc,...TODO check
 			setpoint_triplet.previous.valid = true;
 			setpoint_triplet.current.valid = true;
 			setpoint_triplet.next.valid = true;

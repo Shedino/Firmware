@@ -552,7 +552,6 @@ int unibo_mavlink_thread_main(int argc, char *argv[])
 			orb_copy(ORB_ID(unibo_vehicle_status), unibo_status_fd, &unibo_status); //copy unibo_status to override the state of xbee alarm
 			unibo_status.xbee_lost = true;
 			orb_publish(ORB_ID(unibo_vehicle_status), unibo_status_pub_fd, &unibo_status);
-
 			//warnx("Lost Xbee!!!");
 		}
 
@@ -567,9 +566,12 @@ int unibo_mavlink_thread_main(int argc, char *argv[])
 				for (ssize_t i = 0; i < nread; i++) {
 					//if (mavlink_parse_char(_mavlink->get_channel(), buf[i], &msg, &status)) {
 					if (mavlink_parse_char(MAVLINK_COMM_0, buf[i], &msg, &status)) {
+						//Reset time and state for xbee watchdog
+						time_pre = hrt_absolute_time();
+						orb_copy(ORB_ID(unibo_vehicle_status), unibo_status_fd, &unibo_status); //copy unibo_status to override the state of xbee alarm
+						unibo_status.xbee_lost = false;
 						/* handle generic messages and commands */
 						// Handle message
-						time_pre = hrt_absolute_time();
 						switch(msg.msgid)
 						{
 							case MAVLINK_MSG_ID_HEARTBEAT:
