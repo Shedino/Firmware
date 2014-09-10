@@ -379,7 +379,7 @@ void handle_PACK(char *packet, int unibo_ref_pub_fd, int unibo_param_pub_fd, int
 
 		if (reference.valid){
 			orb_publish(ORB_ID(unibo_reference), unibo_ref_pub_fd, &reference);
-			if (!silent) warnx("Received Reference Packet. REFx: %d \n",reference.p_x);
+			if (!silent) warnx("Received Reference Packet. REFx: %f \n",reference.p_x);
 		}
 
 		break;

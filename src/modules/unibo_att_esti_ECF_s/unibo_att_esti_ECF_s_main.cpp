@@ -523,7 +523,7 @@ int unibo_att_esti_ECF_s_thread_main(int argc, char *argv[])
 						gyro_offsets[0] /= offset_count;
 						gyro_offsets[1] /= offset_count;
 						gyro_offsets[2] /= offset_count;
-						warnx("gyro initialized, offsets: %.5f %.5f %.5f", gyro_offsets[0], gyro_offsets[1], gyro_offsets[2]);
+						warnx("gyro initialized, offsets: %.5f %.5f %.5f", (double)gyro_offsets[0], (double)gyro_offsets[1], (double)gyro_offsets[2]);
 					}
 
 				} else {
@@ -620,9 +620,9 @@ int unibo_att_esti_ECF_s_thread_main(int argc, char *argv[])
 						/* due to inputs or numerical failure the output is invalid, skip it */
 						// Due to inputs or numerical failure the output is invalid
 						warnx("infinite euler angles, rotation matrix:");
-						warnx("%.3f %.3f %.3f", Rot_matrix[0], Rot_matrix[1], Rot_matrix[2]);
-						warnx("%.3f %.3f %.3f", Rot_matrix[3], Rot_matrix[4], Rot_matrix[5]);
-						warnx("%.3f %.3f %.3f", Rot_matrix[6], Rot_matrix[7], Rot_matrix[8]);
+						warnx("%.3f %.3f %.3f", (double)Rot_matrix[0], (double)Rot_matrix[1], (double)Rot_matrix[2]);
+						warnx("%.3f %.3f %.3f", (double)Rot_matrix[3], (double)Rot_matrix[4], (double)Rot_matrix[5]);
+						warnx("%.3f %.3f %.3f", (double)Rot_matrix[6], (double)Rot_matrix[7], (double)Rot_matrix[8]);
 						// Don't publish anything
 						continue;
 					}

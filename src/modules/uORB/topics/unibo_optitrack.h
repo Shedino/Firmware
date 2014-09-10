@@ -1,6 +1,6 @@
 /*
  *
- * Filename: unibo_paramenters.h
+ * Filename: unibo_optitrack.h
  * Authors: Furci Michele
  *
  * Description:
@@ -18,14 +18,14 @@
 
 struct unibo_optitrack_s
 {
-	float pos_x;
-	float pos_y;
-	float pos_z;
-	float q0;
-	float q1;
-	float q2;
-	float q3;
-	float err;
+	double pos_x;
+	double pos_y;
+	double pos_z;
+	double q0;
+	double q1;
+	double q2;
+	double q3;
+	double err;
 	uint64_t timestamp;		/**< timestamp        */
 	bool  valid;			/**< validity      */
 };

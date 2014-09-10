@@ -352,8 +352,8 @@ int unibo_trajectory_ref_thread_main(int argc, char *argv[])
 			setpoint.yaw = reference.psi;
 			orb_publish(ORB_ID(vehicle_local_position_setpoint), setpoint_pub_fd, &setpoint);
 
-			setpoint_triplet.current.type = SETPOINT_TYPE_NORMAL;	   //publish in setpoint_triplet
-			setpoint_triplet.nav_state = NAV_STATE_NONE;
+			setpoint_triplet.current.type = SETPOINT_TYPE_POSITION;	   //publish in setpoint_triplet
+			setpoint_triplet.nav_state = 0; //NAV_STATE_NONE;
 			setpoint_triplet.current.lat = reference.p_x;              //lat-->x
 			setpoint_triplet.current.lon = reference.p_y;              //lon-->y
 			setpoint_triplet.current.alt = reference.p_z;              //alt-->z

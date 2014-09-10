@@ -124,7 +124,7 @@ usage(const char *reason)
 
 float LowPassFilter(float value, float last, float cutOff, float dt_filt){
   //float h = 0.01; //Sample time (approx)
-  float Tf= 1.0/(cutOff*2*3.14); //Cutoff frequency Hz
+  float Tf= 1.0f/(cutOff*2.0f*3.14f); //Cutoff frequency Hz
   float a = dt_filt/(dt_filt+Tf);
   float val = a*value+(1-a)*last;
   return val;
@@ -255,7 +255,7 @@ int unibo_flow_thread_main(int argc, char *argv[])
 
 				/* vehicle state estimation */
 				float sonar_new = raw.ground_distance_m;
-				warnx("z: %.3f", sonar_new);
+				warnx("z: %.3f", (double)sonar_new);
 //				warnx("[RAW] Optical flow VX , VY , ALT:\t%.3f\t%.3f\t%.3f",
 //											raw.flow_comp_x_m,
 //											raw.flow_comp_y_m,
@@ -291,8 +291,8 @@ int unibo_flow_thread_main(int argc, char *argv[])
 							/* update filtered flow */
 							//vx = raw.flow_comp_x_m;    without yaw comp
 							//vy = raw.flow_comp_y_m;    without yaw comp
-							vx = raw.flow_comp_x_m * cos(att.yaw) - raw.flow_comp_y_m * sin(att.yaw);
-							vy = raw.flow_comp_x_m * sin(att.yaw) + raw.flow_comp_y_m * cos(att.yaw);
+							vx = raw.flow_comp_x_m * (float)cos(att.yaw) - raw.flow_comp_y_m * (float)sin(att.yaw);
+							vy = raw.flow_comp_x_m * (float)sin(att.yaw) + raw.flow_comp_y_m * (float)cos(att.yaw);
 							sumx = sumx + vx * dt;
 							sumy = sumy + vy * dt;
 
@@ -346,7 +346,8 @@ int unibo_flow_thread_main(int argc, char *argv[])
 
 								last_sonar=local_pos.z;
 								last_vz=local_pos.vz;
-								log.baro_alt=local_pos.vz;
+								log.terrain_alt=local_pos.vz;
+								//log.baro_alt=local_pos.vz;
 							}
 
 							//Complementary filter
@@ -366,7 +367,7 @@ int unibo_flow_thread_main(int argc, char *argv[])
 	//							raw.flow_comp_x_m,
 	//							raw.flow_comp_y_m,
 	//							raw.ground_distance_m);
-							warnx("Az - b: %.3f--%.3f", az, b);
+							warnx("Az - b: %.3f--%.3f", (double)az, (double)b);
 //							warnx("[RICALCOLATO] Optical flow X , Y , ALT, VZ:\t%.3f\t%.3f\t%.3f\t%.3f\n",
 //								sumx,
 //								sumy,

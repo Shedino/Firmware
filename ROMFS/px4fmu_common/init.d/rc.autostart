@@ -68,6 +68,12 @@ then
 	set MODE custom
 fi
 
+if param compare SYS_AUTOSTART 2103 103
+then
+        sh /etc/init.d/2103_skyhunter_1800
+        set MODE custom
+fi
+
 #
 # Flying wing
 #
@@ -95,6 +101,11 @@ fi
 if param compare SYS_AUTOSTART 3034 34
 then
 	sh /etc/init.d/3034_fx79
+fi
+
+if param compare SYS_AUTOSTART 3035 35
+then
+	sh /etc/init.d/3035_viper
 fi
 
 if param compare SYS_AUTOSTART 3100
@@ -128,6 +139,16 @@ fi
 if param compare SYS_AUTOSTART 4011 11
 then
 	sh /etc/init.d/4011_dji_f450
+fi
+
+if param compare SYS_AUTOSTART 4012
+then
+	sh /etc/init.d/4012_quad_x_can
+fi
+
+if param compare SYS_AUTOSTART 4020
+then
+	sh /etc/init.d/4020_hk_micro_pcb
 fi
 
 #
@@ -187,6 +208,11 @@ fi
 if param compare SYS_AUTOSTART 10016 16
 then
 	sh /etc/init.d/10016_3dr_iris
+fi
+
+if param compare SYS_AUTOSTART 10017
+then
+	sh /etc/init.d/10017_steadidrone_qu4d
 fi
 
 #

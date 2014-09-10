@@ -88,7 +88,7 @@
 #endif
 
 #define MAV_MODE_UNINIT 0
-#define pi 3.14159
+#define pi 3.14159f
 
 
 
@@ -579,7 +579,7 @@ int unibo_mavlink_thread_main(int argc, char *argv[])
 								//decoding
 								mavlink_msg_vicon_position_estimate_decode(&msg, &unibo_opti_mav);
 								//MAV2topic
-								if (!silent) warnx("Received Optitrack Packet: %.3f %.3f %.3f, %.3f %.3f %.3f", unibo_opti_mav.x, unibo_opti_mav.y, unibo_opti_mav.z, unibo_opti_mav.roll, unibo_opti_mav.pitch, unibo_opti_mav.yaw);
+								if (!silent) warnx("Received Optitrack Packet: %.3f %.3f %.3f, %.3f %.3f %.3f", (double)unibo_opti_mav.x, (double)unibo_opti_mav.y, (double)unibo_opti_mav.z, (double)unibo_opti_mav.roll, (double)unibo_opti_mav.pitch, (double)unibo_opti_mav.yaw);
 								opti.pos_x = unibo_opti_mav.x;
 								opti.pos_y = unibo_opti_mav.y;
 								opti.pos_z = unibo_opti_mav.z;
@@ -600,8 +600,8 @@ int unibo_mavlink_thread_main(int argc, char *argv[])
 								}
 
 								orb_copy(ORB_ID(vehicle_local_position), loc_pos_sub_fd, &loc_pos);  //copy actual local_position for velocities
-								loc_pos.x = unibo_opti_mav.x * cos(yawoffset*2*pi/360) - unibo_opti_mav.y * sin(yawoffset*2*pi/360);          //Write to local position topic too
-								loc_pos.y = unibo_opti_mav.x * sin(yawoffset*2*pi/360) - unibo_opti_mav.y * cos(yawoffset*2*pi/360);
+								loc_pos.x = unibo_opti_mav.x * (float)cos(yawoffset*2.0f*pi/360.0f) - unibo_opti_mav.y * (float)sin(yawoffset*2.0f*pi/360.0f);          //Write to local position topic too
+								loc_pos.y = unibo_opti_mav.x * (float)sin(yawoffset*2.0f*pi/360.0f) - unibo_opti_mav.y * (float)cos(yawoffset*2.0f*pi/360.0f);
 								loc_pos.z = unibo_opti_mav.z;
 								loc_pos.v_z_valid = true;
 								loc_pos.timestamp = unibo_opti_mav.usec;
@@ -618,7 +618,7 @@ int unibo_mavlink_thread_main(int argc, char *argv[])
 							case MAVLINK_MSG_ID_UNIBO_REFERENCES:
 								//decoding
 								mavlink_msg_unibo_references_decode(&msg, &unibo_ref_mav);
-								if (!silent) warnx("Received Reference Packet: PosX:%.3f - PosY:%.3f - PosZ:%.3f - VelX: %.3f - VelY: %.3f - VelZ: %.3f - Psi: %.3f - BTNS: %d", unibo_ref_mav.p_refX,unibo_ref_mav.p_refY,unibo_ref_mav.p_refZ, unibo_ref_mav.dot_p_refX, unibo_ref_mav.dot_p_refY, unibo_ref_mav.dot_p_refZ, unibo_ref_mav.psi_ref, unibo_ref_mav.buttons);
+								if (!silent) warnx("Received Reference Packet: PosX:%.3f - PosY:%.3f - PosZ:%.3f - VelX: %.3f - VelY: %.3f - VelZ: %.3f - Psi: %.3f - BTNS: %d", (double)unibo_ref_mav.p_refX,(double)unibo_ref_mav.p_refY,(double)unibo_ref_mav.p_refZ,(double)unibo_ref_mav.dot_p_refX, (double)unibo_ref_mav.dot_p_refY, (double)unibo_ref_mav.dot_p_refZ, (double)unibo_ref_mav.psi_ref, unibo_ref_mav.buttons);
 								//MAV2topic
 								reff.p_x=unibo_ref_mav.p_refX;
 								reff.p_y=unibo_ref_mav.p_refY;
@@ -641,7 +641,7 @@ int unibo_mavlink_thread_main(int argc, char *argv[])
 								break;
 							case MAVLINK_MSG_ID_UNIBO_PARAMETERS:
 								mavlink_msg_unibo_parameters_decode(&msg, &unibo_par_mav);
-								if (!silent) warnx("Received PAR Packet. XYmult: %f",unibo_par_mav.XY_Multiplier);
+								if (!silent) warnx("Received PAR Packet. XYmult: %f",(double)unibo_par_mav.XY_Multiplier);
 								//warnx("Parametri: Offset_T %.3f - latmode %.3f - k1 %.3f - L1 %.3f - KpAttx %.3f", unibo_par_mav.Offset_T, unibo_par_mav.lat_mode, unibo_par_mav.K1, unibo_par_mav.L1, unibo_par_mav.KpAttX);
 								param.in1=unibo_par_mav.Offset_T;
 								param.in2=unibo_par_mav.lat_mode;   //is mass parameter

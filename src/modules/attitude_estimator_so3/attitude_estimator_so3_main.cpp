@@ -1,8 +1,6 @@
 /****************************************************************************
  *
- *   Copyright (C) 2013 PX4 Development Team. All rights reserved.
- *   Author: Hyon Lim <limhyon@gmail.com>
- *           Anton Babushkin <anton.babushkin@me.com>
+ *   Copyright (c) 2013 PX4 Development Team. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -35,6 +33,9 @@
  
  /*
  * @file attitude_estimator_so3_main.cpp
+ *
+ * @author Hyon Lim <limhyon@gmail.com>
+ * @author Anton Babushkin <anton.babushkin@me.com>
  *
  * Implementation of nonlinear complementary filters on the SO(3).
  * This code performs attitude estimation by using accelerometer, gyroscopes and magnetometer.
@@ -135,7 +136,7 @@ usage(const char *reason)
  * Makefile does only apply to this management task.
  *
  * The actual stack size should be set in the call
- * to task_create().
+ * to task_spawn_cmd().
  */
 int attitude_estimator_so3_main(int argc, char *argv[])
 {
@@ -395,7 +396,7 @@ void NonlinearSO3AHRSupdate(float gx, float gy, float gz, float ax, float ay, fl
  */
 int attitude_estimator_so3_thread_main(int argc, char *argv[])
 {
-	const unsigned int loop_interval_alarm = 6500;	// loop interval in microseconds
+	//const unsigned int loop_interval_alarm = 6500;	// loop interval in microseconds
 
 	//! Time constant
 	float dt = 0.005f;
@@ -442,6 +443,7 @@ int attitude_estimator_so3_thread_main(int argc, char *argv[])
 
 	int loopcounter = 0;
 	int printcounter = 0;
+	printcounter=printcounter;
 
 	thread_running = true;
 
@@ -517,7 +519,7 @@ int attitude_estimator_so3_thread_main(int argc, char *argv[])
 						gyro_offsets[0] /= offset_count;
 						gyro_offsets[1] /= offset_count;
 						gyro_offsets[2] /= offset_count;
-						warnx("gyro initialized, offsets: %.5f %.5f %.5f", gyro_offsets[0], gyro_offsets[1], gyro_offsets[2]);
+						warnx("gyro initialized, offsets: %.5f %.5f %.5f", (double)gyro_offsets[0], (double)gyro_offsets[1], (double)gyro_offsets[2]);
 					}
 
 				} else {
@@ -574,16 +576,15 @@ int attitude_estimator_so3_thread_main(int argc, char *argv[])
 					}
 
 					uint64_t timing_start = hrt_absolute_time();
+					timing_start=timing_start;
 
 					// NOTE : Accelerometer is reversed.
 					// Because proper mount of PX4 will give you a reversed accelerometer readings.
-
-
 					NonlinearSO3AHRSupdate(gyro[0], gyro[1], gyro[2],
 										-acc[0], -acc[1], -acc[2],
 										mag[0], mag[1], mag[2],
 										so3_comp_params.Kp,
-										so3_comp_params.Ki,
+										so3_comp_params.Ki, 
 										dt);
 
 					// Convert q->R, This R converts inertial frame to body frame.
@@ -615,9 +616,9 @@ int attitude_estimator_so3_thread_main(int argc, char *argv[])
 						/* due to inputs or numerical failure the output is invalid, skip it */
 						// Due to inputs or numerical failure the output is invalid
 						warnx("infinite euler angles, rotation matrix:");
-						warnx("%.3f %.3f %.3f", Rot_matrix[0], Rot_matrix[1], Rot_matrix[2]);
-						warnx("%.3f %.3f %.3f", Rot_matrix[3], Rot_matrix[4], Rot_matrix[5]);
-						warnx("%.3f %.3f %.3f", Rot_matrix[6], Rot_matrix[7], Rot_matrix[8]);
+						warnx("%.3f %.3f %.3f", (double)Rot_matrix[0], (double)Rot_matrix[1], (double)Rot_matrix[2]);
+						warnx("%.3f %.3f %.3f", (double)Rot_matrix[3], (double)Rot_matrix[4], (double)Rot_matrix[5]);
+						warnx("%.3f %.3f %.3f", (double)Rot_matrix[6], (double)Rot_matrix[7], (double)Rot_matrix[8]);
 						// Don't publish anything
 						continue;
 					}
@@ -644,11 +645,9 @@ int attitude_estimator_so3_thread_main(int argc, char *argv[])
 					att.pitchspeed = 2.0f*(-q2*dq0 + q3*dq1 + q0*dq2 - q1*dq3);
 					att.yawspeed = 2.0f*(-q3*dq0 -q2*dq1 + q1*dq2 + q0*dq3);
 					*/
-
 					att.rollspeed = gyro[0];
 					att.pitchspeed = gyro[1];
 					att.yawspeed = gyro[2];
-
 
 					att.rollacc = 0;
 					att.pitchacc = 0;
@@ -670,6 +669,7 @@ int attitude_estimator_so3_thread_main(int argc, char *argv[])
 					}
 
 					perf_end(so3_comp_loop_perf);
+					update_vect[0]=update_vect[0];
 				}
 			}
 		}

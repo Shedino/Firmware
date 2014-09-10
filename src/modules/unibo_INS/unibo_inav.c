@@ -331,8 +331,8 @@ int unibo_INS_thread_main(int argc, char *argv[])
 				unibo_INS_U.acc_meas[2] = sensor_in.accelerometer_m_s2[2];
 
 				/* Misure di posizione */
-				unibo_INS_U.pos_meas[0] = (float)1e-7*(3.14/180.0f)*gps_position.lat; /* Latitudine rad*/
-				unibo_INS_U.pos_meas[1] = (float)1e-7*(3.14/180.0f)*gps_position.lon; /* Longitudine rad*/
+				unibo_INS_U.pos_meas[0] = (double)1e-7*(3.14/180.0)*gps_position.lat; /* Latitudine rad*/
+				unibo_INS_U.pos_meas[1] = (double)1e-7*(3.14/180.0)*gps_position.lon; /* Longitudine rad*/
 				unibo_INS_U.pos_meas[2] = sensor_in.baro_alt_meter; /* Altezza s.l.m. metri*/
 
 				/* Misure di velocità */

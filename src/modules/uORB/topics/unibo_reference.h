@@ -19,25 +19,25 @@
 struct unibo_reference_s
 {
 	uint64_t timestamp;		/**< timestamp        */
-	float p_x;				/**< position x     */
-	float p_y;				/**< position y     */
-	float p_z;				/**< position z     */
-	float dp_x;				/**< velocity x      */
-	float dp_y;				/**< velocity y      */
-	float dp_z;				/**< velocity z      */
-	float ddp_x;			/**< acceleration x        */
-	float ddp_y;			/**< acceleration y       */
-	float ddp_z;			/**< acceleration z        */
-	float d3p_x;			/**< jerk x        */
-	float d3p_y;			/**< jerk y       */
-	float d3p_z;			/**< jerk z        */
-	float d4p_x;			/**< snap x        */
-	float d4p_y;			/**< snap y       */
-	float d4p_z;			/**< snap z        */
-	float psi;				/**< yaw    */
-	float d_psi;			/**< yaw velocity        */
-	float dd_psi; 			/**< yaw acceleration      */
-	float q;
+	double p_x;				/**< position x     */
+	double p_y;				/**< position y     */
+	double p_z;				/**< position z     */
+	double dp_x;				/**< velocity x      */
+	double dp_y;				/**< velocity y      */
+	double dp_z;				/**< velocity z      */
+	double ddp_x;			/**< acceleration x        */
+	double ddp_y;			/**< acceleration y       */
+	double ddp_z;			/**< acceleration z        */
+	double d3p_x;			/**< jerk x        */
+	double d3p_y;			/**< jerk y       */
+	double d3p_z;			/**< jerk z        */
+	double d4p_x;			/**< snap x        */
+	double d4p_y;			/**< snap y       */
+	double d4p_z;			/**< snap z        */
+	double psi;				/**< yaw    */
+	double d_psi;			/**< yaw velocity        */
+	double dd_psi; 			/**< yaw acceleration      */
+	double q;
 	uint16_t button;			/**< joystick button      */
 	bool  valid;			/**< validity      */
 };
