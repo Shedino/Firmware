@@ -195,6 +195,11 @@ int unibo_commander_thread_main(int argc, char *argv[])
 	memset(&unibo_status, 0, sizeof(unibo_status));
 	int unibo_status_pub_fd = orb_advertise(ORB_ID(unibo_vehicle_status), &unibo_status);
 
+	/* advertise vehicle_status topic */
+	struct vehicle_status_s vehicle_status;
+	memset(&vehicle_status, 0, sizeof(vehicle_status));
+	int vehicle_status_pub_fd = orb_advertise(ORB_ID(vehicle_status), &vehicle_status);
+
 	/* one could wait for multiple topics with this technique, just using one here */
 //	struct pollfd fds[] = {
 //		{ .fd = joystick_fd,   .events = POLLIN },
@@ -268,6 +273,8 @@ int unibo_commander_thread_main(int argc, char *argv[])
 			if (updated){
 				orb_copy(ORB_ID(unibo_vehicle_status), unibo_status_fd, &unibo_status);
 				COMMANDER_U.NO_XBEE = unibo_status.xbee_lost;          //xbee lost status
+				COMMANDER_U.LANDED = unibo_status.landed;
+				COMMANDER_U.TOOK_OFF = unibo_status.took_off;
 			}
 
 
@@ -282,17 +289,18 @@ int unibo_commander_thread_main(int argc, char *argv[])
 			orb_check(local_position_fd, &updated);
 			if (updated){
 				orb_copy(ORB_ID(vehicle_local_position), local_position_fd, &position);
-				COMMANDER_U.LOC_POS_VALID = position.xy_valid;              //TODO change check x-y and z position too
+				COMMANDER_U.LOC_XY_VALID = position.xy_valid;
+				COMMANDER_U.LOC_Z_VALID = position.z_valid;
 				//COMMANDER_U.LOC_POS_VALID = true;
 			}
 
 			/* copy status data into local buffer */
-			orb_check(status_fd, &updated);
-			if (updated){
-				orb_copy(ORB_ID(vehicle_status), status_fd, &vehicle_stat);
-				//COMMANDER_U.ARMED = actuators.armed;
-				//COMMANDER_U.ARMED = vehicle_stat.arming_state == ARMING_STATE_ARMED;
-			}
+//			orb_check(status_fd, &updated);
+//			if (updated){
+//				orb_copy(ORB_ID(vehicle_status), status_fd, &vehicle_stat);
+//				COMMANDER_U.ARMED = actuators.armed;
+//				COMMANDER_U.ARMED = vehicle_stat.arming_state == ARMING_STATE_ARMED;
+//			}
 
 			/* copy safety switch data into local buffer */
 			orb_check(safety_fd, &updated);
@@ -302,7 +310,9 @@ int unibo_commander_thread_main(int argc, char *argv[])
 				COMMANDER_U.ARMED = safety.safety_off;
 			}
 
-			//COMMANDER_U.ARMED = true;                //TODO put real one
+			//TODO add commands -->landed, take off
+			COMMANDER_U.CMD_LANDING = false;
+			COMMANDER_U.CMD_TAKE_OFF = false;
 
 
 
@@ -339,7 +349,19 @@ int unibo_commander_thread_main(int argc, char *argv[])
 				unibo_status.flight_mode = FLIGHTMODE_AUTO_WAYPOINT;
 				break;
 			case 60:
-				unibo_status.flight_mode = FLIGHTMODE_COMM_LOST;
+				unibo_status.flight_mode = FLIGHTMODE_LANDING;
+				break;
+			case 70:
+				unibo_status.flight_mode = FLIGHTMODE_U_LANDING;
+				break;
+			case 80:
+				unibo_status.flight_mode = FLIGHTMODE_Z_LANDING;
+				break;
+			case 90:
+				unibo_status.flight_mode = FLIGHTMODE_TAKE_OFF;
+				break;
+			case 91:
+				unibo_status.flight_mode = FLIGHTMODE_TAKE_OFF;
 				break;
 			default:
 				unibo_status.flight_mode = FLIGHTMODE_ERROR;
@@ -347,12 +369,17 @@ int unibo_commander_thread_main(int argc, char *argv[])
 			}
 			orb_publish(ORB_ID(unibo_vehicle_status), unibo_status_pub_fd, &unibo_status);
 
+
+			orb_copy(ORB_ID(vehicle_status), status_fd, &vehicle_status); //copy vehicle_status to override the state of flight modes
+			vehicle_status.nav_state = unibo_status.flight_mode;
+			orb_publish(ORB_ID(vehicle_status), vehicle_status_pub_fd, &vehicle_status);
+
 			if (counter >= 100){
 				warnx("State: %d",unibo_status.flight_mode);
 				warnx("Armed?: %d", COMMANDER_U.ARMED);
 				//warnx("Attitude valid?: %d", COMMANDER_U.ATTITUDE_VALID);
 				//warnx("Arming state: %d",vehicle_stat.arming_state);
-				warnx("Position Valid?: %d",COMMANDER_U.LOC_POS_VALID);
+				warnx("Position Valid?: %d",COMMANDER_U.LOC_XY_VALID);
 				warnx("Xbee lost?: %d",unibo_status.xbee_lost);
 				counter = 0;
 			}

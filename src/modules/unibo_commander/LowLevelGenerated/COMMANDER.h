@@ -3,9 +3,9 @@
  *
  * Code generation for model "COMMANDER".
  *
- * Model version              : 1.2466
+ * Model version              : 1.2480
  * Simulink Coder version : 8.3 (R2012b) 20-Jul-2012
- * C source code generated on : Wed Sep 03 11:51:27 2014
+ * C source code generated on : Fri Sep 19 15:41:11 2014
  *
  * Target selection: grt.tlc
  * Note: GRT includes extra infrastructure and instrumentation for prototyping
@@ -775,8 +775,13 @@ typedef struct {
   uint32_T BUTTON;                     /* '<Root>/BUTTON' */
   boolean_T NO_XBEE;                   /* '<Root>/NO_XBEE' */
   boolean_T ATTITUDE_VALID;            /* '<Root>/ATTITUDE_VALID' */
-  boolean_T LOC_POS_VALID;             /* '<Root>/LOC_POS_VALID' */
+  boolean_T LOC_XY_VALID;              /* '<Root>/LOC_XY_VALID' */
+  boolean_T LOC_Z_VALID;               /* '<Root>/LOC_Z_VALID' */
   boolean_T ARMED;                     /* '<Root>/ARMED' */
+  boolean_T CMD_TAKE_OFF;              /* '<Root>/CMD_TAKE_OFF' */
+  boolean_T CMD_LANDING;               /* '<Root>/CMD_LANDING' */
+  boolean_T TOOK_OFF;                  /* '<Root>/TOOK_OFF' */
+  boolean_T LANDED;                    /* '<Root>/LANDED' */
 } ExternalInputs_COMMANDER;
 
 /* External outputs (root outports fed by signals with auto storage) */

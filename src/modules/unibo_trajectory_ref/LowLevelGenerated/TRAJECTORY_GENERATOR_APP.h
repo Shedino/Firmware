@@ -3,9 +3,9 @@
  *
  * Code generation for model "TRAJECTORY_GENERATOR_APP".
  *
- * Model version              : 1.3955
+ * Model version              : 1.4000
  * Simulink Coder version : 8.3 (R2012b) 20-Jul-2012
- * C source code generated on : Thu May 08 13:03:55 2014
+ * C source code generated on : Fri Sep 19 16:05:35 2014
  *
  * Target selection: grt.tlc
  * Note: GRT includes extra infrastructure and instrumentation for prototyping
@@ -776,163 +776,225 @@
 /* Definition for use in the target main file */
 #define TRAJECTORY_GENERATOR_APP_rtModel RT_MODEL_TRAJECTORY_GENERATOR_A
 
-/* Block signals for system '<S13>/SWITCH LAT MODE' */
+/* Block signals for system '<S12>/pitch' */
 typedef struct {
-  real_T MODE;                         /* '<S13>/SWITCH LAT MODE' */
-} rtB_SWITCHLATMODE_TRAJECTORY_GE;
+  real_T angle;                        /* '<S12>/pitch' */
+} rtB_pitch_TRAJECTORY_GENERATOR_;
+
+/* Block signals for system '<S5>/Euler2Quat' */
+typedef struct {
+  real_T ref_pos[15];                  /* '<S5>/Euler2Quat' */
+} rtB_Euler2Quat_TRAJECTORY_GENER;
 
 /* Block signals (auto storage) */
 typedef struct {
-  real_T Memory1;                      /* '<S9>/Memory1' */
-  real_T X_REF;                        /* '<S34>/X_REF' */
-  real_T Y_REF;                        /* '<S34>/Y_REF' */
-  real_T Z_REF;                        /* '<S34>/Z_REF' */
-  real_T Memory;                       /* '<S2>/Memory' */
-  real_T Memory5;                      /* '<S14>/Memory5' */
-  real_T Switch;                       /* '<S2>/Switch' */
+  real_T X_REF;                        /* '<S32>/X_REF' */
+  real_T Y_REF;                        /* '<S32>/Y_REF' */
+  real_T Z_REF;                        /* '<S32>/Z_REF' */
+  real_T Memory;                       /* '<S3>/Memory' */
+  real_T Switch;                       /* '<S3>/Switch' */
   real_T Memory_e[3];                  /* '<S1>/Memory' */
-  real_T DiscreteTransferFcn7;         /* '<S26>/Discrete Transfer Fcn7' */
-  real_T DiscreteTransferFcn7_o;       /* '<S27>/Discrete Transfer Fcn7' */
-  real_T DiscreteTransferFcn7_a;       /* '<S29>/Discrete Transfer Fcn7' */
-  real_T Derivative[3];                /* '<S25>/Derivative' */
-  real_T Derivative1[3];               /* '<S25>/Derivative1' */
-  real_T DiscreteTransferFcn7_e;       /* '<S28>/Discrete Transfer Fcn7' */
-  real_T Memory5_d;                    /* '<S13>/Memory5' */
-  real_T Memory5_f;                    /* '<S15>/Memory5' */
-  real_T DiscreteTransferFcn;          /* '<S26>/Discrete Transfer Fcn' */
-  real_T DiscreteTransferFcn1;         /* '<S26>/Discrete Transfer Fcn1' */
-  real_T DiscreteTransferFcn2;         /* '<S26>/Discrete Transfer Fcn2' */
-  real_T DiscreteTransferFcn3;         /* '<S26>/Discrete Transfer Fcn3' */
-  real_T DiscreteTransferFcn4;         /* '<S26>/Discrete Transfer Fcn4' */
-  real_T DiscreteTransferFcn5;         /* '<S26>/Discrete Transfer Fcn5' */
-  real_T DiscreteTransferFcn6;         /* '<S26>/Discrete Transfer Fcn6' */
-  real_T DiscreteTransferFcn_m;        /* '<S27>/Discrete Transfer Fcn' */
-  real_T DiscreteTransferFcn1_h;       /* '<S27>/Discrete Transfer Fcn1' */
-  real_T DiscreteTransferFcn2_i;       /* '<S27>/Discrete Transfer Fcn2' */
-  real_T DiscreteTransferFcn3_e;       /* '<S27>/Discrete Transfer Fcn3' */
-  real_T DiscreteTransferFcn4_j;       /* '<S27>/Discrete Transfer Fcn4' */
-  real_T DiscreteTransferFcn5_e;       /* '<S27>/Discrete Transfer Fcn5' */
-  real_T DiscreteTransferFcn6_j;       /* '<S27>/Discrete Transfer Fcn6' */
-  real_T DiscreteTransferFcn_b;        /* '<S28>/Discrete Transfer Fcn' */
-  real_T DiscreteTransferFcn1_f;       /* '<S28>/Discrete Transfer Fcn1' */
-  real_T DiscreteTransferFcn2_c;       /* '<S28>/Discrete Transfer Fcn2' */
-  real_T DiscreteTransferFcn3_a;       /* '<S28>/Discrete Transfer Fcn3' */
-  real_T DiscreteTransferFcn4_b;       /* '<S28>/Discrete Transfer Fcn4' */
-  real_T DiscreteTransferFcn5_i;       /* '<S28>/Discrete Transfer Fcn5' */
-  real_T DiscreteTransferFcn6_n;       /* '<S28>/Discrete Transfer Fcn6' */
-  real_T DiscreteTransferFcn_d;        /* '<S29>/Discrete Transfer Fcn' */
-  real_T DiscreteTransferFcn1_g;       /* '<S29>/Discrete Transfer Fcn1' */
-  real_T DiscreteTransferFcn2_b;       /* '<S29>/Discrete Transfer Fcn2' */
-  real_T DiscreteTransferFcn3_f;       /* '<S29>/Discrete Transfer Fcn3' */
-  real_T DiscreteTransferFcn4_o;       /* '<S29>/Discrete Transfer Fcn4' */
-  real_T DiscreteTransferFcn5_j;       /* '<S29>/Discrete Transfer Fcn5' */
-  real_T DiscreteTransferFcn6_g;       /* '<S29>/Discrete Transfer Fcn6' */
+  real_T DiscreteTransferFcn7;         /* '<S24>/Discrete Transfer Fcn7' */
+  real_T DiscreteTransferFcn7_o;       /* '<S25>/Discrete Transfer Fcn7' */
+  real_T DiscreteTransferFcn7_a;       /* '<S27>/Discrete Transfer Fcn7' */
+  real_T Derivative[3];                /* '<S23>/Derivative' */
+  real_T Derivative1[3];               /* '<S23>/Derivative1' */
+  real_T DiscreteTransferFcn7_e;       /* '<S26>/Discrete Transfer Fcn7' */
+  real_T DiscreteTransferFcn2;         /* '<S14>/Discrete Transfer Fcn2' */
+  real_T Derivative2;                  /* '<S12>/Derivative2' */
+  real_T DiscreteTransferFcn2_e;       /* '<S13>/Discrete Transfer Fcn2' */
+  real_T Derivative_b;                 /* '<S12>/Derivative' */
+  real_T X_REF_b;                      /* '<S12>/X_REF' */
+  real_T DiscreteTransferFcn;          /* '<S15>/Discrete Transfer Fcn' */
+  real_T DiscreteTransferFcn_c;        /* '<S13>/Discrete Transfer Fcn' */
+  real_T DiscreteTransferFcn_f;        /* '<S14>/Discrete Transfer Fcn' */
+  real_T DiscreteTransferFcn_m;        /* '<S24>/Discrete Transfer Fcn' */
+  real_T DiscreteTransferFcn1;         /* '<S24>/Discrete Transfer Fcn1' */
+  real_T DiscreteTransferFcn2_g;       /* '<S24>/Discrete Transfer Fcn2' */
+  real_T DiscreteTransferFcn3;         /* '<S24>/Discrete Transfer Fcn3' */
+  real_T DiscreteTransferFcn4;         /* '<S24>/Discrete Transfer Fcn4' */
+  real_T DiscreteTransferFcn5;         /* '<S24>/Discrete Transfer Fcn5' */
+  real_T DiscreteTransferFcn6;         /* '<S24>/Discrete Transfer Fcn6' */
+  real_T DiscreteTransferFcn_mz;       /* '<S25>/Discrete Transfer Fcn' */
+  real_T DiscreteTransferFcn1_h;       /* '<S25>/Discrete Transfer Fcn1' */
+  real_T DiscreteTransferFcn2_i;       /* '<S25>/Discrete Transfer Fcn2' */
+  real_T DiscreteTransferFcn3_e;       /* '<S25>/Discrete Transfer Fcn3' */
+  real_T DiscreteTransferFcn4_j;       /* '<S25>/Discrete Transfer Fcn4' */
+  real_T DiscreteTransferFcn5_e;       /* '<S25>/Discrete Transfer Fcn5' */
+  real_T DiscreteTransferFcn6_j;       /* '<S25>/Discrete Transfer Fcn6' */
+  real_T DiscreteTransferFcn_b;        /* '<S26>/Discrete Transfer Fcn' */
+  real_T DiscreteTransferFcn1_f;       /* '<S26>/Discrete Transfer Fcn1' */
+  real_T DiscreteTransferFcn2_c;       /* '<S26>/Discrete Transfer Fcn2' */
+  real_T DiscreteTransferFcn3_a;       /* '<S26>/Discrete Transfer Fcn3' */
+  real_T DiscreteTransferFcn4_b;       /* '<S26>/Discrete Transfer Fcn4' */
+  real_T DiscreteTransferFcn5_i;       /* '<S26>/Discrete Transfer Fcn5' */
+  real_T DiscreteTransferFcn6_n;       /* '<S26>/Discrete Transfer Fcn6' */
+  real_T DiscreteTransferFcn_d;        /* '<S27>/Discrete Transfer Fcn' */
+  real_T DiscreteTransferFcn1_g;       /* '<S27>/Discrete Transfer Fcn1' */
+  real_T DiscreteTransferFcn2_b;       /* '<S27>/Discrete Transfer Fcn2' */
+  real_T DiscreteTransferFcn3_f;       /* '<S27>/Discrete Transfer Fcn3' */
+  real_T DiscreteTransferFcn4_o;       /* '<S27>/Discrete Transfer Fcn4' */
+  real_T DiscreteTransferFcn5_j;       /* '<S27>/Discrete Transfer Fcn5' */
+  real_T DiscreteTransferFcn6_g;       /* '<S27>/Discrete Transfer Fcn6' */
   real_T p_ref[3];                     /* '<S1>/Trajectory' */
-  real_T yaw_pi;                       /* '<S34>/[-pi , pi]' */
-  real_T moving;                       /* '<S24>/moving___z' */
-  real_T moving_f;                     /* '<S24>/moving___yaw' */
-  real_T moving_k;                     /* '<S24>/moving___y' */
-  real_T moving_e;                     /* '<S24>/moving___x' */
-  real_T dx_i;                         /* '<S5>/BODY to INERTIAL' */
-  real_T dy_i;                         /* '<S5>/BODY to INERTIAL' */
-  real_T nextState;                    /* '<S9>/STATE_TRANSITIONS' */
-  real_T nextResetState;               /* '<S9>/STATE_TRANSITIONS' */
-  boolean_T DataTypeConversion1;       /* '<S7>/Data Type Conversion1' */
-  boolean_T Compare;                   /* '<S18>/Compare' */
-  boolean_T Uk1;                       /* '<S11>/Delay Input1' */
-  boolean_T Uk1_n;                     /* '<S10>/Delay Input1' */
-  boolean_T Compare_c;                 /* '<S17>/Compare' */
-  boolean_T Uk1_d;                     /* '<S12>/Delay Input1' */
-  boolean_T Compare_l;                 /* '<S19>/Compare' */
-  rtB_SWITCHLATMODE_TRAJECTORY_GE sf_SWITCHLATMODE_i;/* '<S15>/SWITCH LAT MODE' */
-  rtB_SWITCHLATMODE_TRAJECTORY_GE sf_SWITCHLATMODE;/* '<S14>/SWITCH LAT MODE' */
-  rtB_SWITCHLATMODE_TRAJECTORY_GE sf_SWITCHLATMODE_p;/* '<S13>/SWITCH LAT MODE' */
+  real_T reset;                        /* '<S8>/Euler2Quat' */
+  real_T yaw_pi;                       /* '<S32>/[-pi , pi]' */
+  real_T moving;                       /* '<S22>/moving___z' */
+  real_T moving_f;                     /* '<S22>/moving___yaw' */
+  real_T moving_k;                     /* '<S22>/moving___y' */
+  real_T moving_e;                     /* '<S22>/moving___x' */
+  real_T dx_i;                         /* '<S7>/BODY to INERTIAL' */
+  real_T dy_i;                         /* '<S7>/BODY to INERTIAL' */
+  real_T speed;                        /* '<S12>/yaw_speed' */
+  uint32_T Memory_m;                   /* '<S8>/Memory' */
+  uint32_T FM_out;                     /* '<S8>/Euler2Quat' */
+  boolean_T DataTypeConversion;        /* '<S32>/Data Type Conversion' */
+  rtB_Euler2Quat_TRAJECTORY_GENER sf_Euler2Quat_f;/* '<S10>/Euler2Quat' */
+  rtB_Euler2Quat_TRAJECTORY_GENER sf_Euler2Quat_b;/* '<S5>/Euler2Quat' */
+  rtB_pitch_TRAJECTORY_GENERATOR_ sf_roll;/* '<S12>/roll' */
+  rtB_pitch_TRAJECTORY_GENERATOR_ sf_pitch;/* '<S12>/pitch' */
 } BlockIO_TRAJECTORY_GENERATOR_AP;
 
 /* Block states (auto storage) for system '<Root>' */
 typedef struct {
-  real_T X_REF_DSTATE;                 /* '<S34>/X_REF' */
-  real_T Y_REF_DSTATE;                 /* '<S34>/Y_REF' */
-  real_T Z_REF_DSTATE;                 /* '<S34>/Z_REF' */
-  real_T DiscreteTransferFcn7_states;  /* '<S26>/Discrete Transfer Fcn7' */
-  real_T DiscreteTransferFcn7_states_a;/* '<S27>/Discrete Transfer Fcn7' */
-  real_T DiscreteTransferFcn7_states_f;/* '<S29>/Discrete Transfer Fcn7' */
-  real_T PSI_REF_DSTATE;               /* '<S34>/PSI_REF' */
-  real_T DiscreteTransferFcn7_states_c;/* '<S28>/Discrete Transfer Fcn7' */
-  real_T DiscreteTransferFcn_states;   /* '<S26>/Discrete Transfer Fcn' */
-  real_T DiscreteTransferFcn1_states;  /* '<S26>/Discrete Transfer Fcn1' */
-  real_T DiscreteTransferFcn2_states;  /* '<S26>/Discrete Transfer Fcn2' */
-  real_T DiscreteTransferFcn3_states;  /* '<S26>/Discrete Transfer Fcn3' */
-  real_T DiscreteTransferFcn4_states;  /* '<S26>/Discrete Transfer Fcn4' */
-  real_T DiscreteTransferFcn5_states;  /* '<S26>/Discrete Transfer Fcn5' */
-  real_T DiscreteTransferFcn6_states;  /* '<S26>/Discrete Transfer Fcn6' */
-  real_T DiscreteTransferFcn_states_c; /* '<S27>/Discrete Transfer Fcn' */
-  real_T DiscreteTransferFcn1_states_o;/* '<S27>/Discrete Transfer Fcn1' */
-  real_T DiscreteTransferFcn2_states_l;/* '<S27>/Discrete Transfer Fcn2' */
-  real_T DiscreteTransferFcn3_states_f;/* '<S27>/Discrete Transfer Fcn3' */
-  real_T DiscreteTransferFcn4_states_c;/* '<S27>/Discrete Transfer Fcn4' */
-  real_T DiscreteTransferFcn5_states_i;/* '<S27>/Discrete Transfer Fcn5' */
-  real_T DiscreteTransferFcn6_states_j;/* '<S27>/Discrete Transfer Fcn6' */
-  real_T DiscreteTransferFcn_states_cv;/* '<S28>/Discrete Transfer Fcn' */
-  real_T DiscreteTransferFcn1_states_b;/* '<S28>/Discrete Transfer Fcn1' */
-  real_T DiscreteTransferFcn2_states_b;/* '<S28>/Discrete Transfer Fcn2' */
-  real_T DiscreteTransferFcn3_states_j;/* '<S28>/Discrete Transfer Fcn3' */
-  real_T DiscreteTransferFcn4_states_n;/* '<S28>/Discrete Transfer Fcn4' */
-  real_T DiscreteTransferFcn5_states_k;/* '<S28>/Discrete Transfer Fcn5' */
-  real_T DiscreteTransferFcn6_states_g;/* '<S28>/Discrete Transfer Fcn6' */
-  real_T DiscreteTransferFcn_states_cb;/* '<S29>/Discrete Transfer Fcn' */
-  real_T DiscreteTransferFcn1_states_k;/* '<S29>/Discrete Transfer Fcn1' */
-  real_T DiscreteTransferFcn2_states_a;/* '<S29>/Discrete Transfer Fcn2' */
-  real_T DiscreteTransferFcn3_states_a;/* '<S29>/Discrete Transfer Fcn3' */
-  real_T DiscreteTransferFcn4_states_j;/* '<S29>/Discrete Transfer Fcn4' */
-  real_T DiscreteTransferFcn5_states_iv;/* '<S29>/Discrete Transfer Fcn5' */
-  real_T DiscreteTransferFcn6_states_a;/* '<S29>/Discrete Transfer Fcn6' */
-  real_T Memory1_PreviousInput;        /* '<S9>/Memory1' */
-  real_T Memory3_PreviousInput;        /* '<S9>/Memory3' */
-  real_T Memory_PreviousInput;         /* '<S2>/Memory' */
-  real_T Memory5_PreviousInput;        /* '<S14>/Memory5' */
+  real_T X_REF_DSTATE;                 /* '<S32>/X_REF' */
+  real_T Y_REF_DSTATE;                 /* '<S32>/Y_REF' */
+  real_T Z_REF_DSTATE;                 /* '<S32>/Z_REF' */
+  real_T DiscreteTransferFcn7_states;  /* '<S24>/Discrete Transfer Fcn7' */
+  real_T DiscreteTransferFcn7_states_a;/* '<S25>/Discrete Transfer Fcn7' */
+  real_T DiscreteTransferFcn7_states_f;/* '<S27>/Discrete Transfer Fcn7' */
+  real_T PSI_REF_DSTATE;               /* '<S32>/PSI_REF' */
+  real_T DiscreteTransferFcn7_states_c;/* '<S26>/Discrete Transfer Fcn7' */
+  real_T DiscreteTransferFcn2_states;  /* '<S14>/Discrete Transfer Fcn2' */
+  real_T DiscreteTransferFcn2_states_c;/* '<S13>/Discrete Transfer Fcn2' */
+  real_T X_REF_DSTATE_d;               /* '<S12>/X_REF' */
+  real_T DiscreteTransferFcn_states;   /* '<S15>/Discrete Transfer Fcn' */
+  real_T X_REF2_DSTATE;                /* '<S5>/X_REF2' */
+  real_T Y_REF1_DSTATE;                /* '<S5>/Y_REF1' */
+  real_T Z_REF_DSTATE_n;               /* '<S5>/Z_REF' */
+  real_T X_REF2_DSTATE_b;              /* '<S10>/X_REF2' */
+  real_T Y_REF1_DSTATE_l;              /* '<S10>/Y_REF1' */
+  real_T Z_REF_DSTATE_a;               /* '<S10>/Z_REF' */
+  real_T Z_init_DSTATE;                /* '<S10>/Z_init' */
+  real_T DiscreteTransferFcn_states_b; /* '<S13>/Discrete Transfer Fcn' */
+  real_T DiscreteTransferFcn_states_l; /* '<S14>/Discrete Transfer Fcn' */
+  real_T DiscreteTransferFcn_states_g; /* '<S24>/Discrete Transfer Fcn' */
+  real_T DiscreteTransferFcn1_states;  /* '<S24>/Discrete Transfer Fcn1' */
+  real_T DiscreteTransferFcn2_states_i;/* '<S24>/Discrete Transfer Fcn2' */
+  real_T DiscreteTransferFcn3_states;  /* '<S24>/Discrete Transfer Fcn3' */
+  real_T DiscreteTransferFcn4_states;  /* '<S24>/Discrete Transfer Fcn4' */
+  real_T DiscreteTransferFcn5_states;  /* '<S24>/Discrete Transfer Fcn5' */
+  real_T DiscreteTransferFcn6_states;  /* '<S24>/Discrete Transfer Fcn6' */
+  real_T DiscreteTransferFcn_states_c; /* '<S25>/Discrete Transfer Fcn' */
+  real_T DiscreteTransferFcn1_states_o;/* '<S25>/Discrete Transfer Fcn1' */
+  real_T DiscreteTransferFcn2_states_l;/* '<S25>/Discrete Transfer Fcn2' */
+  real_T DiscreteTransferFcn3_states_f;/* '<S25>/Discrete Transfer Fcn3' */
+  real_T DiscreteTransferFcn4_states_c;/* '<S25>/Discrete Transfer Fcn4' */
+  real_T DiscreteTransferFcn5_states_i;/* '<S25>/Discrete Transfer Fcn5' */
+  real_T DiscreteTransferFcn6_states_j;/* '<S25>/Discrete Transfer Fcn6' */
+  real_T DiscreteTransferFcn_states_cv;/* '<S26>/Discrete Transfer Fcn' */
+  real_T DiscreteTransferFcn1_states_b;/* '<S26>/Discrete Transfer Fcn1' */
+  real_T DiscreteTransferFcn2_states_b;/* '<S26>/Discrete Transfer Fcn2' */
+  real_T DiscreteTransferFcn3_states_j;/* '<S26>/Discrete Transfer Fcn3' */
+  real_T DiscreteTransferFcn4_states_n;/* '<S26>/Discrete Transfer Fcn4' */
+  real_T DiscreteTransferFcn5_states_k;/* '<S26>/Discrete Transfer Fcn5' */
+  real_T DiscreteTransferFcn6_states_g;/* '<S26>/Discrete Transfer Fcn6' */
+  real_T DiscreteTransferFcn_states_cb;/* '<S27>/Discrete Transfer Fcn' */
+  real_T DiscreteTransferFcn1_states_k;/* '<S27>/Discrete Transfer Fcn1' */
+  real_T DiscreteTransferFcn2_states_a;/* '<S27>/Discrete Transfer Fcn2' */
+  real_T DiscreteTransferFcn3_states_a;/* '<S27>/Discrete Transfer Fcn3' */
+  real_T DiscreteTransferFcn4_states_j;/* '<S27>/Discrete Transfer Fcn4' */
+  real_T DiscreteTransferFcn5_states_iv;/* '<S27>/Discrete Transfer Fcn5' */
+  real_T DiscreteTransferFcn6_states_a;/* '<S27>/Discrete Transfer Fcn6' */
+  real_T Memory_PreviousInput;         /* '<S3>/Memory' */
   real_T Memory_PreviousInput_o[3];    /* '<S1>/Memory' */
-  real_T Memory5_PreviousInput_i;      /* '<S13>/Memory5' */
-  real_T Memory5_PreviousInput_n;      /* '<S15>/Memory5' */
   struct {
     real_T TimeStampA;
     real_T LastUAtTimeA[3];
     real_T TimeStampB;
     real_T LastUAtTimeB[3];
-  } Derivative_RWORK;                  /* '<S25>/Derivative' */
+  } Derivative_RWORK;                  /* '<S23>/Derivative' */
 
   struct {
     real_T TimeStampA;
     real_T LastUAtTimeA[3];
     real_T TimeStampB;
     real_T LastUAtTimeB[3];
-  } Derivative1_RWORK;                 /* '<S25>/Derivative1' */
+  } Derivative1_RWORK;                 /* '<S23>/Derivative1' */
 
   struct {
     real_T TimeStampA;
     real_T LastUAtTimeA[3];
     real_T TimeStampB;
     real_T LastUAtTimeB[3];
-  } Derivative2_RWORK;                 /* '<S25>/Derivative2' */
+  } Derivative2_RWORK;                 /* '<S23>/Derivative2' */
 
   struct {
     real_T TimeStampA;
     real_T LastUAtTimeA;
     real_T TimeStampB;
     real_T LastUAtTimeB;
-  } Derivative3_RWORK;                 /* '<S25>/Derivative3' */
+  } Derivative3_RWORK;                 /* '<S23>/Derivative3' */
 
-  boolean_T DelayInput1_DSTATE;        /* '<S11>/Delay Input1' */
-  boolean_T DelayInput1_DSTATE_m;      /* '<S10>/Delay Input1' */
-  boolean_T DelayInput1_DSTATE_p;      /* '<S12>/Delay Input1' */
-  int8_T X_REF_PrevResetState;         /* '<S34>/X_REF' */
-  int8_T Y_REF_PrevResetState;         /* '<S34>/Y_REF' */
-  int8_T Z_REF_PrevResetState;         /* '<S34>/Z_REF' */
-  int8_T PSI_REF_PrevResetState;       /* '<S34>/PSI_REF' */
-  uint8_T X_REF_IC_LOADING;            /* '<S34>/X_REF' */
-  uint8_T Y_REF_IC_LOADING;            /* '<S34>/Y_REF' */
-  uint8_T Z_REF_IC_LOADING;            /* '<S34>/Z_REF' */
-  uint8_T PSI_REF_IC_LOADING;          /* '<S34>/PSI_REF' */
+  struct {
+    real_T TimeStampA;
+    real_T LastUAtTimeA;
+    real_T TimeStampB;
+    real_T LastUAtTimeB;
+  } Derivative2_RWORK_j;               /* '<S12>/Derivative2' */
+
+  struct {
+    real_T TimeStampA;
+    real_T LastUAtTimeA;
+    real_T TimeStampB;
+    real_T LastUAtTimeB;
+  } Derivative3_RWORK_g;               /* '<S12>/Derivative3' */
+
+  struct {
+    real_T TimeStampA;
+    real_T LastUAtTimeA;
+    real_T TimeStampB;
+    real_T LastUAtTimeB;
+  } Derivative_RWORK_o;                /* '<S12>/Derivative' */
+
+  struct {
+    real_T TimeStampA;
+    real_T LastUAtTimeA;
+    real_T TimeStampB;
+    real_T LastUAtTimeB;
+  } Derivative1_RWORK_i;               /* '<S12>/Derivative1' */
+
+  struct {
+    real_T TimeStampA;
+    real_T LastUAtTimeA;
+    real_T TimeStampB;
+    real_T LastUAtTimeB;
+  } Derivative4_RWORK;                 /* '<S12>/Derivative4' */
+
+  uint32_T Memory_PreviousInput_l;     /* '<S8>/Memory' */
+  int8_T X_REF_PrevResetState;         /* '<S32>/X_REF' */
+  int8_T Y_REF_PrevResetState;         /* '<S32>/Y_REF' */
+  int8_T Z_REF_PrevResetState;         /* '<S32>/Z_REF' */
+  int8_T PSI_REF_PrevResetState;       /* '<S32>/PSI_REF' */
+  int8_T X_REF_PrevResetState_e;       /* '<S12>/X_REF' */
+  int8_T X_REF2_PrevResetState;        /* '<S5>/X_REF2' */
+  int8_T Y_REF1_PrevResetState;        /* '<S5>/Y_REF1' */
+  int8_T Z_REF_PrevResetState_n;       /* '<S5>/Z_REF' */
+  int8_T X_REF2_PrevResetState_e;      /* '<S10>/X_REF2' */
+  int8_T Y_REF1_PrevResetState_g;      /* '<S10>/Y_REF1' */
+  int8_T Z_REF_PrevResetState_o;       /* '<S10>/Z_REF' */
+  int8_T Z_init_PrevResetState;        /* '<S10>/Z_init' */
+  uint8_T X_REF_IC_LOADING;            /* '<S32>/X_REF' */
+  uint8_T Y_REF_IC_LOADING;            /* '<S32>/Y_REF' */
+  uint8_T Z_REF_IC_LOADING;            /* '<S32>/Z_REF' */
+  uint8_T PSI_REF_IC_LOADING;          /* '<S32>/PSI_REF' */
+  uint8_T X_REF_IC_LOADING_m;          /* '<S12>/X_REF' */
+  uint8_T X_REF2_IC_LOADING;           /* '<S5>/X_REF2' */
+  uint8_T Y_REF1_IC_LOADING;           /* '<S5>/Y_REF1' */
+  uint8_T Z_REF_IC_LOADING_j;          /* '<S5>/Z_REF' */
+  uint8_T X_REF2_IC_LOADING_n;         /* '<S10>/X_REF2' */
+  uint8_T Y_REF1_IC_LOADING_p;         /* '<S10>/Y_REF1' */
+  uint8_T Z_init_IC_LOADING;           /* '<S10>/Z_init' */
 } D_Work_TRAJECTORY_GENERATOR_APP;
 
 /* External inputs (root inport signals with auto storage) */
@@ -942,6 +1004,8 @@ typedef struct {
   boolean_T BODY_INERT;                /* '<Root>/BODY_INERT' */
   real_T Position[3];                  /* '<Root>/Position' */
   uint32_T TSTAMP;                     /* '<Root>/TSTAMP' */
+  uint32_T FLIGHT_MODES;               /* '<Root>/FLIGHT_MODES' */
+  real_T REF_HIGH_LEVEL[18];           /* '<Root>/REF_HIGH_LEVEL' */
 } ExternalInputs_TRAJECTORY_GENER;
 
 /* External outputs (root outports fed by signals with auto storage) */
@@ -949,6 +1013,8 @@ typedef struct {
   real_T REF_POS[15];                  /* '<Root>/REF_POS' */
   real_T REF_YAW[3];                   /* '<Root>/REF_YAW' */
   uint16_T REF_BUTTONS;                /* '<Root>/REF_BUTTONS' */
+  real_T REF_ATTITUDE[10];             /* '<Root>/REF_ATTITUDE' */
+  real_T REF_THRUST;                   /* '<Root>/REF_THRUST' */
   uint32_T REF_TSTAMP;                 /* '<Root>/REF_TSTAMP' */
 } ExternalOutputs_TRAJECTORY_GENE;
 
@@ -1106,39 +1172,39 @@ extern RT_MODEL_TRAJECTORY_GENERATOR_A *const TRAJECTORY_GENERATOR_APP_M;
  *
  * '<Root>' : 'TRAJECTORY_GENERATOR_APP'
  * '<S1>'   : 'TRAJECTORY_GENERATOR_APP/REFERENCES'
- * '<S2>'   : 'TRAJECTORY_GENERATOR_APP/REFERENCES/Clock RESET'
- * '<S3>'   : 'TRAJECTORY_GENERATOR_APP/REFERENCES/LOW LEVEL SUPERVISOR'
- * '<S4>'   : 'TRAJECTORY_GENERATOR_APP/REFERENCES/REFERENCES_TIME'
- * '<S5>'   : 'TRAJECTORY_GENERATOR_APP/REFERENCES/REF_GEN'
- * '<S6>'   : 'TRAJECTORY_GENERATOR_APP/REFERENCES/Trajectory'
- * '<S7>'   : 'TRAJECTORY_GENERATOR_APP/REFERENCES/LOW LEVEL SUPERVISOR/LOW_LEVEL_SUPERVISOR'
- * '<S8>'   : 'TRAJECTORY_GENERATOR_APP/REFERENCES/LOW LEVEL SUPERVISOR/LOW_LEVEL_SUPERVISOR/Embedded MATLAB Function'
- * '<S9>'   : 'TRAJECTORY_GENERATOR_APP/REFERENCES/LOW LEVEL SUPERVISOR/LOW_LEVEL_SUPERVISOR/STATE_MACHINE'
- * '<S10>'  : 'TRAJECTORY_GENERATOR_APP/REFERENCES/LOW LEVEL SUPERVISOR/LOW_LEVEL_SUPERVISOR/STATE_MACHINE/Detect Rise'
- * '<S11>'  : 'TRAJECTORY_GENERATOR_APP/REFERENCES/LOW LEVEL SUPERVISOR/LOW_LEVEL_SUPERVISOR/STATE_MACHINE/Detect Rise1'
- * '<S12>'  : 'TRAJECTORY_GENERATOR_APP/REFERENCES/LOW LEVEL SUPERVISOR/LOW_LEVEL_SUPERVISOR/STATE_MACHINE/Detect Rise2'
- * '<S13>'  : 'TRAJECTORY_GENERATOR_APP/REFERENCES/LOW LEVEL SUPERVISOR/LOW_LEVEL_SUPERVISOR/STATE_MACHINE/HOLD'
- * '<S14>'  : 'TRAJECTORY_GENERATOR_APP/REFERENCES/LOW LEVEL SUPERVISOR/LOW_LEVEL_SUPERVISOR/STATE_MACHINE/HOLD1'
- * '<S15>'  : 'TRAJECTORY_GENERATOR_APP/REFERENCES/LOW LEVEL SUPERVISOR/LOW_LEVEL_SUPERVISOR/STATE_MACHINE/HOLD2'
- * '<S16>'  : 'TRAJECTORY_GENERATOR_APP/REFERENCES/LOW LEVEL SUPERVISOR/LOW_LEVEL_SUPERVISOR/STATE_MACHINE/STATE_TRANSITIONS'
- * '<S17>'  : 'TRAJECTORY_GENERATOR_APP/REFERENCES/LOW LEVEL SUPERVISOR/LOW_LEVEL_SUPERVISOR/STATE_MACHINE/Detect Rise/Positive'
- * '<S18>'  : 'TRAJECTORY_GENERATOR_APP/REFERENCES/LOW LEVEL SUPERVISOR/LOW_LEVEL_SUPERVISOR/STATE_MACHINE/Detect Rise1/Positive'
- * '<S19>'  : 'TRAJECTORY_GENERATOR_APP/REFERENCES/LOW LEVEL SUPERVISOR/LOW_LEVEL_SUPERVISOR/STATE_MACHINE/Detect Rise2/Positive'
- * '<S20>'  : 'TRAJECTORY_GENERATOR_APP/REFERENCES/LOW LEVEL SUPERVISOR/LOW_LEVEL_SUPERVISOR/STATE_MACHINE/HOLD/SWITCH LAT MODE'
- * '<S21>'  : 'TRAJECTORY_GENERATOR_APP/REFERENCES/LOW LEVEL SUPERVISOR/LOW_LEVEL_SUPERVISOR/STATE_MACHINE/HOLD1/SWITCH LAT MODE'
- * '<S22>'  : 'TRAJECTORY_GENERATOR_APP/REFERENCES/LOW LEVEL SUPERVISOR/LOW_LEVEL_SUPERVISOR/STATE_MACHINE/HOLD2/SWITCH LAT MODE'
- * '<S23>'  : 'TRAJECTORY_GENERATOR_APP/REFERENCES/REF_GEN/BODY to INERTIAL'
- * '<S24>'  : 'TRAJECTORY_GENERATOR_APP/REFERENCES/REF_GEN/INPUTS'
- * '<S25>'  : 'TRAJECTORY_GENERATOR_APP/REFERENCES/REF_GEN/REFERENCES'
- * '<S26>'  : 'TRAJECTORY_GENERATOR_APP/REFERENCES/REF_GEN/INPUTS/LPF'
- * '<S27>'  : 'TRAJECTORY_GENERATOR_APP/REFERENCES/REF_GEN/INPUTS/LPF1'
- * '<S28>'  : 'TRAJECTORY_GENERATOR_APP/REFERENCES/REF_GEN/INPUTS/LPF2'
- * '<S29>'  : 'TRAJECTORY_GENERATOR_APP/REFERENCES/REF_GEN/INPUTS/LPF3'
- * '<S30>'  : 'TRAJECTORY_GENERATOR_APP/REFERENCES/REF_GEN/INPUTS/moving___x'
- * '<S31>'  : 'TRAJECTORY_GENERATOR_APP/REFERENCES/REF_GEN/INPUTS/moving___y'
- * '<S32>'  : 'TRAJECTORY_GENERATOR_APP/REFERENCES/REF_GEN/INPUTS/moving___yaw'
- * '<S33>'  : 'TRAJECTORY_GENERATOR_APP/REFERENCES/REF_GEN/INPUTS/moving___z'
- * '<S34>'  : 'TRAJECTORY_GENERATOR_APP/REFERENCES/REF_GEN/REFERENCES/POSITION REF'
- * '<S35>'  : 'TRAJECTORY_GENERATOR_APP/REFERENCES/REF_GEN/REFERENCES/POSITION REF/[-pi , pi]'
+ * '<S2>'   : 'TRAJECTORY_GENERATOR_APP/REFERENCES/Attitude & Thrust Generation'
+ * '<S3>'   : 'TRAJECTORY_GENERATOR_APP/REFERENCES/Clock RESET'
+ * '<S4>'   : 'TRAJECTORY_GENERATOR_APP/REFERENCES/Flight Mode Handler'
+ * '<S5>'   : 'TRAJECTORY_GENERATOR_APP/REFERENCES/Landing'
+ * '<S6>'   : 'TRAJECTORY_GENERATOR_APP/REFERENCES/REFERENCES_TIME'
+ * '<S7>'   : 'TRAJECTORY_GENERATOR_APP/REFERENCES/REF_GEN'
+ * '<S8>'   : 'TRAJECTORY_GENERATOR_APP/REFERENCES/ResetGenerator'
+ * '<S9>'   : 'TRAJECTORY_GENERATOR_APP/REFERENCES/Trajectory'
+ * '<S10>'  : 'TRAJECTORY_GENERATOR_APP/REFERENCES/take_off'
+ * '<S11>'  : 'TRAJECTORY_GENERATOR_APP/REFERENCES/Attitude & Thrust Generation/Euler2Quat'
+ * '<S12>'  : 'TRAJECTORY_GENERATOR_APP/REFERENCES/Attitude & Thrust Generation/INPUTS'
+ * '<S13>'  : 'TRAJECTORY_GENERATOR_APP/REFERENCES/Attitude & Thrust Generation/INPUTS/LPF'
+ * '<S14>'  : 'TRAJECTORY_GENERATOR_APP/REFERENCES/Attitude & Thrust Generation/INPUTS/LPF1'
+ * '<S15>'  : 'TRAJECTORY_GENERATOR_APP/REFERENCES/Attitude & Thrust Generation/INPUTS/LPF2'
+ * '<S16>'  : 'TRAJECTORY_GENERATOR_APP/REFERENCES/Attitude & Thrust Generation/INPUTS/pitch'
+ * '<S17>'  : 'TRAJECTORY_GENERATOR_APP/REFERENCES/Attitude & Thrust Generation/INPUTS/roll'
+ * '<S18>'  : 'TRAJECTORY_GENERATOR_APP/REFERENCES/Attitude & Thrust Generation/INPUTS/thrust'
+ * '<S19>'  : 'TRAJECTORY_GENERATOR_APP/REFERENCES/Attitude & Thrust Generation/INPUTS/yaw_speed'
+ * '<S20>'  : 'TRAJECTORY_GENERATOR_APP/REFERENCES/Landing/Euler2Quat'
+ * '<S21>'  : 'TRAJECTORY_GENERATOR_APP/REFERENCES/REF_GEN/BODY to INERTIAL'
+ * '<S22>'  : 'TRAJECTORY_GENERATOR_APP/REFERENCES/REF_GEN/INPUTS'
+ * '<S23>'  : 'TRAJECTORY_GENERATOR_APP/REFERENCES/REF_GEN/REFERENCES'
+ * '<S24>'  : 'TRAJECTORY_GENERATOR_APP/REFERENCES/REF_GEN/INPUTS/LPF'
+ * '<S25>'  : 'TRAJECTORY_GENERATOR_APP/REFERENCES/REF_GEN/INPUTS/LPF1'
+ * '<S26>'  : 'TRAJECTORY_GENERATOR_APP/REFERENCES/REF_GEN/INPUTS/LPF2'
+ * '<S27>'  : 'TRAJECTORY_GENERATOR_APP/REFERENCES/REF_GEN/INPUTS/LPF3'
+ * '<S28>'  : 'TRAJECTORY_GENERATOR_APP/REFERENCES/REF_GEN/INPUTS/moving___x'
+ * '<S29>'  : 'TRAJECTORY_GENERATOR_APP/REFERENCES/REF_GEN/INPUTS/moving___y'
+ * '<S30>'  : 'TRAJECTORY_GENERATOR_APP/REFERENCES/REF_GEN/INPUTS/moving___yaw'
+ * '<S31>'  : 'TRAJECTORY_GENERATOR_APP/REFERENCES/REF_GEN/INPUTS/moving___z'
+ * '<S32>'  : 'TRAJECTORY_GENERATOR_APP/REFERENCES/REF_GEN/REFERENCES/POSITION REF'
+ * '<S33>'  : 'TRAJECTORY_GENERATOR_APP/REFERENCES/REF_GEN/REFERENCES/POSITION REF/[-pi , pi]'
+ * '<S34>'  : 'TRAJECTORY_GENERATOR_APP/REFERENCES/ResetGenerator/Euler2Quat'
+ * '<S35>'  : 'TRAJECTORY_GENERATOR_APP/REFERENCES/take_off/Euler2Quat'
  */
 #endif                                 /* RTW_HEADER_TRAJECTORY_GENERATOR_APP_h_ */

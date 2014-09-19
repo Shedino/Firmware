@@ -37,8 +37,11 @@ struct unibo_reference_s
 	double psi;				/**< yaw    */
 	double d_psi;			/**< yaw velocity        */
 	double dd_psi; 			/**< yaw acceleration      */
-	double q;
-	uint16_t button;			/**< joystick button      */
+	double q[4];				/**< Quaternion (NED)			*/
+	double ang_speed[3]; 	/**< Angular speed (NED)			*/
+	double ang_acc[3]; 		/**< Angular acceleration (NED)			*/
+	double thrust;			/**< Thrust	*/
+	uint16_t button;		/**< joystick button      */
 	bool  valid;			/**< validity      */
 };
 

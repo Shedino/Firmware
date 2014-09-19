@@ -57,6 +57,8 @@
 #include <uORB/topics/unibo_parameters.h>
 #include <uORB/topics/vehicle_local_position_setpoint.h>
 #include <uORB/topics/position_setpoint_triplet.h>
+#include <uORB/topics/unibo_vehicle_status.h>
+#include <uORB/topics/vehicle_attitude_setpoint.h>
 
 /* Deamon libraries? */
 #include <systemlib/systemlib.h>
@@ -183,6 +185,9 @@ int unibo_trajectory_ref_thread_main(int argc, char *argv[])
 	/* subscribe to parameters topic */
 	int unibo_parameters_fd = orb_subscribe(ORB_ID(unibo_parameters));
 
+	/* subscribe to unibo_vehicle_status topic */
+	int unibo_status_fd = orb_subscribe(ORB_ID(unibo_vehicle_status));
+
 
 	/* advertise reference topic */
 	struct unibo_reference_s reference;
@@ -194,10 +199,15 @@ int unibo_trajectory_ref_thread_main(int argc, char *argv[])
 	memset(&setpoint, 0, sizeof(setpoint));
 	int setpoint_pub_fd = orb_advertise(ORB_ID(vehicle_local_position_setpoint), &setpoint);
 
-	/* advertise local_pos_setpoint topic */
+	/* advertise position_triplet_setpoint topic */
 	struct position_setpoint_triplet_s setpoint_triplet;
 	memset(&setpoint_triplet, 0, sizeof(setpoint_triplet));
 	int setpoint_triplet_pub_fd = orb_advertise(ORB_ID(position_setpoint_triplet), &setpoint_triplet);
+
+	/* advertise attitude_setpoint topic */
+	struct vehicle_attitude_setpoint_s attitude_setpoint;
+	memset(&attitude_setpoint, 0, sizeof(attitude_setpoint));
+	int attitude_setpoint_pub_fd = orb_advertise(ORB_ID(vehicle_attitude_setpoint), &attitude_setpoint);
 
 	/* one could wait for multiple topics with this technique, just using one here */
 //	struct pollfd fds[] = {
@@ -223,6 +233,7 @@ int unibo_trajectory_ref_thread_main(int argc, char *argv[])
 	struct unibo_joystick_s joystick;
 	struct vehicle_local_position_s position;
 	struct unibo_parameters_s param;
+	struct unibo_vehicle_status_s unibo_status;
 
 	static uint64_t time_pre = 0;
 	static uint64_t nowT = 0;
@@ -282,7 +293,7 @@ int unibo_trajectory_ref_thread_main(int argc, char *argv[])
 				TRAJECTORY_GENERATOR_APP_U.PSI = ahrs.yaw;
 			}
 
-			/* copy position data into local buffer */                 //TODO change to local position for compatibility
+			/* copy position data into local buffer */
 			orb_check(local_position_fd, &updated);
 			if (updated){
 				orb_copy(ORB_ID(vehicle_local_position), local_position_fd, &position);
@@ -290,6 +301,13 @@ int unibo_trajectory_ref_thread_main(int argc, char *argv[])
 				TRAJECTORY_GENERATOR_APP_U.Position [1] = position.y;
 				TRAJECTORY_GENERATOR_APP_U.Position [2] = position.z;
 			}
+
+			orb_check(unibo_status_fd, &updated);
+			if (updated){
+				orb_copy(ORB_ID(unibo_vehicle_status), unibo_status_fd, &unibo_status);
+				TRAJECTORY_GENERATOR_APP_U.FLIGHT_MODES = unibo_status.flight_mode;
+			}
+			//TODO add high level trajectory input
 
 			TRAJECTORY_GENERATOR_APP_U.BODY_INERT = true;      //position references in body frame (take into account actual yaw)
 			TRAJECTORY_GENERATOR_APP_U.TSTAMP = 0;             //TODO add timestamp
@@ -336,6 +354,19 @@ int unibo_trajectory_ref_thread_main(int argc, char *argv[])
 			reference.d_psi = TRAJECTORY_GENERATOR_APP_Y.REF_YAW[1];
 			reference.dd_psi = TRAJECTORY_GENERATOR_APP_Y.REF_YAW[2];
 
+			reference.q[0] = TRAJECTORY_GENERATOR_APP_Y.REF_ATTITUDE[0];       //Attitude  TODO compattare codice con funzione
+			reference.q[1] = TRAJECTORY_GENERATOR_APP_Y.REF_ATTITUDE[1];
+			reference.q[2] = TRAJECTORY_GENERATOR_APP_Y.REF_ATTITUDE[2];
+			reference.q[3] = TRAJECTORY_GENERATOR_APP_Y.REF_ATTITUDE[3];
+			reference.ang_speed[0] = TRAJECTORY_GENERATOR_APP_Y.REF_ATTITUDE[4];
+			reference.ang_speed[1] = TRAJECTORY_GENERATOR_APP_Y.REF_ATTITUDE[5];
+			reference.ang_speed[2] = TRAJECTORY_GENERATOR_APP_Y.REF_ATTITUDE[6];
+			reference.ang_acc[0] = TRAJECTORY_GENERATOR_APP_Y.REF_ATTITUDE[7];
+			reference.ang_acc[1] = TRAJECTORY_GENERATOR_APP_Y.REF_ATTITUDE[8];
+			reference.ang_acc[2] = TRAJECTORY_GENERATOR_APP_Y.REF_ATTITUDE[9];
+
+			reference.thrust = TRAJECTORY_GENERATOR_APP_Y.REF_THRUST;       //Thrust
+
 			reference.button = TRAJECTORY_GENERATOR_APP_Y.REF_BUTTONS;   //Button
 
 			reference.timestamp = TRAJECTORY_GENERATOR_APP_Y.REF_TSTAMP; //Tstamp
@@ -362,6 +393,15 @@ int unibo_trajectory_ref_thread_main(int argc, char *argv[])
 			setpoint_triplet.current.valid = true;
 			setpoint_triplet.next.valid = true;
 			orb_publish(ORB_ID(position_setpoint_triplet), setpoint_triplet_pub_fd, &setpoint_triplet);
+
+
+			//Publish setpoints
+			attitude_setpoint.q_d[0] = (float)reference.q[0];
+			attitude_setpoint.q_d[1] = (float)reference.q[1];
+			attitude_setpoint.q_d[2] = (float)reference.q[2];
+			attitude_setpoint.q_d[3] = (float)reference.q[3];
+			attitude_setpoint.thrust = (float)reference.thrust;
+			orb_publish(ORB_ID(vehicle_attitude_setpoint), attitude_setpoint_pub_fd, &attitude_setpoint);
 		}
 		usleep(10000);
 

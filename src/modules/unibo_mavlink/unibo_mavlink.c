@@ -627,14 +627,14 @@ int unibo_mavlink_thread_main(int argc, char *argv[])
 								reff.p_z=unibo_ref_mav.p_refZ;
 								reff.dp_x=unibo_ref_mav.dot_p_refX;
 								reff.dp_y=unibo_ref_mav.dot_p_refY;
-								reff.dp_z=unibo_ref_mav.dot_p_refZ;
+								reff.dp_z=unibo_ref_mav.dot_p_refZ;                     //TODO modificare, deve diventare traiettoria high level
 								reff.ddp_x=unibo_ref_mav.dot2_p_refX;
 								reff.ddp_y=unibo_ref_mav.dot2_p_refY;
 								reff.ddp_z=unibo_ref_mav.dot2_p_refZ;
 								reff.psi=unibo_ref_mav.psi_ref;
 								reff.d_psi=unibo_ref_mav.dot_psi_ref;
 								reff.dd_psi=unibo_ref_mav.dot2_psi_ref;
-								reff.q=unibo_ref_mav.q;
+								//reff.q=unibo_ref_mav.q;
 								reff.timestamp=unibo_ref_mav.Tstamp;
 								reff.button=unibo_ref_mav.buttons;
 								reff.valid=1;

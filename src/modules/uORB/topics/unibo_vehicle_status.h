@@ -22,14 +22,18 @@ typedef enum {
 	FLIGHTMODE_AUTO_LOWLEVEL,		/**< Automatic mode, trajectory from lowlovel (joystick) */
 	FLIGHTMODE_AUTO_HIGHLEVEL,		/**< Automatic mode, trajectory from highlovel (NUC?) */
 	FLIGHTMODE_AUTO_WAYPOINT,		/**< Automatic mode, trajectory from waypoint interpolation */
-	FLIGHTMODE_COMM_LOST,			/**< Xbee lost. Serious problems */
+	FLIGHTMODE_LANDING,				/**< Landing command */
+	FLIGHTMODE_U_LANDING,			/**< Uncontrolled landing, no local position available */
+	FLIGHTMODE_Z_LANDING,			/**< Z-controlled, only z local position available */
+	FLIGHTMODE_TAKE_OFF,			/**< Take off command */
 	FLIGHTMODE_ERROR,				/**< State machine error */
-	FLIGHTMODE_LANDING				/**< Landing */
 } flight_modes_t;
 
 struct unibo_vehicle_status_s
 {
 	bool xbee_lost;
+	bool landed;
+	bool took_off;
 	flight_modes_t flight_mode;
 };
 
