@@ -340,9 +340,9 @@ int unibo_commander_thread_main(int argc, char *argv[])
 
 			if (counter >= 100){
 				warnx("State: %d",unibo_status.flight_mode);
-				//warnx("Armed?: %d", vehicle_stat.arming_state == ARMING_STATE_ARMED);
+				warnx("Armed?: %d", vehicle_stat.arming_state == ARMING_STATE_ARMED);
 				//warnx("Attitude valid?: %d", COMMANDER_U.ATTITUDE_VALID);
-				//warnx("Arming state: %d",vehicle_stat.arming_state);
+				warnx("Arming state: %d",vehicle_stat.arming_state);
 				warnx("Position Valid?: %d",COMMANDER_U.LOC_POS_VALID);
 				warnx("Xbee lost?: %d",unibo_status.xbee_lost);
 				counter = 0;
