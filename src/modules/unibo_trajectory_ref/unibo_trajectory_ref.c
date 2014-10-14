@@ -58,6 +58,7 @@
 #include <uORB/topics/vehicle_local_position_setpoint.h>
 #include <uORB/topics/position_setpoint_triplet.h>
 #include <uORB/topics/unibo_vehicle_status.h>
+#include <uORB/topics/vehicle_status.h>
 #include <uORB/topics/vehicle_attitude_setpoint.h>
 
 /* Deamon libraries? */
@@ -208,6 +209,11 @@ int unibo_trajectory_ref_thread_main(int argc, char *argv[])
 	struct vehicle_attitude_setpoint_s attitude_setpoint;
 	memset(&attitude_setpoint, 0, sizeof(attitude_setpoint));
 	int attitude_setpoint_pub_fd = orb_advertise(ORB_ID(vehicle_attitude_setpoint), &attitude_setpoint);
+
+	/* advertise vehicle_status topic, for mavlink flight mode */
+//	struct vehicle_status_s status;
+//	memset(&status, 0, sizeof(status));
+//	int vehicle_status_s_pub_fd = orb_advertise(ORB_ID(vehicle_status), &status);
 
 	/* one could wait for multiple topics with this technique, just using one here */
 //	struct pollfd fds[] = {
@@ -377,6 +383,7 @@ int unibo_trajectory_ref_thread_main(int argc, char *argv[])
 			orb_publish(ORB_ID(unibo_reference), reference_pub_fd, &reference);
 			//warnx("Actual yaw: %.3f - YawREF: %.3f - DYawREF: %.3f - D2YawREF: %.3f", TRAJECTORY_GENERATOR_APP_U.PSI, reference.psi, reference.d_psi, reference.dd_psi);
 
+			//Publish position setpoints
 			setpoint.x = reference.p_x;             //publish in vehicle_setpoint
 			setpoint.y = reference.p_y;
 			setpoint.z = reference.p_z;
@@ -385,23 +392,28 @@ int unibo_trajectory_ref_thread_main(int argc, char *argv[])
 
 			setpoint_triplet.current.type = SETPOINT_TYPE_POSITION;	   //publish in setpoint_triplet
 			setpoint_triplet.nav_state = 0; //NAV_STATE_NONE;
-			setpoint_triplet.current.lat = reference.p_x;              //lat-->x
-			setpoint_triplet.current.lon = reference.p_y;              //lon-->y
-			setpoint_triplet.current.alt = reference.p_z;              //alt-->z
+			setpoint_triplet.current.lat = reference.p_x/1000.0;              //lat-->x
+			setpoint_triplet.current.lon = reference.p_y/1000.0;              //lon-->y
+			setpoint_triplet.current.alt = reference.p_z;              		   //alt-->z
+			setpoint_triplet.current.vx = reference.dp_x;
+			setpoint_triplet.current.vy = reference.dp_y;
+			setpoint_triplet.current.vz = reference.dp_z;
 			setpoint_triplet.current.yaw = reference.psi;			// IN MAVLINK MESSAGES VENGONO MANIPOLATI. ES: *1e7, lo yaw è trasformato, etc,...TODO check
+			setpoint_triplet.current.yawspeed = reference.d_psi;
 			setpoint_triplet.previous.valid = true;
 			setpoint_triplet.current.valid = true;
 			setpoint_triplet.next.valid = true;
 			orb_publish(ORB_ID(position_setpoint_triplet), setpoint_triplet_pub_fd, &setpoint_triplet);
 
 
-			//Publish setpoints
+			//Publish attitude setpoints
 			attitude_setpoint.q_d[0] = (float)reference.q[0];
 			attitude_setpoint.q_d[1] = (float)reference.q[1];
 			attitude_setpoint.q_d[2] = (float)reference.q[2];
 			attitude_setpoint.q_d[3] = (float)reference.q[3];
 			attitude_setpoint.thrust = (float)reference.thrust;
 			orb_publish(ORB_ID(vehicle_attitude_setpoint), attitude_setpoint_pub_fd, &attitude_setpoint);
+
 		}
 		usleep(10000);
 

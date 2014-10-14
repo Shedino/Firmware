@@ -371,7 +371,42 @@ int unibo_commander_thread_main(int argc, char *argv[])
 
 
 			orb_copy(ORB_ID(vehicle_status), status_fd, &vehicle_status); //copy vehicle_status to override the state of flight modes
-			vehicle_status.nav_state = unibo_status.flight_mode;
+			//Matching our flight modes with (almost equal) standard flight modes
+			switch (unibo_status.flight_mode) {
+				case FLIGHTMODE_STOP:
+					vehicle_status.nav_state = NAVIGATION_STATE_TERMINATION;
+					break;
+				case FLIGHTMODE_PREFLIGHT:
+					vehicle_status.nav_state = NAVIGATION_STATE_AUTO_RTGS;
+					break;
+				case FLIGHTMODE_ATT_THRUST:
+					vehicle_status.nav_state = NAVIGATION_STATE_MANUAL;
+					break;
+				case FLIGHTMODE_AUTO_LOWLEVEL:
+					vehicle_status.nav_state = NAVIGATION_STATE_POSCTL;
+					break;
+				case FLIGHTMODE_AUTO_HIGHLEVEL:
+					vehicle_status.nav_state = NAVIGATION_STATE_OFFBOARD;
+					break;
+				case FLIGHTMODE_AUTO_WAYPOINT:
+					vehicle_status.nav_state = NAVIGATION_STATE_AUTO_MISSION;
+					break;
+				case FLIGHTMODE_LANDING:
+					vehicle_status.nav_state = NAVIGATION_STATE_LAND;
+					break;
+				case FLIGHTMODE_U_LANDING:
+					vehicle_status.nav_state = NAVIGATION_STATE_DESCEND;
+					break;
+				case FLIGHTMODE_Z_LANDING:
+					vehicle_status.nav_state = NAVIGATION_STATE_ALTCTL;
+					break;
+				case FLIGHTMODE_TAKE_OFF:
+					vehicle_status.nav_state = NAVIGATION_STATE_MAX;
+					break;
+				default:
+					vehicle_status.nav_state = 100;   //should give errors...
+					break;
+			}
 			orb_publish(ORB_ID(vehicle_status), vehicle_status_pub_fd, &vehicle_status);
 
 			if (counter >= 100){
