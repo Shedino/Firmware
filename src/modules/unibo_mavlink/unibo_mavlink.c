@@ -535,7 +535,7 @@ int unibo_mavlink_thread_main(int argc, char *argv[])
 	bool updated;
 
 	//time variables
-	static uint64_t time_pre = 0;
+	static uint64_t time_pre = hrt_absolute_time();
 	static uint64_t nowT = 0;
 	float deltaT;
 
@@ -544,15 +544,15 @@ int unibo_mavlink_thread_main(int argc, char *argv[])
 	/* Main loop*/
 	while (!unibomav_thread_should_exit) {
 
-		nowT = hrt_absolute_time();
-		deltaT = (nowT-time_pre)/1000.0f;
-		if (deltaT > 2000)    //2 seconds passed without messages
-		{
-			orb_copy(ORB_ID(unibo_vehicle_status), unibo_status_fd, &unibo_status); //copy unibo_status to override the state of xbee alarm
-			unibo_status.xbee_lost = true;
-			orb_publish(ORB_ID(unibo_vehicle_status), unibo_status_pub_fd, &unibo_status);
-			//warnx("Lost Xbee!!!");
-		}
+//		nowT = hrt_absolute_time();
+//		deltaT = (nowT-time_pre)/1000.0f;
+//		if (deltaT > 2000)    //2 seconds passed without messages
+//		{
+//			orb_copy(ORB_ID(unibo_vehicle_status), unibo_status_fd, &unibo_status); //copy unibo_status to override the state of xbee alarm
+//			unibo_status.xbee_lost = true;
+//			orb_publish(ORB_ID(unibo_vehicle_status), unibo_status_pub_fd, &unibo_status);
+//			//warnx("Lost Xbee!!!");
+//		}
 
 		if (poll(fds, 1, timeout) > 0) {
 
@@ -569,6 +569,7 @@ int unibo_mavlink_thread_main(int argc, char *argv[])
 						time_pre = hrt_absolute_time();
 						orb_copy(ORB_ID(unibo_vehicle_status), unibo_status_fd, &unibo_status); //copy unibo_status to override the state of xbee alarm
 						unibo_status.xbee_lost = false;
+						orb_publish(ORB_ID(unibo_vehicle_status), unibo_status_pub_fd, &unibo_status);
 						/* handle generic messages and commands */
 						// Handle message
 						switch(msg.msgid)
