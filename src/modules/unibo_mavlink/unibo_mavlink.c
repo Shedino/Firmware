@@ -505,7 +505,6 @@ int unibo_mavlink_thread_main(int argc, char *argv[])
 	struct vehicle_local_position_s loc_pos;
 	memset(&loc_pos, 0, sizeof(loc_pos));
 	loc_pos_pub_fd = orb_advertise(ORB_ID(vehicle_local_position), &loc_pos);
-	loc_pos_sub_fd = orb_subscribe(ORB_ID(vehicle_local_position));
 
 
 	mavlink_unibo_references_t unibo_ref_mav;
