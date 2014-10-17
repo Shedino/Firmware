@@ -218,35 +218,39 @@ if (HW_ARCH == "PX4FMU_V1"){
 }
 if (HW_ARCH == "PX4FMU_V2"){
 
-		config.c_iflag &= ~(IGNBRK | BRKINT | ICRNL |
-		                    INLCR | PARMRK | INPCK | ISTRIP | IXON);
+		config.c_oflag &= ~ONLCR;
+		config.c_cflag |= CRTS_IFLOW;
+		config.c_cflag |= CRTSCTS;             //TODO check this is a test (flow control on)
 
-
-		config.c_oflag &= ~(OCRNL | ONLCR | ONLRET |
-		                     ONOCR | OFILL | OPOST);
-
-		#ifdef OLCUC
-	  		config.c_oflag &= ~OLCUC;
-		#endif
-
-	  	#ifdef ONOEOT
-	  		config.c_oflag &= ~ONOEOT;
-	  	#endif
-
-		config.c_lflag &= ~(ECHO | ECHONL | ICANON | IEXTEN | ISIG);
-
-
-		config.c_cflag &= ~(CSIZE | PARENB);
-		config.c_cflag |= CS8;
-
-
-		config.c_cc[VMIN]  = 1;
-		config.c_cc[VTIME] = 10; // was 0
+//		config.c_iflag &= ~(IGNBRK | BRKINT | ICRNL |
+//		                    INLCR | PARMRK | INPCK | ISTRIP | IXON);
+//
+//
+//		config.c_oflag &= ~(OCRNL | ONLCR | ONLRET |
+//		                     ONOCR | OFILL | OPOST);
+//
+//		#ifdef OLCUC
+//	  		config.c_oflag &= ~OLCUC;
+//		#endif
+//
+//	  	#ifdef ONOEOT
+//	  		config.c_oflag &= ~ONOEOT;
+//	  	#endif
+//
+//		config.c_lflag &= ~(ECHO | ECHONL | ICANON | IEXTEN | ISIG);
+//
+//
+//		config.c_cflag &= ~(CSIZE | PARENB);
+//		config.c_cflag |= CS8;
+//
+//
+//		config.c_cc[VMIN]  = 1;
+//		config.c_cc[VTIME] = 0; // was 0
 }
 
 
 		//Set Baud rate
-		int bauds[] = {1200, 38400, 57600, 115200, 0};   //Accepter Baud Rate
+		int bauds[] = {1200, 38400, 57600, 115200, 0};   //Accepted Baud Rate
 		int i;
 		for (i=0; bauds[i]; i++)
 		{
@@ -525,6 +529,7 @@ int unibo_mavlink_thread_main(int argc, char *argv[])
 	const int timeout = 500;
 	static uint8_t buf[16];
 	int counter_opti = 0;
+	int counter_joystick = 0;
 	float yawoffset = 0;
 	float pi = 3.14159;
 
@@ -606,16 +611,10 @@ int unibo_mavlink_thread_main(int argc, char *argv[])
 								}
 
 								orb_copy(ORB_ID(vehicle_local_position), loc_pos_sub_fd, &loc_pos);  //copy actual local_position for velocities
-//								double uax = (double)unibo_opti_mav.x * cos((double)yawoffset*2.0*(double)pi/360.0);
-//								double ubx = (double)unibo_opti_mav.y * sin((double)yawoffset*2.0*(double)pi/360.0);
-//								float temp = (float)(uax-ubx);
-//								float tempx = unibo_opti_mav.x * (float)cos(yawoffset*2.0f*pi/360.0f) - unibo_opti_mav.y * (float)sin(yawoffset*2.0f*pi/360.0f);
-//								float tempy = unibo_opti_mav.x * (float)sin(yawoffset*2.0f*pi/360.0f) - unibo_opti_mav.y * (float)cos(yawoffset*2.0f*pi/360.0f);
-//								loc_pos.x = tempx;
 								loc_pos.x = unibo_opti_mav.x * (float)cos(yawoffset*2.0f*pi/360.0f) - unibo_opti_mav.y * (float)sin(yawoffset*2.0f*pi/360.0f);          //Write to local position topic too
 								loc_pos.y = unibo_opti_mav.x * (float)sin(yawoffset*2.0f*pi/360.0f) - unibo_opti_mav.y * (float)cos(yawoffset*2.0f*pi/360.0f);
 								loc_pos.z = unibo_opti_mav.z;
-								loc_pos.v_z_valid = true;
+								loc_pos.v_z_valid = false;
 								loc_pos.timestamp = unibo_opti_mav.usec;
 								loc_pos.v_xy_valid = false;
 								loc_pos.xy_valid = true;
@@ -694,6 +693,11 @@ int unibo_mavlink_thread_main(int argc, char *argv[])
 								joy.extras[3] = 0;
 								joy.buttons = unibo_rc.chan8_scaled / 30;         //button is (Button_number-1)^2*30
 								orb_publish(ORB_ID(unibo_joystick), unibo_joy_pub_fd, &joy);
+								counter_joystick++;
+								if (counter_joystick>=50){
+									warnx("50 packets joystick received");
+									counter_joystick=0;
+								}
 								//warnx("Joystick pachet received: CH1: %d - CH2: %d - CH3: %d - CH4: %d BUTTON: %d",joy.raw_joystick[0],joy.raw_joystick[1],joy.raw_joystick[2],joy.raw_joystick[3],joy.raw_joystick[7]);
 								break;
 							default:

@@ -277,6 +277,7 @@ int unibo_commander_thread_main(int argc, char *argv[])
 				COMMANDER_U.TOOK_OFF = unibo_status.took_off;
 			}
 
+			//TODO add somwhere the check of condition landed and took off (took off in trajectory gen)
 
 			/* copy attitude into local buffer */
 			orb_check(vehicle_attitude_fd, &updated);
@@ -414,8 +415,9 @@ int unibo_commander_thread_main(int argc, char *argv[])
 				//warnx("Armed?: %d", COMMANDER_U.ARMED);
 				//warnx("Attitude valid?: %d", COMMANDER_U.ATTITUDE_VALID);
 				//warnx("Arming state: %d",vehicle_stat.arming_state);
-				//warnx("Position Valid?: %d",COMMANDER_U.LOC_XY_VALID);
-				//warnx("Xbee lost?: %d",unibo_status.xbee_lost);
+				warnx("Position xy Valid?: %d",COMMANDER_U.LOC_XY_VALID);
+				warnx("Position z Valid?: %d",COMMANDER_U.LOC_Z_VALID);
+				warnx("Xbee lost?: %d",COMMANDER_U.NO_XBEE);
 				counter = 0;
 			}
 		}
