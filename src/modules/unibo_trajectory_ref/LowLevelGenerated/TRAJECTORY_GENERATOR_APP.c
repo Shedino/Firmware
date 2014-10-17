@@ -3,9 +3,9 @@
  *
  * Code generation for model "TRAJECTORY_GENERATOR_APP".
  *
- * Model version              : 1.4003
+ * Model version              : 1.4006
  * Simulink Coder version : 8.3 (R2012b) 20-Jul-2012
- * C source code generated on : Fri Oct 17 14:21:11 2014
+ * C source code generated on : Fri Oct 17 15:03:18 2014
  *
  * Target selection: grt.tlc
  * Note: GRT includes extra infrastructure and instrumentation for prototyping
@@ -859,18 +859,19 @@ static void TRAJECTORY_GENERATOR_APP_output(void)
   /* MATLAB Function 'REFERENCES/Attitude & Thrust Generation/INPUTS/thrust': '<S18>:1' */
   /* # */
   /* '<S18>:1:3' */
+  /* '<S18>:1:4' */
   /* da settare dinamicamente (2*m*g) */
-  /* '<S18>:1:5' */
+  /* '<S18>:1:6' */
   /* da settare dinamicamente */
-  /* '<S18>:1:8' */
-  rtb_Sum2_idx = 0.0229921875 * -(real_T)TRAJECTORY_GENERATOR_APP_U.JOYSTICK[3]
-    + 11.772;
+  /* '<S18>:1:9' */
+  rtb_Sum2_idx = -((real_T)TRAJECTORY_GENERATOR_APP_U.JOYSTICK[3] - 512.0) *
+    0.0229921875 + 11.772;
 
   /* mg when stick is in the middle, 2*mg --> stick up, 0 --> stick down */
-  if (rtb_Sum2_idx < 4.905) {
-    /* '<S18>:1:9' */
+  if (rtb_Sum2_idx < 1.9620000000000002) {
     /* '<S18>:1:10' */
-    rtb_Sum2_idx = 4.905;
+    /* '<S18>:1:11' */
+    rtb_Sum2_idx = 1.9620000000000002;
   }
 
   /* End of MATLAB Function: '<S12>/thrust' */
