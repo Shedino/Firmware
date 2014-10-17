@@ -135,7 +135,7 @@ int unibo_commander_main(int argc, char *argv[])
 					 2048,
 					 unibo_commander_thread_main,
 					 (argv) ? (const char **)&argv[2] : (const char **)NULL);
-		warnx("Thread -commander- started PID: %d",commander_task);
+		//warnx("Thread -unibo commander- started PID: %d",commander_task);
 		exit(0);
 	}
 
@@ -265,7 +265,7 @@ int unibo_commander_thread_main(int argc, char *argv[])
 				orb_copy(ORB_ID(unibo_joystick), joystick_fd, &joystick);
 				COMMANDER_U.BUTTON = joystick.buttons;          //button
 				if (counter >= 100){
-					warnx("Button: %d",COMMANDER_U.BUTTON);
+					//warnx("Button: %d",COMMANDER_U.BUTTON);
 				}
 			}
 			/* copy status data into local buffer */
@@ -409,13 +409,13 @@ int unibo_commander_thread_main(int argc, char *argv[])
 			}
 			orb_publish(ORB_ID(vehicle_status), vehicle_status_pub_fd, &vehicle_status);
 
-			if (counter >= 100){
+			if (counter >= 300){
 				warnx("State: %d",unibo_status.flight_mode);
-				warnx("Armed?: %d", COMMANDER_U.ARMED);
+				//warnx("Armed?: %d", COMMANDER_U.ARMED);
 				//warnx("Attitude valid?: %d", COMMANDER_U.ATTITUDE_VALID);
 				//warnx("Arming state: %d",vehicle_stat.arming_state);
-				warnx("Position Valid?: %d",COMMANDER_U.LOC_XY_VALID);
-				warnx("Xbee lost?: %d",unibo_status.xbee_lost);
+				//warnx("Position Valid?: %d",COMMANDER_U.LOC_XY_VALID);
+				//warnx("Xbee lost?: %d",unibo_status.xbee_lost);
 				counter = 0;
 			}
 		}

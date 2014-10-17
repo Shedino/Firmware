@@ -22,9 +22,9 @@ struct unibo_reference_s
 	double p_x;				/**< position x     */
 	double p_y;				/**< position y     */
 	double p_z;				/**< position z     */
-	double dp_x;				/**< velocity x      */
-	double dp_y;				/**< velocity y      */
-	double dp_z;				/**< velocity z      */
+	double dp_x;			/**< velocity x      */
+	double dp_y;			/**< velocity y      */
+	double dp_z;			/**< velocity z      */
 	double ddp_x;			/**< acceleration x        */
 	double ddp_y;			/**< acceleration y       */
 	double ddp_z;			/**< acceleration z        */
@@ -37,7 +37,7 @@ struct unibo_reference_s
 	double psi;				/**< yaw    */
 	double d_psi;			/**< yaw velocity        */
 	double dd_psi; 			/**< yaw acceleration      */
-	double q[4];				/**< Quaternion (NED)			*/
+	double q[4];			/**< Quaternion (NED)			*/
 	double ang_speed[3]; 	/**< Angular speed (NED)			*/
 	double ang_acc[3]; 		/**< Angular acceleration (NED)			*/
 	double thrust;			/**< Thrust	*/

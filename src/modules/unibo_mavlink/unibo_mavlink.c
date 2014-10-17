@@ -88,7 +88,7 @@
 #endif
 
 #define MAV_MODE_UNINIT 0
-#define pi 3.14159f
+//#define pi 3.14159f
 
 
 
@@ -330,7 +330,7 @@ int unibo_mavlink_main(int argc, char *argv[])
 		unibomav_unibo_mavlink_task = task_spawn_cmd("unibo_mavlink",
 					      SCHED_DEFAULT,
 					      SCHED_PRIORITY_MAX - 10,
-					      2048,
+					      2304,
 					      unibo_mavlink_thread_main,
 					      (argv) ? (const char **)&argv[2] : (const char **)NULL);
 		//warnx("Thread started PID: %d",unibomav_unibo_mavlink_task);
@@ -498,11 +498,11 @@ int unibo_mavlink_thread_main(int argc, char *argv[])
 	memset(&opti, 0, sizeof(opti));
 	unibo_opti_pub_fd = orb_advertise(ORB_ID(unibo_optitrack), &opti);
 
-	struct unibo_joystick_s joy;
+	static struct unibo_joystick_s joy;
 	memset(&joy, 0, sizeof(joy));
 	unibo_joy_pub_fd = orb_advertise(ORB_ID(unibo_joystick), &joy);
 
-	struct vehicle_local_position_s loc_pos;
+	static struct vehicle_local_position_s loc_pos;
 	memset(&loc_pos, 0, sizeof(loc_pos));
 	loc_pos_pub_fd = orb_advertise(ORB_ID(vehicle_local_position), &loc_pos);
 
@@ -515,6 +515,9 @@ int unibo_mavlink_thread_main(int argc, char *argv[])
 	// subscribe to telemetry topic
 	int telemetry_sub_fd = orb_subscribe(ORB_ID(unibo_telemetry));
 
+	// subscribe to local position topic
+	loc_pos_sub_fd = orb_subscribe(ORB_ID(vehicle_local_position));
+
 
 	// Run indefinitely while the serial loop handles data
 	warnx("MAvLink UNIBO READY, waiting for serial data.");
@@ -522,7 +525,8 @@ int unibo_mavlink_thread_main(int argc, char *argv[])
 	const int timeout = 500;
 	static uint8_t buf[16];
 	int counter_opti = 0;
-	float yawoffset;
+	float yawoffset = 0;
+	float pi = 3.14159;
 
 	mavlink_message_t msg;
 	static mavlink_status_t status;
@@ -535,24 +539,24 @@ int unibo_mavlink_thread_main(int argc, char *argv[])
 	bool updated;
 
 	//time variables
-	static uint64_t time_pre = hrt_absolute_time();
+	static uint64_t time_pre = 0;
 	static uint64_t nowT = 0;
-	float deltaT;
+	double deltaT;
 
 	ssize_t nread = 0;
-
+	time_pre = hrt_absolute_time();
 	/* Main loop*/
 	while (!unibomav_thread_should_exit) {
 
-//		nowT = hrt_absolute_time();
-//		deltaT = (nowT-time_pre)/1000.0f;
-//		if (deltaT > 2000)    //2 seconds passed without messages
-//		{
-//			orb_copy(ORB_ID(unibo_vehicle_status), unibo_status_fd, &unibo_status); //copy unibo_status to override the state of xbee alarm
-//			unibo_status.xbee_lost = true;
-//			orb_publish(ORB_ID(unibo_vehicle_status), unibo_status_pub_fd, &unibo_status);
-//			//warnx("Lost Xbee!!!");
-//		}
+		nowT = hrt_absolute_time();
+		deltaT = (nowT-time_pre)/1000.0f;
+		if (deltaT > 2000)    //2 seconds passed without messages
+		{
+			orb_copy(ORB_ID(unibo_vehicle_status), unibo_status_fd, &unibo_status); //copy unibo_status to override the state of xbee alarm
+			unibo_status.xbee_lost = true;
+			orb_publish(ORB_ID(unibo_vehicle_status), unibo_status_pub_fd, &unibo_status);
+			//warnx("Lost Xbee!!!");
+		}
 
 		if (poll(fds, 1, timeout) > 0) {
 
@@ -602,6 +606,12 @@ int unibo_mavlink_thread_main(int argc, char *argv[])
 								}
 
 								orb_copy(ORB_ID(vehicle_local_position), loc_pos_sub_fd, &loc_pos);  //copy actual local_position for velocities
+//								double uax = (double)unibo_opti_mav.x * cos((double)yawoffset*2.0*(double)pi/360.0);
+//								double ubx = (double)unibo_opti_mav.y * sin((double)yawoffset*2.0*(double)pi/360.0);
+//								float temp = (float)(uax-ubx);
+//								float tempx = unibo_opti_mav.x * (float)cos(yawoffset*2.0f*pi/360.0f) - unibo_opti_mav.y * (float)sin(yawoffset*2.0f*pi/360.0f);
+//								float tempy = unibo_opti_mav.x * (float)sin(yawoffset*2.0f*pi/360.0f) - unibo_opti_mav.y * (float)cos(yawoffset*2.0f*pi/360.0f);
+//								loc_pos.x = tempx;
 								loc_pos.x = unibo_opti_mav.x * (float)cos(yawoffset*2.0f*pi/360.0f) - unibo_opti_mav.y * (float)sin(yawoffset*2.0f*pi/360.0f);          //Write to local position topic too
 								loc_pos.y = unibo_opti_mav.x * (float)sin(yawoffset*2.0f*pi/360.0f) - unibo_opti_mav.y * (float)cos(yawoffset*2.0f*pi/360.0f);
 								loc_pos.z = unibo_opti_mav.z;
@@ -699,7 +709,7 @@ int unibo_mavlink_thread_main(int argc, char *argv[])
 
 
 
-				//usleep(1000);
+			usleep(1000);
 			}
 			packet_drops += status.packet_rx_drop_count;
 			//if (nread>0)	warnx("Letto: %d",buf);

@@ -139,7 +139,7 @@ int unibo_trajectory_ref_main(int argc, char *argv[])
 					 2048,
 					 unibo_trajectory_ref_thread_main,
 					 (argv) ? (const char **)&argv[2] : (const char **)NULL);
-		warnx("Thread started PID: %d",trajectory_ref_task);
+		//warnx("Thread started PID: %d",trajectory_ref_task);
 		exit(0);
 	}
 
@@ -167,7 +167,7 @@ int unibo_trajectory_ref_main(int argc, char *argv[])
 int unibo_trajectory_ref_thread_main(int argc, char *argv[])
 //int simple_test_app_main(int argc, char *argv[])
 {
-	warnx("[unibo_trajectory_ref] starting\n");
+	warnx("[unibo_trajectory_ref] starting");
 
 	thread_running = true;
 
@@ -244,6 +244,7 @@ int unibo_trajectory_ref_thread_main(int argc, char *argv[])
 	static uint64_t time_pre = 0;
 	static uint64_t nowT = 0;
 	float deltaT;
+	int counter = 0;
 
 
 	TRAJ_start();
@@ -413,6 +414,14 @@ int unibo_trajectory_ref_thread_main(int argc, char *argv[])
 			attitude_setpoint.q_d[3] = (float)reference.q[3];
 			attitude_setpoint.thrust = (float)reference.thrust;
 			orb_publish(ORB_ID(vehicle_attitude_setpoint), attitude_setpoint_pub_fd, &attitude_setpoint);
+
+
+			counter++;
+			if (counter >=5){
+				warnx("Thrust: %.3f", reference.thrust);
+				warnx("Pos ref: %.2f  %.2f  %.2f", reference.p_x, reference.p_y, reference.p_z);
+				counter = 0;
+			}
 
 		}
 		usleep(10000);
