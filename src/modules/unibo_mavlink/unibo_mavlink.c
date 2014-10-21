@@ -400,8 +400,12 @@ int unibo_mavlink_thread_main(int argc, char *argv[])
 	if (HW_ARCH=="PX4FMU_V1"){
 		uart_name = (char*)"/dev/ttyS2";      //(ttyS2)--> UART5, px4fum_v1
 	}
+//	else if (HW_ARCH=="PX4FMU_V2"){
+//		uart_name = (char*)"/dev/ttyS6";      //(ttyS6)--> UART4, px4fum_v2
+//	}
+
 	else if (HW_ARCH=="PX4FMU_V2"){
-		uart_name = (char*)"/dev/ttyS6";      //(ttyS6)--> UART4, px4fum_v2
+			uart_name = (char*)"/dev/ttyS2";      //(ttyS2)--> TELEM2, px4fum_v2
 	}
 
 	int baudrate = 115200;
