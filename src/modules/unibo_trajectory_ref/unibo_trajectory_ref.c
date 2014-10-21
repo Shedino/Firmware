@@ -424,7 +424,7 @@ int unibo_trajectory_ref_thread_main(int argc, char *argv[])
 			}
 
 		}
-		usleep(10000);
+		usleep(5000);
 
 	}
 

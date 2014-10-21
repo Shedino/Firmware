@@ -421,7 +421,7 @@ int unibo_commander_thread_main(int argc, char *argv[])
 				counter = 0;
 			}
 		}
-		usleep(10000);
+		usleep(5000);
 
 	}
 

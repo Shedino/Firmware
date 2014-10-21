@@ -531,7 +531,7 @@ int unibo_mavlink_thread_main(int argc, char *argv[])
 	warnx("MAvLink UNIBO READY, waiting for serial data.");
 
 	const int timeout = 500;
-	static uint8_t buf[16];
+	static uint8_t buf[128];  //was 16 instead of 128
 	int counter_opti = 0;
 	int counter_joystick = 0;
 	float yawoffset = 0;
@@ -717,7 +717,6 @@ int unibo_mavlink_thread_main(int argc, char *argv[])
 
 
 
-			usleep(1000);
 			}
 			packet_drops += status.packet_rx_drop_count;
 			//if (nread>0)	warnx("Letto: %d",buf);
