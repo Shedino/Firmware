@@ -229,6 +229,7 @@ int unibo_commander_thread_main(int argc, char *argv[])
 	static uint64_t time_pre = 0;
 	static uint64_t nowT = 0;
 	float deltaT;
+	float deltaT_loc_pos = 0;
 
 	int counter = 0;
 	int temp_state = 0;
@@ -311,7 +312,7 @@ int unibo_commander_thread_main(int argc, char *argv[])
 				COMMANDER_U.ARMED = safety.safety_off;
 			}
 
-			//TODO add commands -->landed, take off
+			//TODO add commands land, take off and states landed/took off
 			COMMANDER_U.CMD_LANDING = false;
 			COMMANDER_U.CMD_TAKE_OFF = false;
 
@@ -411,13 +412,13 @@ int unibo_commander_thread_main(int argc, char *argv[])
 			orb_publish(ORB_ID(vehicle_status), vehicle_status_pub_fd, &vehicle_status);
 
 			if (counter >= 300){
-				warnx("State: %d",unibo_status.flight_mode);
+//				warnx("State: %d",unibo_status.flight_mode);
 				//warnx("Armed?: %d", COMMANDER_U.ARMED);
 				//warnx("Attitude valid?: %d", COMMANDER_U.ATTITUDE_VALID);
 				//warnx("Arming state: %d",vehicle_stat.arming_state);
-				warnx("Position xy Valid?: %d",COMMANDER_U.LOC_XY_VALID);
-				warnx("Position z Valid?: %d",COMMANDER_U.LOC_Z_VALID);
-				warnx("Xbee lost?: %d",COMMANDER_U.NO_XBEE);
+//				warnx("Position xy Valid?: %d",COMMANDER_U.LOC_XY_VALID);
+//				warnx("Position z Valid?: %d",COMMANDER_U.LOC_Z_VALID);
+//				warnx("Xbee lost?: %d",COMMANDER_U.NO_XBEE);
 				counter = 0;
 			}
 		}

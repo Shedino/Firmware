@@ -161,66 +161,14 @@ bool setup_port(int fd, int baud, int data_bits, int stop_bits, bool parity, boo
 
 if (HW_ARCH == "PX4FMU_V1"){
 
-		//
-		// Input flags - Turn off input processing
-		// convert break to null byte, no CR to NL translation,
-		// no NL to CR translation, don't mark parity errors or breaks
-		// no input parity check, don't strip high bit off,
-		// no XON/XOFF software flow control
-		//
-		//config.c_iflag &= ~(IGNBRK | BRKINT | ICRNL |                               //OLD
-		  //                  INLCR | PARMRK | INPCK | ISTRIP | IXON);
-		//
-		// Output flags - Turn off output processing
-		// no CR to NL translation, no NL to CR-NL translation,
-		// no NL to CR translation, no column 0 CR suppression,
-		// no Ctrl-D suppression, no fill characters, no case mapping,
-		// no local output processing
-		//
 		config.c_oflag &= ~ONLCR;                           //NEW
-		//config.c_oflag &= ~(OCRNL | ONLCR | ONLRET |         //OLD
-					 	 	 //ONOCR | OFILL | OPOST);
-
-		/*                                                 //OLD
-		#ifdef OLCUC
-	  		config.c_oflag &= ~OLCUC;
-		#endif
-
-	  	#ifdef ONOEOT
-	  		config.c_oflag &= ~ONOEOT;
-	  	#endif
-	  	*/
 		config.c_cflag |= CRTS_IFLOW;                      //NEW
-
-		//
-		// No line processing:
-		// echo off, echo newline off, canonical mode off,
-		// extended input processing off, signal chars off
-		//
-		//config.c_lflag &= ~(ECHO | ECHONL | ICANON | IEXTEN | ISIG);       //OLD
-		//
-		// Turn off character processing
-		// clear current char size mask, no parity checking,
-		// no output processing, force 8 bit input
-		//
-		//config.c_cflag &= ~(CSIZE | PARENB);                            //OLD
-		//config.c_cflag |= CS8;                                           //OLD
-		//
-		// One input byte is enough to return from read()
-		// Inter-character timer off
-		//
-		//config.c_cc[VMIN]  = 1;                                     //OLD
-		//config.c_cc[VTIME] = 10; // was 0							//OLD
-
-		// Get the current options for the port
-		//tcgetattr(fd, &options);
-
 }
 if (HW_ARCH == "PX4FMU_V2"){
 
 		config.c_oflag &= ~ONLCR;
 		config.c_cflag |= CRTS_IFLOW;
-		config.c_cflag |= CRTSCTS;             //TODO check this is a test (flow control on)
+		config.c_cflag |= CRTSCTS;
 
 //		config.c_iflag &= ~(IGNBRK | BRKINT | ICRNL |
 //		                    INLCR | PARMRK | INPCK | ISTRIP | IXON);
@@ -400,13 +348,13 @@ int unibo_mavlink_thread_main(int argc, char *argv[])
 	if (HW_ARCH=="PX4FMU_V1"){
 		uart_name = (char*)"/dev/ttyS2";      //(ttyS2)--> UART5, px4fum_v1
 	}
-//	else if (HW_ARCH=="PX4FMU_V2"){
-//		uart_name = (char*)"/dev/ttyS6";      //(ttyS6)--> UART4, px4fum_v2
-//	}
-
 	else if (HW_ARCH=="PX4FMU_V2"){
-			uart_name = (char*)"/dev/ttyS2";      //(ttyS2)--> TELEM2, px4fum_v2
+		uart_name = (char*)"/dev/ttyS6";      //(ttyS6)--> UART4, px4fum_v2
 	}
+
+//	else if (HW_ARCH=="PX4FMU_V2"){
+//			uart_name = (char*)"/dev/ttyS2";      //(ttyS2)--> TELEM2, px4fum_v2
+//	}
 
 	int baudrate = 115200;
 	const char *commandline_usage = "\tusage: %s -d <devicename> -b <baudrate> [-v/--verbose] [--debug]\n\t\tdefault: -d %s -b %i\n";
@@ -626,7 +574,7 @@ int unibo_mavlink_thread_main(int argc, char *argv[])
 								orb_publish(ORB_ID(vehicle_local_position), loc_pos_pub_fd, &loc_pos);
 								counter_opti++;
 								if (counter_opti>=50){
-									warnx("50 packets optitrack received");
+									//warnx("50 packets optitrack received");
 									counter_opti=0;
 								}
 								break;
@@ -699,7 +647,7 @@ int unibo_mavlink_thread_main(int argc, char *argv[])
 								orb_publish(ORB_ID(unibo_joystick), unibo_joy_pub_fd, &joy);
 								counter_joystick++;
 								if (counter_joystick>=50){
-									warnx("50 packets joystick received");
+									//warnx("50 packets joystick received");
 									counter_joystick=0;
 								}
 								//warnx("Joystick pachet received: CH1: %d - CH2: %d - CH3: %d - CH4: %d BUTTON: %d",joy.raw_joystick[0],joy.raw_joystick[1],joy.raw_joystick[2],joy.raw_joystick[3],joy.raw_joystick[7]);
