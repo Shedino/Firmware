@@ -3,9 +3,9 @@
  *
  * Code generation for model "COMMANDER".
  *
- * Model version              : 1.2480
+ * Model version              : 1.2481
  * Simulink Coder version : 8.3 (R2012b) 20-Jul-2012
- * C source code generated on : Fri Sep 19 15:41:11 2014
+ * C source code generated on : Fri Oct 24 18:12:44 2014
  *
  * Target selection: grt.tlc
  * Note: GRT includes extra infrastructure and instrumentation for prototyping

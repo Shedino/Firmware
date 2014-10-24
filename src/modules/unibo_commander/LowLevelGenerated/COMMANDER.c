@@ -3,9 +3,9 @@
  *
  * Code generation for model "COMMANDER".
  *
- * Model version              : 1.2480
+ * Model version              : 1.2481
  * Simulink Coder version : 8.3 (R2012b) 20-Jul-2012
- * C source code generated on : Fri Sep 19 15:41:11 2014
+ * C source code generated on : Fri Oct 24 18:12:44 2014
  *
  * Target selection: grt.tlc
  * Note: GRT includes extra infrastructure and instrumentation for prototyping
@@ -149,47 +149,45 @@ static void COMMANDER_output(void)
     /* '<S3>:1:77' */
     COMMANDER_Y.STATE = 20;
     if (COMMANDER_U.NO_XBEE) {
+      /* Outport: '<Root>/STATE' */
       /* '<S3>:1:78' */
       /* xbee lost */
-      if (COMMANDER_U.LOC_XY_VALID && COMMANDER_U.LOC_Z_VALID) {
-        /* Outport: '<Root>/STATE' */
-        /* '<S3>:1:79' */
-        /* '<S3>:1:80' */
-        COMMANDER_Y.STATE = 60;
-      } else if (COMMANDER_U.LOC_Z_VALID) {
-        /* Outport: '<Root>/STATE' */
-        /* '<S3>:1:82' */
-        /* '<S3>:1:83' */
-        COMMANDER_Y.STATE = 80;
-      } else {
-        /* Outport: '<Root>/STATE' */
-        /* '<S3>:1:86' */
-        COMMANDER_Y.STATE = 70;
-      }
+      /*              if (events(loc_xy_valid) && events(loc_z_valid)) */
+      /*                  state_out = LAND; */
+      /*                  break; */
+      /*              elseif (events(loc_z_valid)) */
+      /*                  state_out = Z_LAND; */
+      /*                  break; */
+      /*              else */
+      /*                  state_out = U_LAND; */
+      /*                  break; */
+      /*              end */
+      /* '<S3>:1:89' */
+      COMMANDER_Y.STATE = 70;
     } else if (COMMANDER_U.BUTTON == 4U) {
       /* Outport: '<Root>/STATE' */
-      /* '<S3>:1:90' */
+      /* '<S3>:1:92' */
       /* STOP!! */
-      /* '<S3>:1:91' */
+      /* '<S3>:1:93' */
       COMMANDER_Y.STATE = 0;
     } else if ((COMMANDER_U.BUTTON == 160U) && COMMANDER_U.LOC_XY_VALID &&
                COMMANDER_U.LOC_Z_VALID) {
       /* Outport: '<Root>/STATE' */
-      /* '<S3>:1:94' */
-      /* '<S3>:1:95' */
+      /* '<S3>:1:96' */
+      /* '<S3>:1:97' */
       COMMANDER_Y.STATE = 30;
     } else if ((COMMANDER_U.BUTTON == 48U) && COMMANDER_U.LOC_XY_VALID &&
                COMMANDER_U.LOC_Z_VALID) {
       /* Outport: '<Root>/STATE' */
-      /* '<S3>:1:98' */
-      /* '<S3>:1:99' */
+      /* '<S3>:1:100' */
+      /* '<S3>:1:101' */
       COMMANDER_Y.STATE = 40;
     } else {
       if ((COMMANDER_U.BUTTON == 192U) && COMMANDER_U.LOC_XY_VALID &&
           COMMANDER_U.LOC_Z_VALID) {
         /* Outport: '<Root>/STATE' */
-        /* '<S3>:1:102' */
-        /* '<S3>:1:103' */
+        /* '<S3>:1:104' */
+        /* '<S3>:1:105' */
         COMMANDER_Y.STATE = 50;
       }
     }
@@ -198,67 +196,65 @@ static void COMMANDER_output(void)
    case 30:
     /* Outport: '<Root>/STATE' */
     /* -----------AUTO LOW LEVEL------------- */
-    /* '<S3>:1:108' */
+    /* '<S3>:1:110' */
     COMMANDER_Y.STATE = 30;
     if (COMMANDER_U.NO_XBEE) {
-      /* '<S3>:1:109' */
-      /* xbee lost */
-      if (COMMANDER_U.LOC_XY_VALID && COMMANDER_U.LOC_Z_VALID) {
-        /* Outport: '<Root>/STATE' */
-        /* '<S3>:1:110' */
-        /* '<S3>:1:111' */
-        COMMANDER_Y.STATE = 60;
-      } else if (COMMANDER_U.LOC_Z_VALID) {
-        /* Outport: '<Root>/STATE' */
-        /* '<S3>:1:113' */
-        /* '<S3>:1:114' */
-        COMMANDER_Y.STATE = 80;
-      } else {
-        /* Outport: '<Root>/STATE' */
-        /* '<S3>:1:117' */
-        COMMANDER_Y.STATE = 70;
-      }
-    } else if ((!COMMANDER_U.LOC_XY_VALID) && COMMANDER_U.LOC_Z_VALID) {
       /* Outport: '<Root>/STATE' */
-      /* '<S3>:1:121' */
+      /* '<S3>:1:111' */
+      /* xbee lost */
+      /*              if (events(loc_xy_valid) && events(loc_z_valid)) */
+      /*                  state_out = LAND; */
+      /*                  break; */
+      /*              elseif (events(loc_z_valid)) */
+      /*                  state_out = Z_LAND; */
+      /*                  break; */
+      /*              else */
+      /*                  state_out = U_LAND; */
+      /*                  break; */
+      /*              end */
       /* '<S3>:1:122' */
-      COMMANDER_Y.STATE = 80;
-    } else if ((!COMMANDER_U.LOC_XY_VALID) && (!COMMANDER_U.LOC_Z_VALID)) {
+      COMMANDER_Y.STATE = 70;
+    } else if ((!COMMANDER_U.LOC_XY_VALID) && COMMANDER_U.LOC_Z_VALID) {
       /* Outport: '<Root>/STATE' */
       /* '<S3>:1:125' */
       /* '<S3>:1:126' */
+      COMMANDER_Y.STATE = 80;
+    } else if ((!COMMANDER_U.LOC_XY_VALID) && (!COMMANDER_U.LOC_Z_VALID)) {
+      /* Outport: '<Root>/STATE' */
+      /* '<S3>:1:129' */
+      /* '<S3>:1:130' */
       COMMANDER_Y.STATE = 70;
     } else if (COMMANDER_U.BUTTON == 4U) {
       /* Outport: '<Root>/STATE' */
-      /* '<S3>:1:129' */
+      /* '<S3>:1:133' */
       /* STOP!! */
-      /* '<S3>:1:130' */
+      /* '<S3>:1:134' */
       COMMANDER_Y.STATE = 0;
     } else if (COMMANDER_U.BUTTON == 48U) {
       /* Outport: '<Root>/STATE' */
-      /* '<S3>:1:133' */
-      /* '<S3>:1:134' */
+      /* '<S3>:1:137' */
+      /* '<S3>:1:138' */
       COMMANDER_Y.STATE = 40;
     } else if (COMMANDER_U.BUTTON == 192U) {
       /* Outport: '<Root>/STATE' */
-      /* '<S3>:1:137' */
-      /* '<S3>:1:138' */
+      /* '<S3>:1:141' */
+      /* '<S3>:1:142' */
       COMMANDER_Y.STATE = 50;
     } else if (COMMANDER_U.BUTTON == 80U) {
       /* Outport: '<Root>/STATE' */
-      /* '<S3>:1:141' */
-      /* '<S3>:1:142' */
+      /* '<S3>:1:145' */
+      /* '<S3>:1:146' */
       COMMANDER_Y.STATE = 20;
     } else if (COMMANDER_U.CMD_LANDING) {
       /* Outport: '<Root>/STATE' */
-      /* '<S3>:1:145' */
-      /* '<S3>:1:146' */
+      /* '<S3>:1:149' */
+      /* '<S3>:1:150' */
       COMMANDER_Y.STATE = 60;
     } else {
       if (COMMANDER_U.CMD_TAKE_OFF) {
         /* Outport: '<Root>/STATE' */
-        /* '<S3>:1:149' */
-        /* '<S3>:1:150' */
+        /* '<S3>:1:153' */
+        /* '<S3>:1:154' */
         COMMANDER_Y.STATE = 90;
       }
     }
@@ -267,67 +263,65 @@ static void COMMANDER_output(void)
    case 40:
     /* Outport: '<Root>/STATE' */
     /* -----------AUTO HIGH LEVEL------------- */
-    /* '<S3>:1:155' */
+    /* '<S3>:1:159' */
     COMMANDER_Y.STATE = 40;
     if (COMMANDER_U.NO_XBEE) {
-      /* '<S3>:1:156' */
+      /* Outport: '<Root>/STATE' */
+      /* '<S3>:1:160' */
       /* xbee lost */
-      if (COMMANDER_U.LOC_XY_VALID && COMMANDER_U.LOC_Z_VALID) {
-        /* Outport: '<Root>/STATE' */
-        /* '<S3>:1:157' */
-        /* '<S3>:1:158' */
-        COMMANDER_Y.STATE = 60;
-      } else if (COMMANDER_U.LOC_Z_VALID) {
-        /* Outport: '<Root>/STATE' */
-        /* '<S3>:1:160' */
-        /* '<S3>:1:161' */
-        COMMANDER_Y.STATE = 80;
-      } else {
-        /* Outport: '<Root>/STATE' */
-        /* '<S3>:1:164' */
-        COMMANDER_Y.STATE = 70;
-      }
+      /*              if (events(loc_xy_valid) && events(loc_z_valid)) */
+      /*                  state_out = LAND; */
+      /*                  break; */
+      /*              elseif (events(loc_z_valid)) */
+      /*                  state_out = Z_LAND; */
+      /*                  break; */
+      /*              else */
+      /*                  state_out = U_LAND; */
+      /*                  break; */
+      /*              end */
+      /* '<S3>:1:171' */
+      COMMANDER_Y.STATE = 70;
     } else if (COMMANDER_U.BUTTON == 4U) {
       /* Outport: '<Root>/STATE' */
-      /* '<S3>:1:168' */
+      /* '<S3>:1:174' */
       /* STOP!! */
-      /* '<S3>:1:169' */
+      /* '<S3>:1:175' */
       COMMANDER_Y.STATE = 0;
     } else if ((!COMMANDER_U.LOC_XY_VALID) && COMMANDER_U.LOC_Z_VALID) {
       /* Outport: '<Root>/STATE' */
-      /* '<S3>:1:172' */
-      /* '<S3>:1:173' */
+      /* '<S3>:1:178' */
+      /* '<S3>:1:179' */
       COMMANDER_Y.STATE = 80;
     } else if ((!COMMANDER_U.LOC_XY_VALID) && (!COMMANDER_U.LOC_Z_VALID)) {
       /* Outport: '<Root>/STATE' */
-      /* '<S3>:1:176' */
-      /* '<S3>:1:177' */
+      /* '<S3>:1:182' */
+      /* '<S3>:1:183' */
       COMMANDER_Y.STATE = 70;
     } else if (COMMANDER_U.BUTTON == 160U) {
       /* Outport: '<Root>/STATE' */
-      /* '<S3>:1:180' */
-      /* '<S3>:1:181' */
+      /* '<S3>:1:186' */
+      /* '<S3>:1:187' */
       COMMANDER_Y.STATE = 30;
     } else if (COMMANDER_U.BUTTON == 192U) {
       /* Outport: '<Root>/STATE' */
-      /* '<S3>:1:184' */
-      /* '<S3>:1:185' */
+      /* '<S3>:1:190' */
+      /* '<S3>:1:191' */
       COMMANDER_Y.STATE = 50;
     } else if (COMMANDER_U.BUTTON == 80U) {
       /* Outport: '<Root>/STATE' */
-      /* '<S3>:1:188' */
-      /* '<S3>:1:189' */
+      /* '<S3>:1:194' */
+      /* '<S3>:1:195' */
       COMMANDER_Y.STATE = 20;
     } else if (COMMANDER_U.CMD_LANDING) {
       /* Outport: '<Root>/STATE' */
-      /* '<S3>:1:192' */
-      /* '<S3>:1:193' */
+      /* '<S3>:1:198' */
+      /* '<S3>:1:199' */
       COMMANDER_Y.STATE = 60;
     } else {
       if (COMMANDER_U.CMD_TAKE_OFF) {
         /* Outport: '<Root>/STATE' */
-        /* '<S3>:1:196' */
-        /* '<S3>:1:197' */
+        /* '<S3>:1:202' */
+        /* '<S3>:1:203' */
         COMMANDER_Y.STATE = 91;
       }
     }
@@ -336,57 +330,55 @@ static void COMMANDER_output(void)
    case 50:
     /* Outport: '<Root>/STATE' */
     /* -----------AUTO WAYPOINT------------- */
-    /* '<S3>:1:202' */
+    /* '<S3>:1:208' */
     COMMANDER_Y.STATE = 50;
     if (COMMANDER_U.NO_XBEE) {
-      /* '<S3>:1:203' */
+      /* Outport: '<Root>/STATE' */
+      /* '<S3>:1:209' */
       /* xbee lost */
-      if (COMMANDER_U.LOC_XY_VALID && COMMANDER_U.LOC_Z_VALID) {
-        /* Outport: '<Root>/STATE' */
-        /* '<S3>:1:204' */
-        /* '<S3>:1:205' */
-        COMMANDER_Y.STATE = 60;
-      } else if (COMMANDER_U.LOC_Z_VALID) {
-        /* Outport: '<Root>/STATE' */
-        /* '<S3>:1:207' */
-        /* '<S3>:1:208' */
-        COMMANDER_Y.STATE = 80;
-      } else {
-        /* Outport: '<Root>/STATE' */
-        /* '<S3>:1:211' */
-        COMMANDER_Y.STATE = 70;
-      }
+      /*              if (events(loc_xy_valid) && events(loc_z_valid)) */
+      /*                  state_out = LAND; */
+      /*                  break; */
+      /*              elseif (events(loc_z_valid)) */
+      /*                  state_out = Z_LAND; */
+      /*                  break; */
+      /*              else */
+      /*                  state_out = U_LAND; */
+      /*                  break; */
+      /*              end */
+      /* '<S3>:1:220' */
+      COMMANDER_Y.STATE = 70;
     } else if (COMMANDER_U.BUTTON == 4U) {
       /* Outport: '<Root>/STATE' */
-      /* '<S3>:1:215' */
+      /* '<S3>:1:223' */
       /* STOP!! */
-      /* '<S3>:1:216' */
+      /* '<S3>:1:224' */
       COMMANDER_Y.STATE = 0;
     } else if ((!COMMANDER_U.LOC_XY_VALID) && COMMANDER_U.LOC_Z_VALID) {
       /* Outport: '<Root>/STATE' */
-      /* '<S3>:1:219' */
-      /* '<S3>:1:220' */
+      /* '<S3>:1:227' */
+      /* '<S3>:1:228' */
       COMMANDER_Y.STATE = 80;
     } else if ((!COMMANDER_U.LOC_XY_VALID) && (!COMMANDER_U.LOC_Z_VALID)) {
       /* Outport: '<Root>/STATE' */
-      /* '<S3>:1:223' */
-      /* '<S3>:1:224' */
+      /* '<S3>:1:231' */
+      /* '<S3>:1:232' */
       COMMANDER_Y.STATE = 70;
     } else if (COMMANDER_U.BUTTON == 160U) {
       /* Outport: '<Root>/STATE' */
-      /* '<S3>:1:227' */
-      /* '<S3>:1:228' */
+      /* '<S3>:1:235' */
+      /* '<S3>:1:236' */
       COMMANDER_Y.STATE = 30;
     } else if (COMMANDER_U.BUTTON == 48U) {
       /* Outport: '<Root>/STATE' */
-      /* '<S3>:1:231' */
-      /* '<S3>:1:232' */
+      /* '<S3>:1:239' */
+      /* '<S3>:1:240' */
       COMMANDER_Y.STATE = 40;
     } else {
       if (COMMANDER_U.BUTTON == 80U) {
         /* Outport: '<Root>/STATE' */
-        /* '<S3>:1:235' */
-        /* '<S3>:1:236' */
+        /* '<S3>:1:243' */
+        /* '<S3>:1:244' */
         COMMANDER_Y.STATE = 20;
       }
     }
@@ -395,29 +387,29 @@ static void COMMANDER_output(void)
    case 60:
     /* Outport: '<Root>/STATE' */
     /* -----------LANDING------------- */
-    /* '<S3>:1:243' */
+    /* '<S3>:1:251' */
     COMMANDER_Y.STATE = 60;
     if (COMMANDER_U.BUTTON == 4U) {
       /* Outport: '<Root>/STATE' */
-      /* '<S3>:1:244' */
+      /* '<S3>:1:252' */
       /* STOP!! */
-      /* '<S3>:1:245' */
+      /* '<S3>:1:253' */
       COMMANDER_Y.STATE = 0;
     } else if ((!COMMANDER_U.LOC_XY_VALID) && COMMANDER_U.LOC_Z_VALID) {
       /* Outport: '<Root>/STATE' */
-      /* '<S3>:1:248' */
-      /* '<S3>:1:249' */
+      /* '<S3>:1:256' */
+      /* '<S3>:1:257' */
       COMMANDER_Y.STATE = 80;
     } else if ((!COMMANDER_U.LOC_XY_VALID) && (!COMMANDER_U.LOC_Z_VALID)) {
       /* Outport: '<Root>/STATE' */
-      /* '<S3>:1:252' */
-      /* '<S3>:1:253' */
+      /* '<S3>:1:260' */
+      /* '<S3>:1:261' */
       COMMANDER_Y.STATE = 70;
     } else {
       if (COMMANDER_U.LANDED) {
         /* Outport: '<Root>/STATE' */
-        /* '<S3>:1:256' */
-        /* '<S3>:1:257' */
+        /* '<S3>:1:264' */
+        /* '<S3>:1:265' */
         COMMANDER_Y.STATE = 10;
       }
     }
@@ -426,19 +418,19 @@ static void COMMANDER_output(void)
    case 70:
     /* Outport: '<Root>/STATE' */
     /* -----------UNCONTROLLED LANDING------------- */
-    /* '<S3>:1:262' */
+    /* '<S3>:1:270' */
     COMMANDER_Y.STATE = 70;
     if (COMMANDER_U.BUTTON == 4U) {
       /* Outport: '<Root>/STATE' */
-      /* '<S3>:1:263' */
+      /* '<S3>:1:271' */
       /* STOP!! */
-      /* '<S3>:1:264' */
+      /* '<S3>:1:272' */
       COMMANDER_Y.STATE = 0;
     } else {
       if (COMMANDER_U.LANDED) {
         /* Outport: '<Root>/STATE' */
-        /* '<S3>:1:267' */
-        /* '<S3>:1:268' */
+        /* '<S3>:1:275' */
+        /* '<S3>:1:276' */
         COMMANDER_Y.STATE = 10;
       }
     }
@@ -447,24 +439,24 @@ static void COMMANDER_output(void)
    case 80:
     /* Outport: '<Root>/STATE' */
     /* -----------Z CONTROLLED LANDING------------- */
-    /* '<S3>:1:273' */
+    /* '<S3>:1:281' */
     COMMANDER_Y.STATE = 80;
     if (COMMANDER_U.BUTTON == 4U) {
       /* Outport: '<Root>/STATE' */
-      /* '<S3>:1:274' */
+      /* '<S3>:1:282' */
       /* STOP!! */
-      /* '<S3>:1:275' */
+      /* '<S3>:1:283' */
       COMMANDER_Y.STATE = 0;
-    } else if ((!COMMANDER_U.LOC_XY_VALID) && (!COMMANDER_U.LOC_Z_VALID)) {
+    } else if (!COMMANDER_U.LOC_Z_VALID) {
       /* Outport: '<Root>/STATE' */
-      /* '<S3>:1:278' */
-      /* '<S3>:1:279' */
+      /* '<S3>:1:286' */
+      /* '<S3>:1:287' */
       COMMANDER_Y.STATE = 70;
     } else {
       if (COMMANDER_U.LANDED) {
         /* Outport: '<Root>/STATE' */
-        /* '<S3>:1:282' */
-        /* '<S3>:1:283' */
+        /* '<S3>:1:290' */
+        /* '<S3>:1:291' */
         COMMANDER_Y.STATE = 10;
       }
     }
@@ -473,47 +465,45 @@ static void COMMANDER_output(void)
    case 90:
     /* Outport: '<Root>/STATE' */
     /* -----------TAKE OFF FROM LOW LEVEL------------- */
-    /* '<S3>:1:288' */
+    /* '<S3>:1:296' */
     COMMANDER_Y.STATE = 90;
     if (COMMANDER_U.BUTTON == 4U) {
       /* Outport: '<Root>/STATE' */
-      /* '<S3>:1:289' */
+      /* '<S3>:1:297' */
       /* STOP!! */
-      /* '<S3>:1:290' */
+      /* '<S3>:1:298' */
       COMMANDER_Y.STATE = 0;
     } else if (COMMANDER_U.NO_XBEE) {
-      /* '<S3>:1:293' */
+      /* Outport: '<Root>/STATE' */
+      /* '<S3>:1:301' */
       /* xbee lost */
-      if (COMMANDER_U.LOC_XY_VALID && COMMANDER_U.LOC_Z_VALID) {
-        /* Outport: '<Root>/STATE' */
-        /* '<S3>:1:294' */
-        /* '<S3>:1:295' */
-        COMMANDER_Y.STATE = 60;
-      } else if (COMMANDER_U.LOC_Z_VALID) {
-        /* Outport: '<Root>/STATE' */
-        /* '<S3>:1:297' */
-        /* '<S3>:1:298' */
-        COMMANDER_Y.STATE = 80;
-      } else {
-        /* Outport: '<Root>/STATE' */
-        /* '<S3>:1:301' */
-        COMMANDER_Y.STATE = 70;
-      }
+      /*              if (events(loc_xy_valid) && events(loc_z_valid)) */
+      /*                  state_out = LAND; */
+      /*                  break; */
+      /*              elseif (events(loc_z_valid)) */
+      /*                  state_out = Z_LAND; */
+      /*                  break; */
+      /*              else */
+      /*                  state_out = U_LAND; */
+      /*                  break; */
+      /*              end */
+      /* '<S3>:1:312' */
+      COMMANDER_Y.STATE = 70;
     } else if ((!COMMANDER_U.LOC_XY_VALID) && COMMANDER_U.LOC_Z_VALID) {
       /* Outport: '<Root>/STATE' */
-      /* '<S3>:1:305' */
-      /* '<S3>:1:306' */
+      /* '<S3>:1:315' */
+      /* '<S3>:1:316' */
       COMMANDER_Y.STATE = 80;
     } else if ((!COMMANDER_U.LOC_XY_VALID) && (!COMMANDER_U.LOC_Z_VALID)) {
       /* Outport: '<Root>/STATE' */
-      /* '<S3>:1:309' */
-      /* '<S3>:1:310' */
+      /* '<S3>:1:319' */
+      /* '<S3>:1:320' */
       COMMANDER_Y.STATE = 70;
     } else {
       if (COMMANDER_U.TOOK_OFF) {
         /* Outport: '<Root>/STATE' */
-        /* '<S3>:1:313' */
-        /* '<S3>:1:314' */
+        /* '<S3>:1:323' */
+        /* '<S3>:1:324' */
         COMMANDER_Y.STATE = 30;
       }
     }
@@ -522,47 +512,45 @@ static void COMMANDER_output(void)
    case 91:
     /* Outport: '<Root>/STATE' */
     /* -----------TAKE OFF FROM HIGH LEVEL------------- */
-    /* '<S3>:1:319' */
+    /* '<S3>:1:329' */
     COMMANDER_Y.STATE = 91;
     if (COMMANDER_U.BUTTON == 4U) {
       /* Outport: '<Root>/STATE' */
-      /* '<S3>:1:320' */
+      /* '<S3>:1:330' */
       /* STOP!! */
-      /* '<S3>:1:321' */
+      /* '<S3>:1:331' */
       COMMANDER_Y.STATE = 0;
     } else if (COMMANDER_U.NO_XBEE) {
-      /* '<S3>:1:324' */
+      /* Outport: '<Root>/STATE' */
+      /* '<S3>:1:334' */
       /* xbee lost */
-      if (COMMANDER_U.LOC_XY_VALID && COMMANDER_U.LOC_Z_VALID) {
-        /* Outport: '<Root>/STATE' */
-        /* '<S3>:1:325' */
-        /* '<S3>:1:326' */
-        COMMANDER_Y.STATE = 60;
-      } else if (COMMANDER_U.LOC_Z_VALID) {
-        /* Outport: '<Root>/STATE' */
-        /* '<S3>:1:328' */
-        /* '<S3>:1:329' */
-        COMMANDER_Y.STATE = 80;
-      } else {
-        /* Outport: '<Root>/STATE' */
-        /* '<S3>:1:332' */
-        COMMANDER_Y.STATE = 70;
-      }
+      /*              if (events(loc_xy_valid) && events(loc_z_valid)) */
+      /*                  state_out = LAND; */
+      /*                  break; */
+      /*              elseif (events(loc_z_valid)) */
+      /*                  state_out = Z_LAND; */
+      /*                  break; */
+      /*              else */
+      /*                  state_out = U_LAND; */
+      /*                  break; */
+      /*              end */
+      /* '<S3>:1:345' */
+      COMMANDER_Y.STATE = 70;
     } else if ((!COMMANDER_U.LOC_XY_VALID) && COMMANDER_U.LOC_Z_VALID) {
       /* Outport: '<Root>/STATE' */
-      /* '<S3>:1:336' */
-      /* '<S3>:1:337' */
+      /* '<S3>:1:348' */
+      /* '<S3>:1:349' */
       COMMANDER_Y.STATE = 80;
     } else if ((!COMMANDER_U.LOC_XY_VALID) && (!COMMANDER_U.LOC_Z_VALID)) {
       /* Outport: '<Root>/STATE' */
-      /* '<S3>:1:340' */
-      /* '<S3>:1:341' */
+      /* '<S3>:1:352' */
+      /* '<S3>:1:353' */
       COMMANDER_Y.STATE = 70;
     } else {
       if (COMMANDER_U.TOOK_OFF) {
         /* Outport: '<Root>/STATE' */
-        /* '<S3>:1:344' */
-        /* '<S3>:1:345' */
+        /* '<S3>:1:356' */
+        /* '<S3>:1:357' */
         COMMANDER_Y.STATE = 40;
       }
     }
@@ -570,7 +558,7 @@ static void COMMANDER_output(void)
 
    default:
     /* Outport: '<Root>/STATE' */
-    /* '<S3>:1:350' */
+    /* '<S3>:1:362' */
     COMMANDER_Y.STATE = 1000;
     break;
   }
