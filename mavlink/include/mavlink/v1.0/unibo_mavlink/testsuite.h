@@ -5366,14 +5366,13 @@ static void mavlink_test_unibo_parameters(uint8_t system_id, uint8_t component_i
         MAVLINK_ASSERT(memcmp(&packet1, &packet2, sizeof(packet1)) == 0);
 }
 
-static void mavlink_test_unibo_references(uint8_t system_id, uint8_t component_id, mavlink_message_t *last_msg)
+static void mavlink_test_unibo_hl_trajectory(uint8_t system_id, uint8_t component_id, mavlink_message_t *last_msg)
 {
 	mavlink_message_t msg;
         uint8_t buffer[MAVLINK_MAX_PACKET_LEN];
         uint16_t i;
-	mavlink_unibo_references_t packet_in = {
-		17.0,
-	}45.0,
+	mavlink_unibo_hl_trajectory_t packet_in = {
+		93372036854775807ULL,
 	}73.0,
 	}101.0,
 	}129.0,
@@ -5385,11 +5384,17 @@ static void mavlink_test_unibo_references(uint8_t system_id, uint8_t component_i
 	}297.0,
 	}325.0,
 	}353.0,
-	}963500168,
-	}963500376,
+	}381.0,
+	}409.0,
+	}437.0,
+	}465.0,
+	}493.0,
+	}521.0,
+	}549.0,
 	};
-	mavlink_unibo_references_t packet1, packet2;
+	mavlink_unibo_hl_trajectory_t packet1, packet2;
         memset(&packet1, 0, sizeof(packet1));
+        	packet1.Tstamp = packet_in.Tstamp;
         	packet1.p_refX = packet_in.p_refX;
         	packet1.p_refY = packet_in.p_refY;
         	packet1.p_refZ = packet_in.p_refZ;
@@ -5399,28 +5404,31 @@ static void mavlink_test_unibo_references(uint8_t system_id, uint8_t component_i
         	packet1.dot2_p_refX = packet_in.dot2_p_refX;
         	packet1.dot2_p_refY = packet_in.dot2_p_refY;
         	packet1.dot2_p_refZ = packet_in.dot2_p_refZ;
+        	packet1.dot3_p_refX = packet_in.dot3_p_refX;
+        	packet1.dot3_p_refY = packet_in.dot3_p_refY;
+        	packet1.dot3_p_refZ = packet_in.dot3_p_refZ;
+        	packet1.dot4_p_refX = packet_in.dot4_p_refX;
+        	packet1.dot4_p_refY = packet_in.dot4_p_refY;
+        	packet1.dot4_p_refZ = packet_in.dot4_p_refZ;
         	packet1.psi_ref = packet_in.psi_ref;
         	packet1.dot_psi_ref = packet_in.dot_psi_ref;
         	packet1.dot2_psi_ref = packet_in.dot2_psi_ref;
-        	packet1.q = packet_in.q;
-        	packet1.buttons = packet_in.buttons;
-        	packet1.Tstamp = packet_in.Tstamp;
         
         
 
         memset(&packet2, 0, sizeof(packet2));
-	mavlink_msg_unibo_references_encode(system_id, component_id, &msg, &packet1);
-	mavlink_msg_unibo_references_decode(&msg, &packet2);
+	mavlink_msg_unibo_hl_trajectory_encode(system_id, component_id, &msg, &packet1);
+	mavlink_msg_unibo_hl_trajectory_decode(&msg, &packet2);
         MAVLINK_ASSERT(memcmp(&packet1, &packet2, sizeof(packet1)) == 0);
 
         memset(&packet2, 0, sizeof(packet2));
-	mavlink_msg_unibo_references_pack(system_id, component_id, &msg , packet1.p_refX , packet1.p_refY , packet1.p_refZ , packet1.dot_p_refX , packet1.dot_p_refY , packet1.dot_p_refZ , packet1.dot2_p_refX , packet1.dot2_p_refY , packet1.dot2_p_refZ , packet1.psi_ref , packet1.dot_psi_ref , packet1.dot2_psi_ref , packet1.q , packet1.buttons , packet1.Tstamp );
-	mavlink_msg_unibo_references_decode(&msg, &packet2);
+	mavlink_msg_unibo_hl_trajectory_pack(system_id, component_id, &msg , packet1.p_refX , packet1.p_refY , packet1.p_refZ , packet1.dot_p_refX , packet1.dot_p_refY , packet1.dot_p_refZ , packet1.dot2_p_refX , packet1.dot2_p_refY , packet1.dot2_p_refZ , packet1.dot3_p_refX , packet1.dot3_p_refY , packet1.dot3_p_refZ , packet1.dot4_p_refX , packet1.dot4_p_refY , packet1.dot4_p_refZ , packet1.psi_ref , packet1.dot_psi_ref , packet1.dot2_psi_ref , packet1.Tstamp );
+	mavlink_msg_unibo_hl_trajectory_decode(&msg, &packet2);
         MAVLINK_ASSERT(memcmp(&packet1, &packet2, sizeof(packet1)) == 0);
 
         memset(&packet2, 0, sizeof(packet2));
-	mavlink_msg_unibo_references_pack_chan(system_id, component_id, MAVLINK_COMM_0, &msg , packet1.p_refX , packet1.p_refY , packet1.p_refZ , packet1.dot_p_refX , packet1.dot_p_refY , packet1.dot_p_refZ , packet1.dot2_p_refX , packet1.dot2_p_refY , packet1.dot2_p_refZ , packet1.psi_ref , packet1.dot_psi_ref , packet1.dot2_psi_ref , packet1.q , packet1.buttons , packet1.Tstamp );
-	mavlink_msg_unibo_references_decode(&msg, &packet2);
+	mavlink_msg_unibo_hl_trajectory_pack_chan(system_id, component_id, MAVLINK_COMM_0, &msg , packet1.p_refX , packet1.p_refY , packet1.p_refZ , packet1.dot_p_refX , packet1.dot_p_refY , packet1.dot_p_refZ , packet1.dot2_p_refX , packet1.dot2_p_refY , packet1.dot2_p_refZ , packet1.dot3_p_refX , packet1.dot3_p_refY , packet1.dot3_p_refZ , packet1.dot4_p_refX , packet1.dot4_p_refY , packet1.dot4_p_refZ , packet1.psi_ref , packet1.dot_psi_ref , packet1.dot2_psi_ref , packet1.Tstamp );
+	mavlink_msg_unibo_hl_trajectory_decode(&msg, &packet2);
         MAVLINK_ASSERT(memcmp(&packet1, &packet2, sizeof(packet1)) == 0);
 
         memset(&packet2, 0, sizeof(packet2));
@@ -5428,12 +5436,12 @@ static void mavlink_test_unibo_references(uint8_t system_id, uint8_t component_i
         for (i=0; i<mavlink_msg_get_send_buffer_length(&msg); i++) {
         	comm_send_ch(MAVLINK_COMM_0, buffer[i]);
         }
-	mavlink_msg_unibo_references_decode(last_msg, &packet2);
+	mavlink_msg_unibo_hl_trajectory_decode(last_msg, &packet2);
         MAVLINK_ASSERT(memcmp(&packet1, &packet2, sizeof(packet1)) == 0);
         
         memset(&packet2, 0, sizeof(packet2));
-	mavlink_msg_unibo_references_send(MAVLINK_COMM_1 , packet1.p_refX , packet1.p_refY , packet1.p_refZ , packet1.dot_p_refX , packet1.dot_p_refY , packet1.dot_p_refZ , packet1.dot2_p_refX , packet1.dot2_p_refY , packet1.dot2_p_refZ , packet1.psi_ref , packet1.dot_psi_ref , packet1.dot2_psi_ref , packet1.q , packet1.buttons , packet1.Tstamp );
-	mavlink_msg_unibo_references_decode(last_msg, &packet2);
+	mavlink_msg_unibo_hl_trajectory_send(MAVLINK_COMM_1 , packet1.p_refX , packet1.p_refY , packet1.p_refZ , packet1.dot_p_refX , packet1.dot_p_refY , packet1.dot_p_refZ , packet1.dot2_p_refX , packet1.dot2_p_refY , packet1.dot2_p_refZ , packet1.dot3_p_refX , packet1.dot3_p_refY , packet1.dot3_p_refZ , packet1.dot4_p_refX , packet1.dot4_p_refY , packet1.dot4_p_refZ , packet1.psi_ref , packet1.dot_psi_ref , packet1.dot2_psi_ref , packet1.Tstamp );
+	mavlink_msg_unibo_hl_trajectory_decode(last_msg, &packet2);
         MAVLINK_ASSERT(memcmp(&packet1, &packet2, sizeof(packet1)) == 0);
 }
 
@@ -5823,7 +5831,7 @@ static void mavlink_test_unibo_mavlink(uint8_t system_id, uint8_t component_id, 
 	mavlink_test_setpoint_8dof(system_id, component_id, last_msg);
 	mavlink_test_setpoint_6dof(system_id, component_id, last_msg);
 	mavlink_test_unibo_parameters(system_id, component_id, last_msg);
-	mavlink_test_unibo_references(system_id, component_id, last_msg);
+	mavlink_test_unibo_hl_trajectory(system_id, component_id, last_msg);
 	mavlink_test_memory_vect(system_id, component_id, last_msg);
 	mavlink_test_debug_vect(system_id, component_id, last_msg);
 	mavlink_test_named_value_float(system_id, component_id, last_msg);

@@ -41,7 +41,7 @@
 #include <nuttx/config.h>
 #include <nuttx/sched.h>
 #include <uORB/uORB.h>
-#include <uORB/topics/unibo_reference.h>
+#include <uORB/topics/unibo_hl_traj.h>
 #include <uORB/topics/unibo_parameters.h>
 #include <uORB/topics/unibo_optitrack.h>
 #include <uORB/topics/unibo_telemetry.h>
@@ -332,6 +332,7 @@ int unibo_mavlink_thread_main(int argc, char *argv[])
 	int unibo_joy_pub_fd;
 	int loc_pos_pub_fd;
 	int loc_pos_sub_fd;
+	int unibo_hl_traj_pub_fd;
 
 	/* subscribe to unibo vehicle status topic */
 	int unibo_status_fd = orb_subscribe(ORB_ID(unibo_vehicle_status));
@@ -442,9 +443,9 @@ int unibo_mavlink_thread_main(int argc, char *argv[])
 
 	//Topics advertise
 
-	struct unibo_reference_s reff;
-	memset(&reff, 0, sizeof(reff));
-	unibo_ref_pub_fd = orb_advertise(ORB_ID(unibo_reference), &reff);
+	struct unibo_hl_traj_s hl_ref;
+	memset(&hl_ref, 0, sizeof(hl_ref));
+	unibo_hl_traj_pub_fd = orb_advertise(ORB_ID(unibo_hl_traj), &hl_ref);
 
 	struct unibo_parameters_s param;
 	memset(&param, 0, sizeof(param));
@@ -462,8 +463,7 @@ int unibo_mavlink_thread_main(int argc, char *argv[])
 	memset(&loc_pos, 0, sizeof(loc_pos));
 	loc_pos_pub_fd = orb_advertise(ORB_ID(vehicle_local_position), &loc_pos);
 
-
-	mavlink_unibo_references_t unibo_ref_mav;
+	mavlink_unibo_hl_trajectory_t hl_traj_mav;
 	mavlink_unibo_parameters_t unibo_par_mav;
 	mavlink_vicon_position_estimate_t unibo_opti_mav;
 	mavlink_rc_channels_scaled_t unibo_rc;
@@ -578,28 +578,31 @@ int unibo_mavlink_thread_main(int argc, char *argv[])
 									counter_opti=0;
 								}
 								break;
-							case MAVLINK_MSG_ID_UNIBO_REFERENCES:
+							case MAVLINK_MSG_ID_UNIBO_HL_TRAJECTORY:
 								//decoding
-								mavlink_msg_unibo_references_decode(&msg, &unibo_ref_mav);
-								if (!silent) warnx("Received Reference Packet: PosX:%.3f - PosY:%.3f - PosZ:%.3f - VelX: %.3f - VelY: %.3f - VelZ: %.3f - Psi: %.3f - BTNS: %d", (double)unibo_ref_mav.p_refX,(double)unibo_ref_mav.p_refY,(double)unibo_ref_mav.p_refZ,(double)unibo_ref_mav.dot_p_refX, (double)unibo_ref_mav.dot_p_refY, (double)unibo_ref_mav.dot_p_refZ, (double)unibo_ref_mav.psi_ref, unibo_ref_mav.buttons);
+								mavlink_msg_unibo_hl_trajectory_decode(&msg, &hl_traj_mav);
+								if (!silent) warnx("Received Reference Packet: PosX:%.3f - PosY:%.3f - PosZ:%.3f - VelX: %.3f - VelY: %.3f - VelZ: %.3f - Psi: %.3f", (double)hl_traj_mav.p_refX,(double)hl_traj_mav.p_refY,(double)hl_traj_mav.p_refZ,(double)hl_traj_mav.dot_p_refX, (double)hl_traj_mav.dot_p_refY, (double)hl_traj_mav.dot_p_refZ, (double)hl_traj_mav.psi_ref);
 								//MAV2topic
-								reff.p_x=unibo_ref_mav.p_refX;
-								reff.p_y=unibo_ref_mav.p_refY;
-								reff.p_z=unibo_ref_mav.p_refZ;
-								reff.dp_x=unibo_ref_mav.dot_p_refX;
-								reff.dp_y=unibo_ref_mav.dot_p_refY;
-								reff.dp_z=unibo_ref_mav.dot_p_refZ;                     //TODO modificare, deve diventare traiettoria high level
-								reff.ddp_x=unibo_ref_mav.dot2_p_refX;
-								reff.ddp_y=unibo_ref_mav.dot2_p_refY;
-								reff.ddp_z=unibo_ref_mav.dot2_p_refZ;
-								reff.psi=unibo_ref_mav.psi_ref;
-								reff.d_psi=unibo_ref_mav.dot_psi_ref;
-								reff.dd_psi=unibo_ref_mav.dot2_psi_ref;
-								//reff.q=unibo_ref_mav.q;
-								reff.timestamp=unibo_ref_mav.Tstamp;
-								reff.button=unibo_ref_mav.buttons;
-								reff.valid=1;
-								orb_publish(ORB_ID(unibo_reference), unibo_ref_pub_fd, &reff);
+								hl_ref.p_x=hl_traj_mav.p_refX;
+								hl_ref.p_y=hl_traj_mav.p_refY;
+								hl_ref.p_z=hl_traj_mav.p_refZ;
+								hl_ref.dp_x=hl_traj_mav.dot_p_refX;
+								hl_ref.dp_y=hl_traj_mav.dot_p_refY;
+								hl_ref.dp_z=hl_traj_mav.dot_p_refZ;
+								hl_ref.ddp_x=hl_traj_mav.dot2_p_refX;
+								hl_ref.ddp_y=hl_traj_mav.dot2_p_refY;
+								hl_ref.ddp_z=hl_traj_mav.dot2_p_refZ;
+								hl_ref.d3p_x=hl_traj_mav.dot3_p_refX;
+								hl_ref.d3p_y=hl_traj_mav.dot3_p_refY;
+								hl_ref.d3p_z=hl_traj_mav.dot3_p_refZ;
+								hl_ref.d4p_x=hl_traj_mav.dot4_p_refX;
+								hl_ref.d4p_y=hl_traj_mav.dot4_p_refY;
+								hl_ref.d4p_z=hl_traj_mav.dot4_p_refZ;
+								hl_ref.psi=hl_traj_mav.psi_ref;
+								hl_ref.d_psi=hl_traj_mav.dot_psi_ref;
+								hl_ref.dd_psi=hl_traj_mav.dot2_psi_ref;
+								hl_ref.timestamp=hl_traj_mav.Tstamp;
+								orb_publish(ORB_ID(unibo_hl_traj), unibo_hl_traj_pub_fd, &hl_ref);
 								if (!silent) warnx("Pubblicato reference!");
 								break;
 							case MAVLINK_MSG_ID_UNIBO_PARAMETERS:

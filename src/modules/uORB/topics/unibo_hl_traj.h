@@ -1,22 +1,22 @@
 /*
  *
- * Filename: unibo_reference.h
+ * Filename: unibo_hl_traj.h
  * Authors: Furci Michele
  *
  * Description:
- * Unibo reference topic to handle reference packets from ground station.
+ * Unibo high level trajectory reference topic to receive a trajectory from high level (matlab, oDroid, NUC).
  */
 
 
-#ifndef UNIBO_REFERENCE_H_
-#define UNIBO_REFERENCE_H_
+#ifndef UNIBO_HL_TRAJ_H_
+#define UNIBO_HL_TRAJ_H_
 
 #include <stdint.h>
 #include <stdbool.h>
 #include "../uORB.h"
 
 
-struct unibo_reference_s                 //used internally between trajectory generator and control
+struct unibo_hl_traj_s
 {
 	uint64_t timestamp;		/**< timestamp        */
 	double p_x;				/**< position x     */
@@ -37,15 +37,9 @@ struct unibo_reference_s                 //used internally between trajectory ge
 	double psi;				/**< yaw    */
 	double d_psi;			/**< yaw velocity        */
 	double dd_psi; 			/**< yaw acceleration      */
-	double q[4];			/**< Quaternion (NED)			*/
-	double ang_speed[3]; 	/**< Angular speed (NED)			*/
-	double ang_acc[3]; 		/**< Angular acceleration (NED)			*/
-	double thrust;			/**< Thrust	*/
-	uint16_t button;		/**< joystick button      */
-	bool  valid;			/**< validity      */
 };
 
 /* register this as object request broker structure */
-ORB_DECLARE(unibo_reference);
+ORB_DECLARE(unibo_hl_traj);
 
 #endif

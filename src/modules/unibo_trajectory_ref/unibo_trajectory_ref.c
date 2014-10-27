@@ -55,6 +55,7 @@
 #include <uORB/topics/vehicle_local_position.h>
 #include <uORB/topics/unibo_optitrack.h>
 #include <uORB/topics/unibo_parameters.h>
+#include <uORB/topics/unibo_hl_traj.h>
 #include <uORB/topics/vehicle_local_position_setpoint.h>
 #include <uORB/topics/position_setpoint_triplet.h>
 #include <uORB/topics/unibo_vehicle_status.h>
@@ -186,6 +187,9 @@ int unibo_trajectory_ref_thread_main(int argc, char *argv[])
 	/* subscribe to parameters topic */
 	int unibo_parameters_fd = orb_subscribe(ORB_ID(unibo_parameters));
 
+	/* subscribe to high level trajectory topic */
+	int unibo_hl_traj_fd = orb_subscribe(ORB_ID(unibo_hl_traj));
+
 	/* subscribe to unibo_vehicle_status topic */
 	int unibo_status_fd = orb_subscribe(ORB_ID(unibo_vehicle_status));
 
@@ -237,6 +241,7 @@ int unibo_trajectory_ref_thread_main(int argc, char *argv[])
 	// inizializzazione middle-layer
 	struct vehicle_attitude_s ahrs;
 	struct unibo_joystick_s joystick;
+	struct unibo_hl_traj_s hl_traj;
 	struct vehicle_local_position_s position;
 	struct unibo_parameters_s param;
 	struct unibo_vehicle_status_s unibo_status;
@@ -314,7 +319,31 @@ int unibo_trajectory_ref_thread_main(int argc, char *argv[])
 				orb_copy(ORB_ID(unibo_vehicle_status), unibo_status_fd, &unibo_status);
 				TRAJECTORY_GENERATOR_APP_U.FLIGHT_MODES = unibo_status.flight_mode;
 			}
-			//TODO add high level trajectory input
+
+			orb_check(unibo_hl_traj_fd, &updated);
+			if (updated){
+				orb_copy(ORB_ID(unibo_hl_traj), unibo_hl_traj_fd, &hl_traj);
+
+				TRAJECTORY_GENERATOR_APP_U.REF_HIGH_LEVEL[0]=hl_traj.p_x;
+				TRAJECTORY_GENERATOR_APP_U.REF_HIGH_LEVEL[1]=hl_traj.p_y;
+				TRAJECTORY_GENERATOR_APP_U.REF_HIGH_LEVEL[2]=hl_traj.p_z;
+				TRAJECTORY_GENERATOR_APP_U.REF_HIGH_LEVEL[3]=hl_traj.dp_x;
+				TRAJECTORY_GENERATOR_APP_U.REF_HIGH_LEVEL[4]=hl_traj.dp_y;
+				TRAJECTORY_GENERATOR_APP_U.REF_HIGH_LEVEL[5]=hl_traj.dp_z;
+				TRAJECTORY_GENERATOR_APP_U.REF_HIGH_LEVEL[6]=hl_traj.ddp_x;
+				TRAJECTORY_GENERATOR_APP_U.REF_HIGH_LEVEL[7]=hl_traj.ddp_y;
+				TRAJECTORY_GENERATOR_APP_U.REF_HIGH_LEVEL[8]=hl_traj.ddp_z;
+				TRAJECTORY_GENERATOR_APP_U.REF_HIGH_LEVEL[9]=hl_traj.d3p_x;
+				TRAJECTORY_GENERATOR_APP_U.REF_HIGH_LEVEL[10]=hl_traj.d3p_y;
+				TRAJECTORY_GENERATOR_APP_U.REF_HIGH_LEVEL[11]=hl_traj.d3p_z;
+				TRAJECTORY_GENERATOR_APP_U.REF_HIGH_LEVEL[12]=hl_traj.d4p_x;
+				TRAJECTORY_GENERATOR_APP_U.REF_HIGH_LEVEL[13]=hl_traj.d4p_y;
+				TRAJECTORY_GENERATOR_APP_U.REF_HIGH_LEVEL[14]=hl_traj.d4p_z;
+				TRAJECTORY_GENERATOR_APP_U.REF_HIGH_LEVEL[15]=hl_traj.psi;
+				TRAJECTORY_GENERATOR_APP_U.REF_HIGH_LEVEL[16]=hl_traj.d_psi;
+				TRAJECTORY_GENERATOR_APP_U.REF_HIGH_LEVEL[17]=hl_traj.dd_psi;
+			}
+
 
 			TRAJECTORY_GENERATOR_APP_U.BODY_INERT = true;      //position references in body frame (take into account actual yaw)
 			TRAJECTORY_GENERATOR_APP_U.TSTAMP = 0;             //TODO add timestamp
