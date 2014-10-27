@@ -3,9 +3,9 @@
  *
  * Code generation for model "TRAJECTORY_GENERATOR_APP".
  *
- * Model version              : 1.4006
+ * Model version              : 1.4009
  * Simulink Coder version : 8.3 (R2012b) 20-Jul-2012
- * C source code generated on : Fri Oct 17 15:03:18 2014
+ * C source code generated on : Mon Oct 27 17:50:36 2014
  *
  * Target selection: grt.tlc
  * Note: GRT includes extra infrastructure and instrumentation for prototyping
@@ -80,6 +80,52 @@ void TRAJECTORY_GENERATOR_Euler2Quat(real_T rtu_x, real_T rtu_y, real_T rtu_z,
   localB->ref_pos[14] = 0.0;
 }
 
+real_T rt_powd_snf(real_T u0, real_T u1)
+{
+  real_T y;
+  real_T tmp;
+  real_T tmp_0;
+  if (rtIsNaN(u0) || rtIsNaN(u1)) {
+    y = (rtNaN);
+  } else {
+    tmp = fabs(u0);
+    tmp_0 = fabs(u1);
+    if (rtIsInf(u1)) {
+      if (tmp == 1.0) {
+        y = (rtNaN);
+      } else if (tmp > 1.0) {
+        if (u1 > 0.0) {
+          y = (rtInf);
+        } else {
+          y = 0.0;
+        }
+      } else if (u1 > 0.0) {
+        y = 0.0;
+      } else {
+        y = (rtInf);
+      }
+    } else if (tmp_0 == 0.0) {
+      y = 1.0;
+    } else if (tmp_0 == 1.0) {
+      if (u1 > 0.0) {
+        y = u0;
+      } else {
+        y = 1.0 / u0;
+      }
+    } else if (u1 == 2.0) {
+      y = u0 * u0;
+    } else if ((u1 == 0.5) && (u0 >= 0.0)) {
+      y = sqrt(u0);
+    } else if ((u0 < 0.0) && (u1 > floor(u1))) {
+      y = (rtNaN);
+    } else {
+      y = pow(u0, u1);
+    }
+  }
+
+  return y;
+}
+
 /* Model output function */
 static void TRAJECTORY_GENERATOR_APP_output(void)
 {
@@ -97,13 +143,13 @@ static void TRAJECTORY_GENERATOR_APP_output(void)
   real_T rtb_Add;
   real_T rtb_Clock1;
   real_T rtb_Clock3;
+  real_T t;
   uint32_T rtb_Tstamp1;
   real_T rtb_Sum1;
   real_T rtb_REF_pos[15];
-  real_T rtb_ref_attitude_c[10];
+  real_T rtb_ref_attitude_m[10];
   real_T rtb_dot_p_ref_idx;
   real_T rtb_dot_p_ref_idx_0;
-  real_T q_idx;
   real_T rtb_dot2_p_ref_idx;
   real_T rtb_dot2_p_ref_idx_0;
   real_T rtb_Sum2_idx;
@@ -385,7 +431,7 @@ static void TRAJECTORY_GENERATOR_APP_output(void)
   /* Sum: '<S1>/Sum3' */
   rtb_dot2_p_ref_idx_0 += TRAJECTORY_GENERATOR_APP_B.Derivative[0];
   rtb_dot2_p_ref_idx += TRAJECTORY_GENERATOR_APP_B.Derivative[1];
-  q_idx = TRAJECTORY_GENERATOR_APP_B.Derivative[2];
+  t = TRAJECTORY_GENERATOR_APP_B.Derivative[2];
 
   /* Derivative: '<S23>/Derivative1' */
   {
@@ -551,7 +597,7 @@ static void TRAJECTORY_GENERATOR_APP_output(void)
   rtb_REF_pos[5] = rtb_Sum2_idx;
   rtb_REF_pos[6] = rtb_dot2_p_ref_idx_0;
   rtb_REF_pos[7] = rtb_dot2_p_ref_idx;
-  rtb_REF_pos[8] = q_idx;
+  rtb_REF_pos[8] = t;
   rtb_REF_pos[9] = TRAJECTORY_GENERATOR_APP_B.Derivative1[0];
   rtb_REF_pos[10] = TRAJECTORY_GENERATOR_APP_B.Derivative1[1];
   rtb_REF_pos[11] = TRAJECTORY_GENERATOR_APP_B.Derivative1[2];
@@ -562,7 +608,7 @@ static void TRAJECTORY_GENERATOR_APP_output(void)
   /* '<S6>:1:5' */
   rtb_dot_p_ref_idx_0 = TRAJECTORY_GENERATOR_APP_B.yaw_pi;
   rtb_dot_p_ref_idx = TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn7_e;
-  rtb_dot2_p_ref_idx_0 = rtb_Derivative3;
+  rtb_dot2_p_ref_idx = rtb_Derivative3;
 
   /* '<S6>:1:6' */
   tmp = TRAJECTORY_GENERATOR_APP_U.JOYSTICK[4];
@@ -572,6 +618,16 @@ static void TRAJECTORY_GENERATOR_APP_output(void)
 
   /* '<S6>:1:7' */
   rtb_Tstamp1 = TRAJECTORY_GENERATOR_APP_U.TSTAMP;
+
+  /* Memory: '<S2>/Memory2' */
+  TRAJECTORY_GENERATOR_APP_B.Memory2[0] =
+    TRAJECTORY_GENERATOR_APP_DWork.Memory2_PreviousInput[0];
+  TRAJECTORY_GENERATOR_APP_B.Memory2[1] =
+    TRAJECTORY_GENERATOR_APP_DWork.Memory2_PreviousInput[1];
+  TRAJECTORY_GENERATOR_APP_B.Memory2[2] =
+    TRAJECTORY_GENERATOR_APP_DWork.Memory2_PreviousInput[2];
+  TRAJECTORY_GENERATOR_APP_B.Memory2[3] =
+    TRAJECTORY_GENERATOR_APP_DWork.Memory2_PreviousInput[3];
 
   /* DiscreteTransferFcn: '<S14>/Discrete Transfer Fcn2' */
   TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn2 = 0.18126924692201812 *
@@ -763,25 +819,29 @@ static void TRAJECTORY_GENERATOR_APP_output(void)
   /* MATLAB Function: '<S2>/Euler2Quat' */
   /* MATLAB Function 'REFERENCES/Attitude & Thrust Generation/Euler2Quat': '<S11>:1' */
   /* '<S11>:1:5' */
-  rtb_Sum1 = cos(TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn2) * cos
+  TRAJECTORY_GENERATOR_APP_B.q1[0] = cos
+    (TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn2) * cos
     (TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn2_e) * cos
     (TRAJECTORY_GENERATOR_APP_B.X_REF_b) + sin
     (TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn2) * sin
     (TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn2_e) * sin
     (TRAJECTORY_GENERATOR_APP_B.X_REF_b);
-  rtb_Sum2_idx = sin(TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn2) * cos
+  TRAJECTORY_GENERATOR_APP_B.q1[1] = sin
+    (TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn2) * cos
     (TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn2_e) * cos
     (TRAJECTORY_GENERATOR_APP_B.X_REF_b) - cos
     (TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn2) * sin
     (TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn2_e) * sin
     (TRAJECTORY_GENERATOR_APP_B.X_REF_b);
-  q_idx = cos(TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn2) * sin
+  TRAJECTORY_GENERATOR_APP_B.q1[2] = cos
+    (TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn2) * sin
     (TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn2_e) * cos
     (TRAJECTORY_GENERATOR_APP_B.X_REF_b) + sin
     (TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn2) * cos
     (TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn2_e) * sin
     (TRAJECTORY_GENERATOR_APP_B.X_REF_b);
-  rtb_Sum2_idx_0 = cos(TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn2) * cos
+  TRAJECTORY_GENERATOR_APP_B.q1[3] = cos
+    (TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn2) * cos
     (TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn2_e) * sin
     (TRAJECTORY_GENERATOR_APP_B.X_REF_b) - sin
     (TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn2) * sin
@@ -789,67 +849,108 @@ static void TRAJECTORY_GENERATOR_APP_output(void)
     (TRAJECTORY_GENERATOR_APP_B.X_REF_b);
 
   /* '<S11>:1:10' */
-  rtb_dot2_p_ref_idx = 2.2250738585072014E-308;
-  rtb_Sum_idx_1 = fabs(rtb_Sum1);
-  if (rtb_Sum_idx_1 > 2.2250738585072014E-308) {
-    rtb_Sum_idx = 1.0;
-    rtb_dot2_p_ref_idx = rtb_Sum_idx_1;
+  rtb_Sum1 = 2.2250738585072014E-308;
+  rtb_Sum2_idx = fabs(TRAJECTORY_GENERATOR_APP_B.q1[0]);
+  if (rtb_Sum2_idx > 2.2250738585072014E-308) {
+    rtb_Sum2_idx_0 = 1.0;
+    rtb_Sum1 = rtb_Sum2_idx;
   } else {
-    rtb_Sum_idx_0 = rtb_Sum_idx_1 / 2.2250738585072014E-308;
-    rtb_Sum_idx = rtb_Sum_idx_0 * rtb_Sum_idx_0;
+    t = rtb_Sum2_idx / 2.2250738585072014E-308;
+    rtb_Sum2_idx_0 = t * t;
   }
 
-  rtb_Sum_idx_1 = fabs(rtb_Sum2_idx);
-  if (rtb_Sum_idx_1 > rtb_dot2_p_ref_idx) {
-    rtb_Sum_idx_0 = rtb_dot2_p_ref_idx / rtb_Sum_idx_1;
-    rtb_Sum_idx = rtb_Sum_idx * rtb_Sum_idx_0 * rtb_Sum_idx_0 + 1.0;
-    rtb_dot2_p_ref_idx = rtb_Sum_idx_1;
+  rtb_Sum2_idx = fabs(TRAJECTORY_GENERATOR_APP_B.q1[1]);
+  if (rtb_Sum2_idx > rtb_Sum1) {
+    t = rtb_Sum1 / rtb_Sum2_idx;
+    rtb_Sum2_idx_0 = rtb_Sum2_idx_0 * t * t + 1.0;
+    rtb_Sum1 = rtb_Sum2_idx;
   } else {
-    rtb_Sum_idx_0 = rtb_Sum_idx_1 / rtb_dot2_p_ref_idx;
-    rtb_Sum_idx += rtb_Sum_idx_0 * rtb_Sum_idx_0;
+    t = rtb_Sum2_idx / rtb_Sum1;
+    rtb_Sum2_idx_0 += t * t;
   }
 
-  rtb_Sum_idx_1 = fabs(q_idx);
-  if (rtb_Sum_idx_1 > rtb_dot2_p_ref_idx) {
-    rtb_Sum_idx_0 = rtb_dot2_p_ref_idx / rtb_Sum_idx_1;
-    rtb_Sum_idx = rtb_Sum_idx * rtb_Sum_idx_0 * rtb_Sum_idx_0 + 1.0;
-    rtb_dot2_p_ref_idx = rtb_Sum_idx_1;
+  rtb_Sum2_idx = fabs(TRAJECTORY_GENERATOR_APP_B.q1[2]);
+  if (rtb_Sum2_idx > rtb_Sum1) {
+    t = rtb_Sum1 / rtb_Sum2_idx;
+    rtb_Sum2_idx_0 = rtb_Sum2_idx_0 * t * t + 1.0;
+    rtb_Sum1 = rtb_Sum2_idx;
   } else {
-    rtb_Sum_idx_0 = rtb_Sum_idx_1 / rtb_dot2_p_ref_idx;
-    rtb_Sum_idx += rtb_Sum_idx_0 * rtb_Sum_idx_0;
+    t = rtb_Sum2_idx / rtb_Sum1;
+    rtb_Sum2_idx_0 += t * t;
   }
 
-  rtb_Sum_idx_1 = fabs(rtb_Sum2_idx_0);
-  if (rtb_Sum_idx_1 > rtb_dot2_p_ref_idx) {
-    rtb_Sum_idx_0 = rtb_dot2_p_ref_idx / rtb_Sum_idx_1;
-    rtb_Sum_idx = rtb_Sum_idx * rtb_Sum_idx_0 * rtb_Sum_idx_0 + 1.0;
-    rtb_dot2_p_ref_idx = rtb_Sum_idx_1;
+  rtb_Sum2_idx = fabs(TRAJECTORY_GENERATOR_APP_B.q1[3]);
+  if (rtb_Sum2_idx > rtb_Sum1) {
+    t = rtb_Sum1 / rtb_Sum2_idx;
+    rtb_Sum2_idx_0 = rtb_Sum2_idx_0 * t * t + 1.0;
+    rtb_Sum1 = rtb_Sum2_idx;
   } else {
-    rtb_Sum_idx_0 = rtb_Sum_idx_1 / rtb_dot2_p_ref_idx;
-    rtb_Sum_idx += rtb_Sum_idx_0 * rtb_Sum_idx_0;
+    t = rtb_Sum2_idx / rtb_Sum1;
+    rtb_Sum2_idx_0 += t * t;
   }
 
-  rtb_Sum_idx = rtb_dot2_p_ref_idx * sqrt(rtb_Sum_idx);
-  rtb_Sum1 /= rtb_Sum_idx;
-  rtb_Sum2_idx /= rtb_Sum_idx;
-  q_idx /= rtb_Sum_idx;
+  rtb_Sum2_idx_0 = rtb_Sum1 * sqrt(rtb_Sum2_idx_0);
+  TRAJECTORY_GENERATOR_APP_B.q1[0] /= rtb_Sum2_idx_0;
+  TRAJECTORY_GENERATOR_APP_B.q1[1] /= rtb_Sum2_idx_0;
+  TRAJECTORY_GENERATOR_APP_B.q1[2] /= rtb_Sum2_idx_0;
+  TRAJECTORY_GENERATOR_APP_B.q1[3] /= rtb_Sum2_idx_0;
+
+  /* '<S11>:1:11' */
+  if ((fabs(TRAJECTORY_GENERATOR_APP_B.Memory2[0]) > 0.3) && (fabs
+       (TRAJECTORY_GENERATOR_APP_B.q1[0]) > 0.3)) {
+    /* '<S11>:1:13' */
+    /* path-lifting mechanism */
+    if (fabs(TRAJECTORY_GENERATOR_APP_B.Memory2[0] -
+             TRAJECTORY_GENERATOR_APP_B.q1[0]) >= fabs
+        (TRAJECTORY_GENERATOR_APP_B.Memory2[0] + TRAJECTORY_GENERATOR_APP_B.q1[0]))
+    {
+      /* '<S11>:1:14' */
+      /* '<S11>:1:15' */
+      TRAJECTORY_GENERATOR_APP_B.q1[0] = -TRAJECTORY_GENERATOR_APP_B.q1[0];
+      TRAJECTORY_GENERATOR_APP_B.q1[1] = -TRAJECTORY_GENERATOR_APP_B.q1[1];
+      TRAJECTORY_GENERATOR_APP_B.q1[2] = -TRAJECTORY_GENERATOR_APP_B.q1[2];
+      TRAJECTORY_GENERATOR_APP_B.q1[3] = -TRAJECTORY_GENERATOR_APP_B.q1[3];
+    }
+  } else {
+    if ((TRAJECTORY_GENERATOR_APP_B.Memory2[1] * TRAJECTORY_GENERATOR_APP_B.q1[1]
+         + TRAJECTORY_GENERATOR_APP_B.Memory2[2] *
+         TRAJECTORY_GENERATOR_APP_B.q1[2]) + TRAJECTORY_GENERATOR_APP_B.Memory2
+        [3] * TRAJECTORY_GENERATOR_APP_B.q1[3] < 0.0) {
+      /* '<S11>:1:18' */
+      /* '<S11>:1:19' */
+      TRAJECTORY_GENERATOR_APP_B.q1[0] = -TRAJECTORY_GENERATOR_APP_B.q1[0];
+      TRAJECTORY_GENERATOR_APP_B.q1[1] = -TRAJECTORY_GENERATOR_APP_B.q1[1];
+      TRAJECTORY_GENERATOR_APP_B.q1[2] = -TRAJECTORY_GENERATOR_APP_B.q1[2];
+      TRAJECTORY_GENERATOR_APP_B.q1[3] = -TRAJECTORY_GENERATOR_APP_B.q1[3];
+    }
+
+    /* '<S11>:1:21' */
+    rtb_Sum1 = sqrt(((rt_powd_snf(TRAJECTORY_GENERATOR_APP_B.q1[0], 2.0) +
+                      rt_powd_snf(TRAJECTORY_GENERATOR_APP_B.q1[1], 2.0)) +
+                     rt_powd_snf(TRAJECTORY_GENERATOR_APP_B.q1[2], 2.0)) +
+                    rt_powd_snf(TRAJECTORY_GENERATOR_APP_B.q1[3], 2.0));
+    TRAJECTORY_GENERATOR_APP_B.q1[0] /= rtb_Sum1;
+    TRAJECTORY_GENERATOR_APP_B.q1[1] /= rtb_Sum1;
+    TRAJECTORY_GENERATOR_APP_B.q1[2] /= rtb_Sum1;
+    TRAJECTORY_GENERATOR_APP_B.q1[3] /= rtb_Sum1;
+  }
 
   /*  dq = 0.5*myquatmultiply(q,[0,droll, dpitch, dyaw]'); */
   /*   */
   /*  d2q = 0.5*myquatmultiply(dq,[0,d2roll, d2pitch, d2yaw]'); */
-  /* '<S11>:1:15' */
-  /* '<S11>:1:16' */
-  /* '<S11>:1:18' */
-  rtb_ref_attitude_c[0] = rtb_Sum1;
-  rtb_ref_attitude_c[1] = rtb_Sum2_idx;
-  rtb_ref_attitude_c[2] = q_idx;
-  rtb_ref_attitude_c[3] = rtb_Sum2_idx_0 / rtb_Sum_idx;
-  rtb_ref_attitude_c[4] = TRAJECTORY_GENERATOR_APP_B.Derivative2;
-  rtb_ref_attitude_c[5] = TRAJECTORY_GENERATOR_APP_B.Derivative_b;
-  rtb_ref_attitude_c[6] = TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn;
-  rtb_ref_attitude_c[7] = rtb_Derivative3_a;
-  rtb_ref_attitude_c[8] = rtb_Derivative1;
-  rtb_ref_attitude_c[9] = rtb_Derivative4;
+  /* '<S11>:1:28' */
+  /* '<S11>:1:29' */
+  /* '<S11>:1:31' */
+  rtb_ref_attitude_m[0] = TRAJECTORY_GENERATOR_APP_B.q1[0];
+  rtb_ref_attitude_m[1] = TRAJECTORY_GENERATOR_APP_B.q1[1];
+  rtb_ref_attitude_m[2] = TRAJECTORY_GENERATOR_APP_B.q1[2];
+  rtb_ref_attitude_m[3] = TRAJECTORY_GENERATOR_APP_B.q1[3];
+  rtb_ref_attitude_m[4] = TRAJECTORY_GENERATOR_APP_B.Derivative2;
+  rtb_ref_attitude_m[5] = TRAJECTORY_GENERATOR_APP_B.Derivative_b;
+  rtb_ref_attitude_m[6] = TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn;
+  rtb_ref_attitude_m[7] = rtb_Derivative3_a;
+  rtb_ref_attitude_m[8] = rtb_Derivative1;
+  rtb_ref_attitude_m[9] = rtb_Derivative4;
 
   /* End of MATLAB Function: '<S2>/Euler2Quat' */
 
@@ -1048,10 +1149,10 @@ static void TRAJECTORY_GENERATOR_APP_output(void)
     TRAJECTORY_GENERATOR_APP_Y.REF_YAW[2] = 0.0;
 
     /* '<S4>:1:22' */
-    memset(&rtb_ref_attitude_c[0], 0, 10U * sizeof(real_T));
+    memset(&rtb_ref_attitude_m[0], 0, 10U * sizeof(real_T));
 
     /* '<S4>:1:23' */
-    rtb_ref_attitude_c[0] = 1.0;
+    rtb_ref_attitude_m[0] = 1.0;
 
     /* Outport: '<Root>/REF_THRUST' */
     /* to write unit quaternion [1 0 0 0] */
@@ -1071,10 +1172,10 @@ static void TRAJECTORY_GENERATOR_APP_output(void)
     TRAJECTORY_GENERATOR_APP_Y.REF_YAW[2] = 0.0;
 
     /* '<S4>:1:29' */
-    memset(&rtb_ref_attitude_c[0], 0, 10U * sizeof(real_T));
+    memset(&rtb_ref_attitude_m[0], 0, 10U * sizeof(real_T));
 
     /* '<S4>:1:30' */
-    rtb_ref_attitude_c[0] = 1.0;
+    rtb_ref_attitude_m[0] = 1.0;
 
     /* Outport: '<Root>/REF_THRUST' */
     /* to write unit quaternion [1 0 0 0] */
@@ -1109,13 +1210,13 @@ static void TRAJECTORY_GENERATOR_APP_output(void)
     /* '<S4>:1:41' */
     TRAJECTORY_GENERATOR_APP_Y.REF_YAW[0] = rtb_dot_p_ref_idx_0;
     TRAJECTORY_GENERATOR_APP_Y.REF_YAW[1] = rtb_dot_p_ref_idx;
-    TRAJECTORY_GENERATOR_APP_Y.REF_YAW[2] = rtb_dot2_p_ref_idx_0;
+    TRAJECTORY_GENERATOR_APP_Y.REF_YAW[2] = rtb_dot2_p_ref_idx;
 
     /* '<S4>:1:42' */
-    memset(&rtb_ref_attitude_c[0], 0, 10U * sizeof(real_T));
+    memset(&rtb_ref_attitude_m[0], 0, 10U * sizeof(real_T));
 
     /* '<S4>:1:43' */
-    rtb_ref_attitude_c[0] = 1.0;
+    rtb_ref_attitude_m[0] = 1.0;
 
     /* Outport: '<Root>/REF_THRUST' */
     /* to write unit quaternion [1 0 0 0] */
@@ -1143,10 +1244,10 @@ static void TRAJECTORY_GENERATOR_APP_output(void)
       TRAJECTORY_GENERATOR_APP_U.REF_HIGH_LEVEL[17];
 
     /* '<S4>:1:49' */
-    memset(&rtb_ref_attitude_c[0], 0, 10U * sizeof(real_T));
+    memset(&rtb_ref_attitude_m[0], 0, 10U * sizeof(real_T));
 
     /* '<S4>:1:50' */
-    rtb_ref_attitude_c[0] = 1.0;
+    rtb_ref_attitude_m[0] = 1.0;
 
     /* Outport: '<Root>/REF_THRUST' */
     /* to write unit quaternion [1 0 0 0] */
@@ -1167,10 +1268,10 @@ static void TRAJECTORY_GENERATOR_APP_output(void)
     TRAJECTORY_GENERATOR_APP_Y.REF_YAW[2] = 0.0;
 
     /* '<S4>:1:56' */
-    memset(&rtb_ref_attitude_c[0], 0, 10U * sizeof(real_T));
+    memset(&rtb_ref_attitude_m[0], 0, 10U * sizeof(real_T));
 
     /* '<S4>:1:57' */
-    rtb_ref_attitude_c[0] = 1.0;
+    rtb_ref_attitude_m[0] = 1.0;
 
     /* Outport: '<Root>/REF_THRUST' */
     /* to write unit quaternion [1 0 0 0] */
@@ -1192,10 +1293,10 @@ static void TRAJECTORY_GENERATOR_APP_output(void)
     TRAJECTORY_GENERATOR_APP_Y.REF_YAW[2] = 0.0;
 
     /* '<S4>:1:63' */
-    memset(&rtb_ref_attitude_c[0], 0, 10U * sizeof(real_T));
+    memset(&rtb_ref_attitude_m[0], 0, 10U * sizeof(real_T));
 
     /* '<S4>:1:64' */
-    rtb_ref_attitude_c[0] = 1.0;
+    rtb_ref_attitude_m[0] = 1.0;
 
     /* Outport: '<Root>/REF_THRUST' */
     /* to write unit quaternion [1 0 0 0] */
@@ -1217,10 +1318,10 @@ static void TRAJECTORY_GENERATOR_APP_output(void)
     TRAJECTORY_GENERATOR_APP_Y.REF_YAW[2] = 0.0;
 
     /* '<S4>:1:70' */
-    memset(&rtb_ref_attitude_c[0], 0, 10U * sizeof(real_T));
+    memset(&rtb_ref_attitude_m[0], 0, 10U * sizeof(real_T));
 
     /* '<S4>:1:71' */
-    rtb_ref_attitude_c[0] = 1.0;
+    rtb_ref_attitude_m[0] = 1.0;
 
     /* Outport: '<Root>/REF_THRUST' */
     /* to write unit quaternion [1 0 0 0] */
@@ -1243,10 +1344,10 @@ static void TRAJECTORY_GENERATOR_APP_output(void)
     TRAJECTORY_GENERATOR_APP_Y.REF_YAW[2] = 0.0;
 
     /* '<S4>:1:77' */
-    memset(&rtb_ref_attitude_c[0], 0, 10U * sizeof(real_T));
+    memset(&rtb_ref_attitude_m[0], 0, 10U * sizeof(real_T));
 
     /* '<S4>:1:78' */
-    rtb_ref_attitude_c[0] = 1.0;
+    rtb_ref_attitude_m[0] = 1.0;
 
     /* Outport: '<Root>/REF_THRUST' */
     /* to write unit quaternion [1 0 0 0] */
@@ -1268,10 +1369,10 @@ static void TRAJECTORY_GENERATOR_APP_output(void)
     TRAJECTORY_GENERATOR_APP_Y.REF_YAW[2] = 0.0;
 
     /* '<S4>:1:84' */
-    memset(&rtb_ref_attitude_c[0], 0, 10U * sizeof(real_T));
+    memset(&rtb_ref_attitude_m[0], 0, 10U * sizeof(real_T));
 
     /* '<S4>:1:85' */
-    rtb_ref_attitude_c[0] = 1.0;
+    rtb_ref_attitude_m[0] = 1.0;
 
     /* Outport: '<Root>/REF_THRUST' */
     /* to write unit quaternion [1 0 0 0] */
@@ -1291,10 +1392,10 @@ static void TRAJECTORY_GENERATOR_APP_output(void)
     TRAJECTORY_GENERATOR_APP_Y.REF_YAW[2] = 0.0;
 
     /* '<S4>:1:91' */
-    memset(&rtb_ref_attitude_c[0], 0, 10U * sizeof(real_T));
+    memset(&rtb_ref_attitude_m[0], 0, 10U * sizeof(real_T));
 
     /* '<S4>:1:92' */
-    rtb_ref_attitude_c[0] = 1.0;
+    rtb_ref_attitude_m[0] = 1.0;
 
     /* Outport: '<Root>/REF_THRUST' */
     /* to write unit quaternion [1 0 0 0] */
@@ -1311,7 +1412,7 @@ static void TRAJECTORY_GENERATOR_APP_output(void)
   TRAJECTORY_GENERATOR_APP_Y.REF_BUTTONS = (uint16_T)tmp;
 
   /* Outport: '<Root>/REF_ATTITUDE' */
-  memcpy(&TRAJECTORY_GENERATOR_APP_Y.REF_ATTITUDE[0], &rtb_ref_attitude_c[0],
+  memcpy(&TRAJECTORY_GENERATOR_APP_Y.REF_ATTITUDE[0], &rtb_ref_attitude_m[0],
          10U * sizeof(real_T));
 
   /* Outport: '<Root>/REF_TSTAMP' */
@@ -1741,6 +1842,16 @@ static void TRAJECTORY_GENERATOR_APP_update(void)
     *lastTime = TRAJECTORY_GENERATOR_APP_M->Timing.t[0];
     *lastU++ = TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn7_e;
   }
+
+  /* Update for Memory: '<S2>/Memory2' */
+  TRAJECTORY_GENERATOR_APP_DWork.Memory2_PreviousInput[0] =
+    TRAJECTORY_GENERATOR_APP_B.q1[0];
+  TRAJECTORY_GENERATOR_APP_DWork.Memory2_PreviousInput[1] =
+    TRAJECTORY_GENERATOR_APP_B.q1[1];
+  TRAJECTORY_GENERATOR_APP_DWork.Memory2_PreviousInput[2] =
+    TRAJECTORY_GENERATOR_APP_B.q1[2];
+  TRAJECTORY_GENERATOR_APP_DWork.Memory2_PreviousInput[3] =
+    TRAJECTORY_GENERATOR_APP_B.q1[3];
 
   /* Update for DiscreteTransferFcn: '<S14>/Discrete Transfer Fcn2' */
   TRAJECTORY_GENERATOR_APP_DWork.DiscreteTransferFcn2_states =
@@ -2251,6 +2362,12 @@ void TRAJECTORY_GENERATOR_APP_initialize(void)
   TRAJECTORY_GENERATOR_APP_DWork.Derivative3_RWORK.TimeStampA = rtInf;
   TRAJECTORY_GENERATOR_APP_DWork.Derivative3_RWORK.TimeStampB = rtInf;
 
+  /* InitializeConditions for Memory: '<S2>/Memory2' */
+  TRAJECTORY_GENERATOR_APP_DWork.Memory2_PreviousInput[0] = 1.0;
+  TRAJECTORY_GENERATOR_APP_DWork.Memory2_PreviousInput[1] = 0.0;
+  TRAJECTORY_GENERATOR_APP_DWork.Memory2_PreviousInput[2] = 0.0;
+  TRAJECTORY_GENERATOR_APP_DWork.Memory2_PreviousInput[3] = 0.0;
+
   /* InitializeConditions for DiscreteTransferFcn: '<S14>/Discrete Transfer Fcn2' */
   TRAJECTORY_GENERATOR_APP_DWork.DiscreteTransferFcn2_states = 0.0;
 
@@ -2549,8 +2666,8 @@ RT_MODEL_TRAJECTORY_GENERATOR_A *TRAJECTORY_GENERATOR_APP(void)
   TRAJECTORY_GENERATOR_APP_M->Sizes.numU = (30);/* Number of model inputs */
   TRAJECTORY_GENERATOR_APP_M->Sizes.sysDirFeedThru = (1);/* The model is direct feedthrough */
   TRAJECTORY_GENERATOR_APP_M->Sizes.numSampTimes = (2);/* Number of sample times */
-  TRAJECTORY_GENERATOR_APP_M->Sizes.numBlocks = (120);/* Number of blocks */
-  TRAJECTORY_GENERATOR_APP_M->Sizes.numBlockIO = (65);/* Number of block outputs */
+  TRAJECTORY_GENERATOR_APP_M->Sizes.numBlocks = (121);/* Number of blocks */
+  TRAJECTORY_GENERATOR_APP_M->Sizes.numBlockIO = (67);/* Number of block outputs */
   return TRAJECTORY_GENERATOR_APP_M;
 }
 

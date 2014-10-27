@@ -3,9 +3,9 @@
  *
  * Code generation for model "TRAJECTORY_GENERATOR_APP".
  *
- * Model version              : 1.4006
+ * Model version              : 1.4009
  * Simulink Coder version : 8.3 (R2012b) 20-Jul-2012
- * C source code generated on : Fri Oct 17 15:03:18 2014
+ * C source code generated on : Mon Oct 27 17:50:36 2014
  *
  * Target selection: grt.tlc
  * Note: GRT includes extra infrastructure and instrumentation for prototyping
@@ -22,10 +22,10 @@
 #include "rtwtypes.h"
 #include "simstruc.h"
 #include "fixedpoint.h"
+#include "rt_nonfinite.h"
 #include "rtGetInf.h"
 #include "rtGetNaN.h"
 #include "rt_defines.h"
-#include "rt_nonfinite.h"
 #endif                                 /* TRAJECTORY_GENERATOR_APP_COMMON_INCLUDES_ */
 
 #include "TRAJECTORY_GENERATOR_APP_types.h"
@@ -800,6 +800,7 @@ typedef struct {
   real_T Derivative[3];                /* '<S23>/Derivative' */
   real_T Derivative1[3];               /* '<S23>/Derivative1' */
   real_T DiscreteTransferFcn7_e;       /* '<S26>/Discrete Transfer Fcn7' */
+  real_T Memory2[4];                   /* '<S2>/Memory2' */
   real_T DiscreteTransferFcn2;         /* '<S14>/Discrete Transfer Fcn2' */
   real_T Derivative2;                  /* '<S12>/Derivative2' */
   real_T DiscreteTransferFcn2_e;       /* '<S13>/Discrete Transfer Fcn2' */
@@ -846,6 +847,7 @@ typedef struct {
   real_T dx_i;                         /* '<S7>/BODY to INERTIAL' */
   real_T dy_i;                         /* '<S7>/BODY to INERTIAL' */
   real_T speed;                        /* '<S12>/yaw_speed' */
+  real_T q1[4];                        /* '<S2>/Euler2Quat' */
   uint32_T Memory_m;                   /* '<S8>/Memory' */
   uint32_T FM_out;                     /* '<S8>/Euler2Quat' */
   boolean_T DataTypeConversion;        /* '<S32>/Data Type Conversion' */
@@ -908,6 +910,7 @@ typedef struct {
   real_T DiscreteTransferFcn6_states_a;/* '<S27>/Discrete Transfer Fcn6' */
   real_T Memory_PreviousInput;         /* '<S3>/Memory' */
   real_T Memory_PreviousInput_o[3];    /* '<S1>/Memory' */
+  real_T Memory2_PreviousInput[4];     /* '<S2>/Memory2' */
   struct {
     real_T TimeStampA;
     real_T LastUAtTimeA[3];
