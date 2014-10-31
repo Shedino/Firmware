@@ -127,6 +127,7 @@ MODULES		+= modules/unibo_trajectory_ref
 MODULES		+= modules/unibo_INS
 MODULES		+= modules/ahrs_SO3_unibo
 MODULES     += modules/unibo_commander
+MODULES     += modules/unibo_allocation
 
 #
 # Demo apps

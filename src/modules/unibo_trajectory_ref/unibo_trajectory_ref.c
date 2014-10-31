@@ -448,7 +448,7 @@ int unibo_trajectory_ref_thread_main(int argc, char *argv[])
 			counter++;
 			if (counter >=5){
 				//warnx("Thrust: %.3f", reference.thrust);
-				warnx("Quaternion ref: %.3f %.3f %.3f %.3f", reference.q[0], reference.q[1], reference.q[2], reference.q[3]);
+				//warnx("Quaternion ref: %.3f %.3f %.3f %.3f", reference.q[0], reference.q[1], reference.q[2], reference.q[3]);
 				//warnx("Pos ref: %.2f  %.2f  %.2f", reference.p_x, reference.p_y, reference.p_z);
 				counter = 0;
 			}
