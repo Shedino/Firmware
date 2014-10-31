@@ -225,6 +225,7 @@ int unibo_commander_thread_main(int argc, char *argv[])
 	struct vehicle_local_position_s position;
 	struct vehicle_status_s vehicle_stat;
 	struct safety_s safety;
+	flight_modes_t temp_FM = FLIGHTMODE_STOP;
 
 	static uint64_t time_pre = 0;
 	static uint64_t nowT = 0;
@@ -371,6 +372,10 @@ int unibo_commander_thread_main(int argc, char *argv[])
 			}
 			orb_publish(ORB_ID(unibo_vehicle_status), unibo_status_pub_fd, &unibo_status);
 
+			if (unibo_status.flight_mode != temp_FM){
+				temp_FM = unibo_status.flight_mode;
+				warnx("Changed flight mode! New flight mode: %d", (int)temp_FM);
+			}
 
 			orb_copy(ORB_ID(vehicle_status), status_fd, &vehicle_status); //copy vehicle_status to override the state of flight modes
 			//Matching our flight modes with (almost equal) standard flight modes
@@ -422,9 +427,11 @@ int unibo_commander_thread_main(int argc, char *argv[])
 				counter = 0;
 			}
 		}
-		usleep(5000);
+		usleep(3000);
 
 	}
+
+	usleep(1000);
 
 	warnx("[unibo_commander_daemon] exiting.\n");
 

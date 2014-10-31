@@ -349,13 +349,13 @@ int unibo_mavlink_thread_main(int argc, char *argv[])
 	if (HW_ARCH=="PX4FMU_V1"){
 		uart_name = (char*)"/dev/ttyS2";      //(ttyS2)--> UART5, px4fum_v1
 	}
-	else if (HW_ARCH=="PX4FMU_V2"){
-		uart_name = (char*)"/dev/ttyS6";      //(ttyS6)--> UART4, px4fum_v2
-	}
-
 //	else if (HW_ARCH=="PX4FMU_V2"){
-//			uart_name = (char*)"/dev/ttyS2";      //(ttyS2)--> TELEM2, px4fum_v2
+//		uart_name = (char*)"/dev/ttyS6";      //(ttyS6)--> UART4, px4fum_v2
 //	}
+
+	else if (HW_ARCH=="PX4FMU_V2"){
+			uart_name = (char*)"/dev/ttyS2";      //(ttyS2)--> TELEM2, px4fum_v2
+	}
 
 	int baudrate = 115200;
 	const char *commandline_usage = "\tusage: %s -d <devicename> -b <baudrate> [-v/--verbose] [--debug]\n\t\tdefault: -d %s -b %i\n";
@@ -649,8 +649,8 @@ int unibo_mavlink_thread_main(int argc, char *argv[])
 								joy.buttons = unibo_rc.chan8_scaled / 30;         //button is (Button_number-1)^2*30
 								orb_publish(ORB_ID(unibo_joystick), unibo_joy_pub_fd, &joy);
 								counter_joystick++;
-								if (counter_joystick>=50){
-									//warnx("50 packets joystick received");
+								if (counter_joystick>=200){
+									warnx("200 packets joystick received");
 									counter_joystick=0;
 								}
 								//warnx("Joystick pachet received: CH1: %d - CH2: %d - CH3: %d - CH4: %d BUTTON: %d",joy.raw_joystick[0],joy.raw_joystick[1],joy.raw_joystick[2],joy.raw_joystick[3],joy.raw_joystick[7]);
@@ -664,21 +664,21 @@ int unibo_mavlink_thread_main(int argc, char *argv[])
 							//warnx("RX_SEQ: %d - IDX: %d - PDC: %d - TX_SEQ: %d - PS: %d ",status.current_rx_seq, status.packet_idx, status.packet_rx_drop_count, status.current_tx_seq, status.parse_state);
 						}
 					}
-				}
-
-
-
 			}
-			packet_drops += status.packet_rx_drop_count;
-			//if (nread>0)	warnx("Letto: %d",buf);
-//			orb_check(telemetry_sub_fd, &updated);
-//			if (updated){
-//				struct unibo_telemetry_s telem;
-//				orb_copy(ORB_ID(unibo_telemetry),telemetry_sub_fd,&telem);
-//				serial_write(fd, telem);
-//			}
+
+
+
 		}
-		usleep(1000);
+		packet_drops += status.packet_rx_drop_count;
+		//if (nread>0)	warnx("Letto: %d",buf);
+//		orb_check(telemetry_sub_fd, &updated);
+//		if (updated){
+//			struct unibo_telemetry_s telem;
+//			orb_copy(ORB_ID(unibo_telemetry),telemetry_sub_fd,&telem);
+//			serial_write(fd, telem);
+//		}
+	}
+	usleep(1000);
 
 	close_port(fd);
 	unibomav_thread_running = false;

@@ -137,7 +137,7 @@ int unibo_trajectory_ref_main(int argc, char *argv[])
 					 SCHED_DEFAULT,
 					 //SCHED_PRIORITY_DEFAULT,
 					 SCHED_PRIORITY_MAX - 20,
-					 2048,
+					 3072,
 					 unibo_trajectory_ref_thread_main,
 					 (argv) ? (const char **)&argv[2] : (const char **)NULL);
 		//warnx("Thread started PID: %d",trajectory_ref_task);
@@ -447,15 +447,18 @@ int unibo_trajectory_ref_thread_main(int argc, char *argv[])
 
 			counter++;
 			if (counter >=5){
-				warnx("Thrust: %.3f", reference.thrust);
-				warnx("Pos ref: %.2f  %.2f  %.2f", reference.p_x, reference.p_y, reference.p_z);
+				//warnx("Thrust: %.3f", reference.thrust);
+				warnx("Quaternion ref: %.3f %.3f %.3f %.3f", reference.q[0], reference.q[1], reference.q[2], reference.q[3]);
+				//warnx("Pos ref: %.2f  %.2f  %.2f", reference.p_x, reference.p_y, reference.p_z);
 				counter = 0;
 			}
 
 		}
-		usleep(5000);
+		usleep(3000);
 
 	}
+
+	usleep(1000);
 
 	warnx("[unibo_trajectory_ref_daemon] exiting.\n");
 
