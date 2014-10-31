@@ -55,6 +55,7 @@
 #include <uORB/topics/unibo_telemetry.h>
 #include <uORB/topics/vehicle_local_position.h>
 #include <uORB/topics/vehicle_gps_position.h>
+#include <uORB/topics/unibo_vehicle_status.h>
 
 #define pi 3.14159
 
@@ -245,6 +246,9 @@ int unibo_control_thread_main(int argc, char *argv[])
 	int GPS_pos_sub_fd = orb_subscribe(ORB_ID(vehicle_gps_position));
 	struct vehicle_gps_position_s GPS;
 
+	/* subscribe to unibo_vehicle_status topic */
+	int unibo_status_fd = orb_subscribe(ORB_ID(unibo_vehicle_status));
+
 	/* advertize telemetry topic */
 	struct unibo_telemetry_s telem;
 	memset(&telem, 0, sizeof(telem));
@@ -290,6 +294,7 @@ int unibo_control_thread_main(int argc, char *argv[])
 	struct unibo_reference_s temp_ref;
 	struct unibo_optitrack_s temp_opti;
 	struct unibo_parameters_s temp_PAR;
+	struct unibo_vehicle_status_s unibo_status;
 
 	cInputs_s cinputs;
 
@@ -310,6 +315,7 @@ int unibo_control_thread_main(int argc, char *argv[])
 	static int print_counter2 = 0;
 	static int log_counter = 0;
 	static int gps_counter = 0;
+	static int counter_output = 0;
 	//len = sizeof(struct sockaddr_in);
 
 	// variabili input serial PX4
@@ -427,7 +433,6 @@ int unibo_control_thread_main(int argc, char *argv[])
 //				tTimeDiff = tTime - tTimeOld;
 //				tTimeOld = tTime;
 //				LLFFC_updateModelAtomTime(tAtom);
-				// XXX FINE copiate
 
 				if (FirstFlg)
 				{
@@ -435,10 +440,9 @@ int unibo_control_thread_main(int argc, char *argv[])
 					FirstFlg = false;
 				}
 
-				// TODO eventuali benchmark di tempo
 
 				// se viene stampato un messaggio circa ogni secondo vuol dire che va tutto bene
-				if (print_counter++ >= 333)
+				if (print_counter++ >= 200)
 				{
 					//warnx(".");
 					//warnx("pkgimu (length, type, gyro xyz, acc xyz, mag xyz, deltat, time, crc):\n %s\n", PacketIMU_toString(&pkgIMU));
@@ -446,10 +450,6 @@ int unibo_control_thread_main(int argc, char *argv[])
 				}
 
 
-				if(DEBUG_MODE) // TODO sistemare
-				{
-
-				}
 
 				// gestione pacchetto REFERENCES ricevuto dal Topic unibo_reference
 				orb_check(reference_sub_fd, &updated);
@@ -478,6 +478,20 @@ int unibo_control_thread_main(int argc, char *argv[])
 					Model_GS_U.REF_BUTTONS = temp_ref.button;
 
 					Model_GS_U.TIME_STAMP = temp_ref.timestamp;
+
+					Model_GS_U.REF_THRUST = temp_ref.thrust;
+
+					Model_GS_U.REF_ATTITUDE[0] = temp_ref.q[0];
+					Model_GS_U.REF_ATTITUDE[1] = temp_ref.q[1];
+					Model_GS_U.REF_ATTITUDE[2] = temp_ref.q[2];
+					Model_GS_U.REF_ATTITUDE[3] = temp_ref.q[3];
+					Model_GS_U.REF_ATTITUDE[4] = temp_ref.ang_speed[0];
+					Model_GS_U.REF_ATTITUDE[5] = temp_ref.ang_speed[1];
+					Model_GS_U.REF_ATTITUDE[6] = temp_ref.ang_speed[2];
+					Model_GS_U.REF_ATTITUDE[7] = temp_ref.ang_acc[0];
+					Model_GS_U.REF_ATTITUDE[8] = temp_ref.ang_acc[1];
+					Model_GS_U.REF_ATTITUDE[9] = temp_ref.ang_acc[2];
+
 					//warnx("Actual yaw: %.3f - YawREF: %.3f - DYawREF: %.3f - D2YawREF: %.3f", ahrs.yaw, Model_GS_U.REF_YAW[0], Model_GS_U.REF_YAW[1], Model_GS_U.REF_YAW[2]);
 					//warnx("Posx: %.3f - Velx: %.3f - Accx: %.3f", Model_GS_U.REF_POS[0], Model_GS_U.REF_POS[3], Model_GS_U.REF_POS[6]);
 					//warnx("Posy: %.3f - Vely: %.3f - Accy: %.3f", Model_GS_U.REF_POS[1], Model_GS_U.REF_POS[4], Model_GS_U.REF_POS[7]);
@@ -489,6 +503,12 @@ int unibo_control_thread_main(int argc, char *argv[])
 						counter_ref_pack=0;
 						//warnx("Posx: %.3f - Posy: %.3f - Posz: %.3f - YawREF: %.3f", Model_GS_U.REF_POS[0], Model_GS_U.REF_POS[1], Model_GS_U.REF_POS[2], Model_GS_U.REF_YAW[0]);
 					}
+				}
+
+				orb_check(unibo_status_fd, &updated);
+				if (updated){
+					orb_copy(ORB_ID(unibo_vehicle_status),unibo_status_fd,&unibo_status);
+					Model_GS_U.FLIGHT_MODE = (int)unibo_status.flight_mode;
 				}
 
 
@@ -569,12 +589,12 @@ int unibo_control_thread_main(int argc, char *argv[])
 
 					//Model_GS_U.YAWOFFSET = temp_PAR.in24;
 
-					#ifdef ATECH
-										Model_GS_U.CW_CCW = 1;           //1 for our quad, 0 for IRIS with inverted propeller rotation
-					#endif
-					#ifdef IRIS
-										Model_GS_U.CW_CCW = 0;           //1 for our quad, 0 for IRIS with inverted propeller rotation
-					#endif
+//					#ifdef ATECH
+//										Model_GS_U.CW_CCW = 1;           //1 for our quad, 0 for IRIS with inverted propeller rotation
+//					#endif
+//					#ifdef IRIS
+//										Model_GS_U.CW_CCW = 0;           //1 for our quad, 0 for IRIS with inverted propeller rotation
+//					#endif
 
 					//warnx("Parameters from topic: %d %d %d\n",temp_PAR.in1,temp_PAR.in2,temp_PAR.in3);
 
@@ -591,55 +611,27 @@ int unibo_control_thread_main(int argc, char *argv[])
 				}
 
 
-				// gestione pacchetto OPTITRACK ricevuto dal Topic vehicle_local_position (gli scrive unibo_mavlink)
-//				orb_check(optitrack_sub_fd, &updated);
-//				if (updated){
-//					orb_copy(ORB_ID(unibo_optitrack),optitrack_sub_fd,&temp_opti);
-//					float yawoffset = temp_PAR.in24;
-//					Model_GS_U.OPTITRACK[0] = 0;
-//					Model_GS_U.OPTITRACK[1] = 0;
-//					Model_GS_U.OPTITRACK[2] = temp_opti.pos_x * cos(yawoffset*2*pi/360) - temp_opti.pos_y * sin(yawoffset*2*pi/360);
-//					Model_GS_U.OPTITRACK[3] = temp_opti.pos_x * sin(yawoffset*2*pi/360) + temp_opti.pos_y * cos(yawoffset*2*pi/360);
-//					Model_GS_U.OPTITRACK[4] = temp_opti.pos_z;
-//					Model_GS_U.OPTITRACK[5] = 0;
-//					Model_GS_U.OPTITRACK[6] = 0;
-//					Model_GS_U.OPTITRACK[7] = 0;
-//					Model_GS_U.OPTITRACK[8] = 0;
-//					Model_GS_U.OPTITRACK[9] = 0;
-//					Model_GS_U.OPTITRACK[10] = temp_opti.timestamp / 1000000.f;
-//					Model_GS_U.OPTITRACK[11] = 0;
-//
-//					Model_GS_U.VELOCITY[0] = 0;
-//					Model_GS_U.VELOCITY[1] = 0;
-//					Model_GS_U.VELOCITY[2] = 0;
-//					Model_GS_U.VELOCITY[3] = 0;
-//
-//
-//
-//					//warnx("Optitrack from topic: %d %d %d\n",temp_opti.pos_x,temp_opti.pos_y,temp_opti.pos_z);
-//					counter_opti_pack++;
-//					if (counter_opti_pack>=200){
-//						warnx("Ricevuti 200 pacchetti OPTITRACK. X: %.3f - Y: %.3f - Z: %.3f", Model_GS_U.OPTITRACK[2], Model_GS_U.OPTITRACK[3], Model_GS_U.OPTITRACK[4]);
-//						//warnx("Ricevuti 200 pacchetti OPTITRACK. VX: %.3f - VY: %.3f - VZ: %.3f", loc_pos.vx, loc_pos.vy, loc_pos.vz);
-//						counter_opti_pack=0;
-//					}
-//				}
-
-
-
 				// ----------- CONTROLLO -----------
 				LLFFC_control();
 
+				counter_output++;
+
+				if (counter_output>=50){
+					warnx("Thrust: %.3f Torques: %.3f %.3f %.3f", Model_GS_Y.U_F, Model_GS_Y.U_TAU[0], Model_GS_Y.U_TAU[1], Model_GS_Y.U_TAU[2]);
+				}
+
+
+
 				// ---- Riempio oggetto CInputs con i valori generati in output dal controllo ----
-				CInputs_readCInputs(&cinputs);
+				//CInputs_readCInputs(&cinputs);
 
 
 				// riempimento del pacchetto mavlink servo_output_raw a partire dall'output del controllo (cinputs)
 				// la funzione comprende anche la scalatura dal range 0..4095 di cinputs a 900..2100 dei microsecondi pwm (usati da px4)
-				scale_cinputs_to_px4pwm(&mout, &cinputs);
+				//scale_cinputs_to_px4pwm(&mout, &cinputs);
 
 				// ---- INVIO OUTPUTS ----
-				orb_publish(ORB_ID(motor_output), mout_pub_fd, &mout);
+				//orb_publish(ORB_ID(motor_output), mout_pub_fd, &mout);
 
 				//tcflush(serial_PX4, TCOFLUSH);
 
@@ -650,18 +642,18 @@ int unibo_control_thread_main(int argc, char *argv[])
 					telem.x = Model_GS_Y.STATE[0];
 					telem.y = Model_GS_Y.STATE[1];
 					telem.z = Model_GS_Y.STATE[2];
-					telem.dx = Model_GS_Y.C_Q[0]*10000;           //YAWTEST
-					telem.dy = Model_GS_Y.C_Q[1]*10000;
-					telem.dz = Model_GS_Y.C_Q[2]*10000;
-					telem.phi = Model_GS_Y.C_Q[3]*10000;
-					telem.theta = Model_GS_Y.C_QC[0]*10000;
-					telem.psi = Model_GS_Y.C_QC[1]*10000;
-					telem.wx = Model_GS_Y.C_QC[2]*10000;
-					telem.wy = Model_GS_Y.C_QC[3]*10000;
-					telem.wz = (int)Model_GS_Y.C_H;
-					telem.extra1 = Model_GS_Y.STATE[9];
-					telem.extra2 = Model_GS_Y.STATE[10];
-					telem.extra3 = Model_GS_Y.STATE[11];
+//					telem.dx = Model_GS_Y.C_Q[0]*10000;           //YAWTEST
+//					telem.dy = Model_GS_Y.C_Q[1]*10000;
+//					telem.dz = Model_GS_Y.C_Q[2]*10000;
+//					telem.phi = Model_GS_Y.C_Q[3]*10000;
+//					telem.theta = Model_GS_Y.C_QC[0]*10000;
+//					telem.psi = Model_GS_Y.C_QC[1]*10000;
+//					telem.wx = Model_GS_Y.C_QC[2]*10000;
+//					telem.wy = Model_GS_Y.C_QC[3]*10000;
+//					telem.wz = (int)Model_GS_Y.C_H;
+//					telem.extra1 = Model_GS_Y.STATE[9];
+//					telem.extra2 = Model_GS_Y.STATE[10];
+//					telem.extra3 = Model_GS_Y.STATE[11];
 //					telem.dx = Model_GS_Y.STATE[3];           //ORIGINAL
 //					telem.dy = Model_GS_Y.STATE[4];
 //					telem.dz = Model_GS_Y.STATE[5];
@@ -674,10 +666,10 @@ int unibo_control_thread_main(int argc, char *argv[])
 //					telem.extra1 = 0;
 //					telem.extra2 = 0;
 //					telem.extra3 = 0;
-					telem.cinput1 = cinputs.u[0];
-					telem.cinput2 = cinputs.u[1];
-					telem.cinput3 = cinputs.u[2];
-					telem.cinput4 = cinputs.u[3];
+//					telem.cinput1 = cinputs.u[0];
+//					telem.cinput2 = cinputs.u[1];
+//					telem.cinput3 = cinputs.u[2];
+//					telem.cinput4 = cinputs.u[3];
 					//warnx("Quaternion: %d %d %d %d",telem.dx, telem.dy, telem.dz,telem.phi);
 					//warnx("Velocities: %d %d %d",Model_GS_Y.STATE[3],Model_GS_Y.STATE[4],Model_GS_Y.STATE[5]);
 					//warnx("Positions: %d %d %d",Model_GS_Y.STATE[0],Model_GS_Y.STATE[1],Model_GS_Y.STATE[2]);
@@ -685,7 +677,7 @@ int unibo_control_thread_main(int argc, char *argv[])
 					//warnx("Tstamp (s): %.3f",Model_GS_U.OPTITRACK[10]);
 					//warnx("Attitude: Roll: %d----- Pitch: %d ------- Yaw: %d", telem.phi,telem.theta,telem.psi);
 					//warnx("Attitude quaternion: %.4f %.4f %.4f %.4f", ahrs.q[0],ahrs.q[1],ahrs.q[2],ahrs.q[3]);
-					orb_publish(ORB_ID(unibo_telemetry), unibo_telem_pub_fd, &telem);
+					//           orb_publish(ORB_ID(unibo_telemetry), unibo_telem_pub_fd, &telem);
 					//warnx("Publishing telemetry topic.\n");
 
 					//scrivo sul topic local_position per loggare velocità e posizioni in sdglog2   Problemi timestamp, togliere!
@@ -703,12 +695,12 @@ int unibo_control_thread_main(int argc, char *argv[])
 					//orb_publish(ORB_ID(vehicle_local_position), local_pos_pub_fd, &local_pos);
 
 					//scrivo sul topic gps in modo da avere i log sulla sd                                  //TODO togliere se si usa GPS (solo per log)
-					log.lat= (float)Model_GS_Y.STATE[0]/1000.0f;//x
-					log.lon= (float)Model_GS_Y.STATE[1]/1000.0f;//y
-					log.vel_m_s= (float)Model_GS_Y.STATE[2]/1000.0f; // variabile di appoggio per z
-					log.vel_n_m_s= (float)Model_GS_Y.STATE[3]/1000.0f; //vx
-					log.vel_e_m_s = (float)Model_GS_Y.STATE[4]/1000.0f; // vy
-					log.vel_d_m_s = (float)Model_GS_Y.STATE[5]/1000.0f; //vz
+//					log.lat= (float)Model_GS_Y.STATE[0]/1000.0f;//x
+//					log.lon= (float)Model_GS_Y.STATE[1]/1000.0f;//y
+//					log.vel_m_s= (float)Model_GS_Y.STATE[2]/1000.0f; // variabile di appoggio per z
+//					log.vel_n_m_s= (float)Model_GS_Y.STATE[3]/1000.0f; //vx
+//					log.vel_e_m_s = (float)Model_GS_Y.STATE[4]/1000.0f; // vy
+//					log.vel_d_m_s = (float)Model_GS_Y.STATE[5]/1000.0f; //vz
 					//orb_publish(ORB_ID(vehicle_gps_position), gps_pos_pub_fd, &log);
 				}
 

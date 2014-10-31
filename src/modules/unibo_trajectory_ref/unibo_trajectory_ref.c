@@ -317,7 +317,7 @@ int unibo_trajectory_ref_thread_main(int argc, char *argv[])
 			orb_check(unibo_status_fd, &updated);
 			if (updated){
 				orb_copy(ORB_ID(unibo_vehicle_status), unibo_status_fd, &unibo_status);
-				TRAJECTORY_GENERATOR_APP_U.FLIGHT_MODES = unibo_status.flight_mode;
+				TRAJECTORY_GENERATOR_APP_U.FLIGHT_MODES = (int)unibo_status.flight_mode;
 			}
 
 			orb_check(unibo_hl_traj_fd, &updated);

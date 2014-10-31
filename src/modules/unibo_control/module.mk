@@ -7,7 +7,6 @@ MODULE_COMMAND		= 	unibo_control
 
 SRCS				= 	unibo_control.c \
 			   			main_procedures.c \
-			   			Infrastructure/CInputs.c \
 			   			Infrastructure/Low_Level_Free_Flight_Control.c \
 			   			LowLevel/Model_GS.c \
 			   			LowLevel/rt_nonfinite.c \
@@ -15,6 +14,7 @@ SRCS				= 	unibo_control.c \
 			   			LowLevel/rtGetNaN.c \
 			   			utils.c 
 						
+						#Infrastructure/CInputs.c \
 						#LowLevel/Model_GS_data.c \
 			   			#LowLevel/fixedpoint.c \
 			   			#LowLevel/rtw_modelmap_utils.c \

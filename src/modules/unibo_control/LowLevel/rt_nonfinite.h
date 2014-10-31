@@ -3,9 +3,9 @@
  *
  * Code generation for model "Model_GS".
  *
- * Model version              : 1.2448
+ * Model version              : 1.2485
  * Simulink Coder version : 8.3 (R2012b) 20-Jul-2012
- * C source code generated on : Thu Jun 26 17:44:36 2014
+ * C source code generated on : Fri Oct 31 16:51:57 2014
  *
  * Target selection: grt.tlc
  * Note: GRT includes extra infrastructure and instrumentation for prototyping
