@@ -3,9 +3,9 @@
  *
  * Code generation for model "ALLOCATION".
  *
- * Model version              : 1.2482
- * Simulink Coder version : 8.3 (R2012b) 20-Jul-2012
- * C source code generated on : Fri Oct 31 11:17:34 2014
+ * Model version              : 1.2493
+ * Simulink Coder version : 8.2 (R2012a) 29-Dec-2011
+ * C source code generated on : Tue Nov 04 17:18:21 2014
  *
  * Target selection: grt.tlc
  * Note: GRT includes extra infrastructure and instrumentation for prototyping
@@ -677,12 +677,12 @@
 # define rtmSetSampleTimeTaskID(rtm, idx, val) ((rtm)->Timing.sampleTimeTaskIDPtr[idx] = (val))
 #endif
 
-#ifndef rtmGetVarNextHitTimeList
-# define rtmGetVarNextHitTimeList(rtm, idx) ((rtm)->Timing.varNextHitTimesList[idx])
+#ifndef rtmGetVarNextHitTime
+# define rtmGetVarNextHitTime(rtm, idx) ((rtm)->Timing.varNextHitTimesList[idx])
 #endif
 
-#ifndef rtmSetVarNextHitTimeList
-# define rtmSetVarNextHitTimeList(rtm, idx, val) ((rtm)->Timing.varNextHitTimesList[idx] = (val))
+#ifndef rtmSetVarNextHitTime
+# define rtmSetVarNextHitTime(rtm, idx, val) ((rtm)->Timing.varNextHitTimesList[idx] = (val))
 #endif
 
 #ifndef rtmIsContinuousTask
@@ -768,26 +768,30 @@
 
 /* External inputs (root inport signals with auto storage) */
 typedef struct {
-  real_T r[6];                         /* '<Root>/r' */
-  real_T s[6];                         /* '<Root>/s' */
-  real_T Ct[6];                        /* '<Root>/Ct' */
-  real_T Cq[6];                        /* '<Root>/Cq' */
-  real_T F[4];                         /* '<Root>/F' */
+  real32_T r[6];                       /* '<Root>/r' */
+  real32_T s[6];                       /* '<Root>/s' */
+  real32_T Ct[6];                      /* '<Root>/Ct' */
+  real32_T Cq[6];                      /* '<Root>/Cq' */
+  real32_T vc[4];                      /* '<Root>/vc' */
 } ExternalInputs_ALLOCATION;
 
 /* External outputs (root outports fed by signals with auto storage) */
 typedef struct {
-  real_T w[6];                         /* '<Root>/w' */
+  real32_T w[6];                       /* '<Root>/w' */
 } ExternalOutputs_ALLOCATION;
 
 /* Backward compatible GRT Identifiers */
 #define rtU                            ALLOCATION_U
 #define ExternalInputs                 ExternalInputs_ALLOCATION
+#define rtXdot                         ALLOCATION_Xdot
+#define StateDerivatives               StateDerivatives_ALLOCATION
+#define tXdis                          ALLOCATION_Xdis
+#define StateDisabled                  StateDisabled_ALLOCATION
 #define rtY                            ALLOCATION_Y
 #define ExternalOutputs                ExternalOutputs_ALLOCATION
 
 /* Real-time Model Data Structure */
-struct tag_RTM_ALLOCATION {
+struct RT_MODEL_ALLOCATION {
   const char_T *path;
   const char_T *modelName;
   struct SimStruct_tag * *childSfunctions;
@@ -903,7 +907,7 @@ extern ExternalInputs_ALLOCATION ALLOCATION_U;
 extern ExternalOutputs_ALLOCATION ALLOCATION_Y;
 
 /* Real-time Model object */
-extern RT_MODEL_ALLOCATION *const ALLOCATION_M;
+extern struct RT_MODEL_ALLOCATION *const ALLOCATION_M;
 
 /*-
  * The generated code includes comments that allow you to trace directly
@@ -920,7 +924,7 @@ extern RT_MODEL_ALLOCATION *const ALLOCATION_M;
  * Here is the system hierarchy for this model
  *
  * '<Root>' : 'ALLOCATION'
- * '<S1>'   : 'ALLOCATION/Subsystem'
- * '<S2>'   : 'ALLOCATION/Subsystem/matrix inversion'
+ * '<S1>'   : 'ALLOCATION/allocation'
+ * '<S2>'   : 'ALLOCATION/allocation/matrix inversion'
  */
 #endif                                 /* RTW_HEADER_ALLOCATION_h_ */

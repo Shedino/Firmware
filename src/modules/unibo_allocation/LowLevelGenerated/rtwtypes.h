@@ -3,9 +3,9 @@
  *
  * Code generation for model "ALLOCATION".
  *
- * Model version              : 1.2482
- * Simulink Coder version : 8.3 (R2012b) 20-Jul-2012
- * C source code generated on : Fri Oct 31 11:17:34 2014
+ * Model version              : 1.2493
+ * Simulink Coder version : 8.2 (R2012a) 29-Dec-2011
+ * C source code generated on : Tue Nov 04 17:18:21 2014
  *
  * Target selection: grt.tlc
  * Note: GRT includes extra infrastructure and instrumentation for prototyping
@@ -34,6 +34,10 @@ typedef void * pointer_T;
 
 #ifndef FALSE
 # define FALSE                         (0U)
+#endif
+
+#ifndef MAT_FILE
+# define MAT_FILE                      0
 #endif
 
 /*
