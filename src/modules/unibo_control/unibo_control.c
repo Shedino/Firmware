@@ -226,9 +226,9 @@ int unibo_control_thread_main(int argc, char *argv[])
 	LLFFC_control();
 
 	/* subscribe to attitude topic */
-	int sensor_sub_fd = orb_subscribe(ORB_ID(vehicle_attitude));
+	int attitude_sub_fd = orb_subscribe(ORB_ID(vehicle_attitude));
 	/* set data to 1Hz */
-	orb_set_interval(sensor_sub_fd, 5); //1000 = 1Hz (ms)
+	orb_set_interval(attitude_sub_fd, 5); //1000 = 1Hz (ms)
 
 	/* subscribe to reference topic */
 	int reference_sub_fd = orb_subscribe(ORB_ID(unibo_reference));
@@ -271,7 +271,7 @@ int unibo_control_thread_main(int argc, char *argv[])
 
 	/* one could wait for multiple topics with this technique, just using one here */
 	struct pollfd fds[] = {
-		{ .fd = sensor_sub_fd,   .events = POLLIN },
+		{ .fd = attitude_sub_fd,   .events = POLLIN },
 		/* there could be more file descriptors here, in the form like:
 		 * { .fd = other_sub_fd,   .events = POLLIN },
 		 */
@@ -372,7 +372,7 @@ int unibo_control_thread_main(int argc, char *argv[])
 	int txtcounter = 0;
 
 	while (!uniboc_thread_should_exit) {
-		/* wait for sensor update of 1 file descriptor for 1000 ms (1 second) */
+		/* wait for attitude update of 1 file descriptor for 1000 ms (1 second) */
 		//Imposto solo 10 ms
 		int poll_ret = poll(fds, 1, 10); //filedescr, number of file descriptor to wait for, timeout in ms
 
@@ -395,9 +395,9 @@ int unibo_control_thread_main(int argc, char *argv[])
 				telemetry_counter++;
 				txtcounter++;
 
-				/* copy sensors raw data into local buffer */
-				orb_copy(ORB_ID(vehicle_attitude), sensor_sub_fd, &ahrs);
-				/* copy sensors local buffer to Simulink Model */
+				/* copy attitude raw data into local buffer */
+				orb_copy(ORB_ID(vehicle_attitude), attitude_sub_fd, &ahrs);
+				/* copy attitude local buffer to Simulink Model */
 				Model_GS_U.Attitude[0] = ahrs.q[0];
 				Model_GS_U.Attitude[1] = ahrs.q[1];
 				Model_GS_U.Attitude[2] = ahrs.q[2];
@@ -616,8 +616,9 @@ int unibo_control_thread_main(int argc, char *argv[])
 
 				counter_output++;
 
-				if (counter_output>=50){
+				if (counter_output>=400){
 					warnx("Thrust: %.3f Torques: %.3f %.3f %.3f", Model_GS_Y.U_F, Model_GS_Y.U_TAU[0], Model_GS_Y.U_TAU[1], Model_GS_Y.U_TAU[2]);
+					counter_output = 0;
 				}
 
 
