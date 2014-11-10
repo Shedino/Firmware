@@ -176,6 +176,7 @@ int unibo_allocation_thread_main(int argc, char *argv[])
 	// inizializzazione middle-layer
 	int error_counter = 0;
 	int counter_warnx = 0;
+	struct vehicle_attitude_s ahrs;
 
 	ALLOCATION_start();
 	ALLOCATION_control();
@@ -184,7 +185,7 @@ int unibo_allocation_thread_main(int argc, char *argv[])
 //	bool updated;
 
 	struct pollfd fds[] = {
-		{ .fd = sensors_fd,   .events = POLLIN },                 //TODO change to control wrench topic
+		{ .fd = vehicle_attitude_fd,   .events = POLLIN },                 //TODO change to control wrench topic
 		/* there could be more file descriptors here, in the form like:
 		 * { .fd = other_sub_fd,   .events = POLLIN },
 		 */
@@ -215,6 +216,7 @@ int unibo_allocation_thread_main(int argc, char *argv[])
 			error_counter++;
 		} else {
 			if (fds[0].revents & POLLIN) {
+				orb_copy(ORB_ID(vehicle_attitude), vehicle_attitude_fd, &ahrs);
 				ALLOCATION_U.Cq[0] = 0.1;		//coefficienti aerodinamici di momento   //TODO link to coefficient topics
 				ALLOCATION_U.Cq[1] = 0.1;
 				ALLOCATION_U.Cq[2] = 0.1;
