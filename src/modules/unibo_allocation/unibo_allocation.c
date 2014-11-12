@@ -40,12 +40,15 @@
 #include <ALLOCATION.h>
 
 #include <poll.h>
-#include <uORB/topics/sensor_combined.h>
 #include <uORB/topics/vehicle_attitude.h>
+#include <uORB/topics/unibo_control_wrench.h>
 
 /* Daemon libraries? */
 #include <systemlib/systemlib.h>
 #include <systemlib/err.h>
+
+#include "include/mr_config_struct.h"
+#include "include/ConfigurationReader.h"
 
 /* Daemon variables */
 static bool thread_should_exit = false;		/**< daemon exit flag */
@@ -163,8 +166,8 @@ int unibo_allocation_thread_main(int argc, char *argv[])
 	int vehicle_attitude_fd = orb_subscribe(ORB_ID(vehicle_attitude));
 	orb_set_interval(vehicle_attitude_fd, 5); //1000 = 1Hz (ms)
 
-	int sensors_fd = orb_subscribe(ORB_ID(sensor_combined));
-	orb_set_interval(sensors_fd, 5); //1000 = 1Hz (ms)
+	int unibo_control_wrench_fd = orb_subscribe(ORB_ID(unibo_control_wrench));
+	orb_set_interval(unibo_control_wrench_fd, 5); //1000 = 1Hz (ms)
 
 
 	/*
@@ -177,15 +180,26 @@ int unibo_allocation_thread_main(int argc, char *argv[])
 	int error_counter = 0;
 	int counter_warnx = 0;
 	struct vehicle_attitude_s ahrs;
+	struct unibo_control_wrench_s wrench;
 
 	ALLOCATION_start();
 	ALLOCATION_control();
+
+	int u2m[6] = {1,1,1,1,1,1};
+	struct mr_config_struct curr_config=ConfigurationReader(1,u2m);
 
 	/* Bool for topics update */
 //	bool updated;
 
 	struct pollfd fds[] = {
 		{ .fd = vehicle_attitude_fd,   .events = POLLIN },                 //TODO change to control wrench topic
+		/* there could be more file descriptors here, in the form like:
+		 * { .fd = other_sub_fd,   .events = POLLIN },
+		 */
+	};
+
+	struct pollfd wrench_fds[] = {
+		{ .fd = unibo_control_wrench_fd,   .events = POLLIN },                 //TODO change to control wrench topic
 		/* there could be more file descriptors here, in the form like:
 		 * { .fd = other_sub_fd,   .events = POLLIN },
 		 */
@@ -217,6 +231,7 @@ int unibo_allocation_thread_main(int argc, char *argv[])
 		} else {
 			if (fds[0].revents & POLLIN) {
 				orb_copy(ORB_ID(vehicle_attitude), vehicle_attitude_fd, &ahrs);
+				orb_copy(ORB_ID(unibo_control_wrench), unibo_control_wrench_fd, &wrench);
 				ALLOCATION_U.Cq[0] = 0.1;		//coefficienti aerodinamici di momento   //TODO link to coefficient topics
 				ALLOCATION_U.Cq[1] = 0.1;
 				ALLOCATION_U.Cq[2] = 0.1;
@@ -231,10 +246,10 @@ int unibo_allocation_thread_main(int argc, char *argv[])
 				ALLOCATION_U.Ct[4] = 0.3;
 				ALLOCATION_U.Ct[5] = 0.3;
 
-				ALLOCATION_U.vc[0] = 10;     //control wrench
-				ALLOCATION_U.vc[1] = 0.1;
-				ALLOCATION_U.vc[2] = 0.1;
-				ALLOCATION_U.vc[3] = 0.1;
+				ALLOCATION_U.vc[0] = wrench.force[2];     //control wrench
+				ALLOCATION_U.vc[1] = wrench.torque[0];
+				ALLOCATION_U.vc[2] = wrench.torque[1];
+				ALLOCATION_U.vc[3] = wrench.torque[2];
 
 				ALLOCATION_U.r[0] = 0.1;   //distanza dal baricentro
 				ALLOCATION_U.r[1] = 0.1;

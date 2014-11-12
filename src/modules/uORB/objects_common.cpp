@@ -250,5 +250,8 @@ ORB_DEFINE(unibo_joystick, struct unibo_joystick_s);
 #include "topics/unibo_vehicle_status.h"
 ORB_DEFINE(unibo_vehicle_status, struct unibo_vehicle_status_s);
 
+#include "topics/unibo_control_wrench.h"
+ORB_DEFINE(unibo_control_wrench, struct unibo_control_wrench_s);
+
 #include "topics/unibo_hl_traj.h"
 ORB_DEFINE(unibo_hl_traj, struct unibo_hl_traj_s);
