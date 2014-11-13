@@ -47,9 +47,6 @@
 #include <systemlib/systemlib.h>
 #include <systemlib/err.h>
 
-#include "include/mr_config_struct.h"
-#include "include/ConfigurationReader.h"
-
 /* Daemon variables */
 static bool thread_should_exit = false;		/**< daemon exit flag */
 static bool thread_running = false;		/**< daemon status flag */
@@ -78,7 +75,9 @@ int unibo_allocation_thread_main(int argc, char *argv[]);
  * |-----------------------------------------------------|
  */
 
-//#include "allocation_includes.h"
+#include "test.h"
+#include "include/mr_config_struct.h"
+//#include <include/ConfigurationReader.h>
 
 RT_MODEL_ALLOCATION* model;
 
@@ -186,7 +185,8 @@ int unibo_allocation_thread_main(int argc, char *argv[])
 	ALLOCATION_control();
 
 	int u2m[6] = {1,1,1,1,1,1};
-	struct mr_config_struct curr_config=ConfigurationReader(1,u2m);
+	struct mr_config_struct curr_config=test(1,u2m);
+	//struct mr_config_struct curr_config=ConfigurationReader(1,u2m);
 
 	/* Bool for topics update */
 //	bool updated;
