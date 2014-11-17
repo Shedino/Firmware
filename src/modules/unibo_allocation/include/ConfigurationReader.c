@@ -1,14 +1,20 @@
-#include <string.h>
-#include <algorithm>
-
-#include "ConfigurationReader.h"
-#include "mr_config_struct.h"
-#include "pugixml.hpp"
+#include <stdio.h>
+//#include <algorithm>
 //
+//#include "ConfigurationReader.h"
+#include "mr_config_struct.h"
+//#include "pugixml.hpp"
+////
 //using namespace std;
 
 struct mr_config_struct ConfigurationReader(int change_flag,int on_flag[6])//void main()//
 {
+	FILE * fp=fopen("unibo_configuration/unibo_configuration.txt","r");
+	if(fp==NULL){
+		warnx("error!!!");
+	}else{
+		warnx("ok");
+	}
 //    int index;
 //    const int rotors_number=6;
 //    char* module_name=new char();
