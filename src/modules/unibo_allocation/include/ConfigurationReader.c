@@ -9,7 +9,7 @@
 
 struct mr_config_struct ConfigurationReader(int change_flag,int on_flag[6])//void main()//
 {
-	FILE * fp=fopen("unibo_configuration/unibo_configuration.txt","r");
+	FILE * fp=fopen("/fs/microsd/quadrotor_configuration.txt","r");
 	if(fp==NULL){
 		warnx("error!!!");
 	}else{
