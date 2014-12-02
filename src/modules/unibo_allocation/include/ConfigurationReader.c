@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include <sys/stat.h>
+//#include <sys/stat.h>
 //#include <algorithm>
 //
 //#include "ConfigurationReader.h"
@@ -10,25 +10,28 @@
 
 struct mr_config_struct ConfigurationReader(int change_flag,int on_flag[6])//void main()//
 {
-	struct stat cf_file_attr;
+//	struct stat cf_file_attr;
 	int str_len=100;
-	if(stat("/fs/microsd/quadrotor_configuration.qcf", &cf_file_attr)==0){
-		warnx("Last Modification: %d",cf_file_attr.st_mtime);
-		warnx("Last Accessed: %d",cf_file_attr.st_atime);
+//	if(stat("/fs/microsd/quadrotor_configuration.qcf", &cf_file_attr)==0){
+//		warnx("Last Modification: %d",cf_file_attr.st_mtime);
+//		warnx("Last Accessed: %d",cf_file_attr.st_atime);
 //		if(cf_file_attr.st_mtime>cf_file_attr.st_atime){
-			FILE *cf_file_hnd=fopen("/fs/microsd/quadrotor_configuration.qcf","r");
-			if(cf_file_hnd!=NULL){
-				char cf_str[str_len];
-				for(int ind=1;ind>3;ind++){
-					fgets(cf_str,str_len,cf_file_hnd);
-					warnx("%s",cf_str);
+	FILE *cf_file_hnd=fopen("/fs/microsd/quadrotor_configuration.qcf","r");
+	if(cf_file_hnd!=NULL){
+		char cf_str[str_len];
+		fgets(cf_str,str_len,cf_file_hnd);
+		for(int ind=1;ind<5;ind++){
+			warnx("First Character: %c\n",cf_str[0]);
+//					warnx("here");
+//					fgets(cf_str,str_len,cf_file_hnd);
+//					warnx("%s",cf_str);
 				}
-				fclose(cf_file_hnd);
-			}else{
-				warnx("error!!!");
-			}
-//		}
+		fclose(cf_file_hnd);
+	}else{
+		warnx("error!!!");
 	}
+//		}
+//	}
 //    int index;
 //    const int rotors_number=6;
 //    char* module_name=new char();
