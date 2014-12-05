@@ -1,117 +1,53 @@
 #include <stdio.h>
-//#include <sys/stat.h>
-//#include <algorithm>
-//
-//#include "ConfigurationReader.h"
+
 #include "mr_config_struct.h"
-//#include "pugixml.hpp"
-////
-//using namespace std;
 
 struct mr_config_struct ConfigurationReader(int change_flag,int on_flag[6])//void main()//
 {
-//	struct stat cf_file_attr;
-	int str_len=100;
-//	if(stat("/fs/microsd/quadrotor_configuration.qcf", &cf_file_attr)==0){
-//		warnx("Last Modification: %d",cf_file_attr.st_mtime);
-//		warnx("Last Accessed: %d",cf_file_attr.st_atime);
-//		if(cf_file_attr.st_mtime>cf_file_attr.st_atime){
+	int str_len=100*8;
 	FILE *cf_file_hnd=fopen("/fs/microsd/quadrotor_configuration.qcf","r");
+	struct mr_config_struct current_config;
 	if(cf_file_hnd!=NULL){
 		char cf_str[str_len];
-		fgets(cf_str,str_len,cf_file_hnd);
-		for(int ind=1;ind<5;ind++){
-			warnx("First Character: %c\n",cf_str[0]);
-//					warnx("here");
-//					fgets(cf_str,str_len,cf_file_hnd);
-//					warnx("%s",cf_str);
-				}
+		do{
+			fgets(cf_str,str_len,cf_file_hnd);
+		}while(strstr(cf_str,"<TAB")==NULL);
+		unsigned int module_num;
+		sscanf(cf_str,"<TAB,%u,%*u>",&module_num);
+//		current_config.active_modules_number=module_num;
+		unsigned int module_ind;
+		unsigned int module_r;
+		unsigned int module_diam;
+		int module_dir;
+		unsigned int module_thrust;
+		int module_torque;
+		for(int loop_ind=0;loop_ind<module_num;loop_ind++){
+			do{
+				fgets(cf_str,str_len,cf_file_hnd);
+			}while(strstr(cf_str,"<ROW")==NULL);
+			sscanf(cf_str,"<ROW,%u,%u,%u,%u,%u,%u>",
+					&module_ind,&module_r,&module_diam,
+					&module_dir,&module_thrust,&module_torque);
+			current_config.radius[module_ind-1]=module_r;
+			current_config.diameter[module_ind-1]=module_diam;
+			current_config.direction[module_ind-1]=module_dir;
+			current_config.thrust[module_ind-1]=((float)module_thrust)/1000.0f;
+			current_config.torque[module_ind-1]=module_torque;
+//			warnx("module %u: r=%u",module_ind,current_config.radius[module_ind-1]);
+//			warnx("module %u: D=%u",module_ind,current_config.diameter[module_ind-1]);
+//			warnx("module %u: s=%d",module_ind,current_config.direction[module_ind-1]);
+			warnx("module %u: Ct=%4.3f",module_ind,(double)current_config.thrust[module_ind-1]);
+//			warnx("module %u: Cq=%d",module_ind,current_config.torque[module_ind-1]);
+		}
+//			if((cf_str[0]=='\\')||(cf_str[0]==' ')){
+//					warnx("First Character: %c\n",cf_str[0]);
+//			}
+////					warnx("here");
+////					fgets(cf_str,str_len,cf_file_hnd);
+//		}
 		fclose(cf_file_hnd);
 	}else{
 		warnx("error!!!");
 	}
-//		}
-//	}
-//    int index;
-//    const int rotors_number=6;
-//    char* module_name=new char();
-//    pugi::xml_document doc;
-//    pugi::xml_node vehicle;
-//    pugi::xml_node modules_set;
-//    pugi::xml_node module;
-//    pugi::xml_parse_result result=doc.load_file("multirotor_config_data.xml");
-//    if(result.status==1){
-//        pugi::xml_node decl=doc.prepend_child(pugi::node_declaration);
-//        decl.append_attribute("version")="1.0";
-//        decl.append_attribute("encoding")="UTF-8";
-//        decl.append_attribute("standalone")="no";
-//        vehicle=doc.append_child();
-//        vehicle.set_name("multirotor_configuration");
-//        modules_set=vehicle.append_child();
-//        modules_set.set_name("active_modules");
-//        for(int index=1;index<=rotors_number;index++){
-//            module=modules_set.append_child();
-//            sprintf(module_name,"module_%d",index);
-//            module.set_name(module_name);
-//            module.append_attribute("r")="200";
-//            module.append_attribute("h")="50";
-//            module.append_attribute("psi")=std::to_string((long double)(90*(index-1))).c_str();
-//            module.append_attribute("mass")="100";
-//            module.append_attribute("spin")="1";
-//            module.append_attribute("Kt")="345";
-//            module.append_attribute("Kq")="1768";
-//            module.append_attribute("operating")="1";
-//        }
-//        modules_set=vehicle.append_child();
-//        modules_set.set_name("passive_modules");
-//        for(int index=1;index<=2;index++){
-//            module=modules_set.append_child();
-//            sprintf(module_name,"module_%d",index);
-//            module.set_name(module_name);
-//            module.append_attribute("r")="0";
-//            module.append_attribute("h")=std::to_string((long double)(50*(index-1))).c_str();
-//            module.append_attribute("mass")=std::to_string((long double)(100-(50*(index-1)))).c_str();
-//        }
-//        doc.save_file("multirotor_config_data.xml");
-//        printf("\nWARNING: multirotor configuration file missing; \"multirotor config data.xml\" file generated\n");
-//    }
-//    if(change_flag){
-//        vehicle=doc.child("multirotor_configuration");
-//        modules_set=vehicle.child("active_modules");
-//        index=0;
-//        for(pugi::xml_node_iterator module_iterator=modules_set.begin();module_iterator!= modules_set.end();++module_iterator)
-//        {
-//            module_iterator->attribute("operating").set_value(on_flag[index]);
-//            index++;
-//        }
-//        doc.save_file("multirotor_config_data.xml");
-//    }
-//    vehicle=doc.child("multirotor_configuration");
-//    modules_set=vehicle.child("active_modules");
-    struct mr_config_struct current_config;
-//    index=0;
-//    for(module=modules_set.first_child();module;module=module.next_sibling())
-//    {
-//        if(atoi(module.attribute("operating").value())){
-//            current_config.radius[index]=atoi(module.attribute("r").value());
-//            current_config.height[index]=atoi(module.attribute("h").value());
-//            current_config.azimut[index]=atoi(module.attribute("psi").value());
-//            current_config.mass[index]=atoi(module.attribute("mass").value());
-//            current_config.direction[index]=atoi(module.attribute("spin").value());
-//            current_config.operating[index]=atoi(module.attribute("operating").value());
-//            current_config.thrust[index]=atoi(module.attribute("Kt").value());
-//            current_config.torque[index]=atoi(module.attribute("Kq").value());
-//        }else{
-//            current_config.radius[index]=0;
-//            current_config.height[index]=0;
-//            current_config.azimut[index]=0;
-//            current_config.mass[index]=0;
-//            current_config.direction[index]=0;
-//            current_config.operating[index]=0;
-//            current_config.thrust[index]=0;
-//            current_config.torque[index]=0;
-//        }
-//        index++;
-//    }
     return current_config;
 }

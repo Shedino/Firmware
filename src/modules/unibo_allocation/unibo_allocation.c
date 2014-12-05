@@ -176,6 +176,7 @@ int unibo_allocation_thread_main(int argc, char *argv[])
 	 */
 
 	// inizializzazione middle-layer
+	int module_ind;
 	int error_counter = 0;
 	int counter_warnx = 0;
 	struct vehicle_attitude_s ahrs;
@@ -187,6 +188,33 @@ int unibo_allocation_thread_main(int argc, char *argv[])
 	int u2m[6] = {1,1,1,1,1,1};
 	//struct mr_config_struct curr_config=test(1,u2m);
 	struct mr_config_struct curr_config=ConfigurationReader(1,u2m);
+
+	warnx("input logging to Simulink routine ...");
+	for(module_ind=0;module_ind<6;module_ind++){
+		ALLOCATION_U.r[module_ind]=curr_config.radius[module_ind];   //distanza dal baricentro
+		warnx("module %u: r=%u",module_ind+1,(int)ALLOCATION_U.r[module_ind]);
+		ALLOCATION_U.s[module_ind]=curr_config.direction[module_ind];   //spin
+		warnx("module %u: s=%d",module_ind+1,(int)ALLOCATION_U.s[module_ind]);
+		ALLOCATION_U.Ct[module_ind]=0.3;//1.225*(curr_config.diameter[module_ind]^4)*curr_config.thrust[module_ind];   //coefficienti aerodinamici di spinta
+//		warnx("module %u: r=%u",module_ind+1,(int)ALLOCATION_U.Ct[module_ind]);
+	}
+//		ALLOCATION_U.Ct[1] = 0.3;
+//		ALLOCATION_U.Ct[2] = 0.3;
+//		ALLOCATION_U.Ct[3] = 0.3;
+//		ALLOCATION_U.Ct[4] = 0.3;
+//		ALLOCATION_U.Ct[5] = 0.3;
+//				ALLOCATION_U.r[1] = 0.1;
+//				ALLOCATION_U.r[2] = 0.1;
+//				ALLOCATION_U.r[3] = 0.1;
+//				ALLOCATION_U.r[4] = 0.1;
+//				ALLOCATION_U.r[5] = 0.1;
+
+
+//				ALLOCATION_U.s[1] = 1;
+//				ALLOCATION_U.s[2] = 1;
+//				ALLOCATION_U.s[3] = 1;
+//				ALLOCATION_U.s[4] = 1;
+//				ALLOCATION_U.s[5] = 1;
 
 	/* Bool for topics update */
 //	bool updated;
@@ -239,31 +267,10 @@ int unibo_allocation_thread_main(int argc, char *argv[])
 				ALLOCATION_U.Cq[4] = 0.1;
 				ALLOCATION_U.Cq[5] = 0.1;
 
-				ALLOCATION_U.Ct[0] = 0.3;   //coefficienti aerodinamici di spinta
-				ALLOCATION_U.Ct[1] = 0.3;
-				ALLOCATION_U.Ct[2] = 0.3;
-				ALLOCATION_U.Ct[3] = 0.3;
-				ALLOCATION_U.Ct[4] = 0.3;
-				ALLOCATION_U.Ct[5] = 0.3;
-
 				ALLOCATION_U.vc[0] = wrench.force[2];     //control wrench
 				ALLOCATION_U.vc[1] = wrench.torque[0];
 				ALLOCATION_U.vc[2] = wrench.torque[1];
 				ALLOCATION_U.vc[3] = wrench.torque[2];
-
-				ALLOCATION_U.r[0] = 0.1;   //distanza dal baricentro
-				ALLOCATION_U.r[1] = 0.1;
-				ALLOCATION_U.r[2] = 0.1;
-				ALLOCATION_U.r[3] = 0.1;
-				ALLOCATION_U.r[4] = 0.1;
-				ALLOCATION_U.r[5] = 0.1;
-
-				ALLOCATION_U.s[0] = 1;   //spin
-				ALLOCATION_U.s[1] = 1;
-				ALLOCATION_U.s[2] = 1;
-				ALLOCATION_U.s[3] = 1;
-				ALLOCATION_U.s[4] = 1;
-				ALLOCATION_U.s[5] = 1;
 
 
 				/*
