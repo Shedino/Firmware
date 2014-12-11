@@ -75,7 +75,6 @@ int unibo_allocation_thread_main(int argc, char *argv[]);
  * |-----------------------------------------------------|
  */
 
-//#include "test.h"
 #include "include/mr_config_struct.h"
 #include "include/ConfigurationReader.h"
 
@@ -109,7 +108,6 @@ int unibo_allocation_main(int argc, char *argv[])
 		usage("missing command");
 
 	if (!strcmp(argv[1], "start")) {
-
 		if (thread_running) {
 			warnx("daemon already running\n");
 			/* this is not an error */
@@ -152,7 +150,6 @@ int unibo_allocation_main(int argc, char *argv[])
  * Main execution thread
  */
 int unibo_allocation_thread_main(int argc, char *argv[])
-//int simple_test_app_main(int argc, char *argv[])
 {
 	warnx("[unibo_allocation] starting");
 
@@ -176,55 +173,31 @@ int unibo_allocation_thread_main(int argc, char *argv[])
 	 */
 
 	// inizializzazione middle-layer
-	int module_ind;
-	int error_counter = 0;
-	int counter_warnx = 0;
+	unsigned int module_ind;
+	unsigned int error_counter = 0;
+	unsigned int counter_warnx = 0;
+	unsigned int time_counter = 0;
 	struct vehicle_attitude_s ahrs;
 	struct unibo_control_wrench_s wrench;
 
 	ALLOCATION_start();
 	ALLOCATION_control();
 
-//	warnx("ORA %3.2f",3.1415);
 	int u2m[6] = {1,1,1,1,1,1};
-	//struct mr_config_struct curr_config=test(1,u2m);
 	struct mr_config_struct curr_config=ConfigurationReader(1,u2m);
 
 	warnx("input logging to Simulink routine ...");
-	for(module_ind=0;module_ind<6;module_ind++){
+	for(module_ind=0;module_ind<curr_config.rotors_number;module_ind++){
 		ALLOCATION_U.r[module_ind]=curr_config.radius[module_ind];		//distanza dal baricentro
 //		warnx("module %u: r=%u",module_ind+1,(int)ALLOCATION_U.r[module_ind]);
 		ALLOCATION_U.s[module_ind]=curr_config.direction[module_ind];   //spin
 //		warnx("module %u: s=%d",module_ind+1,(int)ALLOCATION_U.s[module_ind]);
 //		warnx("module %u: Ct=%.5f",module_ind+1,(double)curr_config.thrust[module_ind]);
 		ALLOCATION_U.Ct[module_ind]=curr_config.thrust[module_ind];		//coefficienti aerodinamici di spinta
-		warnx("module %u: Ct=%.5f",module_ind+1,(double)ALLOCATION_U.Ct[module_ind]);
+//		warnx("module %u: Ct=%.5f",module_ind+1,(double)ALLOCATION_U.Ct[module_ind]);
 		ALLOCATION_U.Cq[module_ind]=curr_config.torque[module_ind];		//coefficienti aerodinamici di momento
-		warnx("module %u: Cq=%.5f",module_ind+1,(double)ALLOCATION_U.Cq[module_ind]);
+//		warnx("module %u: Cq=%.8f",module_ind+1,(double)ALLOCATION_U.Cq[module_ind]);
 	}
-//	ALLOCATION_U.Cq[0] = 0.1;
-//	ALLOCATION_U.Cq[1] = 0.1;
-//	ALLOCATION_U.Cq[2] = 0.1;
-//	ALLOCATION_U.Cq[3] = 0.1;
-//	ALLOCATION_U.Cq[4] = 0.1;
-//	ALLOCATION_U.Cq[5] = 0.1;
-//		ALLOCATION_U.Ct[1] = 0.3;
-//		ALLOCATION_U.Ct[2] = 0.3;
-//		ALLOCATION_U.Ct[3] = 0.3;
-//		ALLOCATION_U.Ct[4] = 0.3;
-//		ALLOCATION_U.Ct[5] = 0.3;
-//				ALLOCATION_U.r[1] = 0.1;
-//				ALLOCATION_U.r[2] = 0.1;
-//				ALLOCATION_U.r[3] = 0.1;
-//				ALLOCATION_U.r[4] = 0.1;
-//				ALLOCATION_U.r[5] = 0.1;
-
-
-//				ALLOCATION_U.s[1] = 1;
-//				ALLOCATION_U.s[2] = 1;
-//				ALLOCATION_U.s[3] = 1;
-//				ALLOCATION_U.s[4] = 1;
-//				ALLOCATION_U.s[5] = 1;
 
 	/* Bool for topics update */
 //	bool updated;
@@ -286,11 +259,13 @@ int unibo_allocation_thread_main(int argc, char *argv[])
 				// ----------- EXECUTION -----------
 				ALLOCATION_control();
 				counter_warnx++;
-				if (counter_warnx % 200 == 0){
-					warnx("Velocità: %.3f %.3f %.3f %.3f %.3f %.3f", (double)ALLOCATION_Y.w[0], (double)ALLOCATION_Y.w[1], (double)ALLOCATION_Y.w[2], (double)ALLOCATION_Y.w[3], (double)ALLOCATION_Y.w[4], (double)ALLOCATION_Y.w[5]);
+				if (counter_warnx>=200){
+//					printf("ora    è ok\r");
+//					printf("domani");
+					warnx("Time: %ds| Rotors Speed: %.3fRPM %.3fRPM %.3fRPM %.3fRPM %.3fRPM %.3fRPM", time_counter, (double)ALLOCATION_Y.w[0], (double)ALLOCATION_Y.w[1], (double)ALLOCATION_Y.w[2], (double)ALLOCATION_Y.w[3], (double)ALLOCATION_Y.w[4], (double)ALLOCATION_Y.w[5]);
 					counter_warnx = 0;
+					time_counter++;
 				}
-
 			}
 			//usleep(3000);
 		}

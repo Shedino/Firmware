@@ -15,7 +15,7 @@ struct mr_config_struct ConfigurationReader(int change_flag,int on_flag[6])//voi
 		}while(strstr(cf_str,"<TAB")==NULL);
 		unsigned int module_num;
 		sscanf(cf_str,"<TAB,%u,%*u>",&module_num);
-//		current_config.active_modules_number=module_num;
+		current_config.rotors_number=module_num;
 		unsigned int module_ind;
 		unsigned int module_r;
 		unsigned int module_diam;
@@ -32,21 +32,9 @@ struct mr_config_struct ConfigurationReader(int change_flag,int on_flag[6])//voi
 			current_config.radius[module_ind-1]=module_r;
 			current_config.diameter[module_ind-1]=module_diam;
 			current_config.direction[module_ind-1]=module_dir;
-//			float arf=5.6f;
-//			printf("%3.2f",3.1415);
-//			warnx("module %u: raw Ct=%d->%3.0f",module_ind,module_thrust,(double)module_thrust);
-//			double test=(double)module_thrust;
 			current_config.thrust[module_ind-1]=1.225f*(float)pow(module_diam/1.0e3,4)*(module_thrust/(float)1e3);
 			current_config.torque[module_ind-1]=1.225f*(float)pow(module_diam/1.0e3,5)*(module_torque/(float)1e3);
-//			warnx("module %u: r=%u",module_ind,current_config.radius[module_ind-1]);
-//			warnx("module %u: D=%u",module_ind,current_config.diameter[module_ind-1]);
-//			warnx("module %u: s=%d",module_ind,current_config.direction[module_ind-1]);
-//			warnx("module %u: Ct=%7.3f",module_ind,test);//current_config.thrust[module_ind-1]);
-//			warnx("module %u: Cq=%d",module_ind,current_config.torque[module_ind-1]);
 		}
-////					warnx("here");
-////					fgets(cf_str,str_len,cf_file_hnd);
-//		}
 		fclose(cf_file_hnd);
 	}else{
 		warnx("error!!!");

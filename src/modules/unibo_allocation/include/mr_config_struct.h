@@ -1,16 +1,19 @@
 #ifndef MR_CONFIG_STRUCT_H
 #define MR_CONFIG_STRUCT_H
 
+#include <init_alloc_var.h>
+
 struct mr_config_struct
 {
-	unsigned int radius[6];
-	unsigned int diameter[6];
-	int height[6];
-	int azimut[6];
-	int mass[6];
-	int direction[6];
-	int operating[6];
-	float thrust[6];
-	int torque[6];
+	unsigned int rotors_number;
+	unsigned int radius[MAXROT];
+	unsigned int diameter[MAXROT];
+	int height[MAXROT];
+	int azimut[MAXROT];
+	int mass[MAXROT];
+	int direction[MAXROT];
+	int operating[MAXROT];
+	float thrust[MAXROT];
+	int torque[MAXROT];
 };
 #endif
