@@ -185,19 +185,29 @@ int unibo_allocation_thread_main(int argc, char *argv[])
 	ALLOCATION_start();
 	ALLOCATION_control();
 
+//	warnx("ORA %3.2f",3.1415);
 	int u2m[6] = {1,1,1,1,1,1};
 	//struct mr_config_struct curr_config=test(1,u2m);
 	struct mr_config_struct curr_config=ConfigurationReader(1,u2m);
 
 	warnx("input logging to Simulink routine ...");
 	for(module_ind=0;module_ind<6;module_ind++){
-		ALLOCATION_U.r[module_ind]=curr_config.radius[module_ind];   //distanza dal baricentro
-		warnx("module %u: r=%u",module_ind+1,(int)ALLOCATION_U.r[module_ind]);
+		ALLOCATION_U.r[module_ind]=curr_config.radius[module_ind];		//distanza dal baricentro
+//		warnx("module %u: r=%u",module_ind+1,(int)ALLOCATION_U.r[module_ind]);
 		ALLOCATION_U.s[module_ind]=curr_config.direction[module_ind];   //spin
-		warnx("module %u: s=%d",module_ind+1,(int)ALLOCATION_U.s[module_ind]);
-		ALLOCATION_U.Ct[module_ind]=0.3;//1.225*(curr_config.diameter[module_ind]^4)*curr_config.thrust[module_ind];   //coefficienti aerodinamici di spinta
-//		warnx("module %u: r=%u",module_ind+1,(int)ALLOCATION_U.Ct[module_ind]);
+//		warnx("module %u: s=%d",module_ind+1,(int)ALLOCATION_U.s[module_ind]);
+//		warnx("module %u: Ct=%.5f",module_ind+1,(double)curr_config.thrust[module_ind]);
+		ALLOCATION_U.Ct[module_ind]=curr_config.thrust[module_ind];		//coefficienti aerodinamici di spinta
+		warnx("module %u: Ct=%.5f",module_ind+1,(double)ALLOCATION_U.Ct[module_ind]);
+		ALLOCATION_U.Cq[module_ind]=curr_config.torque[module_ind];		//coefficienti aerodinamici di momento
+		warnx("module %u: Cq=%.5f",module_ind+1,(double)ALLOCATION_U.Cq[module_ind]);
 	}
+//	ALLOCATION_U.Cq[0] = 0.1;
+//	ALLOCATION_U.Cq[1] = 0.1;
+//	ALLOCATION_U.Cq[2] = 0.1;
+//	ALLOCATION_U.Cq[3] = 0.1;
+//	ALLOCATION_U.Cq[4] = 0.1;
+//	ALLOCATION_U.Cq[5] = 0.1;
 //		ALLOCATION_U.Ct[1] = 0.3;
 //		ALLOCATION_U.Ct[2] = 0.3;
 //		ALLOCATION_U.Ct[3] = 0.3;
@@ -260,12 +270,6 @@ int unibo_allocation_thread_main(int argc, char *argv[])
 			if (fds[0].revents & POLLIN) {
 				orb_copy(ORB_ID(vehicle_attitude), vehicle_attitude_fd, &ahrs);
 				orb_copy(ORB_ID(unibo_control_wrench), unibo_control_wrench_fd, &wrench);
-				ALLOCATION_U.Cq[0] = 0.1;		//coefficienti aerodinamici di momento   //TODO link to coefficient topics
-				ALLOCATION_U.Cq[1] = 0.1;
-				ALLOCATION_U.Cq[2] = 0.1;
-				ALLOCATION_U.Cq[3] = 0.1;
-				ALLOCATION_U.Cq[4] = 0.1;
-				ALLOCATION_U.Cq[5] = 0.1;
 
 				ALLOCATION_U.vc[0] = wrench.force[2];     //control wrench
 				ALLOCATION_U.vc[1] = wrench.torque[0];
