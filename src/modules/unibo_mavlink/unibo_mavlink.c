@@ -467,6 +467,7 @@ int unibo_mavlink_thread_main(int argc, char *argv[])
 	mavlink_unibo_parameters_t unibo_par_mav;
 	mavlink_vicon_position_estimate_t unibo_opti_mav;
 	mavlink_rc_channels_scaled_t unibo_rc;
+	mavlink_rc_channels_override_t channels_overrided;
 
 	// subscribe to telemetry topic
 	int telemetry_sub_fd = orb_subscribe(ORB_ID(unibo_telemetry));
@@ -509,6 +510,7 @@ int unibo_mavlink_thread_main(int argc, char *argv[])
 		deltaT = (nowT-time_pre)/1000.0f;
 		if (deltaT > 2000)    //2 seconds passed without messages
 		{
+			//warnx("Non ricevo messaggi da 2 secondi!");
 			orb_copy(ORB_ID(unibo_vehicle_status), unibo_status_fd, &unibo_status); //copy unibo_status to override the state of xbee alarm
 			unibo_status.xbee_lost = true;
 			orb_publish(ORB_ID(unibo_vehicle_status), unibo_status_pub_fd, &unibo_status);
@@ -604,6 +606,7 @@ int unibo_mavlink_thread_main(int argc, char *argv[])
 								hl_ref.timestamp=hl_traj_mav.Tstamp;
 								orb_publish(ORB_ID(unibo_hl_traj), unibo_hl_traj_pub_fd, &hl_ref);
 								if (!silent) warnx("Pubblicato reference!");
+								warnx("Pubblicato reference: PosX: %.3f - PosY: %.3f - PosZ: %.3f", (double)hl_traj_mav.p_refX, (double)hl_traj_mav.p_refY, (double)hl_traj_mav.p_refZ);
 								break;
 							case MAVLINK_MSG_ID_UNIBO_PARAMETERS:
 								mavlink_msg_unibo_parameters_decode(&msg, &unibo_par_mav);
@@ -635,6 +638,10 @@ int unibo_mavlink_thread_main(int argc, char *argv[])
 								param.in24=unibo_par_mav.offset_z;              //is yaw offset
 								param.valid=1;
 								orb_publish(ORB_ID(unibo_parameters), unibo_param_pub_fd, &param);
+								break;
+							case MAVLINK_MSG_ID_RC_CHANNELS_OVERRIDE:
+								mavlink_msg_rc_channels_override_decode(&msg, &channels_overrided);
+								warnx("Pubblicato rc_override: %d %d %d", channels_overrided.chan1_raw, channels_overrided.chan2_raw, channels_overrided.chan3_raw);
 								break;
 							case MAVLINK_MSG_ID_RC_CHANNELS_SCALED:
 								mavlink_msg_rc_channels_scaled_decode(&msg, &unibo_rc);

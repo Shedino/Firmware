@@ -617,9 +617,10 @@ int unibo_control_thread_main(int argc, char *argv[])
 				counter_output++;
 
 				if (counter_output>=400){
-					warnx("Thrust: %.3f Torques: %.3f %.3f %.3f", Model_GS_Y.U_F, Model_GS_Y.U_TAU[0], Model_GS_Y.U_TAU[1], Model_GS_Y.U_TAU[2]);
+					//warnx("Thrust: %.3f Torques: %.3f %.3f %.3f", Model_GS_Y.U_F, Model_GS_Y.U_TAU[0], Model_GS_Y.U_TAU[1], Model_GS_Y.U_TAU[2]);
 					counter_output = 0;
 				}
+
 
 
 
@@ -632,7 +633,15 @@ int unibo_control_thread_main(int argc, char *argv[])
 				//scale_cinputs_to_px4pwm(&mout, &cinputs);
 
 				// ---- INVIO OUTPUTS ----
-				//orb_publish(ORB_ID(motor_output), mout_pub_fd, &mout);
+				mout.outputs[0] = 1100;
+				mout.outputs[1] = 1100;            //TODO output is only uf and u_tau, mout will come from allocation
+				mout.outputs[2] = 1100;
+				mout.outputs[3] = 1100;
+				mout.outputs[4] = 1100;
+				mout.outputs[5] = 1100;
+				mout.outputs[6] = 1100;
+				mout.outputs[7] = 1100;
+				orb_publish(ORB_ID(motor_output), mout_pub_fd, &mout);
 
 				//tcflush(serial_PX4, TCOFLUSH);
 
