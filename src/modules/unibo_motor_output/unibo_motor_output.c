@@ -31,10 +31,13 @@
 #include <sys/mount.h>
 #include <sys/ioctl.h>
 #include <sys/stat.h>
+#include <stdbool.h>
 
 #include <stdbool.h>
 #include <uORB/uORB.h>
 #include <uORB/topics/motor_output.h>
+#include <uORB/topics/unibo_vehicle_status.h>
+#include <uORB/topics/safety.h>
 
 #include <nuttx/i2c.h>
 #include <nuttx/mtd.h>
@@ -43,18 +46,27 @@
 
 #include <drivers/drv_pwm_output.h>
 
+#define MIN_PWM 1000
+#define MAX_PWM 2100
+#define PWM_DISARMED 0
+#define PWM_ARMED 900
+#define PWM_PREFLIGHT 1100
+#define MIN_RPM 0
+#define MAX_RPM 10000  //TODO should be taken from configuration file dinamically changing with voltage
+#define RPM_MODE 0       //set to zero if pwm is used, rpm mode otherwise
+
 #if !defined(ATECH) && !defined(IRIS)
 	#error "You must define ATECH or IRIS macros"
 #endif
 
 // numero di motori effettivamente collegati
 #ifdef ATECH
-	#define MOTORS_START 4
-	#define MOTORS_NUMBER 8
+	#define MOTORS_START 4   //TODO should be taken from configuration file
+	#define MOTORS_NUMBER 8	//TODO should be taken from configuration file
 #endif
 #ifdef IRIS
-	#define MOTORS_START 0
-	#define MOTORS_NUMBER 4
+	#define MOTORS_START 0	//TODO should be taken from configuration file
+	#define MOTORS_NUMBER 4	//TODO should be taken from configuration file
 #endif
 
 /* Deamon libraries? */
@@ -85,6 +97,11 @@ static void usage(const char *reason)
 	exit(1);
 }
 
+int map(int in, int in_low, int in_high, int out_low, int out_high)
+{
+	return (in-in_low)*(out_high-out_low)/(in_high-in_low)+out_low;
+}
+
 // inizializzazione servo
 void unibo_motor_output_init()
 {
@@ -105,11 +122,12 @@ void unibo_motor_output_init()
 		warnx("errore arm\n");
 		exit(1);
 	}
-	int i;
+	/*int i;
+	warnx("Motor Output: initializing pwm at 950us");
 	for(i = MOTORS_START; i < MOTORS_NUMBER; i++)
 	{
 		ioctl(pwm_fd, PWM_SERVO_SET(i), 900);
-	}
+	}*/
 }
 
 // deinizializzazione servo
@@ -127,23 +145,54 @@ void unibo_motor_output_deinit()
 // test dei pin di output
 void unibo_motor_output_test()
 {
-	warnx("[unibo_motor_output] testing... you should see 6 sec of output \"blinking\"\n");
+	warnx("[unibo_motor_output] testing... you should see 20 sec of output \"blinking\"\n");
 
-	unibo_motor_output_init();
+	//unibo_motor_output_init();
 
+	sleep(10);
 	int i, k;
-	for(i = 0; i < 3; i++)
+	for(i = 0; i < 5; i++)
 	{
 		for(k = MOTORS_START; k < MOTORS_NUMBER; k++)
 		{
-			ioctl(pwm_fd, PWM_SERVO_SET(k), 0);
+			ioctl(pwm_fd, PWM_SERVO_SET(k), 950);
 		}
+		warnx("Prova 950");
 		sleep(1);
 
 		for(k = MOTORS_START; k < MOTORS_NUMBER; k++)
 		{
-			ioctl(pwm_fd, PWM_SERVO_SET(k), 1200);
+			ioctl(pwm_fd, PWM_SERVO_SET(k), 1000);
 		}
+		//warnx("Prova 1100");
+		sleep(1);
+
+		for(k = MOTORS_START; k < MOTORS_NUMBER; k++)
+		{
+			ioctl(pwm_fd, PWM_SERVO_SET(k), 1100);
+		}
+		//warnx("Prova 1150");
+		sleep(1);
+
+		for(k = MOTORS_START; k < MOTORS_NUMBER; k++)
+		{
+			ioctl(pwm_fd, PWM_SERVO_SET(k), 1000);
+		}
+		//warnx("Prova 1000");
+		sleep(1);
+
+		for(k = MOTORS_START; k < MOTORS_NUMBER; k++)
+		{
+			ioctl(pwm_fd, PWM_SERVO_SET(k), 900);
+		}
+		//warnx("Prova 900");
+		sleep(1);
+
+		for(k = MOTORS_START; k < MOTORS_NUMBER; k++)
+		{
+			ioctl(pwm_fd, PWM_SERVO_SET(k), 700);
+		}
+		//warnx("Prova 700");
 		sleep(1);
 	}
 
@@ -232,43 +281,122 @@ int unibo_motor_output_main(int argc, char *argv[])
 int unibo_motor_output_thread_main(int argc, char *argv[])
 {
 	int count=0;
+	bool flag_armed;
+	bool updated;
+	uint8_t esc_state;
+	struct pwm_output_values esc_actual_pwm;
+	int ret;
+
 	warnx("[unibo_motor_output] starting\n");
 	unibomo_thread_running = true;
 
 	// subscribe a ORB
 	int motor_output_fd = orb_subscribe(ORB_ID(motor_output));
-	orb_set_interval(motor_output_fd, 3);
+	//orb_set_interval(motor_output_fd, 3);
+
+	/* subscribe to safety switch topic */
+	int safety_fd = orb_subscribe(ORB_ID(safety));
+	struct safety_s safety;
+
+	/* subscribe to unibo vehicle status topic */
+	int unibo_status_fd = orb_subscribe(ORB_ID(unibo_vehicle_status));
+	struct unibo_vehicle_status_s unibo_status;
 
 	struct pollfd fds[] = { { .fd = motor_output_fd, .events = POLLIN } };
 
 	unibo_motor_output_init();
 
 	int i;
-	int motor_mapping; // mapping dei motori differente fra l'IRIS e il quadrotor UNIBO
-	struct motor_output_s pwm_values;
-
-	// PWM to 0 initially
-//	for(i = MOTORS_START; i < MOTORS_NUMBER; i++)
-//	{
-//		ioctl(pwm_fd, PWM_SERVO_SET(i), 0);
-//	}
+	//int motor_mapping; // mapping dei motori differente fra l'ItopRIS e il quadrotor UNIBO
+	struct motor_output_s motor_output;
 
 	// loop dell'applicazione
 	while (!unibomo_thread_should_exit)
 	{
+		/*count++;      //USED TO READ ACTUAL PWM VALUES ON CHANNELS
+		if (count >= 50){
+			count = 0;
+			ret = ioctl(pwm_fd, PWM_SERVO_GET(1), (unsigned long)&esc_actual_pwm.values[1]);
+			warnx("Actual PWM of channel 1: %d", esc_actual_pwm.values[1]);
+			ret = ioctl(pwm_fd, PWM_SERVO_GET(5), (unsigned long)&esc_actual_pwm.values[5]);
+			warnx("Actual PWM of channel 5: %d", esc_actual_pwm.values[5]);
+		}*/
+
+
 		// controllo se ci sono nuovi dati
-		int poll_ret = poll(fds, 1, 100);     //forse si può mettere (fds, 3, 1000) per andare a 333Hz
+		int poll_ret = poll(fds, 1, 100);
 		if(poll_ret > 0)
 		{
 			if(fds[0].revents & POLLIN)
 			{
 				// lettura ORB
 				//warnx("Nuovo valore pwm: %d %d %d %d %d %d %d %d", pwm_values.outputs[0], pwm_values.outputs[1], pwm_values.outputs[2], pwm_values.outputs[3],pwm_values.outputs[4], pwm_values.outputs[5], pwm_values.outputs[6], pwm_values.outputs[7]);
-				orb_copy(ORB_ID(motor_output), motor_output_fd, &pwm_values);
+				orb_copy(ORB_ID(motor_output), motor_output_fd, &motor_output);
+
+				orb_check(safety_fd, &updated);
+				if (updated){
+					orb_copy(ORB_ID(safety), safety_fd, &safety);
+					//safety.safety_off;  -->true if safety is off
+				}
+
+				orb_check(unibo_status_fd, &updated);
+				if (updated){
+					orb_copy(ORB_ID(unibo_vehicle_status), unibo_status_fd, &unibo_status);
+				}
 
 				// scrittura su pin output
-				count++;
-				for(i = MOTORS_START; i < MOTORS_NUMBER; i++)
+
+				if (!safety.safety_off){   //inverted-->safety_off true means safety on
+					flag_armed = false;
+					esc_state = 1;  //DISARM
+					for(i = MOTORS_START; i < MOTORS_NUMBER; i++)
+					{
+						ioctl(pwm_fd, PWM_SERVO_SET(i), PWM_DISARMED);
+					}
+					//warnx("DISARM: %d", PWM_DISARMED);
+				} else{
+					if (!flag_armed){
+						flag_armed = true;
+						esc_state = 2; //ARM
+						for(i = MOTORS_START; i < MOTORS_NUMBER; i++)
+						{
+							ioctl(pwm_fd, PWM_SERVO_SET(i), PWM_ARMED);
+						}
+						//warnx("ARM: %d", PWM_ARMED);
+					} else{
+						if (unibo_status.flight_mode == FLIGHTMODE_PREFLIGHT){
+							esc_state = 3; //PREFLIGHT
+							for(i = MOTORS_START; i < MOTORS_NUMBER; i++)
+							{
+								ioctl(pwm_fd, PWM_SERVO_SET(i), PWM_PREFLIGHT);
+							}
+						}else if (unibo_status.flight_mode == FLIGHTMODE_STOP){
+							esc_state = 5; //STOP
+							for(i = MOTORS_START; i < MOTORS_NUMBER; i++)
+							{
+								ioctl(pwm_fd, PWM_SERVO_SET(i), PWM_ARMED);
+							}
+							//warnx("STOP: %d", PWM_DISARMED);
+						}
+						else{
+							esc_state = 4; //SPEED CONTROL ON
+							if (RPM_MODE){
+								for(i = MOTORS_START; i < MOTORS_NUMBER; i++)
+									{
+										ioctl(pwm_fd, PWM_SERVO_SET(i), map(motor_output.outputs_rpm[i], MIN_RPM, MAX_RPM, MIN_PWM, MAX_PWM));
+									}
+							}else {
+								for(i = MOTORS_START; i < MOTORS_NUMBER; i++)
+									{
+										ioctl(pwm_fd, PWM_SERVO_SET(i), motor_output.outputs_pwm[i]);
+									}
+							}
+						}
+					}
+				}
+
+				//count++;
+				/*for(i = MOTORS_START; i < MOTORS_NUMBER; i++)       //OLD
 				{
 #ifdef ATECH
 					motor_mapping = i;
@@ -289,8 +417,10 @@ int unibo_motor_output_thread_main(int argc, char *argv[])
 							break;
 					}
 #endif
+
+					//ioctl(pwm_fd, PWM_SERVO_SET(i), 1100);
 					ioctl(pwm_fd, PWM_SERVO_SET(motor_mapping), pwm_values.outputs[i]);
-				}
+				}*/                   //END OLD
 			}
 		}
 	}

@@ -56,6 +56,8 @@
 #include <uORB/topics/vehicle_local_position.h>
 #include <uORB/topics/vehicle_gps_position.h>
 #include <uORB/topics/unibo_vehicle_status.h>
+#include <uORB/topics/unibo_control_wrench.h>
+
 
 #define pi 3.14159
 
@@ -263,6 +265,11 @@ int unibo_control_thread_main(int argc, char *argv[])
 	struct motor_output_s mout;
 	memset(&mout, 0, sizeof(mout));
 	int mout_pub_fd = orb_advertise(ORB_ID(motor_output), &mout);
+
+	/* advertise control wrench topic */
+	struct unibo_control_wrench_s wrench;
+	memset(&wrench, 0, sizeof(wrench));
+	int wrench_pub_fd = orb_advertise(ORB_ID(unibo_control_wrench), &wrench);
 
 	/* advertize gps position topic for log modifica */
 	struct vehicle_gps_position_s log;
@@ -622,28 +629,25 @@ int unibo_control_thread_main(int argc, char *argv[])
 				}
 
 
-
-
-				// ---- Riempio oggetto CInputs con i valori generati in output dal controllo ----
-				//CInputs_readCInputs(&cinputs);
-
-
-				// riempimento del pacchetto mavlink servo_output_raw a partire dall'output del controllo (cinputs)
-				// la funzione comprende anche la scalatura dal range 0..4095 di cinputs a 900..2100 dei microsecondi pwm (usati da px4)
-				//scale_cinputs_to_px4pwm(&mout, &cinputs);
-
-				// ---- INVIO OUTPUTS ----
-				mout.outputs[0] = 1100;
-				mout.outputs[1] = 1100;            //TODO output is only uf and u_tau, mout will come from allocation
-				mout.outputs[2] = 1100;
-				mout.outputs[3] = 1100;
-				mout.outputs[4] = 1100;
-				mout.outputs[5] = 1100;
-				mout.outputs[6] = 1100;
-				mout.outputs[7] = 1100;
+				// ---- SEND OUTPUTS ----
+				mout.outputs_pwm[0] = 1200;
+				mout.outputs_pwm[1] = 1200;            //TODO output is only uf and u_tau, mout will come from allocation
+				mout.outputs_pwm[2] = 1200;			   //this should be removed, to test only
+				mout.outputs_pwm[3] = 1200;
+				mout.outputs_pwm[4] = 1200;
+				mout.outputs_pwm[5] = 1200;
+				mout.outputs_pwm[6] = 1200;
+				mout.outputs_pwm[7] = 1200;
 				orb_publish(ORB_ID(motor_output), mout_pub_fd, &mout);
 
-				//tcflush(serial_PX4, TCOFLUSH);
+				// ---- SEND WRENCH ----
+				wrench.force[0] = 0;
+				wrench.force[1] = 0;
+				wrench.force[2] = Model_GS_Y.U_F;
+				wrench.torque[0] = Model_GS_Y.U_TAU[0];
+				wrench.torque[1] = Model_GS_Y.U_TAU[1];
+				wrench.torque[2] = Model_GS_Y.U_TAU[2];
+				orb_publish(ORB_ID(unibo_control_wrench), wrench_pub_fd, &wrench);
 
 
 				//TELEMETRIA UART
@@ -704,7 +708,7 @@ int unibo_control_thread_main(int argc, char *argv[])
 //					local_pos.xy_valid=true;
 					//orb_publish(ORB_ID(vehicle_local_position), local_pos_pub_fd, &local_pos);
 
-					//scrivo sul topic gps in modo da avere i log sulla sd                                  //TODO togliere se si usa GPS (solo per log)
+					//scrivo sul topic gps in modo da avere i log sulla sd         //TODO togliere se si usa GPS (solo per log)
 //					log.lat= (float)Model_GS_Y.STATE[0]/1000.0f;//x
 //					log.lon= (float)Model_GS_Y.STATE[1]/1000.0f;//y
 //					log.vel_m_s= (float)Model_GS_Y.STATE[2]/1000.0f; // variabile di appoggio per z

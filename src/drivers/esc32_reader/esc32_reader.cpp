@@ -85,9 +85,11 @@
 #include <uORB/topics/actuator_controls.h>
 #include <uORB/topics/actuator_outputs.h>
 #include <uORB/topics/actuator_armed.h>
+#include <uORB/topics/safety.h>
 
 #include <uORB/topics/esc_status.h>       //USED
 #include <uORB/topics/motor_output.h>
+#include <uORB/topics/unibo_vehicle_status.h>
 
 #include <nuttx/i2c.h>
 #include <nuttx/mtd.h>
@@ -103,8 +105,10 @@
 #define BLCTRL_BASE_ADDR 				0x29
 
 #define ESC_UORB_PUBLISH_DELAY			10000   //UNIBO CHANGE put at 100Hz
-
 #define DEVICE_ADDRESS 0x52  //UNIBO
+
+#define SPEED_CONTROL_RPM	0          //Invert if we control with rpm //TODO do it better with #ifdef
+#define SPEED_CONTROL_PWM	1
 
 
 struct MotorData_t {
@@ -180,7 +184,7 @@ private:
 	static const unsigned	_ngpio;
 
 	int			read_arduino(unsigned int add);    //UNIBO
-	int			send_pwm(uint16_t pwm_values[4], unsigned int add);    //UNIBO
+	int			send_pwm(uint16_t pwm_values[4], uint8_t esc_state, unsigned int add);    //UNIBO
 };
 
 
@@ -298,11 +302,27 @@ ESC32_READER::task_main_trampoline(int argc, char *argv[])
 void
 ESC32_READER::task_main()
 {
+	bool updated;
+	bool flag_armed = false;
+	int temp_counter = 0;
+	uint8_t esc_state;  //to be sent to esc 0-->invalid, 1-->disarm, 2-->arm, 3-->preflight, 4-->control, 5-->stop
+	int8_t esc_state_byte; //packed byte 00xxxxyy xxxx-->esc_state, yy-->velocity mode
+	uint8_t velocity_mode;
+
 	/* advertise the blctrl status */
 	esc_status_s esc;
 	memset(&esc, 0, sizeof(esc));
 	_t_esc_status = orb_advertise(ORB_ID(esc_status), &esc);
 
+	/* subscribe to safety switch topic */
+	int safety_fd = orb_subscribe(ORB_ID(safety));
+	struct safety_s safety;
+
+	/* subscribe to unibo vehicle status topic */
+	int unibo_status_fd = orb_subscribe(ORB_ID(unibo_vehicle_status));
+	struct unibo_vehicle_status_s unibo_status;
+
+	/* subscribe to motor output topic */
 	int motor_output_fd = orb_subscribe(ORB_ID(motor_output));
 	struct motor_output_s pwm_values;
 
@@ -320,20 +340,73 @@ ESC32_READER::task_main()
 		int ret = ::poll(&fds[0], 1, 100);         //should be at 200Hz
 		if(ret > 0){
 			if(fds[0].revents & POLLIN){
-				orb_copy(ORB_ID(motor_output), motor_output_fd, &pwm_values);
+				orb_check(motor_output_fd, &updated);
+				if (updated){
+					orb_copy(ORB_ID(motor_output), motor_output_fd, &pwm_values);
+				}
+
+
+				/* copy safety switch data into local buffer */
+				/*
+				orb_check(safety_fd, &updated);
+				if (updated){
+					orb_copy(ORB_ID(safety), safety_fd, &safety);
+					//safety.safety_off;  -->true if safety is off
+				}
+				orb_check(unibo_status_fd, &updated);
+				if (updated){
+					orb_copy(ORB_ID(unibo_vehicle_status), unibo_status_fd, &unibo_status);
+				}
+
+				if (!safety.safety_off){
+					flag_armed = false;
+					esc_state = 1;  //DISARM
+				} else{
+					if (!flag_armed){
+						flag_armed = true;
+						esc_state = 2; //ARM
+					} else{
+						if (unibo_status.flight_mode == FLIGHTMODE_PREFLIGHT){
+							esc_state = 3; //PREFLIGHT
+						}else if (unibo_status.flight_mode == FLIGHTMODE_STOP){
+							esc_state = 5; //STOP
+						}
+						else{
+							esc_state = 4; //SPEED CONTROL ON
+						}
+					}
+				}*/
+
+
+				/*esc_state_byte = 0;
+				esc_state_byte = esc_state_byte | (esc_state << 2);
+				//warnx("esc_status2: %d", esc_state_byte);
+				if (SPEED_CONTROL_PWM){
+					velocity_mode = 1;
+					esc_state_byte = esc_state_byte | velocity_mode;
+					//warnx("esc_status3: %d", esc_state_byte);
+				}else{
+					velocity_mode = 2;
+					esc_state_byte = esc_state_byte | velocity_mode;
+					//warnx("esc_status3: %d", esc_state_byte);
+				}*/
+
+				//warnx("esc_status: %d", esc_state_byte);
 				read_arduino(DEVICE_ADDRESS);
 
-				for (int i =0; i<N_MOTORS;i++){
-					pwm_motors[i] = pwm_values.outputs[i];
-				}
-				if (OK == send_pwm(pwm_motors, DEVICE_ADDRESS)){
+				/*temp_counter++;        //TODO remove to have full 200Hz
+				if (temp_counter >=200){
+					temp_counter = 0;
+					for (int i =0; i<N_MOTORS;i++){
+						pwm_motors[i] = pwm_values.outputs[i];
+					}
+					if (OK == send_pwm(pwm_motors, esc_state_byte, DEVICE_ADDRESS)){
 
-				}
+					}
+				}*/
+
 				esc = _esc;
 				orb_publish(ORB_ID(esc_status), _t_esc_status, &esc);
-				//if (_arduino_counter>=90){
-					//warnx("Sent pwm via I2C: %d %d %d %d", pwm_values.outputs[0], pwm_values.outputs[1], pwm_values.outputs[2], pwm_values.outputs[3] );
-				//}
 			}
 		}
 
@@ -394,15 +467,16 @@ ESC32_READER::read_arduino(unsigned int add)         //UNIBO
 }
 
 int
-ESC32_READER::send_pwm(uint16_t pwm_values[4], unsigned int add)         //UNIBO
+ESC32_READER::send_pwm(uint16_t pwm_values[4], uint8_t esc_state, unsigned int add)         //UNIBO
 {
-	uint8_t message[8];
-	for (int i = 0; i<4;i++){
-		message[i*2] = pwm_values [i] & 0xff;
-		message[i*2+1] = pwm_values [i] >> 8;
+	uint8_t message[9];
+	message[0] = esc_state;
+	for (int i = 1; i<4;i++){ //filling 1...8
+		message[i*2-1] = pwm_values [i] & 0xff;
+		message[i*2] = pwm_values [i] >> 8;
 	}
 	set_address(add);
-	if (OK == transfer(&message[0], 8, nullptr, 0)) {
+	if (OK == transfer(&message[0], 9, nullptr, 0)) {
 		return OK;
 	}
 }

@@ -25,7 +25,8 @@
 struct motor_output_s
 {
 	// valori pwm in microsecondi
-	uint16_t outputs[MAX_CHANNELS];
+	uint16_t outputs_pwm[MAX_CHANNELS];
+	uint16_t outputs_rpm[MAX_CHANNELS];
 };
 
 /* register this as object request broker structure */

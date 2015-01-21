@@ -127,14 +127,14 @@ void scale_cinputs_to_px4pwm(struct motor_output_s* px4_output, cInputs_s* cinpu
 
 	//px4_output->port = 0; // non usato
 	//px4_output->time_usec = 0; // non usato
-	px4_output->outputs[0] = servo1_scaled;
-	px4_output->outputs[1] = servo2_scaled;
-	px4_output->outputs[2] = servo3_scaled;
-	px4_output->outputs[3] = servo4_scaled;
-	px4_output->outputs[4] = servo5_scaled;
-	px4_output->outputs[5] = servo6_scaled;
-	px4_output->outputs[6] = servo7_scaled;
-	px4_output->outputs[7] = servo8_scaled;
+	px4_output->outputs_pwm[0] = servo1_scaled;
+	px4_output->outputs_pwm[1] = servo2_scaled;
+	px4_output->outputs_pwm[2] = servo3_scaled;
+	px4_output->outputs_pwm[3] = servo4_scaled;
+	px4_output->outputs_pwm[4] = servo5_scaled;
+	px4_output->outputs_pwm[5] = servo6_scaled;
+	px4_output->outputs_pwm[6] = servo7_scaled;
+	px4_output->outputs_pwm[7] = servo8_scaled;
 }
 
 void init(int argc, char* argv[])
