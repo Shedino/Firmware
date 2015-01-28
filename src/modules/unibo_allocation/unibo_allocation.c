@@ -42,6 +42,7 @@
 #include <poll.h>
 #include <uORB/topics/vehicle_attitude.h>
 #include <uORB/topics/unibo_control_wrench.h>
+#include <uORB/topics/motor_output.h>
 
 /* Daemon libraries? */
 #include <systemlib/systemlib.h>
@@ -165,6 +166,12 @@ int unibo_allocation_thread_main(int argc, char *argv[])
 	int unibo_control_wrench_fd = orb_subscribe(ORB_ID(unibo_control_wrench));
 	orb_set_interval(unibo_control_wrench_fd, 5); //1000 = 1Hz (ms)
 
+	/* advertise control wrench topic */
+	struct motor_output_s motor;
+	memset(&motor, 0, sizeof(motor));
+	int motor_pub_fd = orb_advertise(ORB_ID(motor_output), &motor);
+
+
 
 	/*
 	 * |-----------------------------------------------------|
@@ -183,19 +190,35 @@ int unibo_allocation_thread_main(int argc, char *argv[])
 	ALLOCATION_start();
 	ALLOCATION_control();
 
-	int u2m[6] = {1,1,1,1,1,1};
-	struct mr_config_struct curr_config=ConfigurationReader(1,u2m);
+	//int u2m[6] = {1,1,1,1,1,1};
+	//struct mr_config_struct curr_config=ConfigurationReader(1,u2m);
 
 	warnx("input logging to Simulink routine ...");
-	for(module_ind=0;module_ind<curr_config.rotors_number;module_ind++){
-		ALLOCATION_U.r[module_ind]=curr_config.radius[module_ind];		//distanza dal baricentro
+	for(module_ind=0;module_ind<4;module_ind++){
+		ALLOCATION_U.r[module_ind]=0.29;//curr_config.radius[module_ind];		//distanza dal baricentro
 //		warnx("module %u: r=%u",module_ind+1,(int)ALLOCATION_U.r[module_ind]);
-		ALLOCATION_U.s[module_ind]=curr_config.direction[module_ind];   //spin
+//		ALLOCATION_U.s[module_ind]=1;//curr_config.direction[module_ind];   //spin
 //		warnx("module %u: s=%d",module_ind+1,(int)ALLOCATION_U.s[module_ind]);
 //		warnx("module %u: Ct=%.5f",module_ind+1,(double)curr_config.thrust[module_ind]);
-		ALLOCATION_U.Ct[module_ind]=curr_config.thrust[module_ind];		//coefficienti aerodinamici di spinta
+		ALLOCATION_U.Ct[module_ind]=0,0000115;//curr_config.thrust[module_ind];		//coefficienti aerodinamici di spinta
 //		warnx("module %u: Ct=%.5f",module_ind+1,(double)ALLOCATION_U.Ct[module_ind]);
-		ALLOCATION_U.Cq[module_ind]=curr_config.torque[module_ind];		//coefficienti aerodinamici di momento
+		ALLOCATION_U.Cq[module_ind]=0,00000000055;//curr_config.torque[module_ind];		//coefficienti aerodinamici di momento
+//		warnx("module %u: Cq=%.8f",module_ind+1,(double)ALLOCATION_U.Cq[module_ind]);
+	}
+	ALLOCATION_U.s[0]=-1;//curr_config.direction[module_ind];   //spin
+	ALLOCATION_U.s[1]=1;//curr_config.direction[module_ind];   //spin
+	ALLOCATION_U.s[2]=-1;//curr_config.direction[module_ind];   //spin
+	ALLOCATION_U.s[3]=1;//curr_config.direction[module_ind];   //spin
+
+	for(module_ind=4;module_ind<6;module_ind++){
+		ALLOCATION_U.r[module_ind]=0;//curr_config.radius[module_ind];		//distanza dal baricentro
+//		warnx("module %u: r=%u",module_ind+1,(int)ALLOCATION_U.r[module_ind]);
+		ALLOCATION_U.s[module_ind]=0;//curr_config.direction[module_ind];   //spin
+//		warnx("module %u: s=%d",module_ind+1,(int)ALLOCATION_U.s[module_ind]);
+//		warnx("module %u: Ct=%.5f",module_ind+1,(double)curr_config.thrust[module_ind]);
+		ALLOCATION_U.Ct[module_ind]=0;//curr_config.thrust[module_ind];		//coefficienti aerodinamici di spinta
+//		warnx("module %u: Ct=%.5f",module_ind+1,(double)ALLOCATION_U.Ct[module_ind]);
+		ALLOCATION_U.Cq[module_ind]=0;//curr_config.torque[module_ind];		//coefficienti aerodinamici di momento
 //		warnx("module %u: Cq=%.8f",module_ind+1,(double)ALLOCATION_U.Cq[module_ind]);
 	}
 
@@ -215,7 +238,6 @@ int unibo_allocation_thread_main(int argc, char *argv[])
 		 * { .fd = other_sub_fd,   .events = POLLIN },
 		 */
 	};
-
 
 	/*
 	 * |-----------------------------------------------------|
@@ -260,9 +282,11 @@ int unibo_allocation_thread_main(int argc, char *argv[])
 				ALLOCATION_control();
 				counter_warnx++;
 				if (counter_warnx>=200){
-//					printf("ora    è ok\r");
-//					printf("domani");
-					warnx("Time: %ds| Rotors Speed: %.3fRPM %.3fRPM %.3fRPM %.3fRPM %.3fRPM %.3fRPM", time_counter, (double)ALLOCATION_Y.w[0], (double)ALLOCATION_Y.w[1], (double)ALLOCATION_Y.w[2], (double)ALLOCATION_Y.w[3], (double)ALLOCATION_Y.w[4], (double)ALLOCATION_Y.w[5]);
+					for(module_ind=0;module_ind<6;module_ind++){
+						motor.outputs_rpm[module_ind]=ALLOCATION_Y.w[module_ind];
+					}
+					orb_publish(ORB_ID(motor_output), motor_pub_fd, &motor);
+					warnx("Time: %ds| Rotors Speed: %.3fRPM %.3fRPM %.3fRPM %.3fRPM %.3fRPM %.3fRPM", time_counter, (double)motor.outputs_rpm[0], (double)motor.outputs_rpm[1], (double)motor.outputs_rpm[2], (double)motor.outputs_rpm[3], (double)motor.outputs_rpm[4], (double)motor.outputs_rpm[5]);
 					counter_warnx = 0;
 					time_counter++;
 				}

@@ -38,6 +38,7 @@
  */
 
 #include <stdio.h>
+#include <errno.h>
 #include <ALLOCATION.h>
 
 //#include <poll.h>
@@ -54,12 +55,16 @@ static bool thread_running = false;		/**< daemon status flag */
 static int allocation_task;				/**< Handle of daemon task / thread */
 unsigned int tab_num;
 unsigned int tab_ind=0;
-int module_ind=0;
-int read_line_length=100;
+unsigned int module_num;
+unsigned int module_ind=0;
 char* config_file_name="multirotor_configuration.mcf";
 char* config_file_path="/fs/microsd/multirotor_configuration.mcf";
+int read_line_length=100;
 char read_line_string[100];
 char* tab_name;
+char par1_name[20];
+char par2_name[20];
+char par3_name[20];
 FILE* config_file_handle;
 
 
@@ -119,44 +124,104 @@ int unibo_configuration_main(int argc, char *argv[])
 
 	if (!strcmp(argv[1], "reset")) {
 		warnx("resetting configuration file ''%s''",config_file_name);
-//		strcat(config_file_path,config_file_name);
 		config_file_handle=fopen(config_file_path,"w");
 		fprintf(config_file_handle,"<TAB,2>\n");
-		fprintf(config_file_handle,"<COL,passive modules,2,name,diameter [mm],distance [mm]>\n");
+		fprintf(config_file_handle,"<COL,passive modules,2,ID,diameter[mm],distance[mm]>\n");
 		fprintf(config_file_handle,"<ROW,controller,20,30>\n");
 		fprintf(config_file_handle,"<ROW,camera,20,30>\n");
-		fprintf(config_file_handle,"<COL,active modules,4,name,diameter [mm],distance [mm]>\n");
+		fprintf(config_file_handle,"<COL,rotors,4,ID,diameter[mm],distance[mm]>\n");
 		fprintf(config_file_handle,"<ROW,1,20,30>\n");
 		fprintf(config_file_handle,"<ROW,2,20,30>\n");
 		fprintf(config_file_handle,"<ROW,3,20,30>\n");
 		fprintf(config_file_handle,"<ROW,4,20,30>\n");
 		fclose(config_file_handle);
 		config_file_handle=fopen(config_file_path,"r");
-//		printf(config_file_path);
 		if(config_file_handle!=NULL) {
+			printf("\ncurrent configuration\n");
 			do{
 				fgets(read_line_string,read_line_length,config_file_handle);
 			}while(strstr(read_line_string,"<TAB")==NULL);
 			sscanf(read_line_string,"<TAB,%u>",&tab_num);
-			for(tab_ind=0;tab_ind<2;tab_ind++){
+			for(tab_ind=0;tab_ind<tab_num;tab_ind++){
 				do{
 					fgets(read_line_string,read_line_length,config_file_handle);
 				}while(strstr(read_line_string,"<COL")==NULL);
-				sscanf(read_line_string,"<COL,%s,%u,%*s,%*s,$*s>",&tab_name,&tab_num);
-				printf("%s\n",&tab_name);
+				sscanf(read_line_string,"<COL,%s,%u,%s,%s,%s>",&tab_name,&module_num,&par1_name,&par2_name,&par3_name);
+				printf("\n%s\n",&tab_name);
+				printf("%-12s|%-12s|%-12s\n",&par1_name,&par2_name,&par3_name);
+				printf("------------+------------+------------\n");
+				for(module_ind=0;module_ind<module_num;module_ind++){
+					do{
+						fgets(read_line_string,read_line_length,config_file_handle);
+					}while(strstr(read_line_string,"<ROW")==NULL);
+					sscanf(read_line_string,"<ROW,%s,%s,%s>",&par1_name,&par2_name,&par3_name);
+					printf("%12s|%12s|%12s\n",&par1_name,&par2_name,&par3_name);
+				}
+//				sscanf(read_line_string,"<COL2,%s,%s,%s>",&par1_name,&par2_name,&par3_name);//,%*s,$*s>
+//				//sscanf(read_line_string,",%s>,",&par3_name);//%*s,%*s,$*s>
+//				printf("%s|%s\n",&par1_name,&par2_name);
+//				printf("%s\n",&par3_name);
 			}
-			fgets (read_line_string , 100 , config_file_handle);
-			puts(read_line_string);
-			for(module_ind=0;module_ind<4;module_ind++){
-//			while ( fgets (read_line_string , 100 , config_file_handle) != NULL )
+			printf("\n");
+//			fgets (read_line_string , 100 , config_file_handle);
+//			puts(read_line_string);
+//			for(module_ind=0;module_ind<4;module_ind++){
+////			while ( fgets (read_line_string , 100 , config_file_handle) != NULL )
+////				puts(read_line_string);
+//				fgets (read_line_string , 100 , config_file_handle);
 //				puts(read_line_string);
-				fgets (read_line_string , 100 , config_file_handle);
-				puts(read_line_string);
-			}
+//			}
 		}
 		fclose(config_file_handle);
 		/* this is not an error */
 		exit(0);
+	}
+
+	if (!strcmp(argv[1], "add")) {
+		if (!strcmp(argv[2], "rotor")) {
+			puts("ok1");
+			config_file_handle=fopen(config_file_path,"r");
+			if(config_file_handle!=NULL) {
+			puts("ora");
+			rewind(config_file_handle);
+			puts("o");
+			fgets(read_line_string,read_line_length,config_file_handle);
+			if(read_line_string==NULL){
+				puts("errore");
+			}
+			puts("ecco");
+			printf("%s",&read_line_string);
+			fgets(read_line_string,read_line_length,config_file_handle);
+			printf("%s",&read_line_string);
+			}else{
+				printf("%d",errno);
+				puts("no");
+			}
+//			do{
+//				fgets(read_line_string,read_line_length,config_file_handle);
+//				puts(read_line_string);
+//			}while(strstr(read_line_string,"<TAB")==NULL);
+//			puts(read_line_string);
+//			sscanf(read_line_string,"<TAB,%u>",&tab_num);
+
+//			do{
+//				do{
+//					fgets(read_line_string,read_line_length,config_file_handle);
+//				}while(strstr(read_line_string,"<COL")==NULL);
+//				puts(read_line_string);
+//				sscanf(read_line_string,"<COL,%s,",&tab_name);
+//			}while(strstr(tab_name,"rotor"));
+//			puts(tab_name);
+//			sscanf(read_line_string,"<COL,%*s,%u,",&module_num);
+//			for(module_ind=0;module_ind<module_num;module_ind++){
+//				do{
+//					fgets(read_line_string,read_line_length,config_file_handle);
+//				}while(strstr(read_line_string,"<ROW")==NULL);
+//				sscanf(read_line_string,"<ROW,%s,%s,%s>",&par1_name,&par2_name,&par3_name);
+//			}
+			fclose(config_file_handle);
+			exit(0);
+		}
 	}
 
 	if (!strcmp(argv[1], "start")) {
