@@ -638,15 +638,15 @@ int unibo_control_thread_main(int argc, char *argv[])
 
 
 				// ---- SEND OUTPUTS ----
-				mout.outputs_pwm[0] = 1200;
-				mout.outputs_pwm[1] = 1200;            //TODO output is only uf and u_tau, mout will come from allocation
-				mout.outputs_pwm[2] = 1200;			   //this should be removed, to test only
-				mout.outputs_pwm[3] = 1200;
-				mout.outputs_pwm[4] = 1200;
-				mout.outputs_pwm[5] = 1200;
-				mout.outputs_pwm[6] = 1200;
-				mout.outputs_pwm[7] = 1200;
-				orb_publish(ORB_ID(motor_output), mout_pub_fd, &mout);
+//				mout.outputs_pwm[0] = 1200;
+//				mout.outputs_pwm[1] = 1200;            //TODO output is only uf and u_tau, mout will come from allocation
+//				mout.outputs_pwm[2] = 1200;			   //this should be removed, to test only
+//				mout.outputs_pwm[3] = 1200;
+//				mout.outputs_pwm[4] = 1200;
+//				mout.outputs_pwm[5] = 1200;
+//				mout.outputs_pwm[6] = 1200;
+//				mout.outputs_pwm[7] = 1200;
+//				orb_publish(ORB_ID(motor_output), mout_pub_fd, &mout);
 
 				// ---- SEND WRENCH ----
 				wrench.force[0] = 0;
