@@ -143,6 +143,7 @@ MODULES		+= modules/unibo_INS
 MODULES		+= modules/ahrs_SO3_unibo
 MODULES     += modules/unibo_commander
 MODULES     += modules/unibo_allocation
+MODULES     += modules/unibo_configuration
 MODULES     += modules/unibo_ESC32_reader
 MODULES		+= drivers/esc32_reader
 
