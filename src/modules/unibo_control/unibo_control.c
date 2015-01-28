@@ -516,6 +516,14 @@ int unibo_control_thread_main(int argc, char *argv[])
 				if (updated){
 					orb_copy(ORB_ID(unibo_vehicle_status),unibo_status_fd,&unibo_status);
 					Model_GS_U.FLIGHT_MODE = (int)unibo_status.flight_mode;
+
+//					Model_GS_U.PARAMETERS[3] = unibo_status.mass;      //mass
+//					Model_GS_U.PARAMETERS[23] = unibo_status.J[0];   //Jx=Jy
+//					Model_GS_U.PARAMETERS[24] = unibo_status.J[2];	//Jz
+
+					Model_GS_U.PARAMETERS[3] = temp_PAR.in2;      //mass      //TODO remove this coming from parameters and put values coming from allocation (unibo_status)
+					Model_GS_U.PARAMETERS[23] = temp_PAR.in22;   //Jx=Jy      //TODO revamp all parameters handle, separate M,J with others in simulink too
+					Model_GS_U.PARAMETERS[24] = temp_PAR.in23;	//Jz
 				}
 
 
@@ -563,11 +571,11 @@ int unibo_control_thread_main(int argc, char *argv[])
 				//gestione pacchetto parameters ricevuto dal Topic unibo_optitrack
 				orb_check(parameters_sub_fd, &updated);
 				if (updated){
-					orb_copy(ORB_ID(unibo_parameters),parameters_sub_fd,&temp_PAR);
+					orb_copy(ORB_ID(unibo_parameters),parameters_sub_fd,&temp_PAR); //TODO revamp all parameters handle, separate M,J with others in simulink too
 					Model_GS_U.PARAMETERS[0] = 0;
 					Model_GS_U.PARAMETERS[1] = 0;
 					Model_GS_U.PARAMETERS[2] = temp_PAR.in1;
-					Model_GS_U.PARAMETERS[3] = temp_PAR.in2;
+					//Model_GS_U.PARAMETERS[3] = temp_PAR.in2;      //mass
 					Model_GS_U.PARAMETERS[4] = temp_PAR.in3;
 					Model_GS_U.PARAMETERS[5] = temp_PAR.in4;
 					Model_GS_U.PARAMETERS[6] = temp_PAR.in5;
@@ -587,8 +595,8 @@ int unibo_control_thread_main(int argc, char *argv[])
 					Model_GS_U.PARAMETERS[20] = temp_PAR.in19;
 					Model_GS_U.PARAMETERS[21] = temp_PAR.in20;
 					Model_GS_U.PARAMETERS[22] = temp_PAR.in21;
-					Model_GS_U.PARAMETERS[23] = temp_PAR.in22;
-					Model_GS_U.PARAMETERS[24] = temp_PAR.in23;
+					//Model_GS_U.PARAMETERS[23] = temp_PAR.in22;   //Jx=Jy
+					//Model_GS_U.PARAMETERS[24] = temp_PAR.in23;	Jz
 					Model_GS_U.PARAMETERS[25] = temp_PAR.in24;
 					Model_GS_U.PARAMETERS[26] = 0;
 					Model_GS_U.PARAMETERS[27] = 0;
@@ -630,15 +638,15 @@ int unibo_control_thread_main(int argc, char *argv[])
 
 
 				// ---- SEND OUTPUTS ----
-				mout.outputs_pwm[0] = 1200;
-				mout.outputs_pwm[1] = 1200;            //TODO output is only uf and u_tau, mout will come from allocation
-				mout.outputs_pwm[2] = 1200;			   //this should be removed, to test only
-				mout.outputs_pwm[3] = 1200;
-				mout.outputs_pwm[4] = 1200;
-				mout.outputs_pwm[5] = 1200;
-				mout.outputs_pwm[6] = 1200;
-				mout.outputs_pwm[7] = 1200;
-				orb_publish(ORB_ID(motor_output), mout_pub_fd, &mout);
+//				mout.outputs_pwm[0] = 1200;
+//				mout.outputs_pwm[1] = 1200;            //TODO output is only uf and u_tau, mout will come from allocation
+//				mout.outputs_pwm[2] = 1200;			   //this should be removed, to test only
+//				mout.outputs_pwm[3] = 1200;
+//				mout.outputs_pwm[4] = 1200;
+//				mout.outputs_pwm[5] = 1200;
+//				mout.outputs_pwm[6] = 1200;
+//				mout.outputs_pwm[7] = 1200;
+//				orb_publish(ORB_ID(motor_output), mout_pub_fd, &mout);
 
 				// ---- SEND WRENCH ----
 				wrench.force[0] = 0;

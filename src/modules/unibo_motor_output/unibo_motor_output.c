@@ -52,8 +52,8 @@
 #define PWM_ARMED 900
 #define PWM_PREFLIGHT 1100
 #define MIN_RPM 0
-#define MAX_RPM 10000  //TODO should be taken from configuration file dinamically changing with voltage
-#define RPM_MODE 0       //set to zero if pwm is used, rpm mode otherwise
+#define MAX_RPM 8500  //TODO should be taken from configuration file dinamically changing with voltage
+#define RPM_MODE 1       //set to zero if pwm is used, rpm mode otherwise
 
 #if !defined(ATECH) && !defined(IRIS)
 	#error "You must define ATECH or IRIS macros"
@@ -321,6 +321,11 @@ int unibo_motor_output_thread_main(int argc, char *argv[])
 			ret = ioctl(pwm_fd, PWM_SERVO_GET(5), (unsigned long)&esc_actual_pwm.values[5]);
 			warnx("Actual PWM of channel 5: %d", esc_actual_pwm.values[5]);
 		}*/
+		count++;
+		if (count >= 200){
+			count = 0;
+			warnx("Commanded RPM: %d %d %d %d", motor_output.outputs_rpm[0], motor_output.outputs_rpm[1], motor_output.outputs_rpm[2], motor_output.outputs_rpm[3]);
+		}
 
 
 		// controllo se ci sono nuovi dati

@@ -458,7 +458,7 @@ ESC32_READER::read_arduino(unsigned int add)         //UNIBO
 		//TODO add current, voltage, temperature,...
 		//TODO merge with single function to read/write
 		_arduino_counter++;
-		if (_arduino_counter>=100){
+		if (_arduino_counter>=200){
 			_arduino_counter = 0;
 			warnx("Speeds: %d - %d - %d - %d", speeds[0], speeds[1], speeds[2], speeds[3]);
 		}
