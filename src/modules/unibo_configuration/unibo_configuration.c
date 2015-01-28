@@ -57,6 +57,7 @@ unsigned int tab_num;
 unsigned int tab_ind=0;
 unsigned int module_num;
 unsigned int module_ind=0;
+unsigned int str_ind;
 char* config_file_name="multirotor_configuration.mcf";
 char* config_file_path="/fs/microsd/multirotor_configuration.mcf";
 int read_line_length=100;
@@ -157,17 +158,8 @@ int unibo_configuration_main(int argc, char *argv[])
 					sscanf(read_line_string,"<ROW,%s,%s,%s>",&par1_name,&par2_name,&par3_name);
 					printf("%12s|%12s|%12s\n",&par1_name,&par2_name,&par3_name);
 				}
-//				sscanf(read_line_string,"<COL2,%s,%s,%s>",&par1_name,&par2_name,&par3_name);//,%*s,$*s>
-//				//sscanf(read_line_string,",%s>,",&par3_name);//%*s,%*s,$*s>
-//				printf("%s|%s\n",&par1_name,&par2_name);
-//				printf("%s\n",&par3_name);
 			}
 			printf("\n");
-//			fgets (read_line_string , 100 , config_file_handle);
-//			puts(read_line_string);
-//			for(module_ind=0;module_ind<4;module_ind++){
-////			while ( fgets (read_line_string , 100 , config_file_handle) != NULL )
-////				puts(read_line_string);
 //				fgets (read_line_string , 100 , config_file_handle);
 //				puts(read_line_string);
 //			}
@@ -179,46 +171,52 @@ int unibo_configuration_main(int argc, char *argv[])
 
 	if (!strcmp(argv[1], "add")) {
 		if (!strcmp(argv[2], "rotor")) {
-			puts("ok1");
-			config_file_handle=fopen(config_file_path,"r");
+//			puts("ok1");
+			config_file_handle=fopen(config_file_path,"r+");
 			if(config_file_handle!=NULL) {
-			puts("ora");
-			rewind(config_file_handle);
-			puts("o");
-			fgets(read_line_string,read_line_length,config_file_handle);
-			if(read_line_string==NULL){
-				puts("errore");
-			}
-			puts("ecco");
-			printf("%s",&read_line_string);
-			fgets(read_line_string,read_line_length,config_file_handle);
-			printf("%s",&read_line_string);
-			}else{
-				printf("%d",errno);
-				puts("no");
-			}
-//			do{
-//				fgets(read_line_string,read_line_length,config_file_handle);
+//			puts("ora");
+				rewind(config_file_handle);
+//			puts("o");
+//			fgets(read_line_string,read_line_length,config_file_handle);
+//			if(read_line_string==NULL){
+//				puts("errore");
+//			}
+//			puts("ecco");
+//			printf("%s",&read_line_string);
+//			fgets(read_line_string,read_line_length,config_file_handle);
+//			printf("%s",&read_line_string);
+//			}else{
+//				printf("%d",errno);
+//				puts("no");
+//			}
+				do{
+					fgets(read_line_string,read_line_length,config_file_handle);
+//					puts(read_line_string);
+				}while(strstr(read_line_string,"<TAB")==NULL);
 //				puts(read_line_string);
-//			}while(strstr(read_line_string,"<TAB")==NULL);
-//			puts(read_line_string);
-//			sscanf(read_line_string,"<TAB,%u>",&tab_num);
-
-//			do{
-//				do{
-//					fgets(read_line_string,read_line_length,config_file_handle);
-//				}while(strstr(read_line_string,"<COL")==NULL);
+				sscanf(read_line_string,"<TAB,%u>",&tab_num);
+//				printf("%u\n",tab_num);
+				do{
+					do{
+						fgets(read_line_string,read_line_length,config_file_handle);
+					}while(strstr(read_line_string,"<COL")==NULL);
 //				puts(read_line_string);
 //				sscanf(read_line_string,"<COL,%s,",&tab_name);
-//			}while(strstr(tab_name,"rotor"));
-//			puts(tab_name);
-//			sscanf(read_line_string,"<COL,%*s,%u,",&module_num);
-//			for(module_ind=0;module_ind<module_num;module_ind++){
-//				do{
-//					fgets(read_line_string,read_line_length,config_file_handle);
-//				}while(strstr(read_line_string,"<ROW")==NULL);
-//				sscanf(read_line_string,"<ROW,%s,%s,%s>",&par1_name,&par2_name,&par3_name);
-//			}
+////				puts(tab_name);
+				}while(strstr(read_line_string,"rotor")==NULL);
+				//puts(read_line_string);
+				sscanf(read_line_string,"<COL,%*s,%u,",&module_num);
+				printf("num mod: %u\n",module_num);
+//				for(module_ind=0;module_ind<module_num;module_ind++){
+//					do{
+//						fgets(read_line_string,read_line_length,config_file_handle);
+//					}while(strstr(read_line_string,"<ROW")==NULL);
+//				}
+//				puts(read_line_string);
+//				read_line_string[4]=printf("%u",module_num+1);
+//				puts(read_line_string);
+				//sscanf(read_line_string,"<ROW,%s,%s>",&par1_name,&par2_name,&par3_name);
+			}
 			fclose(config_file_handle);
 			exit(0);
 		}
