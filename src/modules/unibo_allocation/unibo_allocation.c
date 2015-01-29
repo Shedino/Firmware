@@ -159,12 +159,12 @@ int unibo_allocation_thread_main(int argc, char *argv[])
 	model = ALLOCATION(); //Init model!
 
 
-	/* subscribe to attitude topic */
-	int vehicle_attitude_fd = orb_subscribe(ORB_ID(vehicle_attitude));
-	orb_set_interval(vehicle_attitude_fd, 5); //1000 = 1Hz (ms)
+	/* subscribe to attitude topic */ 										//TODO remove
+	//int vehicle_attitude_fd = orb_subscribe(ORB_ID(vehicle_attitude));
+	//orb_set_interval(vehicle_attitude_fd, 5); //1000 = 1Hz (ms)
 
 	int unibo_control_wrench_fd = orb_subscribe(ORB_ID(unibo_control_wrench));
-	orb_set_interval(unibo_control_wrench_fd, 5); //1000 = 1Hz (ms)
+	//orb_set_interval(unibo_control_wrench_fd, 5); //1000 = 1Hz (ms)
 
 	/* advertise control wrench topic */
 	struct motor_output_s motor;
@@ -184,7 +184,7 @@ int unibo_allocation_thread_main(int argc, char *argv[])
 	unsigned int error_counter = 0;
 	unsigned int counter_warnx = 0;
 	unsigned int time_counter = 0;
-	struct vehicle_attitude_s ahrs;
+	//struct vehicle_attitude_s ahrs;
 	struct unibo_control_wrench_s wrench;
 
 	ALLOCATION_start();
@@ -225,15 +225,15 @@ int unibo_allocation_thread_main(int argc, char *argv[])
 	/* Bool for topics update */
 //	bool updated;
 
-	struct pollfd fds[] = {
-		{ .fd = vehicle_attitude_fd,   .events = POLLIN },                 //TODO change to control wrench topic
+	//struct pollfd fds[] = {
+		//{ .fd = vehicle_attitude_fd,   .events = POLLIN },                 //TODO remove
 		/* there could be more file descriptors here, in the form like:
 		 * { .fd = other_sub_fd,   .events = POLLIN },
 		 */
-	};
+	//};
 
-	struct pollfd wrench_fds[] = {
-		{ .fd = unibo_control_wrench_fd,   .events = POLLIN },                 //TODO change to control wrench topic
+	struct pollfd fds[] = {
+		{ .fd = unibo_control_wrench_fd,   .events = POLLIN },
 		/* there could be more file descriptors here, in the form like:
 		 * { .fd = other_sub_fd,   .events = POLLIN },
 		 */
@@ -257,20 +257,12 @@ int unibo_allocation_thread_main(int argc, char *argv[])
 			/* this is seriously bad - should be an emergency */
 			if (error_counter < 10 || error_counter % 50 == 0) {
 				/* use a counter to prevent flooding (and slowing us down) */
-				warnx("[unibo_control_thread] ERROR return value from poll(): %d\n"
+				warnx("[unibo_allocation_thread] ERROR return value from poll(): %d\n"
 					, poll_ret);
 			}
 			error_counter++;
 		} else {
 			if (fds[0].revents & POLLIN) {
-				orb_copy(ORB_ID(vehicle_attitude), vehicle_attitude_fd, &ahrs);
-				orb_copy(ORB_ID(unibo_control_wrench), unibo_control_wrench_fd, &wrench);
-
-				ALLOCATION_U.vc[0] = wrench.force[2];     //control wrench
-				ALLOCATION_U.vc[1] = wrench.torque[0];
-				ALLOCATION_U.vc[2] = wrench.torque[1];
-				ALLOCATION_U.vc[3] = wrench.torque[2];
-
 
 				/*
 				 * |-----------------------------------------------------|
@@ -278,18 +270,36 @@ int unibo_allocation_thread_main(int argc, char *argv[])
 				 * |-----------------------------------------------------|
 				 */
 
-				// ----------- EXECUTION -----------
-				ALLOCATION_control();
+				/*------GET CONTROL WRENCH----------------*/
+				orb_copy(ORB_ID(unibo_control_wrench), unibo_control_wrench_fd, &wrench);
+				ALLOCATION_U.vc[0] = wrench.force[2];     //control wrench
+				ALLOCATION_U.vc[1] = wrench.torque[0];
+				ALLOCATION_U.vc[2] = wrench.torque[1];
+				ALLOCATION_U.vc[3] = wrench.torque[2];
+				/*----------------------------------------*/
+
+
+				/*------------ EXECUTION -----------------*/
+				ALLOCATION_control();                 //SIMULINK
 				counter_warnx++;
+				/*----------------------------------------*/
+
+				/*----- PUBLISH RPM IN MOTOR TOPIC --------*/
+				for(module_ind=0;module_ind<6;module_ind++){
+					motor.outputs_rpm[module_ind]=(uint16_t)ALLOCATION_Y.w[module_ind];
+				}
+				orb_publish(ORB_ID(motor_output), motor_pub_fd, &motor);
+				/*----------------------------------------*/
+
+
+				/*----- WARNX FOR DEBUG ------------------*/
 				if (counter_warnx>=200){
-					for(module_ind=0;module_ind<6;module_ind++){
-						motor.outputs_rpm[module_ind]=ALLOCATION_Y.w[module_ind];
-					}
-					orb_publish(ORB_ID(motor_output), motor_pub_fd, &motor);
-					warnx("Time: %ds| Rotors Speed: %.3fRPM %.3fRPM %.3fRPM %.3fRPM %.3fRPM %.3fRPM", time_counter, (double)motor.outputs_rpm[0], (double)motor.outputs_rpm[1], (double)motor.outputs_rpm[2], (double)motor.outputs_rpm[3], (double)motor.outputs_rpm[4], (double)motor.outputs_rpm[5]);
+					warnx("Time: %ds| Rotors Speed: %d RPM %d RPM %d RPM %d RPM %d RPM %d RPM", time_counter, motor.outputs_rpm[0], motor.outputs_rpm[1], motor.outputs_rpm[2], motor.outputs_rpm[3], motor.outputs_rpm[4], motor.outputs_rpm[5]);
+					warnx("Forces allocation: %.3f %.3f %.3f %.3f", (double)wrench.force[2], (double)wrench.torque[0], (double)wrench.torque[1], (double)wrench.torque[2]);
 					counter_warnx = 0;
 					time_counter++;
 				}
+				/*----------------------------------------*/
 			}
 			//usleep(3000);
 		}

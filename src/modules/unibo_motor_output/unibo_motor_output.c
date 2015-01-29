@@ -60,14 +60,16 @@
 #endif
 
 // numero di motori effettivamente collegati
-#ifdef ATECH
+/*#ifdef ATECH
 	#define MOTORS_START 4   //TODO should be taken from configuration file
 	#define MOTORS_NUMBER 8	//TODO should be taken from configuration file
 #endif
 #ifdef IRIS
 	#define MOTORS_START 0	//TODO should be taken from configuration file
 	#define MOTORS_NUMBER 4	//TODO should be taken from configuration file
-#endif
+#endif*/
+#define MOTORS_START 0	//TODO should be taken from configuration file
+#define MOTORS_NUMBER 4	//TODO should be taken from configuration file
 
 /* Deamon libraries? */
 #include <systemlib/systemlib.h>
