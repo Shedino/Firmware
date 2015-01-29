@@ -67,6 +67,7 @@ char par1_name[20];
 char par2_name[20];
 char par3_name[20];
 FILE* config_file_handle;
+FILE* config_file_handle1;
 
 
 
@@ -160,9 +161,6 @@ int unibo_configuration_main(int argc, char *argv[])
 				}
 			}
 			printf("\n");
-//				fgets (read_line_string , 100 , config_file_handle);
-//				puts(read_line_string);
-//			}
 		}
 		fclose(config_file_handle);
 		/* this is not an error */
@@ -171,13 +169,19 @@ int unibo_configuration_main(int argc, char *argv[])
 
 	if (!strcmp(argv[1], "add")) {
 		if (!strcmp(argv[2], "rotor")) {
-//			puts("ok1");
-			config_file_handle=fopen(config_file_path,"r+");
-			if(config_file_handle!=NULL) {
+			config_file_handle=fopen(config_file_path,"r");
+//			fprintf(config_file_handle1,"<TAB,2>\n");
+//			printf("%s\n",&read_line_string);
+			if(config_file_handle==NULL) {
+//				printf("%s\n",strerror(errno));
+				puts("no");
+			}else{
 //			puts("ora");
-				rewind(config_file_handle);
+//				printf("%s\n",strerror(errno));
+//				rewind(config_file_handle);
 //			puts("o");
-//			fgets(read_line_string,read_line_length,config_file_handle);
+//				fgets(read_line_string,read_line_length,config_file_handle1);
+//				printf("%s\n",&read_line_string);
 //			if(read_line_string==NULL){
 //				puts("errore");
 //			}
@@ -195,7 +199,7 @@ int unibo_configuration_main(int argc, char *argv[])
 				}while(strstr(read_line_string,"<TAB")==NULL);
 //				puts(read_line_string);
 				sscanf(read_line_string,"<TAB,%u>",&tab_num);
-//				printf("%u\n",tab_num);
+//				printf("num tab: %u\n",tab_num);
 				do{
 					do{
 						fgets(read_line_string,read_line_length,config_file_handle);
@@ -204,20 +208,20 @@ int unibo_configuration_main(int argc, char *argv[])
 //				sscanf(read_line_string,"<COL,%s,",&tab_name);
 ////				puts(tab_name);
 				}while(strstr(read_line_string,"rotor")==NULL);
-				//puts(read_line_string);
+//				puts(read_line_string);
 				sscanf(read_line_string,"<COL,%*s,%u,",&module_num);
-				printf("num mod: %u\n",module_num);
-//				for(module_ind=0;module_ind<module_num;module_ind++){
-//					do{
-//						fgets(read_line_string,read_line_length,config_file_handle);
-//					}while(strstr(read_line_string,"<ROW")==NULL);
-//				}
-//				puts(read_line_string);
-//				read_line_string[4]=printf("%u",module_num+1);
-//				puts(read_line_string);
-				//sscanf(read_line_string,"<ROW,%s,%s>",&par1_name,&par2_name,&par3_name);
+//				printf("num mod: %u\n",module_num);
+				for(module_ind=0;module_ind<module_num;module_ind++){
+					do{
+						fgets(read_line_string,read_line_length,config_file_handle);
+					}while(strstr(read_line_string,"<ROW")==NULL);
+				}
+				puts(read_line_string);
+				read_line_string[4]="6";//printf("%u",module_num+1);
+				puts(read_line_string);
+//				//sscanf(read_line_string,"<ROW,%s,%s>",&par1_name,&par2_name,&par3_name);
 			}
-			fclose(config_file_handle);
+			fclose(config_file_handle1);
 			exit(0);
 		}
 	}
