@@ -3,9 +3,9 @@
  *
  * Code generation for model "ALLOCATION".
  *
- * Model version              : 1.2493
+ * Model version              : 1.2494
  * Simulink Coder version : 8.2 (R2012a) 29-Dec-2011
- * C source code generated on : Tue Nov 04 17:18:21 2014
+ * C source code generated on : Thu Jan 29 19:54:35 2015
  *
  * Target selection: grt.tlc
  * Note: GRT includes extra infrastructure and instrumentation for prototyping
@@ -773,6 +773,7 @@ typedef struct {
   real32_T Ct[6];                      /* '<Root>/Ct' */
   real32_T Cq[6];                      /* '<Root>/Cq' */
   real32_T vc[4];                      /* '<Root>/vc' */
+  real32_T psi[6];                     /* '<Root>/psi' */
 } ExternalInputs_ALLOCATION;
 
 /* External outputs (root outports fed by signals with auto storage) */
@@ -926,5 +927,11 @@ extern struct RT_MODEL_ALLOCATION *const ALLOCATION_M;
  * '<Root>' : 'ALLOCATION'
  * '<S1>'   : 'ALLOCATION/allocation'
  * '<S2>'   : 'ALLOCATION/allocation/matrix inversion'
+ * '<S3>'   : 'ALLOCATION/allocation/rotation matrix'
+ * '<S4>'   : 'ALLOCATION/allocation/rotation matrix1'
+ * '<S5>'   : 'ALLOCATION/allocation/rotation matrix2'
+ * '<S6>'   : 'ALLOCATION/allocation/rotation matrix3'
+ * '<S7>'   : 'ALLOCATION/allocation/rotation matrix4'
+ * '<S8>'   : 'ALLOCATION/allocation/rotation matrix5'
  */
 #endif                                 /* RTW_HEADER_ALLOCATION_h_ */

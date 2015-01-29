@@ -3,9 +3,9 @@
  *
  * Code generation for model "ALLOCATION".
  *
- * Model version              : 1.2493
+ * Model version              : 1.2494
  * Simulink Coder version : 8.2 (R2012a) 29-Dec-2011
- * C source code generated on : Tue Nov 04 17:18:21 2014
+ * C source code generated on : Thu Jan 29 19:54:35 2015
  *
  * Target selection: grt.tlc
  * Note: GRT includes extra infrastructure and instrumentation for prototyping
@@ -32,32 +32,32 @@ static real32_T ALLOCATION_eml_xnrm2(int32_T n, const real32_T x[24], int32_T
 static real32_T ALLOCATION_eml_div(real_T x, real32_T y);
 static void ALLOCATION_eml_xscal(int32_T n, real32_T a, real32_T x[24], int32_T
   ix0);
-static real32_T ALLOCATION_eml_xnrm2_l(int32_T n, const real32_T x[4], int32_T
+static real32_T ALLOCATION_eml_xnrm2_d(int32_T n, const real32_T x[4], int32_T
   ix0);
-static void ALLOCATION_eml_xscal_f(int32_T n, real32_T a, real32_T x[4], int32_T
+static void ALLOCATION_eml_xscal_h(int32_T n, real32_T a, real32_T x[4], int32_T
   ix0);
-static real32_T ALLOCATION_eml_div_i(real32_T x, real32_T y);
-static void ALLOCATION_eml_xscal_fe(real32_T a, real32_T x[16], int32_T ix0);
+static real32_T ALLOCATION_eml_div_o(real32_T x, real32_T y);
+static void ALLOCATION_eml_xscal_hy(real32_T a, real32_T x[16], int32_T ix0);
 static void ALLOCATION_eml_xswap(real32_T x[16], int32_T ix0, int32_T iy0);
-static void ALLOCATION_eml_xswap_c(real32_T x[24], int32_T ix0, int32_T iy0);
+static void ALLOCATION_eml_xswap_g(real32_T x[24], int32_T ix0, int32_T iy0);
 static void ALLOCATION_eml_xrotg(real32_T *a, real32_T *b, real32_T *c, real32_T
   *s);
 static void ALLOCATION_eml_xrot(real32_T x[16], int32_T ix0, int32_T iy0,
   real32_T c, real32_T s);
-static void ALLOCATION_eml_xrot_g(real32_T x[24], int32_T ix0, int32_T iy0,
+static void ALLOCATION_eml_xrot_l(real32_T x[24], int32_T ix0, int32_T iy0,
   real32_T c, real32_T s);
-static real32_T ALLOCATION_eml_div_ia(real32_T x, real_T y);
-static real32_T ALLOCATION_eml_xdotc_l(int32_T n, const real32_T x[16], int32_T
+static real32_T ALLOCATION_eml_div_os(real32_T x, real_T y);
+static real32_T ALLOCATION_eml_xdotc_a(int32_T n, const real32_T x[16], int32_T
   ix0, const real32_T y[16], int32_T iy0);
-static void ALLOCATION_eml_xaxpy_l0u(int32_T n, real32_T a, int32_T ix0,
+static void ALLOCATION_eml_xaxpy_orj(int32_T n, real32_T a, int32_T ix0,
   real32_T y[16], int32_T iy0);
 static real32_T ALLOCATION_eml_xdotc(int32_T n, const real32_T x[24], int32_T
   ix0, const real32_T y[24], int32_T iy0);
 static void ALLOCATION_eml_xaxpy(int32_T n, real32_T a, int32_T ix0, real32_T y
   [24], int32_T iy0);
-static void ALLOCATION_eml_xaxpy_l0(int32_T n, real32_T a, const real32_T x[6],
+static void ALLOCATION_eml_xaxpy_or(int32_T n, real32_T a, const real32_T x[6],
   int32_T ix0, real32_T y[24], int32_T iy0);
-static void ALLOCATION_eml_xaxpy_l(int32_T n, real32_T a, const real32_T x[24],
+static void ALLOCATION_eml_xaxpy_o(int32_T n, real32_T a, const real32_T x[24],
   int32_T ix0, real32_T y[6], int32_T iy0);
 static void ALLOCATION_eml_xgesvd(const real32_T A[24], real32_T U[24], real32_T
   S[4], real32_T V[16]);
@@ -117,7 +117,7 @@ static void ALLOCATION_eml_xscal(int32_T n, real32_T a, real32_T x[24], int32_T
 }
 
 /* Function for MATLAB Function: '<S1>/matrix inversion' */
-static real32_T ALLOCATION_eml_xnrm2_l(int32_T n, const real32_T x[4], int32_T
+static real32_T ALLOCATION_eml_xnrm2_d(int32_T n, const real32_T x[4], int32_T
   ix0)
 {
   real32_T y;
@@ -153,7 +153,7 @@ static real32_T ALLOCATION_eml_xnrm2_l(int32_T n, const real32_T x[4], int32_T
 }
 
 /* Function for MATLAB Function: '<S1>/matrix inversion' */
-static void ALLOCATION_eml_xscal_f(int32_T n, real32_T a, real32_T x[4], int32_T
+static void ALLOCATION_eml_xscal_h(int32_T n, real32_T a, real32_T x[4], int32_T
   ix0)
 {
   int32_T b;
@@ -165,13 +165,13 @@ static void ALLOCATION_eml_xscal_f(int32_T n, real32_T a, real32_T x[4], int32_T
 }
 
 /* Function for MATLAB Function: '<S1>/matrix inversion' */
-static real32_T ALLOCATION_eml_div_i(real32_T x, real32_T y)
+static real32_T ALLOCATION_eml_div_o(real32_T x, real32_T y)
 {
   return x / y;
 }
 
 /* Function for MATLAB Function: '<S1>/matrix inversion' */
-static void ALLOCATION_eml_xscal_fe(real32_T a, real32_T x[16], int32_T ix0)
+static void ALLOCATION_eml_xscal_hy(real32_T a, real32_T x[16], int32_T ix0)
 {
   int32_T k;
   for (k = ix0; k <= ix0 + 3; k++) {
@@ -208,7 +208,7 @@ static void ALLOCATION_eml_xswap(real32_T x[16], int32_T ix0, int32_T iy0)
 }
 
 /* Function for MATLAB Function: '<S1>/matrix inversion' */
-static void ALLOCATION_eml_xswap_c(real32_T x[24], int32_T ix0, int32_T iy0)
+static void ALLOCATION_eml_xswap_g(real32_T x[24], int32_T ix0, int32_T iy0)
 {
   int32_T ix;
   int32_T iy;
@@ -306,7 +306,7 @@ static void ALLOCATION_eml_xrot(real32_T x[16], int32_T ix0, int32_T iy0,
 }
 
 /* Function for MATLAB Function: '<S1>/matrix inversion' */
-static void ALLOCATION_eml_xrot_g(real32_T x[24], int32_T ix0, int32_T iy0,
+static void ALLOCATION_eml_xrot_l(real32_T x[24], int32_T ix0, int32_T iy0,
   real32_T c, real32_T s)
 {
   int32_T ix;
@@ -327,13 +327,13 @@ static void ALLOCATION_eml_xrot_g(real32_T x[24], int32_T ix0, int32_T iy0,
 }
 
 /* Function for MATLAB Function: '<S1>/matrix inversion' */
-static real32_T ALLOCATION_eml_div_ia(real32_T x, real_T y)
+static real32_T ALLOCATION_eml_div_os(real32_T x, real_T y)
 {
   return x / (real32_T)y;
 }
 
 /* Function for MATLAB Function: '<S1>/matrix inversion' */
-static real32_T ALLOCATION_eml_xdotc_l(int32_T n, const real32_T x[16], int32_T
+static real32_T ALLOCATION_eml_xdotc_a(int32_T n, const real32_T x[16], int32_T
   ix0, const real32_T y[16], int32_T iy0)
 {
   real32_T d;
@@ -355,7 +355,7 @@ static real32_T ALLOCATION_eml_xdotc_l(int32_T n, const real32_T x[16], int32_T
 }
 
 /* Function for MATLAB Function: '<S1>/matrix inversion' */
-static void ALLOCATION_eml_xaxpy_l0u(int32_T n, real32_T a, int32_T ix0,
+static void ALLOCATION_eml_xaxpy_orj(int32_T n, real32_T a, int32_T ix0,
   real32_T y[16], int32_T iy0)
 {
   int32_T ix;
@@ -413,7 +413,7 @@ static void ALLOCATION_eml_xaxpy(int32_T n, real32_T a, int32_T ix0, real32_T y
 }
 
 /* Function for MATLAB Function: '<S1>/matrix inversion' */
-static void ALLOCATION_eml_xaxpy_l0(int32_T n, real32_T a, const real32_T x[6],
+static void ALLOCATION_eml_xaxpy_or(int32_T n, real32_T a, const real32_T x[6],
   int32_T ix0, real32_T y[24], int32_T iy0)
 {
   int32_T ix;
@@ -431,7 +431,7 @@ static void ALLOCATION_eml_xaxpy_l0(int32_T n, real32_T a, const real32_T x[6],
 }
 
 /* Function for MATLAB Function: '<S1>/matrix inversion' */
-static void ALLOCATION_eml_xaxpy_l(int32_T n, real32_T a, const real32_T x[24],
+static void ALLOCATION_eml_xaxpy_o(int32_T n, real32_T a, const real32_T x[24],
   int32_T ix0, real32_T y[6], int32_T iy0)
 {
   int32_T ix;
@@ -507,7 +507,7 @@ static void ALLOCATION_eml_xgesvd(const real32_T A[24], real32_T U[24], real32_T
   for (i = 2; i < 5; i++) {
     km = (i - 1) * 6;
     if (s[0] != 0.0F) {
-      ALLOCATION_eml_xaxpy(6, -ALLOCATION_eml_div_i(ALLOCATION_eml_xdotc(6, b_A,
+      ALLOCATION_eml_xaxpy(6, -ALLOCATION_eml_div_o(ALLOCATION_eml_xdotc(6, b_A,
         1, b_A, km + 1), b_A[0]), 1, b_A, km + 1);
     }
 
@@ -518,7 +518,7 @@ static void ALLOCATION_eml_xgesvd(const real32_T A[24], real32_T U[24], real32_T
     U[i] = b_A[i];
   }
 
-  nrm = ALLOCATION_eml_xnrm2_l(3, e, 2);
+  nrm = ALLOCATION_eml_xnrm2_d(3, e, 2);
   if (nrm == 0.0F) {
     e[0] = 0.0F;
   } else {
@@ -528,7 +528,7 @@ static void ALLOCATION_eml_xgesvd(const real32_T A[24], real32_T U[24], real32_T
       e[0] = nrm;
     }
 
-    ALLOCATION_eml_xscal_f(3, ALLOCATION_eml_div(1.0, e[0]), e, 2);
+    ALLOCATION_eml_xscal_h(3, ALLOCATION_eml_div(1.0, e[0]), e, 2);
     e[1]++;
   }
 
@@ -539,11 +539,11 @@ static void ALLOCATION_eml_xgesvd(const real32_T A[24], real32_T U[24], real32_T
     }
 
     for (i = 2; i < 5; i++) {
-      ALLOCATION_eml_xaxpy_l(5, e[i - 1], b_A, 2 + 6 * (i - 1), work, 2);
+      ALLOCATION_eml_xaxpy_o(5, e[i - 1], b_A, 2 + 6 * (i - 1), work, 2);
     }
 
     for (i = 2; i < 5; i++) {
-      ALLOCATION_eml_xaxpy_l0(5, ALLOCATION_eml_div_i(-e[i - 1], e[1]), work, 2,
+      ALLOCATION_eml_xaxpy_or(5, ALLOCATION_eml_div_o(-e[i - 1], e[1]), work, 2,
         b_A, 2 + 6 * (i - 1));
     }
   }
@@ -570,7 +570,7 @@ static void ALLOCATION_eml_xgesvd(const real32_T A[24], real32_T U[24], real32_T
   for (i = 3; i < 5; i++) {
     km = (i - 1) * 6 + 1;
     if (s[1] != 0.0F) {
-      ALLOCATION_eml_xaxpy(5, -ALLOCATION_eml_div_i(ALLOCATION_eml_xdotc(5, b_A,
+      ALLOCATION_eml_xaxpy(5, -ALLOCATION_eml_div_o(ALLOCATION_eml_xdotc(5, b_A,
         8, b_A, km + 1), b_A[7]), 8, b_A, km + 1);
     }
 
@@ -581,7 +581,7 @@ static void ALLOCATION_eml_xgesvd(const real32_T A[24], real32_T U[24], real32_T
     U[i + 6] = b_A[i + 6];
   }
 
-  nrm = ALLOCATION_eml_xnrm2_l(2, e, 3);
+  nrm = ALLOCATION_eml_xnrm2_d(2, e, 3);
   if (nrm == 0.0F) {
     e[1] = 0.0F;
   } else {
@@ -591,7 +591,7 @@ static void ALLOCATION_eml_xgesvd(const real32_T A[24], real32_T U[24], real32_T
       e[1] = nrm;
     }
 
-    ALLOCATION_eml_xscal_f(2, ALLOCATION_eml_div(1.0, e[1]), e, 3);
+    ALLOCATION_eml_xscal_h(2, ALLOCATION_eml_div(1.0, e[1]), e, 3);
     e[2]++;
   }
 
@@ -602,11 +602,11 @@ static void ALLOCATION_eml_xgesvd(const real32_T A[24], real32_T U[24], real32_T
     }
 
     for (i = 3; i < 5; i++) {
-      ALLOCATION_eml_xaxpy_l(4, e[i - 1], b_A, 3 + 6 * (i - 1), work, 3);
+      ALLOCATION_eml_xaxpy_o(4, e[i - 1], b_A, 3 + 6 * (i - 1), work, 3);
     }
 
     for (i = 3; i < 5; i++) {
-      ALLOCATION_eml_xaxpy_l0(4, ALLOCATION_eml_div_i(-e[i - 1], e[2]), work, 3,
+      ALLOCATION_eml_xaxpy_or(4, ALLOCATION_eml_div_o(-e[i - 1], e[2]), work, 3,
         b_A, 3 + 6 * (i - 1));
     }
   }
@@ -633,7 +633,7 @@ static void ALLOCATION_eml_xgesvd(const real32_T A[24], real32_T U[24], real32_T
   i = 4;
   while (i < 5) {
     if (s[2] != 0.0F) {
-      ALLOCATION_eml_xaxpy(4, -ALLOCATION_eml_div_i(ALLOCATION_eml_xdotc(4, b_A,
+      ALLOCATION_eml_xaxpy(4, -ALLOCATION_eml_div_o(ALLOCATION_eml_xdotc(4, b_A,
         15, b_A, 21), b_A[14]), 15, b_A, 21);
     }
 
@@ -672,7 +672,7 @@ static void ALLOCATION_eml_xgesvd(const real32_T A[24], real32_T U[24], real32_T
     if (s[qs] != 0.0F) {
       for (i = qs + 1; i + 1 < 5; i++) {
         km = (6 * i + qs) + 1;
-        ALLOCATION_eml_xaxpy(6 - qs, -ALLOCATION_eml_div_i(ALLOCATION_eml_xdotc
+        ALLOCATION_eml_xaxpy(6 - qs, -ALLOCATION_eml_div_o(ALLOCATION_eml_xdotc
           (6 - qs, U, iter + 1, U, km), U[iter]), iter + 1, U, km);
       }
 
@@ -699,8 +699,8 @@ static void ALLOCATION_eml_xgesvd(const real32_T A[24], real32_T U[24], real32_T
       km = (i << 2) + qp;
       for (qs = qp; qs < 5; qs++) {
         iter = ((qs - 1) << 2) + qp;
-        ALLOCATION_eml_xaxpy_l0u(3 - i, -ALLOCATION_eml_div_i
-          (ALLOCATION_eml_xdotc_l(3 - i, Vf, km, Vf, iter), Vf[km - 1]), km, Vf,
+        ALLOCATION_eml_xaxpy_orj(3 - i, -ALLOCATION_eml_div_o
+          (ALLOCATION_eml_xdotc_a(3 - i, Vf, km, Vf, iter), Vf[km - 1]), km, Vf,
           iter);
       }
     }
@@ -715,67 +715,67 @@ static void ALLOCATION_eml_xgesvd(const real32_T A[24], real32_T U[24], real32_T
   nrm = e[0];
   if (s[0] != 0.0F) {
     rt = (real32_T)fabs(s[0]);
-    r = ALLOCATION_eml_div_i(s[0], rt);
+    r = ALLOCATION_eml_div_o(s[0], rt);
     s[0] = rt;
-    nrm = ALLOCATION_eml_div_i(e[0], r);
+    nrm = ALLOCATION_eml_div_o(e[0], r);
     ALLOCATION_eml_xscal(6, r, U, 1);
   }
 
   if (nrm != 0.0F) {
     rt = (real32_T)fabs(nrm);
-    r = ALLOCATION_eml_div_i(rt, nrm);
+    r = ALLOCATION_eml_div_o(rt, nrm);
     nrm = rt;
     s[1] *= r;
-    ALLOCATION_eml_xscal_fe(r, Vf, 5);
+    ALLOCATION_eml_xscal_hy(r, Vf, 5);
   }
 
   e[0] = nrm;
   nrm = e[1];
   if (s[1] != 0.0F) {
     rt = (real32_T)fabs(s[1]);
-    r = ALLOCATION_eml_div_i(s[1], rt);
+    r = ALLOCATION_eml_div_o(s[1], rt);
     s[1] = rt;
-    nrm = ALLOCATION_eml_div_i(e[1], r);
+    nrm = ALLOCATION_eml_div_o(e[1], r);
     ALLOCATION_eml_xscal(6, r, U, 7);
   }
 
   if (nrm != 0.0F) {
     rt = (real32_T)fabs(nrm);
-    r = ALLOCATION_eml_div_i(rt, nrm);
+    r = ALLOCATION_eml_div_o(rt, nrm);
     nrm = rt;
     s[2] *= r;
-    ALLOCATION_eml_xscal_fe(r, Vf, 9);
+    ALLOCATION_eml_xscal_hy(r, Vf, 9);
   }
 
   e[1] = nrm;
   nrm = e[2];
   if (s[2] != 0.0F) {
     rt = (real32_T)fabs(s[2]);
-    r = ALLOCATION_eml_div_i(s[2], rt);
+    r = ALLOCATION_eml_div_o(s[2], rt);
     s[2] = rt;
-    nrm = ALLOCATION_eml_div_i(e[2], r);
+    nrm = ALLOCATION_eml_div_o(e[2], r);
     ALLOCATION_eml_xscal(6, r, U, 13);
   }
 
   if (nrm != 0.0F) {
     rt = (real32_T)fabs(nrm);
-    r = ALLOCATION_eml_div_i(rt, nrm);
+    r = ALLOCATION_eml_div_o(rt, nrm);
     nrm = rt;
     s[3] *= r;
-    ALLOCATION_eml_xscal_fe(r, Vf, 13);
+    ALLOCATION_eml_xscal_hy(r, Vf, 13);
   }
 
   e[2] = nrm;
   if (s[3] != 0.0F) {
     rt = (real32_T)fabs(s[3]);
-    r = ALLOCATION_eml_div_i(s[3], rt);
+    r = ALLOCATION_eml_div_o(s[3], rt);
     s[3] = rt;
     ALLOCATION_eml_xscal(6, r, U, 19);
   }
 
   e[3] = 0.0F;
   iter = 0;
-  tiny = ALLOCATION_eml_div_i(1.17549435E-38F, 1.1920929E-7F);
+  tiny = ALLOCATION_eml_div_o(1.17549435E-38F, 1.1920929E-7F);
   snorm = 0.0F;
   if (s[0] >= e[0]) {
     nrm = s[0];
@@ -899,7 +899,7 @@ static void ALLOCATION_eml_xgesvd(const real32_T A[24], real32_T U[24], real32_T
         s[q] = nrm;
         f = -rt * e[q];
         e[q] *= r;
-        ALLOCATION_eml_xrot_g(U, 6 * q + 1, 6 * i + 1, r, rt);
+        ALLOCATION_eml_xrot_l(U, 6 * q + 1, 6 * i + 1, r, rt);
         q++;
       }
       break;
@@ -927,11 +927,11 @@ static void ALLOCATION_eml_xgesvd(const real32_T A[24], real32_T U[24], real32_T
         varargin_1_idx = sm;
       }
 
-      sm = ALLOCATION_eml_div_i(s[m - 1], varargin_1_idx);
-      nrm = ALLOCATION_eml_div_i(s[i], varargin_1_idx);
-      r = ALLOCATION_eml_div_i(e[i], varargin_1_idx);
-      sqds = ALLOCATION_eml_div_i(s[q], varargin_1_idx);
-      rt = ALLOCATION_eml_div_ia((nrm + sm) * (nrm - sm) + r * r, 2.0);
+      sm = ALLOCATION_eml_div_o(s[m - 1], varargin_1_idx);
+      nrm = ALLOCATION_eml_div_o(s[i], varargin_1_idx);
+      r = ALLOCATION_eml_div_o(e[i], varargin_1_idx);
+      sqds = ALLOCATION_eml_div_o(s[q], varargin_1_idx);
+      rt = ALLOCATION_eml_div_os((nrm + sm) * (nrm - sm) + r * r, 2.0);
       nrm = sm * r;
       nrm *= nrm;
       r = 0.0F;
@@ -941,11 +941,11 @@ static void ALLOCATION_eml_xgesvd(const real32_T A[24], real32_T U[24], real32_T
           r = -r;
         }
 
-        r = ALLOCATION_eml_div_i(nrm, rt + r);
+        r = ALLOCATION_eml_div_o(nrm, rt + r);
       }
 
       f = (sqds + sm) * (sqds - sm) + r;
-      nrm = sqds * ALLOCATION_eml_div_i(e[q], varargin_1_idx);
+      nrm = sqds * ALLOCATION_eml_div_o(e[q], varargin_1_idx);
       for (km = q; km + 1 <= i + 1; km++) {
         qs = km + 1;
         ALLOCATION_eml_xrotg(&f, &nrm, &sm, &sqds);
@@ -967,7 +967,7 @@ static void ALLOCATION_eml_xgesvd(const real32_T A[24], real32_T U[24], real32_T
         s[qs] = -sm * e[km] + rt * s[qs];
         nrm = sm * e[qs];
         e[qs] *= rt;
-        ALLOCATION_eml_xrot_g(U, 6 * km + 1, 6 * (km + 1) + 1, rt, sm);
+        ALLOCATION_eml_xrot_l(U, 6 * km + 1, 6 * (km + 1) + 1, rt, sm);
       }
 
       e[m - 2] = f;
@@ -977,7 +977,7 @@ static void ALLOCATION_eml_xgesvd(const real32_T A[24], real32_T U[24], real32_T
      default:
       if (s[q] < 0.0F) {
         s[q] = -s[q];
-        ALLOCATION_eml_xscal_fe(-1.0F, Vf, (q << 2) + 1);
+        ALLOCATION_eml_xscal_hy(-1.0F, Vf, (q << 2) + 1);
       }
 
       qp = q + 1;
@@ -986,7 +986,7 @@ static void ALLOCATION_eml_xgesvd(const real32_T A[24], real32_T U[24], real32_T
         s[q] = s[qp];
         s[qp] = rt;
         ALLOCATION_eml_xswap(Vf, (q << 2) + 1, ((q + 1) << 2) + 1);
-        ALLOCATION_eml_xswap_c(U, 6 * q + 1, 6 * (q + 1) + 1);
+        ALLOCATION_eml_xswap_g(U, 6 * q + 1, 6 * (q + 1) + 1);
         q = qp;
         qp++;
       }
@@ -1017,7 +1017,6 @@ static void ALLOCATION_output(void)
   int32_T r;
   real32_T S[16];
   int32_T j;
-  real32_T z;
   real32_T U[24];
   real32_T s[4];
   int32_T ar;
@@ -1025,53 +1024,273 @@ static void ALLOCATION_output(void)
   int32_T b;
   int32_T ib;
   int32_T b_ic;
-  real32_T rtb_allocattionmatrix[24];
+  real32_T rtb_Gain[6];
+  real32_T rtb_UnaryMinus1;
+  real32_T rtb_TrigonometricFunction1;
+  real32_T rtb_VectorConcatenate[9];
+  real32_T rtb_allocation[6];
+  real32_T rtb_VectorConcatenate_mk[18];
+  real32_T rtb_UnaryMinus[6];
   int32_T i;
+  real32_T tmp[24];
+  for (i = 0; i < 6; i++) {
+    /* Gain: '<S1>/Gain' incorporates:
+     *  Inport: '<Root>/psi'
+     */
+    rtb_Gain[i] = 0.0174532924F * ALLOCATION_U.psi[i];
 
-  /* SignalConversion: '<S1>/ConcatBufferAtallocattion matrixIn1' incorporates:
-   *  Inport: '<Root>/Ct'
+    /* UnaryMinus: '<S1>/Unary Minus' incorporates:
+     *  Inport: '<Root>/Ct'
+     *  Inport: '<Root>/r'
+     *  Product: '<S1>/Product'
+     */
+    rtb_UnaryMinus[i] = -(ALLOCATION_U.r[i] * ALLOCATION_U.Ct[i]);
+
+    /* Product: '<S1>/Product1' incorporates:
+     *  Inport: '<Root>/Cq'
+     *  Inport: '<Root>/s'
+     */
+    rtb_allocation[i] = ALLOCATION_U.s[i] * ALLOCATION_U.Cq[i];
+  }
+
+  /* Trigonometry: '<S3>/Trigonometric Function1' */
+  rtb_UnaryMinus1 = (real32_T)cos(rtb_Gain[0]);
+
+  /* Trigonometry: '<S3>/Trigonometric Function' */
+  rtb_TrigonometricFunction1 = (real32_T)sin(rtb_Gain[0]);
+
+  /* SignalConversion: '<S3>/ConcatBufferAtVector ConcatenateIn1' */
+  rtb_VectorConcatenate[0] = rtb_UnaryMinus1;
+  rtb_VectorConcatenate[1] = rtb_TrigonometricFunction1;
+  rtb_VectorConcatenate[2] = 0.0F;
+
+  /* UnaryMinus: '<S3>/Unary Minus1' */
+  rtb_TrigonometricFunction1 = -rtb_TrigonometricFunction1;
+
+  /* SignalConversion: '<S3>/ConcatBufferAtVector ConcatenateIn2' */
+  rtb_VectorConcatenate[3] = rtb_TrigonometricFunction1;
+  rtb_VectorConcatenate[4] = rtb_UnaryMinus1;
+  rtb_VectorConcatenate[5] = 0.0F;
+
+  /* SignalConversion: '<S3>/ConcatBufferAtVector ConcatenateIn3' */
+  rtb_VectorConcatenate[6] = 0.0F;
+  rtb_VectorConcatenate[7] = 0.0F;
+  rtb_VectorConcatenate[8] = 1.0F;
+
+  /* Product: '<S1>/Product3' incorporates:
+   *  SignalConversion: '<S1>/TmpSignal ConversionAtProduct3Inport2'
    */
-  for (i = 0; i < 6; i++) {
-    rtb_allocattionmatrix[i] = ALLOCATION_U.Ct[i];
+  for (i = 0; i < 3; i++) {
+    rtb_VectorConcatenate_mk[i] = rtb_VectorConcatenate[i + 6] * rtb_allocation
+      [0] + rtb_VectorConcatenate[i + 3] * rtb_UnaryMinus[0];
   }
 
-  /* End of SignalConversion: '<S1>/ConcatBufferAtallocattion matrixIn1' */
+  /* End of Product: '<S1>/Product3' */
 
-  /* SignalConversion: '<S1>/ConcatBufferAtallocattion matrixIn2' */
-  for (i = 0; i < 6; i++) {
-    rtb_allocattionmatrix[i + 6] = 0.0F;
-  }
+  /* Trigonometry: '<S4>/Trigonometric Function1' */
+  rtb_TrigonometricFunction1 = (real32_T)cos(rtb_Gain[1]);
 
-  /* End of SignalConversion: '<S1>/ConcatBufferAtallocattion matrixIn2' */
+  /* Trigonometry: '<S4>/Trigonometric Function' */
+  rtb_UnaryMinus1 = (real32_T)sin(rtb_Gain[1]);
 
-  /* UnaryMinus: '<S1>/Unary Minus' incorporates:
-   *  Inport: '<Root>/Ct'
-   *  Inport: '<Root>/r'
-   *  Product: '<S1>/Product'
+  /* SignalConversion: '<S4>/ConcatBufferAtVector ConcatenateIn1' */
+  rtb_VectorConcatenate[0] = rtb_TrigonometricFunction1;
+  rtb_VectorConcatenate[1] = rtb_UnaryMinus1;
+  rtb_VectorConcatenate[2] = 0.0F;
+
+  /* UnaryMinus: '<S4>/Unary Minus1' */
+  rtb_UnaryMinus1 = -rtb_UnaryMinus1;
+
+  /* SignalConversion: '<S4>/ConcatBufferAtVector ConcatenateIn2' */
+  rtb_VectorConcatenate[3] = rtb_UnaryMinus1;
+  rtb_VectorConcatenate[4] = rtb_TrigonometricFunction1;
+  rtb_VectorConcatenate[5] = 0.0F;
+
+  /* SignalConversion: '<S4>/ConcatBufferAtVector ConcatenateIn3' */
+  rtb_VectorConcatenate[6] = 0.0F;
+  rtb_VectorConcatenate[7] = 0.0F;
+  rtb_VectorConcatenate[8] = 1.0F;
+
+  /* Product: '<S1>/Product4' incorporates:
+   *  SignalConversion: '<S1>/TmpSignal ConversionAtProduct4Inport2'
    */
-  for (i = 0; i < 6; i++) {
-    rtb_allocattionmatrix[i + 12] = -(ALLOCATION_U.r[i] * ALLOCATION_U.Ct[i]);
+  for (i = 0; i < 3; i++) {
+    rtb_VectorConcatenate_mk[3 + i] = 0.0F;
+    rtb_VectorConcatenate_mk[3 + i] += rtb_VectorConcatenate[i + 3] *
+      rtb_UnaryMinus[1];
+    rtb_VectorConcatenate_mk[3 + i] += rtb_VectorConcatenate[i + 6] *
+      rtb_allocation[1];
   }
 
-  /* End of UnaryMinus: '<S1>/Unary Minus' */
+  /* End of Product: '<S1>/Product4' */
 
-  /* Product: '<S1>/Product1' incorporates:
-   *  Inport: '<Root>/Cq'
-   *  Inport: '<Root>/s'
+  /* Trigonometry: '<S5>/Trigonometric Function1' */
+  rtb_TrigonometricFunction1 = (real32_T)cos(rtb_Gain[2]);
+
+  /* Trigonometry: '<S5>/Trigonometric Function' */
+  rtb_UnaryMinus1 = (real32_T)sin(rtb_Gain[2]);
+
+  /* SignalConversion: '<S5>/ConcatBufferAtVector ConcatenateIn1' */
+  rtb_VectorConcatenate[0] = rtb_TrigonometricFunction1;
+  rtb_VectorConcatenate[1] = rtb_UnaryMinus1;
+  rtb_VectorConcatenate[2] = 0.0F;
+
+  /* UnaryMinus: '<S5>/Unary Minus1' */
+  rtb_UnaryMinus1 = -rtb_UnaryMinus1;
+
+  /* SignalConversion: '<S5>/ConcatBufferAtVector ConcatenateIn2' */
+  rtb_VectorConcatenate[3] = rtb_UnaryMinus1;
+  rtb_VectorConcatenate[4] = rtb_TrigonometricFunction1;
+  rtb_VectorConcatenate[5] = 0.0F;
+
+  /* SignalConversion: '<S5>/ConcatBufferAtVector ConcatenateIn3' */
+  rtb_VectorConcatenate[6] = 0.0F;
+  rtb_VectorConcatenate[7] = 0.0F;
+  rtb_VectorConcatenate[8] = 1.0F;
+
+  /* Product: '<S1>/Product5' incorporates:
+   *  SignalConversion: '<S1>/TmpSignal ConversionAtProduct5Inport2'
    */
-  for (i = 0; i < 6; i++) {
-    rtb_allocattionmatrix[i + 18] = ALLOCATION_U.s[i] * ALLOCATION_U.Cq[i];
+  for (i = 0; i < 3; i++) {
+    rtb_VectorConcatenate_mk[6 + i] = 0.0F;
+    rtb_VectorConcatenate_mk[6 + i] += rtb_VectorConcatenate[i + 3] *
+      rtb_UnaryMinus[2];
+    rtb_VectorConcatenate_mk[6 + i] += rtb_VectorConcatenate[i + 6] *
+      rtb_allocation[2];
   }
 
-  /* End of Product: '<S1>/Product1' */
+  /* End of Product: '<S1>/Product5' */
+
+  /* Trigonometry: '<S6>/Trigonometric Function1' */
+  rtb_TrigonometricFunction1 = (real32_T)cos(rtb_Gain[3]);
+
+  /* Trigonometry: '<S6>/Trigonometric Function' */
+  rtb_UnaryMinus1 = (real32_T)sin(rtb_Gain[3]);
+
+  /* SignalConversion: '<S6>/ConcatBufferAtVector ConcatenateIn1' */
+  rtb_VectorConcatenate[0] = rtb_TrigonometricFunction1;
+  rtb_VectorConcatenate[1] = rtb_UnaryMinus1;
+  rtb_VectorConcatenate[2] = 0.0F;
+
+  /* UnaryMinus: '<S6>/Unary Minus1' */
+  rtb_UnaryMinus1 = -rtb_UnaryMinus1;
+
+  /* SignalConversion: '<S6>/ConcatBufferAtVector ConcatenateIn2' */
+  rtb_VectorConcatenate[3] = rtb_UnaryMinus1;
+  rtb_VectorConcatenate[4] = rtb_TrigonometricFunction1;
+  rtb_VectorConcatenate[5] = 0.0F;
+
+  /* SignalConversion: '<S6>/ConcatBufferAtVector ConcatenateIn3' */
+  rtb_VectorConcatenate[6] = 0.0F;
+  rtb_VectorConcatenate[7] = 0.0F;
+  rtb_VectorConcatenate[8] = 1.0F;
+
+  /* Product: '<S1>/Product6' incorporates:
+   *  SignalConversion: '<S1>/TmpSignal ConversionAtProduct6Inport2'
+   */
+  for (i = 0; i < 3; i++) {
+    rtb_VectorConcatenate_mk[9 + i] = 0.0F;
+    rtb_VectorConcatenate_mk[9 + i] += rtb_VectorConcatenate[i + 3] *
+      rtb_UnaryMinus[3];
+    rtb_VectorConcatenate_mk[9 + i] += rtb_VectorConcatenate[i + 6] *
+      rtb_allocation[3];
+  }
+
+  /* End of Product: '<S1>/Product6' */
+
+  /* Trigonometry: '<S7>/Trigonometric Function1' */
+  rtb_TrigonometricFunction1 = (real32_T)cos(rtb_Gain[4]);
+
+  /* Trigonometry: '<S7>/Trigonometric Function' */
+  rtb_UnaryMinus1 = (real32_T)sin(rtb_Gain[4]);
+
+  /* SignalConversion: '<S7>/ConcatBufferAtVector ConcatenateIn1' */
+  rtb_VectorConcatenate[0] = rtb_TrigonometricFunction1;
+  rtb_VectorConcatenate[1] = rtb_UnaryMinus1;
+  rtb_VectorConcatenate[2] = 0.0F;
+
+  /* UnaryMinus: '<S7>/Unary Minus1' */
+  rtb_UnaryMinus1 = -rtb_UnaryMinus1;
+
+  /* SignalConversion: '<S7>/ConcatBufferAtVector ConcatenateIn2' */
+  rtb_VectorConcatenate[3] = rtb_UnaryMinus1;
+  rtb_VectorConcatenate[4] = rtb_TrigonometricFunction1;
+  rtb_VectorConcatenate[5] = 0.0F;
+
+  /* SignalConversion: '<S7>/ConcatBufferAtVector ConcatenateIn3' */
+  rtb_VectorConcatenate[6] = 0.0F;
+  rtb_VectorConcatenate[7] = 0.0F;
+  rtb_VectorConcatenate[8] = 1.0F;
+
+  /* Product: '<S1>/Product7' incorporates:
+   *  SignalConversion: '<S1>/TmpSignal ConversionAtProduct7Inport2'
+   */
+  for (i = 0; i < 3; i++) {
+    rtb_VectorConcatenate_mk[12 + i] = 0.0F;
+    rtb_VectorConcatenate_mk[12 + i] += rtb_VectorConcatenate[i + 3] *
+      rtb_UnaryMinus[4];
+    rtb_VectorConcatenate_mk[12 + i] += rtb_VectorConcatenate[i + 6] *
+      rtb_allocation[4];
+  }
+
+  /* End of Product: '<S1>/Product7' */
+
+  /* Trigonometry: '<S8>/Trigonometric Function1' */
+  rtb_TrigonometricFunction1 = (real32_T)cos(rtb_Gain[5]);
+
+  /* Trigonometry: '<S8>/Trigonometric Function' */
+  rtb_UnaryMinus1 = (real32_T)sin(rtb_Gain[5]);
+
+  /* SignalConversion: '<S8>/ConcatBufferAtVector ConcatenateIn1' */
+  rtb_VectorConcatenate[0] = rtb_TrigonometricFunction1;
+  rtb_VectorConcatenate[1] = rtb_UnaryMinus1;
+  rtb_VectorConcatenate[2] = 0.0F;
+
+  /* UnaryMinus: '<S8>/Unary Minus1' */
+  rtb_UnaryMinus1 = -rtb_UnaryMinus1;
+
+  /* SignalConversion: '<S8>/ConcatBufferAtVector ConcatenateIn2' */
+  rtb_VectorConcatenate[3] = rtb_UnaryMinus1;
+  rtb_VectorConcatenate[4] = rtb_TrigonometricFunction1;
+  rtb_VectorConcatenate[5] = 0.0F;
+
+  /* SignalConversion: '<S8>/ConcatBufferAtVector ConcatenateIn3' */
+  rtb_VectorConcatenate[6] = 0.0F;
+  rtb_VectorConcatenate[7] = 0.0F;
+  rtb_VectorConcatenate[8] = 1.0F;
+
+  /* Product: '<S1>/Product8' incorporates:
+   *  SignalConversion: '<S1>/TmpSignal ConversionAtProduct8Inport2'
+   */
+  for (i = 0; i < 3; i++) {
+    rtb_VectorConcatenate_mk[15 + i] = 0.0F;
+    rtb_VectorConcatenate_mk[15 + i] += rtb_VectorConcatenate[i + 3] *
+      rtb_UnaryMinus[5];
+    rtb_VectorConcatenate_mk[15 + i] += rtb_VectorConcatenate[i + 6] *
+      rtb_allocation[5];
+  }
+
+  /* End of Product: '<S1>/Product8' */
 
   /* MATLAB Function: '<S1>/matrix inversion' incorporates:
-   *  Math: '<S1>/Math Function'
+   *  Concatenate: '<S1>/allocation matrix'
+   *  Inport: '<Root>/Ct'
+   *  Math: '<S1>/Math Function1'
    */
   /* MATLAB Function 'allocation/matrix inversion': '<S2>:1' */
   /* '<S2>:1:3' */
   memset(&X[0], (int32_T)0.0F, 24U * sizeof(real32_T));
-  ALLOCATION_eml_xgesvd(rtb_allocattionmatrix, U, s, V);
+  for (i = 0; i < 6; i++) {
+    tmp[i] = ALLOCATION_U.Ct[i];
+  }
+
+  for (i = 0; i < 3; i++) {
+    for (j = 0; j < 6; j++) {
+      tmp[j + 6 * (i + 1)] = rtb_VectorConcatenate_mk[3 * j + i];
+    }
+  }
+
+  ALLOCATION_eml_xgesvd(tmp, U, s, V);
   memset(&S[0], (int32_T)0.0F, sizeof(real32_T) << 4U);
   S[0] = s[0];
   S[5] = s[1];
@@ -1087,9 +1306,9 @@ static void ALLOCATION_output(void)
   if (r > 0) {
     i = 0;
     for (j = 0; j + 1 <= r; j++) {
-      z = 1.0F / S[(j << 2) + j];
+      rtb_UnaryMinus1 = 1.0F / S[(j << 2) + j];
       for (ar = i; ar + 1 <= i + 4; ar++) {
-        V[ar] *= z;
+        V[ar] *= rtb_UnaryMinus1;
       }
 
       i += 4;
@@ -1123,7 +1342,7 @@ static void ALLOCATION_output(void)
   /* Outport: '<Root>/w' incorporates:
    *  Inport: '<Root>/vc'
    *  MATLAB Function: '<S1>/matrix inversion'
-   *  Product: '<S1>/Product2'
+   *  Product: '<S1>/allocation'
    */
   for (i = 0; i < 6; i++) {
     ALLOCATION_Y.w[i] = 0.0F;
@@ -1265,10 +1484,10 @@ RT_MODEL_ALLOCATION *ALLOCATION(void)
   /* Initialize Sizes */
   ALLOCATION_M->Sizes.numContStates = (0);/* Number of continuous states */
   ALLOCATION_M->Sizes.numY = (6);      /* Number of model outputs */
-  ALLOCATION_M->Sizes.numU = (28);     /* Number of model inputs */
+  ALLOCATION_M->Sizes.numU = (34);     /* Number of model inputs */
   ALLOCATION_M->Sizes.sysDirFeedThru = (1);/* The model is direct feedthrough */
   ALLOCATION_M->Sizes.numSampTimes = (1);/* Number of sample times */
-  ALLOCATION_M->Sizes.numBlocks = (11);/* Number of blocks */
+  ALLOCATION_M->Sizes.numBlocks = (71);/* Number of blocks */
   ALLOCATION_M->Sizes.numBlockIO = (0);/* Number of block outputs */
   return ALLOCATION_M;
 }

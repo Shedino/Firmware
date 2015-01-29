@@ -200,15 +200,19 @@ int unibo_allocation_thread_main(int argc, char *argv[])
 //		ALLOCATION_U.s[module_ind]=1;//curr_config.direction[module_ind];   //spin
 //		warnx("module %u: s=%d",module_ind+1,(int)ALLOCATION_U.s[module_ind]);
 //		warnx("module %u: Ct=%.5f",module_ind+1,(double)curr_config.thrust[module_ind]);
-		ALLOCATION_U.Ct[module_ind]=0,0000115;//curr_config.thrust[module_ind];		//coefficienti aerodinamici di spinta
+		ALLOCATION_U.Ct[module_ind]=0.0000115;//curr_config.thrust[module_ind];		//coefficienti aerodinamici di spinta
 //		warnx("module %u: Ct=%.5f",module_ind+1,(double)ALLOCATION_U.Ct[module_ind]);
-		ALLOCATION_U.Cq[module_ind]=0,00000000055;//curr_config.torque[module_ind];		//coefficienti aerodinamici di momento
+		ALLOCATION_U.Cq[module_ind]=0.00000000055;//curr_config.torque[module_ind];		//coefficienti aerodinamici di momento
 //		warnx("module %u: Cq=%.8f",module_ind+1,(double)ALLOCATION_U.Cq[module_ind]);
 	}
 	ALLOCATION_U.s[0]=-1;//curr_config.direction[module_ind];   //spin
 	ALLOCATION_U.s[1]=1;//curr_config.direction[module_ind];   //spin
 	ALLOCATION_U.s[2]=-1;//curr_config.direction[module_ind];   //spin
 	ALLOCATION_U.s[3]=1;//curr_config.direction[module_ind];   //spin
+	ALLOCATION_U.psi[0]=45;//azimuth
+	ALLOCATION_U.psi[1]=135;//azimuth
+	ALLOCATION_U.psi[2]=225;//azimuth
+	ALLOCATION_U.psi[3]=315;//azimuth
 
 	for(module_ind=4;module_ind<6;module_ind++){
 		ALLOCATION_U.r[module_ind]=0;//curr_config.radius[module_ind];		//distanza dal baricentro
@@ -220,6 +224,7 @@ int unibo_allocation_thread_main(int argc, char *argv[])
 //		warnx("module %u: Ct=%.5f",module_ind+1,(double)ALLOCATION_U.Ct[module_ind]);
 		ALLOCATION_U.Cq[module_ind]=0;//curr_config.torque[module_ind];		//coefficienti aerodinamici di momento
 //		warnx("module %u: Cq=%.8f",module_ind+1,(double)ALLOCATION_U.Cq[module_ind]);
+		ALLOCATION_U.psi[module_ind]=0;
 	}
 
 	/* Bool for topics update */
@@ -272,10 +277,10 @@ int unibo_allocation_thread_main(int argc, char *argv[])
 
 				/*------GET CONTROL WRENCH----------------*/
 				orb_copy(ORB_ID(unibo_control_wrench), unibo_control_wrench_fd, &wrench);
-				ALLOCATION_U.vc[0] = wrench.force[2];     //control wrench
-				ALLOCATION_U.vc[1] = wrench.torque[0];
-				ALLOCATION_U.vc[2] = wrench.torque[1];
-				ALLOCATION_U.vc[3] = wrench.torque[2];
+				ALLOCATION_U.vc[0] = 10;//wrench.force[2];     //control wrench
+				ALLOCATION_U.vc[1] = 0;//wrench.torque[0];
+				ALLOCATION_U.vc[2] = 0;//wrench.torque[1];
+				ALLOCATION_U.vc[3] = 0;//wrench.torque[2];
 				/*----------------------------------------*/
 
 
@@ -286,7 +291,7 @@ int unibo_allocation_thread_main(int argc, char *argv[])
 
 				/*----- PUBLISH RPM IN MOTOR TOPIC --------*/
 				for(module_ind=0;module_ind<6;module_ind++){
-					motor.outputs_rpm[module_ind]=(uint16_t)ALLOCATION_Y.w[module_ind];
+					motor.outputs_rpm[module_ind]=(uint16_t)sqrt(ALLOCATION_Y.w[module_ind]);
 				}
 				orb_publish(ORB_ID(motor_output), motor_pub_fd, &motor);
 				/*----------------------------------------*/
