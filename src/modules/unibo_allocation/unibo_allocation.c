@@ -159,10 +159,6 @@ int unibo_allocation_thread_main(int argc, char *argv[])
 	model = ALLOCATION(); //Init model!
 
 
-	/* subscribe to attitude topic */ 										//TODO remove
-	//int vehicle_attitude_fd = orb_subscribe(ORB_ID(vehicle_attitude));
-	//orb_set_interval(vehicle_attitude_fd, 5); //1000 = 1Hz (ms)
-
 	int unibo_control_wrench_fd = orb_subscribe(ORB_ID(unibo_control_wrench));
 	//orb_set_interval(unibo_control_wrench_fd, 5); //1000 = 1Hz (ms)
 
@@ -193,7 +189,7 @@ int unibo_allocation_thread_main(int argc, char *argv[])
 	//int u2m[6] = {1,1,1,1,1,1};
 	//struct mr_config_struct curr_config=ConfigurationReader(1,u2m);
 
-	warnx("input logging to Simulink routine ...");
+	warnx("input logging to Simulink routine ...");           //TODO put configuration file instead of hardcode
 	for(module_ind=0;module_ind<4;module_ind++){
 		ALLOCATION_U.r[module_ind]=0.29;//curr_config.radius[module_ind];		//distanza dal baricentro
 //		warnx("module %u: r=%u",module_ind+1,(int)ALLOCATION_U.r[module_ind]);
@@ -209,10 +205,19 @@ int unibo_allocation_thread_main(int argc, char *argv[])
 	ALLOCATION_U.s[1]=1;//curr_config.direction[module_ind];   //spin
 	ALLOCATION_U.s[2]=-1;//curr_config.direction[module_ind];   //spin
 	ALLOCATION_U.s[3]=1;//curr_config.direction[module_ind];   //spin
-	ALLOCATION_U.psi[0]=45;//azimuth
+	ALLOCATION_U.psi[0]=225;//azimuth
 	ALLOCATION_U.psi[1]=135;//azimuth
-	ALLOCATION_U.psi[2]=225;//azimuth
+	ALLOCATION_U.psi[2]=45;//azimuth
 	ALLOCATION_U.psi[3]=315;//azimuth
+
+//    x
+// 1  ^  2
+//  \ | /
+//   \|/
+//    0---->y
+//   / \
+//  /   \
+// 4     3
 
 	for(module_ind=4;module_ind<6;module_ind++){
 		ALLOCATION_U.r[module_ind]=0;//curr_config.radius[module_ind];		//distanza dal baricentro
@@ -230,12 +235,6 @@ int unibo_allocation_thread_main(int argc, char *argv[])
 	/* Bool for topics update */
 //	bool updated;
 
-	//struct pollfd fds[] = {
-		//{ .fd = vehicle_attitude_fd,   .events = POLLIN },                 //TODO remove
-		/* there could be more file descriptors here, in the form like:
-		 * { .fd = other_sub_fd,   .events = POLLIN },
-		 */
-	//};
 
 	struct pollfd fds[] = {
 		{ .fd = unibo_control_wrench_fd,   .events = POLLIN },
@@ -277,10 +276,10 @@ int unibo_allocation_thread_main(int argc, char *argv[])
 
 				/*------GET CONTROL WRENCH----------------*/
 				orb_copy(ORB_ID(unibo_control_wrench), unibo_control_wrench_fd, &wrench);
-				ALLOCATION_U.vc[0] = 10;//wrench.force[2];     //control wrench
-				ALLOCATION_U.vc[1] = 0;//wrench.torque[0];
-				ALLOCATION_U.vc[2] = 0;//wrench.torque[1];
-				ALLOCATION_U.vc[3] = 0;//wrench.torque[2];
+				ALLOCATION_U.vc[0] = wrench.force[2];     //control wrench
+				ALLOCATION_U.vc[1] = wrench.torque[0];
+				ALLOCATION_U.vc[2] = wrench.torque[1];
+				ALLOCATION_U.vc[3] = wrench.torque[2];
 				/*----------------------------------------*/
 
 
@@ -299,8 +298,8 @@ int unibo_allocation_thread_main(int argc, char *argv[])
 
 				/*----- WARNX FOR DEBUG ------------------*/
 				if (counter_warnx>=200){
-					warnx("Time: %ds| Rotors Speed: %d RPM %d RPM %d RPM %d RPM %d RPM %d RPM", time_counter, motor.outputs_rpm[0], motor.outputs_rpm[1], motor.outputs_rpm[2], motor.outputs_rpm[3], motor.outputs_rpm[4], motor.outputs_rpm[5]);
-					warnx("Forces allocation: %.3f %.3f %.3f %.3f", (double)wrench.force[2], (double)wrench.torque[0], (double)wrench.torque[1], (double)wrench.torque[2]);
+					//warnx("Time: %ds| Rotors Speed: %d RPM %d RPM %d RPM %d RPM", time_counter, motor.outputs_rpm[0], motor.outputs_rpm[1], motor.outputs_rpm[2], motor.outputs_rpm[3]);
+					//warnx("Forces allocation: %.3f %.3f %.3f %.3f", (double)wrench.force[2], (double)wrench.torque[0], (double)wrench.torque[1], (double)wrench.torque[2]);
 					counter_warnx = 0;
 					time_counter++;
 				}

@@ -393,6 +393,10 @@ ESC32_READER::task_main()
 
 				//warnx("esc_status: %d", esc_state_byte);
 				read_arduino(DEVICE_ADDRESS);
+				if (_arduino_counter>=200){
+					_arduino_counter = 0;
+					warnx("Speeds: %d - %d - %d - %d", _esc.esc[0].esc_rpm, _esc.esc[1].esc_rpm, _esc.esc[2].esc_rpm, _esc.esc[3].esc_rpm);
+				}
 
 				/*temp_counter++;        //TODO remove to have full 200Hz
 				if (temp_counter >=200){
@@ -458,10 +462,6 @@ ESC32_READER::read_arduino(unsigned int add)         //UNIBO
 		//TODO add current, voltage, temperature,...
 		//TODO merge with single function to read/write
 		_arduino_counter++;
-		if (_arduino_counter>=200){
-			_arduino_counter = 0;
-			warnx("Speeds: %d - %d - %d - %d", speeds[0], speeds[1], speeds[2], speeds[3]);
-		}
 		return OK;
 	}
 }
