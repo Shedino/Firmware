@@ -268,6 +268,7 @@ int unibo_commander_thread_main(int argc, char *argv[])
 				COMMANDER_U.BUTTON = joystick.buttons;          //button
 				if (counter >= 100){
 					//warnx("Button: %d",COMMANDER_U.BUTTON);
+					counter = 0;
 				}
 			}
 			/* copy status data into local buffer */

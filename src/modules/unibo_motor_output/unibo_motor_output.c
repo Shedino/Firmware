@@ -1,7 +1,7 @@
 /*
  *
  * Filename: set_motor_output.c
- * Authors: Luca De Luigi, Paolo Di Febbo
+ * Authors: Michele Furci, Dario Mengoli
  *
  * Description:
  * Demone che si occupa di applicare l'output ai motori prelevandolo
@@ -285,6 +285,7 @@ int unibo_motor_output_thread_main(int argc, char *argv[])
 	int count=0;
 	bool flag_armed;
 	bool updated;
+	bool receiving_output;
 	uint8_t esc_state;
 	struct pwm_output_values esc_actual_pwm;
 	int ret;
@@ -294,7 +295,6 @@ int unibo_motor_output_thread_main(int argc, char *argv[])
 
 	// subscribe a ORB
 	int motor_output_fd = orb_subscribe(ORB_ID(motor_output));
-	//orb_set_interval(motor_output_fd, 3);
 
 	/* subscribe to safety switch topic */
 	int safety_fd = orb_subscribe(ORB_ID(safety));
@@ -326,9 +326,48 @@ int unibo_motor_output_thread_main(int argc, char *argv[])
 		count++;
 		if (count >= 200){
 			count = 0;
-			warnx("Commanded RPM: %d %d %d %d", motor_output.outputs_rpm[0], motor_output.outputs_rpm[1], motor_output.outputs_rpm[2], motor_output.outputs_rpm[3]);
+			//warnx("Commanded RPM: %d %d %d %d", motor_output.outputs_rpm[0], motor_output.outputs_rpm[1], motor_output.outputs_rpm[2], motor_output.outputs_rpm[3]);
 		}
 
+		orb_check(safety_fd, &updated);
+		if (updated){
+			orb_copy(ORB_ID(safety), safety_fd, &safety);
+		}
+
+		orb_check(unibo_status_fd, &updated);
+		if (updated){
+			orb_copy(ORB_ID(unibo_vehicle_status), unibo_status_fd, &unibo_status);
+		}
+
+		//safety.safety_off;  -->true if safety is off
+		if (!safety.safety_off){   //inverted-->safety_off true means safety on
+			flag_armed = false;
+			esc_state = 1;  //DISARM
+			for(i = MOTORS_START; i < MOTORS_NUMBER; i++)
+			{
+				ioctl(pwm_fd, PWM_SERVO_SET(i), PWM_DISARMED);
+			}
+			//warnx("DISARM: %d", PWM_DISARMED);
+		} else{
+			if (!flag_armed){
+				flag_armed = true;
+				esc_state = 2; //ARM
+				//warnx("ARM: %d", PWM_ARMED);
+				for(i = MOTORS_START; i < MOTORS_NUMBER; i++)
+				{
+					ioctl(pwm_fd, PWM_SERVO_SET(i), PWM_ARMED);
+				}
+			}
+			if (!receiving_output){
+				for(i = MOTORS_START; i < MOTORS_NUMBER; i++)
+				{
+					ioctl(pwm_fd, PWM_SERVO_SET(i), PWM_ARMED);  //because PX$ needs always an output otherwise will send 0 (WHY??)
+																//so if no output are received, PWM_ARMED is sent if armed
+				}
+			}
+		}
+
+		receiving_output = false;
 
 		// controllo se ci sono nuovi dati
 		int poll_ret = poll(fds, 1, 100);
@@ -336,71 +375,46 @@ int unibo_motor_output_thread_main(int argc, char *argv[])
 		{
 			if(fds[0].revents & POLLIN)
 			{
+				receiving_output = true;
 				// lettura ORB
 				//warnx("Nuovo valore pwm: %d %d %d %d %d %d %d %d", pwm_values.outputs[0], pwm_values.outputs[1], pwm_values.outputs[2], pwm_values.outputs[3],pwm_values.outputs[4], pwm_values.outputs[5], pwm_values.outputs[6], pwm_values.outputs[7]);
 				orb_copy(ORB_ID(motor_output), motor_output_fd, &motor_output);
 
-				orb_check(safety_fd, &updated);
-				if (updated){
-					orb_copy(ORB_ID(safety), safety_fd, &safety);
-					//safety.safety_off;  -->true if safety is off
-				}
-
-				orb_check(unibo_status_fd, &updated);
-				if (updated){
-					orb_copy(ORB_ID(unibo_vehicle_status), unibo_status_fd, &unibo_status);
-				}
 
 				// scrittura su pin output
 
-				if (!safety.safety_off){   //inverted-->safety_off true means safety on
-					flag_armed = false;
-					esc_state = 1;  //DISARM
-					for(i = MOTORS_START; i < MOTORS_NUMBER; i++)
-					{
-						ioctl(pwm_fd, PWM_SERVO_SET(i), PWM_DISARMED);
-					}
-					//warnx("DISARM: %d", PWM_DISARMED);
-				} else{
-					if (!flag_armed){
-						flag_armed = true;
-						esc_state = 2; //ARM
+				if (flag_armed){
+					if (unibo_status.flight_mode == FLIGHTMODE_PREFLIGHT){
+						esc_state = 3; //PREFLIGHT
+						//warnx("PREFLIGHT");
+						for(i = MOTORS_START; i < MOTORS_NUMBER; i++)
+						{
+							ioctl(pwm_fd, PWM_SERVO_SET(i), PWM_PREFLIGHT);
+						}
+					}else if (unibo_status.flight_mode == FLIGHTMODE_STOP){
+						esc_state = 5; //STOP
 						for(i = MOTORS_START; i < MOTORS_NUMBER; i++)
 						{
 							ioctl(pwm_fd, PWM_SERVO_SET(i), PWM_ARMED);
 						}
-						//warnx("ARM: %d", PWM_ARMED);
-					} else{
-						if (unibo_status.flight_mode == FLIGHTMODE_PREFLIGHT){
-							esc_state = 3; //PREFLIGHT
+						//warnx("STOP: %d", PWM_DISARMED);
+					}else{
+						esc_state = 4; //SPEED CONTROL ON
+						//warnx("CONTROL");
+						if (RPM_MODE){
 							for(i = MOTORS_START; i < MOTORS_NUMBER; i++)
-							{
-								ioctl(pwm_fd, PWM_SERVO_SET(i), PWM_PREFLIGHT);
-							}
-						}else if (unibo_status.flight_mode == FLIGHTMODE_STOP){
-							esc_state = 5; //STOP
+								{
+									ioctl(pwm_fd, PWM_SERVO_SET(i), map(motor_output.outputs_rpm[i], MIN_RPM, MAX_RPM, MIN_PWM, MAX_PWM));
+								}
+						}else {
 							for(i = MOTORS_START; i < MOTORS_NUMBER; i++)
-							{
-								ioctl(pwm_fd, PWM_SERVO_SET(i), PWM_ARMED);
-							}
-							//warnx("STOP: %d", PWM_DISARMED);
-						}
-						else{
-							esc_state = 4; //SPEED CONTROL ON
-							if (RPM_MODE){
-								for(i = MOTORS_START; i < MOTORS_NUMBER; i++)
-									{
-										ioctl(pwm_fd, PWM_SERVO_SET(i), map(motor_output.outputs_rpm[i], MIN_RPM, MAX_RPM, MIN_PWM, MAX_PWM));
-									}
-							}else {
-								for(i = MOTORS_START; i < MOTORS_NUMBER; i++)
-									{
-										ioctl(pwm_fd, PWM_SERVO_SET(i), motor_output.outputs_pwm[i]);
-									}
-							}
+								{
+									ioctl(pwm_fd, PWM_SERVO_SET(i), motor_output.outputs_pwm[i]);
+								}
 						}
 					}
 				}
+
 
 				//count++;
 				/*for(i = MOTORS_START; i < MOTORS_NUMBER; i++)       //OLD

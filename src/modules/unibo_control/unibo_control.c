@@ -632,7 +632,7 @@ int unibo_control_thread_main(int argc, char *argv[])
 				counter_output++;
 
 				if (counter_output>=400){
-					warnx("Thrust: %.3f Torques: %.3f %.3f %.3f", Model_GS_Y.U_F, Model_GS_Y.U_TAU[0], Model_GS_Y.U_TAU[1], Model_GS_Y.U_TAU[2]);
+					//warnx("Thrust: %.3f Torques: %.3f %.3f %.3f", Model_GS_Y.U_F, Model_GS_Y.U_TAU[0], Model_GS_Y.U_TAU[1], Model_GS_Y.U_TAU[2]);
 					counter_output = 0;
 				}
 
