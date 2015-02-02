@@ -205,10 +205,10 @@ int unibo_allocation_thread_main(int argc, char *argv[])
 	ALLOCATION_U.s[1]=1;//curr_config.direction[module_ind];   //spin
 	ALLOCATION_U.s[2]=-1;//curr_config.direction[module_ind];   //spin
 	ALLOCATION_U.s[3]=1;//curr_config.direction[module_ind];   //spin
-	ALLOCATION_U.psi[0]=225;//azimuth
-	ALLOCATION_U.psi[1]=135;//azimuth
-	ALLOCATION_U.psi[2]=45;//azimuth
-	ALLOCATION_U.psi[3]=315;//azimuth
+	ALLOCATION_U.psi[0]=135;//azimuth
+	ALLOCATION_U.psi[1]=-135;//azimuth
+	ALLOCATION_U.psi[2]=-45;//azimuth
+	ALLOCATION_U.psi[3]=45;//azimuth
 
 //    x
 // 1  ^  2
