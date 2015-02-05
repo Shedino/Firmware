@@ -145,6 +145,7 @@ private:
 	int		_t_actuators;
 	int		_t_actuator_armed;
 	int		_arduino_counter;
+	int 	_read_arduino_counter;
 	esc_status_s 		_esc;
 	unsigned int		_motor;
 	int    _px4mode;
@@ -203,6 +204,7 @@ ESC32_READER::ESC32_READER(int bus, const char *_device_path) :
 	_t_actuators(-1),
 	_t_actuator_armed(-1),
 	_arduino_counter(0),
+	_read_arduino_counter(0),
 	_motor(-1),
 	_t_outputs(0),
 	_t_esc_status(0),
@@ -344,7 +346,7 @@ ESC32_READER::task_main()
 				if (updated){
 					orb_copy(ORB_ID(motor_output), motor_output_fd, &pwm_values);
 				}
-
+				_read_arduino_counter++;
 
 				/* copy safety switch data into local buffer */
 				/*
@@ -392,7 +394,10 @@ ESC32_READER::task_main()
 				}*/
 
 				//warnx("esc_status: %d", esc_state_byte);
-				read_arduino(DEVICE_ADDRESS);
+				if (_read_arduino_counter>=2){   //TO LIMIT READING FREQUENCY (200Hz/2-->100 Hz) 200Hz is motor output topic //TODO use set_interval to the topic maybe
+					_read_arduino_counter = 0;
+					read_arduino(DEVICE_ADDRESS);
+				}
 				if (_arduino_counter>=200){
 					_arduino_counter = 0;
 					warnx("Speeds: %d - %d - %d - %d", _esc.esc[0].esc_rpm, _esc.esc[1].esc_rpm, _esc.esc[2].esc_rpm, _esc.esc[3].esc_rpm);

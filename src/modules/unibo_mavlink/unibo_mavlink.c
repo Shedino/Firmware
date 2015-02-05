@@ -282,7 +282,7 @@ int unibo_mavlink_main(int argc, char *argv[])
 		unibomav_unibo_mavlink_task = task_spawn_cmd("unibo_mavlink",
 					      SCHED_DEFAULT,
 					      SCHED_PRIORITY_MAX - 10,
-					      2304,
+					      3096,
 					      unibo_mavlink_thread_main,
 					      (argv) ? (const char **)&argv[2] : (const char **)NULL);
 		//warnx("Thread started PID: %d",unibomav_unibo_mavlink_task);

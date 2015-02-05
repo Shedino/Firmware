@@ -137,7 +137,7 @@ int unibo_trajectory_ref_main(int argc, char *argv[])
 					 SCHED_DEFAULT,
 					 //SCHED_PRIORITY_DEFAULT,
 					 SCHED_PRIORITY_MAX - 20,
-					 3072,
+					 3096,
 					 unibo_trajectory_ref_thread_main,
 					 (argv) ? (const char **)&argv[2] : (const char **)NULL);
 		//warnx("Thread started PID: %d",trajectory_ref_task);

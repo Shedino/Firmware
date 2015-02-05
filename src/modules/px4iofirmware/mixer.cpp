@@ -279,7 +279,7 @@ mixer_tick(void)
 
 	if (mixer_servos_armed && should_arm) {
 		/* update the servo outputs. */
-		for (unsigned i = 0; i < PX4IO_SERVO_COUNT; i++)
+		for (unsigned i = 0; i < PX4IO_SERVO_COUNT; i++)        //UNIBO i was 0. I want to control pwm from 0 to 3
 			up_pwm_servo_set(i, r_page_servos[i]);
 
 		/* set S.BUS1 or S.BUS2 outputs */
@@ -293,7 +293,7 @@ mixer_tick(void)
 	} else if (mixer_servos_armed && should_always_enable_pwm) {
 		/* set the disarmed servo outputs. */
 		for (unsigned i = 0; i < PX4IO_SERVO_COUNT; i++)
-			up_pwm_servo_set(i, r_page_servo_disarmed[i]);
+			up_pwm_servo_set(i, r_page_servo_disarmed[i]);		//UNIBO i was 0. I want to control pwm from 0 to 3
 
 		/* set S.BUS1 or S.BUS2 outputs */
 		if (r_setup_features & PX4IO_P_SETUP_FEATURES_SBUS1_OUT)
