@@ -299,7 +299,7 @@ int unibo_allocation_thread_main(int argc, char *argv[])
 				/*----- WARNX FOR DEBUG ------------------*/
 				if (counter_warnx>=200){
 					//warnx("Time: %ds| Rotors Speed: %d RPM %d RPM %d RPM %d RPM", time_counter, motor.outputs_rpm[0], motor.outputs_rpm[1], motor.outputs_rpm[2], motor.outputs_rpm[3]);
-					//warnx("Forces allocation: %.3f %.3f %.3f %.3f", (double)wrench.force[2], (double)wrench.torque[0], (double)wrench.torque[1], (double)wrench.torque[2]);
+					warnx("Forces allocation: %.3f %.3f %.3f %.3f", (double)wrench.force[2], (double)wrench.torque[0], (double)wrench.torque[1], (double)wrench.torque[2]);
 					counter_warnx = 0;
 					time_counter++;
 				}

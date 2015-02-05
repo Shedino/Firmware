@@ -90,10 +90,10 @@ MODULES		+= examples/flow_position_estimator
 # Vehicle Control
 #
 #MODULES		+= modules/segway # XXX Needs GCC 4.7 fix
-MODULES		+= modules/fw_pos_control_l1
-MODULES		+= modules/fw_att_control
-MODULES		+= modules/mc_att_control
-MODULES		+= modules/mc_pos_control
+#MODULES		+= modules/fw_pos_control_l1
+#MODULES		+= modules/fw_att_control
+#MODULES		+= modules/mc_att_control
+#MODULES		+= modules/mc_pos_control
 
 #
 # Logging
@@ -135,7 +135,7 @@ MODULES		+= modules/unibo_mavlink
 MODULES		+= modules/unibo_motor_output
 MODULES		+= modules/unibo_flow
 MODULES		+= modules/unibo_control
-#MODULES		+= modules/unibo_ECF_standard
+#MODULES	+= modules/unibo_ECF_standard
 MODULES		+= modules/unibo_att_esti_ECF_s
 MODULES		+= modules/unibo_att_esti_ECF_c
 MODULES		+= modules/unibo_trajectory_ref
@@ -155,7 +155,7 @@ MODULES		+= drivers/esc32_reader
 #MODULES		+= examples/math_demo
 # Tutorial code from
 # https://pixhawk.ethz.ch/px4/dev/hello_sky
-MODULES		+= examples/px4_simple_app
+#MODULES		+= examples/px4_simple_app
 
 # Tutorial code from
 # https://pixhawk.ethz.ch/px4/dev/daemon

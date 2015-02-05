@@ -242,7 +242,7 @@ int unibo_motor_output_main(int argc, char *argv[])
 		unibomo_unibo_motor_task = task_spawn_cmd("unibo_motor_output",
 					SCHED_DEFAULT,//SCHED_RR,
 					SCHED_PRIORITY_MAX - 11, //SCHED_PRIORITY_DEFAULT,
-					1024,
+					2048,
 					unibo_motor_output_thread_main,
 					(argv) ? (const char **)&argv[2] : (const char **)NULL);
 
@@ -315,14 +315,14 @@ int unibo_motor_output_thread_main(int argc, char *argv[])
 	while (!unibomo_thread_should_exit)
 	{
 		/*count++;      //USED TO READ ACTUAL PWM VALUES ON CHANNELS
-		if (count >= 50){
+		if (count >= 1){
 			count = 0;
 			ret = ioctl(pwm_fd, PWM_SERVO_GET(1), (unsigned long)&esc_actual_pwm.values[1]);
 			warnx("Actual PWM of channel 1: %d", esc_actual_pwm.values[1]);
-			ret = ioctl(pwm_fd, PWM_SERVO_GET(5), (unsigned long)&esc_actual_pwm.values[5]);
-			warnx("Actual PWM of channel 5: %d", esc_actual_pwm.values[5]);
-		}*/
-		count++;
+//			ret = ioctl(pwm_fd, PWM_SERVO_GET(5), (unsigned long)&esc_actual_pwm.values[5]);
+//			warnx("Actual PWM of channel 5: %d", esc_actual_pwm.values[5]);
+		}
+		count++;*/
 
 
 		orb_check(safety_fd, &updated);
@@ -337,12 +337,25 @@ int unibo_motor_output_thread_main(int argc, char *argv[])
 
 		if (!safety.safety_off){   //inverted-->safety_off true means safety on
 			flag_armed = false;
-			esc_state = 1;  //DISARM
-			for(i = MOTORS_START; i < MOTORS_NUMBER; i++)
+			if (esc_state!=1)    //different from disarmed
 			{
-				ioctl(pwm_fd, PWM_SERVO_SET(i), PWM_DISARMED);
+				for(i = MOTORS_START; i < MOTORS_NUMBER; i++)
+				{
+					ioctl(pwm_fd, PWM_SERVO_SET(i), PWM_DISARMED);
+				}
+				esc_state = 1;  //DISARM
+				warnx("DISARM: %d", PWM_DISARMED);
 			}
-			//warnx("DISARM: %d", PWM_DISARMED);
+		} else {                //safety on
+			if (esc_state<3){
+				flag_armed = true;
+				//esc_state = 2; //ARM
+				warnx("ARM: %d", PWM_ARMED);
+				for(i = MOTORS_START; i < MOTORS_NUMBER; i++)
+				{
+					ioctl(pwm_fd, PWM_SERVO_SET(i), PWM_ARMED);
+				}
+			}
 		}
 
 
@@ -364,44 +377,35 @@ int unibo_motor_output_thread_main(int argc, char *argv[])
 
 				// scrittura su pin output
 				//safety.safety_off;  -->true if safety is off
-				if (safety.safety_off){   //inverted-->safety_off true means safety on{
-					if (!flag_armed){
-						flag_armed = true;
-						esc_state = 2; //ARM
-						//warnx("ARM: %d", PWM_ARMED);
+
+				if (flag_armed){
+					if (unibo_status.flight_mode == FLIGHTMODE_PREFLIGHT){
+						esc_state = 3; //PREFLIGHT
+						//warnx("PREFLIGHT");
+						for(i = MOTORS_START; i < MOTORS_NUMBER; i++)
+						{
+							ioctl(pwm_fd, PWM_SERVO_SET(i), PWM_PREFLIGHT);
+						}
+					}else if (unibo_status.flight_mode == FLIGHTMODE_STOP){
+						esc_state = 5; //STOP
 						for(i = MOTORS_START; i < MOTORS_NUMBER; i++)
 						{
 							ioctl(pwm_fd, PWM_SERVO_SET(i), PWM_ARMED);
 						}
-					} else{
-						if (unibo_status.flight_mode == FLIGHTMODE_PREFLIGHT){
-							esc_state = 3; //PREFLIGHT
-							//warnx("PREFLIGHT");
+						//warnx("STOP: %d", PWM_DISARMED);
+					}else{
+						esc_state = 4; //SPEED CONTROL ON
+						//warnx("CONTROL");
+						if (RPM_MODE){
 							for(i = MOTORS_START; i < MOTORS_NUMBER; i++)
-							{
-								ioctl(pwm_fd, PWM_SERVO_SET(i), PWM_PREFLIGHT);
-							}
-						}else if (unibo_status.flight_mode == FLIGHTMODE_STOP){
-							esc_state = 5; //STOP
+								{
+									ioctl(pwm_fd, PWM_SERVO_SET(i), map(motor_output.outputs_rpm[i], MIN_RPM, MAX_RPM, MIN_PWM, MAX_PWM));
+								}
+						}else {
 							for(i = MOTORS_START; i < MOTORS_NUMBER; i++)
-							{
-								ioctl(pwm_fd, PWM_SERVO_SET(i), PWM_ARMED);
-							}
-							//warnx("STOP: %d", PWM_DISARMED);
-						}else{
-							esc_state = 4; //SPEED CONTROL ON
-							//warnx("CONTROL");
-							if (RPM_MODE){
-								for(i = MOTORS_START; i < MOTORS_NUMBER; i++)
-									{
-										ioctl(pwm_fd, PWM_SERVO_SET(i), map(motor_output.outputs_rpm[i], MIN_RPM, MAX_RPM, MIN_PWM, MAX_PWM));
-									}
-							}else {
-								for(i = MOTORS_START; i < MOTORS_NUMBER; i++)
-									{
-										ioctl(pwm_fd, PWM_SERVO_SET(i), motor_output.outputs_pwm[i]);
-									}
-							}
+								{
+									ioctl(pwm_fd, PWM_SERVO_SET(i), motor_output.outputs_pwm[i]);
+								}
 						}
 					}
 				}
