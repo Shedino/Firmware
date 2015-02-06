@@ -56,18 +56,19 @@ static int allocation_task;				/**< Handle of daemon task / thread */
 unsigned int tab_num;
 unsigned int tab_ind=0;
 unsigned int module_num;
-//unsigned int module_sel;
 unsigned int module_ind=0;
 unsigned int str_ind;
 long int file_pos;
 unsigned int par_value;
 char* config_file_name="multirotor_configuration.mcf";
 char* config_file_path="/fs/microsd/multirotor_configuration.mcf";
-unsigned int read_line_length=100;
+unsigned int read_line_length=110;
+unsigned int write_line_length=100;
 //int COL_string_length=-80;
 //int rot_ROW_string_length=-50;
-char file_line_string1[100];
-char file_line_string2[100];
+char line_format_string[8]="%-100s\n";
+char file_line_string1[110];
+char file_line_string2[110];
 char read_line_copy1[100];
 char read_line_copy2[100];
 char read_line_copy3[100];
@@ -79,6 +80,8 @@ char par3_name[20];
 char par4_name[20];
 char par5_name[20];
 char par6_name[20];
+char par7_name[20];
+char par8_name[20];
 FILE* config_file_handle;
 //FILE* config_file_handle1;
 
@@ -141,23 +144,23 @@ int unibo_configuration_main(int argc, char *argv[])
 		warnx("resetting configuration file ''%s'' ...",config_file_name);
 		config_file_handle=fopen(config_file_path,"w");
 		sprintf(file_line_string1,"<TAB,2>");
-		fprintf(config_file_handle,"%-80s\n",file_line_string1);
-		sprintf(file_line_string1,"<COL,payloads,2,name[10 char],diameter[mm],distance[mm]>");
-		fprintf(config_file_handle,"%-80s\n",file_line_string1);
-		sprintf(file_line_string1,"<ROW,controller,20,30>");
-		fprintf(config_file_handle,"%-80s\n",file_line_string1);
-		sprintf(file_line_string1,"<ROW,camera,20,30>");
-		fprintf(config_file_handle,"%-80s\n",file_line_string1);
-		sprintf(file_line_string1,"<COL,rotors,4,ID,distance[mm],azimuth[deg],spin,Ct[N/RPM^2],Cq[Nm/RPM^2]>");
-		fprintf(config_file_handle,"%-80s\n",file_line_string1);
-		sprintf(file_line_string1,"<ROW,1,29,135,-1,0.0000115,0.00000000055>");
-		fprintf(config_file_handle,"%-80s\n",file_line_string1);
-		sprintf(file_line_string1,"<ROW,2,29,-135,1,0.0000115,0.00000000055>");
-		fprintf(config_file_handle,"%-80s\n",file_line_string1);
-		sprintf(file_line_string1,"<ROW,3,29,-45,-1,0.0000115,0.00000000055>");
-		fprintf(config_file_handle,"%-80s\n",file_line_string1);
-		sprintf(file_line_string1,"<ROW,4,29,45,1,0.0000115,0.00000000055>");
-		fprintf(config_file_handle,"%-80s\n",file_line_string1);
+		fprintf(config_file_handle,line_format_string,file_line_string1);
+		sprintf(file_line_string1,"<COL,payloads,2,name[10 char],distance[mm],azimuth[deg],height[mm],mass[g]>");
+		fprintf(config_file_handle,line_format_string,file_line_string1);
+		sprintf(file_line_string1,"<ROW,controller,0,0,30,50>");
+		fprintf(config_file_handle,line_format_string,file_line_string1);
+		sprintf(file_line_string1,"<ROW,camera,20,0,10,70>");
+		fprintf(config_file_handle,line_format_string,file_line_string1);
+		sprintf(file_line_string1,"<COL,rotors,4,ID,distance[mm],azimuth[deg],height[mm],mass[g],spin,Ct[N/RPM^2],Cq[Nm/RPM^2]>");
+		fprintf(config_file_handle,line_format_string,file_line_string1);
+		sprintf(file_line_string1,"<ROW,1,29,135,20,100,-1,0.0000115,0.00000000055>");
+		fprintf(config_file_handle,line_format_string,file_line_string1);
+		sprintf(file_line_string1,"<ROW,2,29,-135,20,100,1,0.0000115,0.00000000055>");
+		fprintf(config_file_handle,line_format_string,file_line_string1);
+		sprintf(file_line_string1,"<ROW,3,29,-45,20,100,-1,0.0000115,0.00000000055>");
+		fprintf(config_file_handle,line_format_string,file_line_string1);
+		sprintf(file_line_string1,"<ROW,4,29,45,20,100,1,0.0000115,0.00000000055>");
+		fprintf(config_file_handle,line_format_string,file_line_string1);
 		fclose(config_file_handle);
 		warnx("Done.");
 		disp_config();
@@ -183,9 +186,9 @@ int unibo_configuration_main(int argc, char *argv[])
 					}while(strstr(file_line_string1,"<COL")==NULL);
 				}while(strstr(file_line_string1,"rotor")==NULL);
 				sscanf(file_line_string1,"<COL,%*s,%u,%s>",&module_num,read_line_copy1);
-				fseek(config_file_handle,-81,SEEK_CUR);
+				fseek(config_file_handle,-write_line_length-1,SEEK_CUR);
 				sprintf(file_line_string1,"<COL,rotors,%u,%s>",module_num+1,read_line_copy1);
-				fprintf(config_file_handle,"%-80s\n",file_line_string1);
+				fprintf(config_file_handle,line_format_string,file_line_string1);
 				for(module_ind=0;module_ind<module_num;module_ind++){
 					do{
 						fgets(file_line_string1,read_line_length,config_file_handle);
@@ -193,7 +196,7 @@ int unibo_configuration_main(int argc, char *argv[])
 				}
 				sscanf(file_line_string1,"<ROW,%*u,%s>",read_line_copy1);
 				sprintf(file_line_string1,"<ROW,%u,%s>",module_num+1,read_line_copy1);
-				fprintf(config_file_handle,"%-80s\n",file_line_string1);
+				fprintf(config_file_handle,line_format_string,file_line_string1);
 			}else{
 				if (!strcmp(argv[2],"payload")){
 					do{
@@ -206,25 +209,25 @@ int unibo_configuration_main(int argc, char *argv[])
 						}while(strstr(file_line_string1,"<COL")==NULL);
 					}while(strstr(file_line_string1,"payload")==NULL);
 					sscanf(file_line_string1,"<COL,%*s,%u,%s>",&module_num,read_line_copy1);
-					fseek(config_file_handle,-81,SEEK_CUR);
+					fseek(config_file_handle,-write_line_length-1,SEEK_CUR);
 					sprintf(file_line_string1,"<COL,payloads,%u,%s>",module_num+1,read_line_copy1);
-					fprintf(config_file_handle,"%-80s\n",file_line_string1);
+					fprintf(config_file_handle,line_format_string,file_line_string1);
 					for(module_ind=0;module_ind<module_num;module_ind++){
 						do{
 							fgets(file_line_string1,read_line_length,config_file_handle);
 						}while(strstr(file_line_string1,"<ROW")==NULL);
 					}
 					fgets(file_line_string1,read_line_length,config_file_handle);
-					fseek(config_file_handle,-81,SEEK_CUR);
-					sprintf(file_line_string2,"<ROW,%s,0,0>",argv[3]);
-					fprintf(config_file_handle,"%-80s\n",file_line_string2);
+					fseek(config_file_handle,-write_line_length-1,SEEK_CUR);
+					sprintf(file_line_string2,"<ROW,%s,0,0,0,0>",argv[3]);
+					fprintf(config_file_handle,line_format_string,file_line_string2);
 					do{
 						strcpy(file_line_string2,file_line_string1);
 						fgets(file_line_string1,read_line_length,config_file_handle);
 						if(!feof(config_file_handle)){
-							fseek(config_file_handle,-81,SEEK_CUR);
+							fseek(config_file_handle,-write_line_length-1,SEEK_CUR);
 						}
-						fprintf(config_file_handle,"%-80s",file_line_string2);
+						fprintf(config_file_handle,"%-100s",file_line_string2);
 					}while(!feof(config_file_handle));
 				}
 			}
@@ -274,28 +277,22 @@ int unibo_configuration_main(int argc, char *argv[])
 							fgets(file_line_string1,read_line_length,config_file_handle);
 						}while(strstr(file_line_string1,"<COL")==NULL);
 					}while(strstr(file_line_string1,"payload")==NULL);
-//					puts(file_line_string1);
 					sscanf(file_line_string1,"<COL,%*s,%u,%s>",&module_num,read_line_copy1);
 					fseek(config_file_handle,-81,SEEK_CUR);
 					sprintf(file_line_string1,"<COL,payloads,%u,%s>",module_num-1,read_line_copy1);
 					fprintf(config_file_handle,"%-80s\n",file_line_string1);
 					sprintf(read_line_copy1,"<ROW,%s",argv[3]);
-//					puts(read_line_copy1);
 					do{
 						do{
 							fgets(file_line_string1,read_line_length,config_file_handle);
 						}while(strstr(file_line_string1,"<ROW")==NULL);
 					}while(strstr(file_line_string1,read_line_copy1)==NULL);
-//					puts(file_line_string1);
 					do{
 						sprintf(file_line_string1,"%-80s\n"," ");
 						fgets(file_line_string1,read_line_length,config_file_handle);
-//						puts(file_line_string1);
 						fseek(config_file_handle,-162,SEEK_CUR);
 						fprintf(config_file_handle,"%-80s",file_line_string1);
-//						if(!feof(config_file_handle)){
 						fseek(config_file_handle,81,SEEK_CUR);
-//						}
 					}while(strstr(file_line_string1,"<")!=NULL);
 					fprintf(config_file_handle,"%-80s\n"," ");
 				}
@@ -334,7 +331,6 @@ int unibo_configuration_main(int argc, char *argv[])
 					}
 					sscanf(file_line_string1,"<ROW,%*u,%s,%*s,%s>",read_line_copy1,read_line_copy2);
 					fseek(config_file_handle,-81,SEEK_CUR);
-//					fgets(file_line_string1,read_line_length,config_file_handle);
 					sprintf(file_line_string1,"<ROW,%u,%s,%s,%s>",module_num,read_line_copy1,argv[5],read_line_copy2);
 					fprintf(config_file_handle,"%-80s\n",file_line_string1);
 				}else{
@@ -347,7 +343,6 @@ int unibo_configuration_main(int argc, char *argv[])
 						}
 						sscanf(file_line_string1,"<ROW,%*u,%s,%s,%*s,%s>",read_line_copy1,read_line_copy2,read_line_copy3);
 						fseek(config_file_handle,-81,SEEK_CUR);
-//						fgets(file_line_string1,read_line_length,config_file_handle);
 						sprintf(file_line_string1,"<ROW,%u,%s,%s,%s,%s>",module_num,read_line_copy1,read_line_copy2,argv[5],read_line_copy3);
 						fprintf(config_file_handle,"%-80s\n",file_line_string1);
 					}else{
@@ -358,7 +353,6 @@ int unibo_configuration_main(int argc, char *argv[])
 								}while(strstr(file_line_string1,"<ROW")==NULL);
 								sscanf(file_line_string1,"<ROW,%*u,%*s,%s>",read_line_copy1);
 								fseek(config_file_handle,-81,SEEK_CUR);
-//								fgets(file_line_string1,read_line_length,config_file_handle);
 								sprintf(file_line_string1,"<ROW,%u,%s,%s>",module_ind+1,argv[4],read_line_copy1);
 								fprintf(config_file_handle,"%-80s\n",file_line_string1);
 							}
@@ -456,30 +450,30 @@ void disp_config()
 		do{
 			fgets(file_line_string1,read_line_length,config_file_handle);
 		}while(strstr(file_line_string1,"<COL")==NULL);
-		sscanf(file_line_string1,"<COL,%s,%u,%s,%s,%s>",&tab_name,&module_num,&par1_name,&par2_name,&par3_name);
+		sscanf(file_line_string1,"<COL,%s,%u,%s,%s,%s,%s,%s>",&tab_name,&module_num,&par1_name,&par2_name,&par3_name,&par4_name,&par5_name);
 		printf("\n%s\n",&tab_name);
-		printf("%-13s|%-13s|%-13s\n",&par1_name,&par2_name,&par3_name);
-		printf("-------------+-------------+-------------\n");
+		printf("%-13s|%-13s|%-13s|%-13s|%-13s\n",&par1_name,&par2_name,&par3_name,&par4_name,&par5_name);
+		printf("-------------+-------------+-------------+-------------+-------------\n");
 		for(module_ind=0;module_ind<module_num;module_ind++){
 			do{
 				fgets(file_line_string1,read_line_length,config_file_handle);
 			}while(strstr(file_line_string1,"<ROW")==NULL);
-			sscanf(file_line_string1,"<ROW,%s,%s,%s>",&par1_name,&par2_name,&par3_name);
-			printf("%-13s|%13s|%13s\n",&par1_name,&par2_name,&par3_name);
+			sscanf(file_line_string1,"<ROW,%s,%s,%s,%s,%s>",&par1_name,&par2_name,&par3_name,&par4_name,&par5_name);
+			printf("%-13s|%13s|%13s|%13s|%13s\n",&par1_name,&par2_name,&par3_name,&par4_name,&par5_name);
 		}
 		do{
 			fgets(file_line_string1,read_line_length,config_file_handle);
 		}while(strstr(file_line_string1,"<COL")==NULL);
-		sscanf(file_line_string1,"<COL,%s,%u,%s,%s,%s,%s,%s,%s>",&tab_name,&module_num,&par1_name,&par2_name,&par3_name,&par4_name,&par5_name,&par6_name);
+		sscanf(file_line_string1,"<COL,%s,%u,%s,%s,%s,%s,%s,%s,%s,%s>",&tab_name,&module_num,&par1_name,&par2_name,&par3_name,&par4_name,&par5_name,&par6_name,&par7_name,&par8_name);
 		printf("\n%s\n",&tab_name);
-		printf("%-13s|%-13s|%-13s|%-13s|%-13s|%-13s\n",&par1_name,&par2_name,&par3_name,&par4_name,&par5_name,&par6_name);
-		printf("-------------+-------------+-------------+-------------+-------------+-------------\n");
+		printf("%-13s|%-13s|%-13s|%-13s|%-13s|%-13s|%-13s|%-13s\n",&par1_name,&par2_name,&par3_name,&par4_name,&par5_name,&par6_name,&par7_name,&par8_name);
+		printf("-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------\n");
 		for(module_ind=0;module_ind<module_num;module_ind++){
 			do{
 				fgets(file_line_string1,read_line_length,config_file_handle);
 			}while(strstr(file_line_string1,"<ROW")==NULL);
-			sscanf(file_line_string1,"<ROW,%s,%s,%s,%s,%s,%s>",&par1_name,&par2_name,&par3_name,&par4_name,&par5_name,&par6_name);
-			printf("%13s|%13s|%13s|%13s|%13s|%13s\n",&par1_name,&par2_name,&par3_name,&par4_name,&par5_name,&par6_name);
+			sscanf(file_line_string1,"<ROW,%s,%s,%s,%s,%s,%s,%s,%s>",&par1_name,&par2_name,&par3_name,&par4_name,&par5_name,&par6_name,&par7_name,&par8_name);
+			printf("%13s|%13s|%13s|%13s|%13s|%13s|%13s|%13s\n",&par1_name,&par2_name,&par3_name,&par4_name,&par5_name,&par6_name,&par7_name,&par8_name);
 		}
 		printf("\n");
 	}
