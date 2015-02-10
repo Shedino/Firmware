@@ -142,7 +142,7 @@ int unibo_configuration_main(int argc, char *argv[])
 	if (argc < 1)
 		usage("missing command");
 
-	if (!strcmp(argv[1], "reset")) {
+	if (!strcmp(argv[1], "reset")&(argc == 2)) {
 		warnx("resetting configuration file ''%s'' ...",config_file_name);
 		config_file_handle=fopen(config_file_path,"w");
 		sprintf(file_line_string1,"<TAB,2>");
@@ -231,6 +231,9 @@ int unibo_configuration_main(int argc, char *argv[])
 						}
 						fprintf(config_file_handle,"%-100s",file_line_string2);
 					}while(!feof(config_file_handle));
+				}else{
+					usage("unrecognized command");
+					exit(1);
 				}
 			}
 			fclose(config_file_handle);
@@ -471,39 +474,39 @@ int unibo_configuration_main(int argc, char *argv[])
 		disp_config();
 		exit(0);
 	}
-
-	if (!strcmp(argv[1], "start")) {
-		if (thread_running) {
-			warnx("daemon already running\n");
-			/* this is not an error */
-			exit(0);
-		}
-
-		thread_should_exit = false;
-		allocation_task = task_spawn_cmd("unibo_configuration",
-					 SCHED_DEFAULT,
-					 //SCHED_PRIORITY_DEFAULT,
-					 SCHED_PRIORITY_MAX - 10,
-					 4096,
-					 unibo_configuration_thread_main,
-					 (argv) ? (const char **)&argv[2] : (const char **)NULL);
-		warnx("Thread -unibo_configuration- started PID: %d",allocation_task);
-		exit(0);
-	}
-
-	if (!strcmp(argv[1], "stop")) {
-		thread_should_exit = true;
-		exit(0);
-	}
-
-	if (!strcmp(argv[1], "status")) {
-		if (thread_running) {
-			warnx("\trunning\n");
-		} else {
-			warnx("\tnot started\n");
-		}
-		exit(0);
-	}
+//
+//	if (!strcmp(argv[1], "start")) {
+//		if (thread_running) {
+//			warnx("daemon already running\n");
+//			/* this is not an error */
+//			exit(0);
+//		}
+//
+//		thread_should_exit = false;
+//		allocation_task = task_spawn_cmd("unibo_configuration",
+//					 SCHED_DEFAULT,
+//					 //SCHED_PRIORITY_DEFAULT,
+//					 SCHED_PRIORITY_MAX - 10,
+//					 4096,
+//					 unibo_configuration_thread_main,
+//					 (argv) ? (const char **)&argv[2] : (const char **)NULL);
+//		warnx("Thread -unibo_configuration- started PID: %d",allocation_task);
+//		exit(0);
+//	}
+//
+//	if (!strcmp(argv[1], "stop")) {
+//		thread_should_exit = true;
+//		exit(0);
+//	}
+//
+//	if (!strcmp(argv[1], "status")) {
+//		if (thread_running) {
+//			warnx("\trunning\n");
+//		} else {
+//			warnx("\tnot started\n");
+//		}
+//		exit(0);
+//	}
 
 	usage("unrecognized command");
 	exit(1);
@@ -556,12 +559,12 @@ void disp_config()
 
 
 
-/**
- * Main execution thread
- */
-int unibo_configuration_thread_main(int argc, char *argv[])
-{
-	warnx("[unibo_configuration] starting");
+///**
+// * Main execution thread
+// */
+//int unibo_configuration_thread_main(int argc, char *argv[])
+//{
+//	warnx("[unibo_configuration] starting");
 //
 //	thread_running = true;
 //
@@ -687,7 +690,7 @@ int unibo_configuration_thread_main(int argc, char *argv[])
 //	warnx("[unibo_configuration_daemon] exiting.\n");
 //
 //	thread_running = false;
-
-	return 0;
-
-}
+//
+//	return 0;
+//
+//}

@@ -51,8 +51,26 @@
 /* Daemon variables */
 static bool thread_should_exit = false;		/**< daemon exit flag */
 static bool thread_running = false;		/**< daemon status flag */
-static int allocation_task;				/**< Handle of daemon task / thread */
 
+static int allocation_task;				/**< Handle of daemon task / thread */
+unsigned int tab_num;
+unsigned int module_ind=0;
+unsigned int module_num;
+unsigned int read_line_length=110;
+
+char* config_file_name="multirotor_configuration.mcf";
+char* config_file_path="/fs/microsd/multirotor_configuration.mcf";
+char file_line_string1[110];
+unsigned int distance;
+char par2_name[20];
+char par3_name[20];
+char par4_name[20];
+char par5_name[20];
+char par6_name[20];
+char par7_name[20];
+char par8_name[20];
+
+FILE* config_file_handle;
 
 
 /**
@@ -190,13 +208,44 @@ int unibo_allocation_thread_main(int argc, char *argv[])
 	//struct mr_config_struct curr_config=ConfigurationReader(1,u2m);
 
 	warnx("input logging to Simulink routine ...");           //TODO put configuration file instead of hardcode
+
+	warnx("uploading rotors data from configuration file ''%s'' ...",config_file_name);
+	config_file_handle=fopen(config_file_path,"r");
+	if(config_file_handle==NULL) {
+//			printf("%s\n",strerror(errno));
+		puts("no");
+	}else{
+		do{
+			fgets(file_line_string1,read_line_length,config_file_handle);
+		}while(strstr(file_line_string1,"<TAB")==NULL);
+		sscanf(file_line_string1,"<TAB,%u>",&tab_num);
+		do{
+			do{
+				fgets(file_line_string1,read_line_length,config_file_handle);
+			}while(strstr(file_line_string1,"<COL")==NULL);
+		}while(strstr(file_line_string1,"rotor")==NULL);
+		sscanf(file_line_string1,"<COL,%*s,%u,%*s>",&module_num);
+		//puts(file_line_string1);
+		for(module_ind=0;module_ind<module_num;module_ind++){
+			do{
+				fgets(file_line_string1,read_line_length,config_file_handle);
+			}while(strstr(file_line_string1,"<ROW")==NULL);
+			sscanf(file_line_string1,"<ROW,%*u,%u,%*s,%*s,%*s,%*s,%*s,%*s>",distance);
+			ALLOCATION_U.r[module_ind]=((float)distance)/1000.0f;
+			warnx("module %u distance: %4.2f mm",module_ind,(double)ALLOCATION_U.r[module_ind]);
+		}
+
+		fclose(config_file_handle);
+		warnx("Done.");
+	}
+
 	for(module_ind=0;module_ind<4;module_ind++){
 		ALLOCATION_U.r[module_ind]=0.29;//curr_config.radius[module_ind];		//distanza dal baricentro
 //		warnx("module %u: r=%u",module_ind+1,(int)ALLOCATION_U.r[module_ind]);
 //		ALLOCATION_U.s[module_ind]=1;//curr_config.direction[module_ind];   //spin
 //		warnx("module %u: s=%d",module_ind+1,(int)ALLOCATION_U.s[module_ind]);
 //		warnx("module %u: Ct=%.5f",module_ind+1,(double)curr_config.thrust[module_ind]);
-		ALLOCATION_U.Ct[module_ind]=0.0000115;//curr_config.thrust[module_ind];		//coefficienti aerodinamici di spinta
+		ALLOCATION_U.Ct[module_ind]=0.0000115/1000*9.81;//curr_config.thrust[module_ind];		//coefficienti aerodinamici di spinta
 //		warnx("module %u: Ct=%.5f",module_ind+1,(double)ALLOCATION_U.Ct[module_ind]);
 		ALLOCATION_U.Cq[module_ind]=0.00000000055;//curr_config.torque[module_ind];		//coefficienti aerodinamici di momento
 //		warnx("module %u: Cq=%.8f",module_ind+1,(double)ALLOCATION_U.Cq[module_ind]);
