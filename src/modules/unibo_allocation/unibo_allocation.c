@@ -62,6 +62,8 @@ char* config_file_name="multirotor_configuration.mcf";
 char* config_file_path="/fs/microsd/multirotor_configuration.mcf";
 char file_line_string1[110];
 unsigned int distance;
+int azimuth;
+int spin;
 char par2_name[20];
 char par3_name[20];
 char par4_name[20];
@@ -230,9 +232,16 @@ int unibo_allocation_thread_main(int argc, char *argv[])
 			do{
 				fgets(file_line_string1,read_line_length,config_file_handle);
 			}while(strstr(file_line_string1,"<ROW")==NULL);
-			sscanf(file_line_string1,"<ROW,%*u,%u,%*s,%*s,%*s,%*s,%*s,%*s>",distance);
-			ALLOCATION_U.r[module_ind]=((float)distance)/1000.0f;
-			warnx("module %u distance: %4.2f mm",module_ind,(double)ALLOCATION_U.r[module_ind]);
+			puts(file_line_string1);
+			sscanf(file_line_string1,"<ROW,%*u,%u,%u,%*s,%*s,%i,%*s>",&distance,&azimuth,&spin);
+			ALLOCATION_U.r[module_ind]=(float)distance/1000.0f;
+			ALLOCATION_U.psi[module_ind]=(float)azimuth;
+			ALLOCATION_U.s[module_ind]=(float)spin;
+//			printf("module %u distance in mm: %u\n",module_ind,distance);
+//			printf("module %u distance in m: %4.2f\n",module_ind,(double)(((float)distance)/1000.0f));
+			warnx("module %u distance: %4.2f m\n",module_ind,(double)ALLOCATION_U.r[module_ind]);
+			warnx("module %u azimuth: %4.0f deg\n",module_ind,(double)ALLOCATION_U.psi[module_ind]);
+			warnx("module %u spin direction: %1.0f deg\n",module_ind,(double)ALLOCATION_U.s[module_ind]);
 		}
 
 		fclose(config_file_handle);

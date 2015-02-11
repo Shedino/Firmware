@@ -155,13 +155,13 @@ int unibo_configuration_main(int argc, char *argv[])
 		fprintf(config_file_handle,line_format_string,file_line_string1);
 		sprintf(file_line_string1,"<COL,rotors,4,ID,distance[mm],azimuth[deg],height[mm],mass[g],spin,Ct[N/RPM^2],Cq[Nm/RPM^2]>");
 		fprintf(config_file_handle,line_format_string,file_line_string1);
-		sprintf(file_line_string1,"<ROW,1,29,135,20,100,-1,0.0000115,0.00000000055>");
+		sprintf(file_line_string1,"<ROW,1,290,135,20,100,-1,0.0000115,0.00000000055>");
 		fprintf(config_file_handle,line_format_string,file_line_string1);
-		sprintf(file_line_string1,"<ROW,2,29,-135,20,100,1,0.0000115,0.00000000055>");
+		sprintf(file_line_string1,"<ROW,2,290,-135,20,100,1,0.0000115,0.00000000055>");
 		fprintf(config_file_handle,line_format_string,file_line_string1);
-		sprintf(file_line_string1,"<ROW,3,29,-45,20,100,-1,0.0000115,0.00000000055>");
+		sprintf(file_line_string1,"<ROW,3,290,-45,20,100,-1,0.0000115,0.00000000055>");
 		fprintf(config_file_handle,line_format_string,file_line_string1);
-		sprintf(file_line_string1,"<ROW,4,29,45,20,100,1,0.0000115,0.00000000055>");
+		sprintf(file_line_string1,"<ROW,4,290,45,20,100,1,0.0000115,0.00000000055>");
 		fprintf(config_file_handle,line_format_string,file_line_string1);
 		fclose(config_file_handle);
 		warnx("Done.");
@@ -174,8 +174,8 @@ int unibo_configuration_main(int argc, char *argv[])
 		warnx("adding %s to configuration file ''%s'' ...",argv[2],config_file_name);
 		config_file_handle=fopen(config_file_path,"r+");
 		if(config_file_handle==NULL) {
-//				printf("%s\n",strerror(errno));
-			puts("no");
+			usage("Command not executed: it was impossible to open the configuration file.");
+			exit(1);
 		}else{
 			if (!strcmp(argv[2], "rotor")) {
 				do{
