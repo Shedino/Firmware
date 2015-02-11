@@ -1,4 +1,4 @@
-export EXTRADEFINES := $(EXTRADEFINES) -DRT -I$(PX4_MODULE_SRC)lib/matlab
+export EXTRADEFINES := $(EXTRADEFINES) -DRT -I$(PX4_MODULE_SRC)lib/matlab -I$(PX4_MODULE_SRC)lib/unibo_config_read
 # -I$(PX4_MODULE_SRC)modules/unibo_allocation
 # -I$(MODULE_WORK_DIR)libraries -I$(MODULE_WORK_DIR)include
 #INCLUDE_DIRS		+= $(MODULE_WORK_DIR)libraries
