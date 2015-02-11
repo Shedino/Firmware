@@ -318,6 +318,9 @@ int unibo_trajectory_ref_thread_main(int argc, char *argv[])
 			if (updated){
 				orb_copy(ORB_ID(unibo_vehicle_status), unibo_status_fd, &unibo_status);
 				TRAJECTORY_GENERATOR_APP_U.FLIGHT_MODES = (int)unibo_status.flight_mode;
+
+				TRAJECTORY_GENERATOR_APP_U.MASS = 1.3;
+				//TRAJECTORY_GENERATOR_APP_U.MASS = unibo_status.mass;        //TODO put other line to have it dynamically
 			}
 
 			orb_check(unibo_hl_traj_fd, &updated);

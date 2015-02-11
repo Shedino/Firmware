@@ -196,34 +196,30 @@ int unibo_control_thread_main(int argc, char *argv[])
 	uniboc_thread_running = true;
 
 	warnx("Hello Sky!\n");
-	Model_GS_U.PARAMETERS[0] = 0;
-	Model_GS_U.PARAMETERS[1] = 0;
-	Model_GS_U.PARAMETERS[2] = 0.01;
-	Model_GS_U.PARAMETERS[3] = 1;
-	Model_GS_U.PARAMETERS[4] = 0.1;
-	Model_GS_U.PARAMETERS[5] = 7;
-	Model_GS_U.PARAMETERS[6] = 18;
-	Model_GS_U.PARAMETERS[7] = 0.02;
-	Model_GS_U.PARAMETERS[8] = 70;
-	Model_GS_U.PARAMETERS[9] = 200;
-	Model_GS_U.PARAMETERS[10] = 0.06;
-	Model_GS_U.PARAMETERS[11] = 2.5;
-	Model_GS_U.PARAMETERS[12] = 2.4;
-	Model_GS_U.PARAMETERS[13] = 2;
+	Model_GS_U.PARAMETERS[0] = 0.01;
+	Model_GS_U.PARAMETERS[1] = 1;
+	Model_GS_U.PARAMETERS[2] = 0.1;
+	Model_GS_U.PARAMETERS[3] = 7;
+	Model_GS_U.PARAMETERS[4] = 18;
+	Model_GS_U.PARAMETERS[5] = 0.02;
+	Model_GS_U.PARAMETERS[6] = 70;
+	Model_GS_U.PARAMETERS[7] = 200;
+	Model_GS_U.PARAMETERS[8] = 0.06;
+	Model_GS_U.PARAMETERS[9] = 2.5;
+	Model_GS_U.PARAMETERS[10] = 2.4;
+	Model_GS_U.PARAMETERS[11] = 2;
+	Model_GS_U.PARAMETERS[12] = 0.19;
+	Model_GS_U.PARAMETERS[13] = 0.19;
 	Model_GS_U.PARAMETERS[14] = 0.19;
-	Model_GS_U.PARAMETERS[15] = 0.19;
-	Model_GS_U.PARAMETERS[16] = 0.19;
+	Model_GS_U.PARAMETERS[15] = 0;
+	Model_GS_U.PARAMETERS[16] = 0;
 	Model_GS_U.PARAMETERS[17] = 0;
 	Model_GS_U.PARAMETERS[18] = 0;
-	Model_GS_U.PARAMETERS[19] = 0;
-	Model_GS_U.PARAMETERS[20] = 0;
-	Model_GS_U.PARAMETERS[21] = 0.06;
-	Model_GS_U.PARAMETERS[22] = 1;
-	Model_GS_U.PARAMETERS[23] = 0;
-	Model_GS_U.PARAMETERS[24] = 0;
-	Model_GS_U.PARAMETERS[25] = 80;
-	Model_GS_U.PARAMETERS[26] = 0;
-	Model_GS_U.PARAMETERS[27] = 0;
+	Model_GS_U.PARAMETERS[19] = 0.06;
+	Model_GS_U.PARAMETERS[20] = 1;
+	Model_GS_U.PARAMETERS[21] = 0;
+	Model_GS_U.PARAMETERS[22] = 0;
+	Model_GS_U.PARAMETERS[23] = 80;
 	model = Model_GS(); //Init model!
 	LLFFC_control();
 
@@ -521,9 +517,9 @@ int unibo_control_thread_main(int argc, char *argv[])
 //					Model_GS_U.PARAMETERS[23] = unibo_status.J[0];   //Jx=Jy
 //					Model_GS_U.PARAMETERS[24] = unibo_status.J[2];	//Jz
 
-					Model_GS_U.PARAMETERS[3] = temp_PAR.in2;      //mass      //TODO remove this coming from parameters and put values coming from allocation (unibo_status)
-					Model_GS_U.PARAMETERS[23] = temp_PAR.in22;   //Jx=Jy      //TODO revamp all parameters handle, separate M,J with others in simulink too
-					Model_GS_U.PARAMETERS[24] = temp_PAR.in23;	//Jz
+					Model_GS_U.PARAMETERS[1] = temp_PAR.in2;      //mass      //TODO remove this coming from parameters and put values coming from allocation (unibo_status)
+					Model_GS_U.PARAMETERS[21] = temp_PAR.in22;   //Jx=Jy      //TODO revamp all parameters handle, separate M,J with others in simulink too
+					Model_GS_U.PARAMETERS[22] = temp_PAR.in23;	//Jz
 				}
 
 
@@ -572,34 +568,30 @@ int unibo_control_thread_main(int argc, char *argv[])
 				orb_check(parameters_sub_fd, &updated);
 				if (updated){
 					orb_copy(ORB_ID(unibo_parameters),parameters_sub_fd,&temp_PAR); //TODO revamp all parameters handle, separate M,J with others in simulink too
-					Model_GS_U.PARAMETERS[0] = 0;
-					Model_GS_U.PARAMETERS[1] = 0;
-					Model_GS_U.PARAMETERS[2] = temp_PAR.in1;
-					//Model_GS_U.PARAMETERS[3] = temp_PAR.in2;      //mass
-					Model_GS_U.PARAMETERS[4] = temp_PAR.in3;
-					Model_GS_U.PARAMETERS[5] = temp_PAR.in4;
-					Model_GS_U.PARAMETERS[6] = temp_PAR.in5;
-					Model_GS_U.PARAMETERS[7] = temp_PAR.in6;
-					Model_GS_U.PARAMETERS[8] = temp_PAR.in7;
-					Model_GS_U.PARAMETERS[9] = temp_PAR.in8;
-					Model_GS_U.PARAMETERS[10] = temp_PAR.in9;
-					Model_GS_U.PARAMETERS[11] = temp_PAR.in10;
-					Model_GS_U.PARAMETERS[12] = temp_PAR.in11;
-					Model_GS_U.PARAMETERS[13] = temp_PAR.in12;
-					Model_GS_U.PARAMETERS[14] = temp_PAR.in13;
-					Model_GS_U.PARAMETERS[15] = temp_PAR.in14;
-					Model_GS_U.PARAMETERS[16] = temp_PAR.in15;
-					Model_GS_U.PARAMETERS[17] = temp_PAR.in16;
-					Model_GS_U.PARAMETERS[18] = temp_PAR.in17;
-					Model_GS_U.PARAMETERS[19] = temp_PAR.in18;
-					Model_GS_U.PARAMETERS[20] = temp_PAR.in19;
-					Model_GS_U.PARAMETERS[21] = temp_PAR.in20;
-					Model_GS_U.PARAMETERS[22] = temp_PAR.in21;
-					//Model_GS_U.PARAMETERS[23] = temp_PAR.in22;   //Jx=Jy
-					//Model_GS_U.PARAMETERS[24] = temp_PAR.in23;	Jz
-					Model_GS_U.PARAMETERS[25] = temp_PAR.in24;
-					Model_GS_U.PARAMETERS[26] = 0;
-					Model_GS_U.PARAMETERS[27] = 0;
+					Model_GS_U.PARAMETERS[0] = temp_PAR.in1;
+					//Model_GS_U.PARAMETERS[1] = temp_PAR.in2;      //mass
+					Model_GS_U.PARAMETERS[2] = temp_PAR.in3;
+					Model_GS_U.PARAMETERS[3] = temp_PAR.in4;
+					Model_GS_U.PARAMETERS[4] = temp_PAR.in5;
+					Model_GS_U.PARAMETERS[5] = temp_PAR.in6;
+					Model_GS_U.PARAMETERS[6] = temp_PAR.in7;
+					Model_GS_U.PARAMETERS[7] = temp_PAR.in8;
+					Model_GS_U.PARAMETERS[8] = temp_PAR.in9;
+					Model_GS_U.PARAMETERS[9] = temp_PAR.in10;
+					Model_GS_U.PARAMETERS[10] = temp_PAR.in11;
+					Model_GS_U.PARAMETERS[11] = temp_PAR.in12;
+					Model_GS_U.PARAMETERS[12] = temp_PAR.in13;
+					Model_GS_U.PARAMETERS[13] = temp_PAR.in14;
+					Model_GS_U.PARAMETERS[14] = temp_PAR.in15;
+					Model_GS_U.PARAMETERS[15] = temp_PAR.in16;
+					Model_GS_U.PARAMETERS[16] = temp_PAR.in17;
+					Model_GS_U.PARAMETERS[17] = temp_PAR.in18;
+					Model_GS_U.PARAMETERS[18] = temp_PAR.in19;
+					Model_GS_U.PARAMETERS[19] = temp_PAR.in20;
+					Model_GS_U.PARAMETERS[20] = temp_PAR.in21;
+					//Model_GS_U.PARAMETERS[21] = temp_PAR.in22;   //Jx=Jy
+					//Model_GS_U.PARAMETERS[22] = temp_PAR.in23;	Jz
+					Model_GS_U.PARAMETERS[23] = temp_PAR.in24;
 
 
 					//Model_GS_U.YAWOFFSET = temp_PAR.in24;
@@ -631,8 +623,8 @@ int unibo_control_thread_main(int argc, char *argv[])
 
 				counter_output++;
 
-				if (counter_output>=400){
-					//warnx("Thrust: %.3f Torques: %.3f %.3f %.3f", Model_GS_Y.U_F, Model_GS_Y.U_TAU[0], Model_GS_Y.U_TAU[1], Model_GS_Y.U_TAU[2]);
+				if (counter_output>=200){
+					//warnx("CONTROL thrust: %.3f Torques: %.3f %.3f %.3f", Model_GS_Y.U_F, Model_GS_Y.U_TAU[0], Model_GS_Y.U_TAU[1], Model_GS_Y.U_TAU[2]);
 					counter_output = 0;
 				}
 

@@ -3,9 +3,9 @@
  *
  * Code generation for model "TRAJECTORY_GENERATOR_APP".
  *
- * Model version              : 1.4009
+ * Model version              : 1.4014
  * Simulink Coder version : 8.3 (R2012b) 20-Jul-2012
- * C source code generated on : Mon Oct 27 17:50:36 2014
+ * C source code generated on : Mon Feb 09 16:58:38 2015
  *
  * Target selection: grt.tlc
  * Note: GRT includes extra infrastructure and instrumentation for prototyping
@@ -776,11 +776,6 @@
 /* Definition for use in the target main file */
 #define TRAJECTORY_GENERATOR_APP_rtModel RT_MODEL_TRAJECTORY_GENERATOR_A
 
-/* Block signals for system '<S12>/pitch' */
-typedef struct {
-  real_T angle;                        /* '<S12>/pitch' */
-} rtB_pitch_TRAJECTORY_GENERATOR_;
-
 /* Block signals for system '<S5>/Euler2Quat' */
 typedef struct {
   real_T ref_pos[15];                  /* '<S5>/Euler2Quat' */
@@ -847,14 +842,14 @@ typedef struct {
   real_T dx_i;                         /* '<S7>/BODY to INERTIAL' */
   real_T dy_i;                         /* '<S7>/BODY to INERTIAL' */
   real_T speed;                        /* '<S12>/yaw_speed' */
+  real_T angle;                        /* '<S12>/roll' */
+  real_T angle_f;                      /* '<S12>/pitch' */
   real_T q1[4];                        /* '<S2>/Euler2Quat' */
   uint32_T Memory_m;                   /* '<S8>/Memory' */
   uint32_T FM_out;                     /* '<S8>/Euler2Quat' */
   boolean_T DataTypeConversion;        /* '<S32>/Data Type Conversion' */
   rtB_Euler2Quat_TRAJECTORY_GENER sf_Euler2Quat_f;/* '<S10>/Euler2Quat' */
   rtB_Euler2Quat_TRAJECTORY_GENER sf_Euler2Quat_b;/* '<S5>/Euler2Quat' */
-  rtB_pitch_TRAJECTORY_GENERATOR_ sf_roll;/* '<S12>/roll' */
-  rtB_pitch_TRAJECTORY_GENERATOR_ sf_pitch;/* '<S12>/pitch' */
 } BlockIO_TRAJECTORY_GENERATOR_AP;
 
 /* Block states (auto storage) for system '<Root>' */
@@ -1009,6 +1004,7 @@ typedef struct {
   uint32_T TSTAMP;                     /* '<Root>/TSTAMP' */
   uint32_T FLIGHT_MODES;               /* '<Root>/FLIGHT_MODES' */
   real_T REF_HIGH_LEVEL[18];           /* '<Root>/REF_HIGH_LEVEL' */
+  real_T MASS;                         /* '<Root>/MASS' */
 } ExternalInputs_TRAJECTORY_GENER;
 
 /* External outputs (root outports fed by signals with auto storage) */

@@ -3,9 +3,9 @@
  *
  * Code generation for model "Model_GS".
  *
- * Model version              : 1.2485
+ * Model version              : 1.2507
  * Simulink Coder version : 8.3 (R2012b) 20-Jul-2012
- * C source code generated on : Fri Oct 31 16:51:57 2014
+ * C source code generated on : Tue Feb 10 15:56:39 2015
  *
  * Target selection: grt.tlc
  * Note: GRT includes extra infrastructure and instrumentation for prototyping
@@ -129,9 +129,9 @@ static void Model_GS_output(void)
   /* '<S20>:1:8' */
   /* % Control force vector definition v* */
   /* '<S20>:1:12' */
-  rtb_v_star[0] = 0.0 - Model_GS_U.PARAMETERS[3] * rtb_setpoint[6];
-  rtb_v_star[1] = 0.0 - Model_GS_U.PARAMETERS[3] * rtb_setpoint[7];
-  rtb_v_star[2] = Model_GS_U.PARAMETERS[3] * 9.81 - Model_GS_U.PARAMETERS[3] *
+  rtb_v_star[0] = 0.0 - Model_GS_U.PARAMETERS[1] * rtb_setpoint[6];
+  rtb_v_star[1] = 0.0 - Model_GS_U.PARAMETERS[1] * rtb_setpoint[7];
+  rtb_v_star[2] = Model_GS_U.PARAMETERS[1] * 9.81 - Model_GS_U.PARAMETERS[1] *
     rtb_setpoint[8];
 
   /* '<S20>:1:14' */
@@ -280,9 +280,9 @@ static void Model_GS_output(void)
   }
 
   for (h_change = 0; h_change < 3; h_change++) {
-    dvv[h_change] = Ry_0[h_change + 6] * (-Model_GS_U.PARAMETERS[3] *
-      rtb_setpoint[11]) + (Ry_0[h_change + 3] * (-Model_GS_U.PARAMETERS[3] *
-      rtb_setpoint[10]) + -Model_GS_U.PARAMETERS[3] * rtb_setpoint[9] *
+    dvv[h_change] = Ry_0[h_change + 6] * (-Model_GS_U.PARAMETERS[1] *
+      rtb_setpoint[11]) + (Ry_0[h_change + 3] * (-Model_GS_U.PARAMETERS[1] *
+      rtb_setpoint[10]) + -Model_GS_U.PARAMETERS[1] * rtb_setpoint[9] *
       Ry_0[h_change]);
   }
 
@@ -291,9 +291,9 @@ static void Model_GS_output(void)
              (rtb_v_star[2], 2.0));
   theta = pow((pow(rtb_v_star[0], 2.0) + pow(rtb_v_star[1], 2.0)) + pow
               (rtb_v_star[2], 2.0), 1.5);
-  t = ((-Model_GS_U.PARAMETERS[3] * rtb_setpoint[9] * rtb_v_star[0] +
-        -Model_GS_U.PARAMETERS[3] * rtb_setpoint[10] * rtb_v_star[1]) +
-       -Model_GS_U.PARAMETERS[3] * rtb_setpoint[11] * rtb_v_star[2]) / sqrt((pow
+  t = ((-Model_GS_U.PARAMETERS[1] * rtb_setpoint[9] * rtb_v_star[0] +
+        -Model_GS_U.PARAMETERS[1] * rtb_setpoint[10] * rtb_v_star[1]) +
+       -Model_GS_U.PARAMETERS[1] * rtb_setpoint[11] * rtb_v_star[2]) / sqrt((pow
     (rtb_v_star[0], 2.0) + pow(rtb_v_star[1], 2.0)) + pow(rtb_v_star[2], 2.0));
   qc_inv_idx = pow((pow(rtb_v_star[0], 2.0) + pow(rtb_v_star[1], 2.0)) + pow
                    (rtb_v_star[2], 2.0), 2.0);
@@ -365,20 +365,20 @@ static void Model_GS_output(void)
   }
 
   for (h_change = 0; h_change < 3; h_change++) {
-    rtb_v_star_0[h_change] = -Model_GS_U.PARAMETERS[3] * rtb_setpoint[9] *
+    rtb_v_star_0[h_change] = -Model_GS_U.PARAMETERS[1] * rtb_setpoint[9] *
       rtb_v_star[h_change];
-    rtb_v_star_0[h_change + 3] = -Model_GS_U.PARAMETERS[3] * rtb_setpoint[10] *
+    rtb_v_star_0[h_change + 3] = -Model_GS_U.PARAMETERS[1] * rtb_setpoint[10] *
       rtb_v_star[h_change];
-    rtb_v_star_0[h_change + 6] = -Model_GS_U.PARAMETERS[3] * rtb_setpoint[11] *
+    rtb_v_star_0[h_change + 6] = -Model_GS_U.PARAMETERS[1] * rtb_setpoint[11] *
       rtb_v_star[h_change];
   }
 
   for (h_change = 0; h_change < 3; h_change++) {
-    Rx_0[h_change] = rtb_setpoint[9 + h_change] * -Model_GS_U.PARAMETERS[3] *
+    Rx_0[h_change] = rtb_setpoint[9 + h_change] * -Model_GS_U.PARAMETERS[1] *
       rtb_v_star[0];
-    Rx_0[h_change + 3] = rtb_setpoint[9 + h_change] * -Model_GS_U.PARAMETERS[3] *
+    Rx_0[h_change + 3] = rtb_setpoint[9 + h_change] * -Model_GS_U.PARAMETERS[1] *
       rtb_v_star[1];
-    Rx_0[h_change + 6] = rtb_setpoint[9 + h_change] * -Model_GS_U.PARAMETERS[3] *
+    Rx_0[h_change + 6] = rtb_setpoint[9 + h_change] * -Model_GS_U.PARAMETERS[1] *
       rtb_v_star[2];
   }
 
@@ -395,16 +395,16 @@ static void Model_GS_output(void)
   }
 
   for (h_change = 0; h_change < 3; h_change++) {
-    A_0[h_change] = Ry_0[h_change + 6] * (-Model_GS_U.PARAMETERS[3] *
-      rtb_setpoint[14]) + (Ry_0[h_change + 3] * (-Model_GS_U.PARAMETERS[3] *
-      rtb_setpoint[13]) + -Model_GS_U.PARAMETERS[3] * rtb_setpoint[12] *
+    A_0[h_change] = Ry_0[h_change + 6] * (-Model_GS_U.PARAMETERS[1] *
+      rtb_setpoint[14]) + (Ry_0[h_change + 3] * (-Model_GS_U.PARAMETERS[1] *
+      rtb_setpoint[13]) + -Model_GS_U.PARAMETERS[1] * rtb_setpoint[12] *
       Ry_0[h_change]);
   }
 
   for (h_change = 0; h_change < 3; h_change++) {
-    i_y_0[h_change] = i_y[h_change + 6] * (-Model_GS_U.PARAMETERS[3] *
-      rtb_setpoint[11]) + (i_y[h_change + 3] * (-Model_GS_U.PARAMETERS[3] *
-      rtb_setpoint[10]) + -Model_GS_U.PARAMETERS[3] * rtb_setpoint[9] *
+    i_y_0[h_change] = i_y[h_change + 6] * (-Model_GS_U.PARAMETERS[1] *
+      rtb_setpoint[11]) + (i_y[h_change + 3] * (-Model_GS_U.PARAMETERS[1] *
+      rtb_setpoint[10]) + -Model_GS_U.PARAMETERS[1] * rtb_setpoint[9] *
       i_y[h_change]);
   }
 
@@ -579,7 +579,7 @@ static void Model_GS_output(void)
   /* '<S16>:1:6' */
   /* '<S16>:1:7' */
   /* '<S16>:1:8' */
-  theta = Model_GS_U.PARAMETERS[9] * Model_GS_U.PARAMETERS[21];
+  theta = Model_GS_U.PARAMETERS[7] * Model_GS_U.PARAMETERS[19];
 
   /* '<S16>:1:9' */
   /* '<S16>:1:10' */
@@ -594,15 +594,15 @@ static void Model_GS_output(void)
   /* '<S16>:1:22' */
   /*  State feedback law (kappa) */
   /* '<S16>:1:25' */
-  phi = Model_GS_U.PARAMETERS[5] * Model_GS_U.PARAMETERS[21] /
-    Model_GS_U.PARAMETERS[6];
-  v[0] = (Model_GS_B.p[0] - rtb_setpoint[0]) * phi * Model_GS_U.PARAMETERS[3];
-  v[1] = (Model_GS_B.p[1] - rtb_setpoint[1]) * phi * Model_GS_U.PARAMETERS[3];
-  v[2] = (Model_GS_B.p[2] - rtb_setpoint[2]) * phi * Model_GS_U.PARAMETERS[3];
+  phi = Model_GS_U.PARAMETERS[3] * Model_GS_U.PARAMETERS[19] /
+    Model_GS_U.PARAMETERS[4];
+  v[0] = (Model_GS_B.p[0] - rtb_setpoint[0]) * phi * Model_GS_U.PARAMETERS[1];
+  v[1] = (Model_GS_B.p[1] - rtb_setpoint[1]) * phi * Model_GS_U.PARAMETERS[1];
+  v[2] = (Model_GS_B.p[2] - rtb_setpoint[2]) * phi * Model_GS_U.PARAMETERS[1];
 
   /* added scale with M */
   /* '<S16>:1:26' */
-  t = (Model_GS_B.p[0] - rtb_setpoint[0]) * phi * Model_GS_U.PARAMETERS[3];
+  t = (Model_GS_B.p[0] - rtb_setpoint[0]) * phi * Model_GS_U.PARAMETERS[1];
 
   /* '<S16>:1:26' */
   if (fabs(v[0]) >= 1.0) {
@@ -619,7 +619,7 @@ static void Model_GS_output(void)
 
   /* '<S16>:1:26' */
   v[0] = t;
-  t = (Model_GS_B.p[1] - rtb_setpoint[1]) * phi * Model_GS_U.PARAMETERS[3];
+  t = (Model_GS_B.p[1] - rtb_setpoint[1]) * phi * Model_GS_U.PARAMETERS[1];
 
   /* '<S16>:1:26' */
   if (fabs(v[1]) >= 1.0) {
@@ -636,7 +636,7 @@ static void Model_GS_output(void)
 
   /* '<S16>:1:26' */
   v[1] = t;
-  t = (Model_GS_B.p[2] - rtb_setpoint[2]) * phi * Model_GS_U.PARAMETERS[3];
+  t = (Model_GS_B.p[2] - rtb_setpoint[2]) * phi * Model_GS_U.PARAMETERS[1];
 
   /* '<S16>:1:26' */
   if (fabs(v[2]) >= 1.0) {
@@ -653,21 +653,21 @@ static void Model_GS_output(void)
 
   /* '<S16>:1:26' */
   /* '<S16>:1:32' */
-  x = Model_GS_U.PARAMETERS[8] * Model_GS_U.PARAMETERS[21] / theta;
-  dvv[0] = ((rtb_VEL_idx - rtb_setpoint[3]) * Model_GS_U.PARAMETERS[3] +
-            Model_GS_U.PARAMETERS[6] * v[0]) * x + Model_GS_U.PARAMETERS[7] *
+  x = Model_GS_U.PARAMETERS[6] * Model_GS_U.PARAMETERS[19] / theta;
+  dvv[0] = ((rtb_VEL_idx - rtb_setpoint[3]) * Model_GS_U.PARAMETERS[1] +
+            Model_GS_U.PARAMETERS[4] * v[0]) * x + Model_GS_U.PARAMETERS[5] *
     Model_GS_DWork.DiscreteTimeIntegrator1_DSTATE[0];
-  dvv[1] = ((rtb_VEL_idx_0 - rtb_setpoint[4]) * Model_GS_U.PARAMETERS[3] +
-            Model_GS_U.PARAMETERS[6] * v[1]) * x + Model_GS_U.PARAMETERS[7] *
+  dvv[1] = ((rtb_VEL_idx_0 - rtb_setpoint[4]) * Model_GS_U.PARAMETERS[1] +
+            Model_GS_U.PARAMETERS[4] * v[1]) * x + Model_GS_U.PARAMETERS[5] *
     Model_GS_DWork.DiscreteTimeIntegrator1_DSTATE[1];
-  dvv[2] = ((rtb_VEL_idx_1 - rtb_setpoint[5]) * Model_GS_U.PARAMETERS[3] +
-            Model_GS_U.PARAMETERS[6] * t) * x + Model_GS_U.PARAMETERS[10] *
+  dvv[2] = ((rtb_VEL_idx_1 - rtb_setpoint[5]) * Model_GS_U.PARAMETERS[1] +
+            Model_GS_U.PARAMETERS[4] * t) * x + Model_GS_U.PARAMETERS[8] *
     Model_GS_DWork.DiscreteTimeIntegrator1_DSTATE[2];
 
   /* added scale with M */
   /* '<S16>:1:33' */
-  phi = ((rtb_VEL_idx - rtb_setpoint[3]) * Model_GS_U.PARAMETERS[3] +
-         Model_GS_U.PARAMETERS[6] * v[0]) * x + Model_GS_U.PARAMETERS[7] *
+  phi = ((rtb_VEL_idx - rtb_setpoint[3]) * Model_GS_U.PARAMETERS[1] +
+         Model_GS_U.PARAMETERS[4] * v[0]) * x + Model_GS_U.PARAMETERS[5] *
     Model_GS_DWork.DiscreteTimeIntegrator1_DSTATE[0];
 
   /* '<S16>:1:33' */
@@ -685,8 +685,8 @@ static void Model_GS_output(void)
 
   /* '<S16>:1:33' */
   dvv[0] = phi;
-  phi = ((rtb_VEL_idx_0 - rtb_setpoint[4]) * Model_GS_U.PARAMETERS[3] +
-         Model_GS_U.PARAMETERS[6] * v[1]) * x + Model_GS_U.PARAMETERS[7] *
+  phi = ((rtb_VEL_idx_0 - rtb_setpoint[4]) * Model_GS_U.PARAMETERS[1] +
+         Model_GS_U.PARAMETERS[4] * v[1]) * x + Model_GS_U.PARAMETERS[5] *
     Model_GS_DWork.DiscreteTimeIntegrator1_DSTATE[1];
 
   /* '<S16>:1:33' */
@@ -704,8 +704,8 @@ static void Model_GS_output(void)
 
   /* '<S16>:1:33' */
   dvv[1] = phi;
-  phi = ((rtb_VEL_idx_1 - rtb_setpoint[5]) * Model_GS_U.PARAMETERS[3] +
-         Model_GS_U.PARAMETERS[6] * t) * x + Model_GS_U.PARAMETERS[10] *
+  phi = ((rtb_VEL_idx_1 - rtb_setpoint[5]) * Model_GS_U.PARAMETERS[1] +
+         Model_GS_U.PARAMETERS[4] * t) * x + Model_GS_U.PARAMETERS[8] *
     Model_GS_DWork.DiscreteTimeIntegrator1_DSTATE[2];
 
   /* '<S16>:1:33' */
@@ -727,7 +727,7 @@ static void Model_GS_output(void)
   dvv[1] *= theta;
 
   /* '<S16>:1:39' */
-  dvv[0] *= Model_GS_U.PARAMETERS[22];
+  dvv[0] *= Model_GS_U.PARAMETERS[20];
 
   /* Sum: '<S8>/Sum' incorporates:
    *  Inport: '<Root>/PARAMETERS'
@@ -737,7 +737,7 @@ static void Model_GS_output(void)
   /* x and y gain from ground station to decouple xy and z */
   /*  kappa = p_error + 2*dp_error; % Less oscillations and faster than with saturation */
   rtb_v_star[0] += dvv[0];
-  rtb_v_star[1] += dvv[1] * Model_GS_U.PARAMETERS[22];
+  rtb_v_star[1] += dvv[1] * Model_GS_U.PARAMETERS[20];
   t = theta * phi + rtb_v_star[2];
 
   /* MATLAB Function: '<S8>/Abs(v*)' */
@@ -1240,32 +1240,32 @@ static void Model_GS_output(void)
     Ry[h_change] = 0.0;
   }
 
-  Rx[0] = Model_GS_U.PARAMETERS[11];
-  Rx[4] = Model_GS_U.PARAMETERS[12];
-  Rx[8] = Model_GS_U.PARAMETERS[13];
+  Rx[0] = Model_GS_U.PARAMETERS[9];
+  Rx[4] = Model_GS_U.PARAMETERS[10];
+  Rx[8] = Model_GS_U.PARAMETERS[11];
 
   /* '<S12>:1:4' */
-  Ry[0] = Model_GS_U.PARAMETERS[14];
-  Ry[4] = Model_GS_U.PARAMETERS[15];
-  Ry[8] = Model_GS_U.PARAMETERS[16];
+  Ry[0] = Model_GS_U.PARAMETERS[12];
+  Ry[4] = Model_GS_U.PARAMETERS[13];
+  Ry[8] = Model_GS_U.PARAMETERS[14];
 
-  /* '<S12>:1:5' */
-  /* '<S12>:1:7' */
-  Rz[0] = Model_GS_U.PARAMETERS[23];
+  /* '<S12>:1:6' */
+  /* '<S12>:1:8' */
+  Rz[0] = Model_GS_U.PARAMETERS[21];
   Rz[3] = 0.0;
   Rz[6] = 0.0;
   Rz[1] = 0.0;
-  Rz[4] = Model_GS_U.PARAMETERS[23];
+  Rz[4] = Model_GS_U.PARAMETERS[21];
   Rz[7] = 0.0;
   Rz[2] = 0.0;
   Rz[5] = 0.0;
-  Rz[8] = Model_GS_U.PARAMETERS[24];
+  Rz[8] = Model_GS_U.PARAMETERS[22];
 
   /* % Written on 23th Aug. 2013 */
   /* % Attitude controller with PD */
   /*  (from the definition (11)(39)(40) in  R. Naldi, M. Furci, R. Sanfelice, L. Marconi 'Robust Global Trajectory Tracking for Underactuated  */
   /*   VTOL Aerial Vehicles using Inner-Outer Loop Control Paradigms') */
-  /* '<S12>:1:16' */
+  /* '<S12>:1:17' */
   x = sqrt(((pow(rtb_q_idx, 2.0) + pow(rtb_q_idx_0, 2.0)) + pow(rtb_q_idx_1, 2.0))
            + pow(rtb_q_idx_2, 2.0));
   q_idx = rtb_q_idx / x;
@@ -1275,7 +1275,7 @@ static void Model_GS_output(void)
 
   /*  Inverse of quaternion (from 'Quaternion' article on Wikipedia.org, wrong definition in Grossekatthofer paper) */
   /*  Multiplication of quaternions (from Grossekatthofer K. 'Introduction into quaternions for spacecraft attitude representation' p9) */
-  /* '<S12>:1:20' */
+  /* '<S12>:1:21' */
   x = ((pow(rtb_qc_idx, 2.0) + pow(rtb_qc_idx_0, 2.0)) + pow(rtb_qc_idx_1, 2.0))
     + pow(t, 2.0);
   phi = rtb_qc_idx / x;
@@ -1283,7 +1283,7 @@ static void Model_GS_output(void)
   qc_inv_idx = -rtb_qc_idx_1 / x;
   t = -t / x;
 
-  /* '<S12>:1:21' */
+  /* '<S12>:1:22' */
   rtb_qc_idx = phi * q_idx - ((theta * q_idx_0 + qc_inv_idx * q_idx_1) + t * d_c);
   rtb_qc_idx_0 = (phi * q_idx_0 + q_idx * theta) + (qc_inv_idx * d_c - t *
     q_idx_1);
@@ -1292,7 +1292,7 @@ static void Model_GS_output(void)
   t = (phi * d_c + q_idx * t) + (theta * q_idx_1 - qc_inv_idx * q_idx_0);
 
   /* q_error = myquatmultiply(qc_inv',q')'; */
-  /* '<S12>:1:24' */
+  /* '<S12>:1:25' */
   qc_inv_idx = sqrt(((pow(rtb_qc_idx, 2.0) + pow(rtb_qc_idx_0, 2.0)) + pow
                      (rtb_qc_idx_1, 2.0)) + pow(t, 2.0));
   rtb_qc_idx /= qc_inv_idx;
@@ -1302,24 +1302,24 @@ static void Model_GS_output(void)
 
   /*  Quaternion to DCM representation */
   /*  (from Grossekatthofer K. 'Introduction into quaternions for spacecraft attitude representation' p13) */
-  /* '<S12>:1:28' */
-  /* '<S12>:1:33' */
+  /* '<S12>:1:29' */
+  /* '<S12>:1:34' */
   /*  Attitude error */
   /*  Choice of quaternion through h */
   /*  (from  R. Naldi, M. Furci, R. Sanfelice, L. Marconi 'Robust Global Trajectory Tracking for Underactuated  */
   /*   VTOL Aerial Vehicles using Inner-Outer Loop Control Paradigms') */
   if (Model_GS_DWork.Memory_PreviousInput * rtb_qc_idx >=
-      -Model_GS_U.PARAMETERS[4]) {
-    /* '<S12>:1:38' */
-    /* && (q_error(2:end)'*J*q_error(2:end) + w_star_error'*J*w_star_error) <= 2*kd*delta */
+      -Model_GS_U.PARAMETERS[2]) {
     /* '<S12>:1:39' */
+    /* && (q_error(2:end)'*J*q_error(2:end) + w_star_error'*J*w_star_error) <= 2*kd*delta */
+    /* '<S12>:1:40' */
     Model_GS_B.h1 = Model_GS_DWork.Memory_PreviousInput;
   } else if (rtb_qc_idx == 0.0) {
-    /* '<S12>:1:41' */
     /* '<S12>:1:42' */
+    /* '<S12>:1:43' */
     Model_GS_B.h1 = 1.0;
   } else {
-    /* '<S12>:1:44' */
+    /* '<S12>:1:45' */
     if (rtb_qc_idx < 0.0) {
       Model_GS_B.h1 = -1.0;
     } else if (rtb_qc_idx > 0.0) {
@@ -1462,7 +1462,7 @@ static void Model_GS_output(void)
      *  MATLAB Function: '<S1>/PARAM'
      */
     /* '<S3>:1:27' */
-    Model_GS_Y.U_F = Model_GS_U.PARAMETERS[3] * 9.81 / 8.0;
+    Model_GS_Y.U_F = Model_GS_U.PARAMETERS[1] * 9.81 / 8.0;
 
     /* Outport: '<Root>/U_TAU' */
     /* '<S3>:1:28' */
@@ -1507,7 +1507,7 @@ static void Model_GS_output(void)
      *  MATLAB Function: '<S1>/PARAM'
      */
     /* '<S3>:1:51' */
-    Model_GS_Y.U_F = Model_GS_U.PARAMETERS[3] * 9.81 / 10.0 * 7.0;
+    Model_GS_Y.U_F = Model_GS_U.PARAMETERS[1] * 9.81 / 10.0 * 7.0;
 
     /* '<S3>:1:52' */
     break;
@@ -1959,7 +1959,7 @@ RT_MODEL_Model_GS *Model_GS(void)
   /* Initialize Sizes */
   Model_GS_M->Sizes.numContStates = (0);/* Number of continuous states */
   Model_GS_M->Sizes.numY = (16);       /* Number of model outputs */
-  Model_GS_M->Sizes.numU = (83);       /* Number of model inputs */
+  Model_GS_M->Sizes.numU = (79);       /* Number of model inputs */
   Model_GS_M->Sizes.sysDirFeedThru = (1);/* The model is direct feedthrough */
   Model_GS_M->Sizes.numSampTimes = (1);/* Number of sample times */
   Model_GS_M->Sizes.numBlocks = (61);  /* Number of blocks */

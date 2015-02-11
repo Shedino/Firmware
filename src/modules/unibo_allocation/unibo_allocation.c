@@ -51,8 +51,8 @@
 /* Daemon variables */
 static bool thread_should_exit = false;		/**< daemon exit flag */
 static bool thread_running = false;		/**< daemon status flag */
-
 static int allocation_task;				/**< Handle of daemon task / thread */
+<<<<<<< HEAD
 unsigned int tab_num;
 unsigned int module_ind=0;
 unsigned int module_num;
@@ -73,6 +73,9 @@ char par7_name[20];
 char par8_name[20];
 
 FILE* config_file_handle;
+=======
+
+>>>>>>> 51ef63ab8a89e5fe34ce3d76a5255857814e46a5
 
 
 /**
@@ -210,6 +213,7 @@ int unibo_allocation_thread_main(int argc, char *argv[])
 	//struct mr_config_struct curr_config=ConfigurationReader(1,u2m);
 
 	warnx("input logging to Simulink routine ...");           //TODO put configuration file instead of hardcode
+<<<<<<< HEAD
 
 	warnx("uploading rotors data from configuration file ''%s'' ...",config_file_name);
 	config_file_handle=fopen(config_file_path,"r");
@@ -248,15 +252,17 @@ int unibo_allocation_thread_main(int argc, char *argv[])
 		warnx("Done.");
 	}
 
+=======
+>>>>>>> 51ef63ab8a89e5fe34ce3d76a5255857814e46a5
 	for(module_ind=0;module_ind<4;module_ind++){
 		ALLOCATION_U.r[module_ind]=0.29;//curr_config.radius[module_ind];		//distanza dal baricentro
 //		warnx("module %u: r=%u",module_ind+1,(int)ALLOCATION_U.r[module_ind]);
 //		ALLOCATION_U.s[module_ind]=1;//curr_config.direction[module_ind];   //spin
 //		warnx("module %u: s=%d",module_ind+1,(int)ALLOCATION_U.s[module_ind]);
 //		warnx("module %u: Ct=%.5f",module_ind+1,(double)curr_config.thrust[module_ind]);
-		ALLOCATION_U.Ct[module_ind]=0.0000115/1000*9.81;//curr_config.thrust[module_ind];		//coefficienti aerodinamici di spinta
+		ALLOCATION_U.Ct[module_ind]=0.0000115*9.81/1000;//curr_config.thrust[module_ind];		//coefficienti aerodinamici di spinta
 //		warnx("module %u: Ct=%.5f",module_ind+1,(double)ALLOCATION_U.Ct[module_ind]);
-		ALLOCATION_U.Cq[module_ind]=0.00000000055;//curr_config.torque[module_ind];		//coefficienti aerodinamici di momento
+		ALLOCATION_U.Cq[module_ind]=0.000000055;//curr_config.torque[module_ind];		//moltiplicato per 100!!! MIC
 //		warnx("module %u: Cq=%.8f",module_ind+1,(double)ALLOCATION_U.Cq[module_ind]);
 	}
 	ALLOCATION_U.s[0]=-1;//curr_config.direction[module_ind];   //spin
@@ -357,7 +363,7 @@ int unibo_allocation_thread_main(int argc, char *argv[])
 				/*----- WARNX FOR DEBUG ------------------*/
 				if (counter_warnx>=200){
 					//warnx("Time: %ds| Rotors Speed: %d RPM %d RPM %d RPM %d RPM", time_counter, motor.outputs_rpm[0], motor.outputs_rpm[1], motor.outputs_rpm[2], motor.outputs_rpm[3]);
-					warnx("Forces allocation: %.3f %.3f %.3f %.3f", (double)wrench.force[2], (double)wrench.torque[0], (double)wrench.torque[1], (double)wrench.torque[2]);
+					//warnx("Forces allocation: %.3f %.3f %.3f %.3f", (double)wrench.force[2], (double)wrench.torque[0], (double)wrench.torque[1], (double)wrench.torque[2]);
 					counter_warnx = 0;
 					time_counter++;
 				}

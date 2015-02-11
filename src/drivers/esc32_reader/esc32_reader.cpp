@@ -398,7 +398,7 @@ ESC32_READER::task_main()
 					_read_arduino_counter = 0;
 					read_arduino(DEVICE_ADDRESS);
 				}
-				if (_arduino_counter>=200){
+				if (_arduino_counter>=100){
 					_arduino_counter = 0;
 					warnx("Speeds: %d - %d - %d - %d", _esc.esc[0].esc_rpm, _esc.esc[1].esc_rpm, _esc.esc[2].esc_rpm, _esc.esc[3].esc_rpm);
 				}

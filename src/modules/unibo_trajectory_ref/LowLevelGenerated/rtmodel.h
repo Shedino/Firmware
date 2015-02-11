@@ -3,9 +3,9 @@
  *
  * Code generation for model "TRAJECTORY_GENERATOR_APP".
  *
- * Model version              : 1.4009
+ * Model version              : 1.4014
  * Simulink Coder version : 8.3 (R2012b) 20-Jul-2012
- * C source code generated on : Mon Oct 27 17:50:36 2014
+ * C source code generated on : Mon Feb 09 16:58:38 2015
  *
  * Target selection: grt.tlc
  * Note: GRT includes extra infrastructure and instrumentation for prototyping

@@ -3,9 +3,9 @@
  *
  * Code generation for model "TRAJECTORY_GENERATOR_APP".
  *
- * Model version              : 1.4009
+ * Model version              : 1.4014
  * Simulink Coder version : 8.3 (R2012b) 20-Jul-2012
- * C source code generated on : Mon Oct 27 17:50:36 2014
+ * C source code generated on : Mon Feb 09 16:58:38 2015
  *
  * Target selection: grt.tlc
  * Note: GRT includes extra infrastructure and instrumentation for prototyping
@@ -33,8 +33,6 @@
 extern real_T rt_powd_snf(real_T u0, real_T u1);
 
 /* Exported functions */
-extern void TRAJECTORY_GENERATOR_APP_pitch(int16_T rtu_in,
-  rtB_pitch_TRAJECTORY_GENERATOR_ *localB);
 extern void TRAJECTORY_GENERATOR_Euler2Quat(real_T rtu_x, real_T rtu_y, real_T
   rtu_z, real_T rtu_dz, rtB_Euler2Quat_TRAJECTORY_GENER *localB);
 
