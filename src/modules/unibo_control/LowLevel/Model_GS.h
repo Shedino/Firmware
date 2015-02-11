@@ -3,9 +3,9 @@
  *
  * Code generation for model "Model_GS".
  *
- * Model version              : 1.2485
+ * Model version              : 1.2507
  * Simulink Coder version : 8.3 (R2012b) 20-Jul-2012
- * C source code generated on : Fri Oct 31 16:51:57 2014
+ * C source code generated on : Tue Feb 10 15:56:39 2015
  *
  * Target selection: grt.tlc
  * Note: GRT includes extra infrastructure and instrumentation for prototyping
@@ -808,7 +808,7 @@ typedef struct {
   real_T REF_POS[15];                  /* '<Root>/REF_POS' */
   real_T REF_YAW[3];                   /* '<Root>/REF_YAW' */
   uint16_T REF_BUTTONS;                /* '<Root>/REF_BUTTONS' */
-  real_T PARAMETERS[28];               /* '<Root>/PARAMETERS' */
+  real_T PARAMETERS[24];               /* '<Root>/PARAMETERS' */
   int32_T TIME_STAMP;                  /* '<Root>/TIME_STAMP' */
   real_T OPTITRACK[12];                /* '<Root>/OPTITRACK' */
   real_T VELOCITY[4];                  /* '<Root>/VELOCITY' */

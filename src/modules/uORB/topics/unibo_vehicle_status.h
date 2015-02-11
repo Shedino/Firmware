@@ -34,8 +34,8 @@ struct unibo_vehicle_status_s
 	bool xbee_lost;
 	bool landed;
 	bool took_off;
-	uint16_t mass;					/**< Mass of the vehicle in Kg */
-	uint16_t J[3];					/**< Inertia Matrix of the vehicle in Kg*m^2 */
+	float mass;					/**< Mass of the vehicle in Kg */
+	float J[3];					/**< Inertia Matrix of the vehicle in Kg*m^2 */
 	flight_modes_t flight_mode;
 };
 

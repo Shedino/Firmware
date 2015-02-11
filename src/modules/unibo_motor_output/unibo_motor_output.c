@@ -286,6 +286,7 @@ int unibo_motor_output_thread_main(int argc, char *argv[])
 	bool flag_armed;
 	bool updated;
 	uint8_t esc_state;
+	uint16_t pwm;
 	struct pwm_output_values esc_actual_pwm;
 	int ret;
 
@@ -321,8 +322,8 @@ int unibo_motor_output_thread_main(int argc, char *argv[])
 			warnx("Actual PWM of channel 1: %d", esc_actual_pwm.values[1]);
 //			ret = ioctl(pwm_fd, PWM_SERVO_GET(5), (unsigned long)&esc_actual_pwm.values[5]);
 //			warnx("Actual PWM of channel 5: %d", esc_actual_pwm.values[5]);
-		}
-		count++;*/
+		}*/
+		count++;
 
 
 		orb_check(safety_fd, &updated);
@@ -344,13 +345,13 @@ int unibo_motor_output_thread_main(int argc, char *argv[])
 					ioctl(pwm_fd, PWM_SERVO_SET(i), PWM_DISARMED);
 				}
 				esc_state = 1;  //DISARM
-				warnx("DISARM: %d", PWM_DISARMED);
+				//warnx("DISARM: %d", PWM_DISARMED);
 			}
 		} else {                //safety on
 			if (esc_state<3){
 				flag_armed = true;
 				//esc_state = 2; //ARM
-				warnx("ARM: %d", PWM_ARMED);
+				//warnx("ARM: %d", PWM_ARMED);
 				for(i = MOTORS_START; i < MOTORS_NUMBER; i++)
 				{
 					ioctl(pwm_fd, PWM_SERVO_SET(i), PWM_ARMED);
@@ -369,7 +370,7 @@ int unibo_motor_output_thread_main(int argc, char *argv[])
 
 				if (count >= 200){
 					count = 0;
-					warnx("Commanded RPM: %d %d %d %d", motor_output.outputs_rpm[0], motor_output.outputs_rpm[1], motor_output.outputs_rpm[2], motor_output.outputs_rpm[3]);
+					warnx("MOTOR OUTPUT: Commanded RPM: %d %d %d %d", motor_output.outputs_rpm[0], motor_output.outputs_rpm[1], motor_output.outputs_rpm[2], motor_output.outputs_rpm[3]);
 				}
 				// lettura ORB
 				//warnx("Nuovo valore pwm: %d %d %d %d %d %d %d %d", pwm_values.outputs[0], pwm_values.outputs[1], pwm_values.outputs[2], pwm_values.outputs[3],pwm_values.outputs[4], pwm_values.outputs[5], pwm_values.outputs[6], pwm_values.outputs[7]);
@@ -399,7 +400,11 @@ int unibo_motor_output_thread_main(int argc, char *argv[])
 						if (RPM_MODE){
 							for(i = MOTORS_START; i < MOTORS_NUMBER; i++)
 								{
-									ioctl(pwm_fd, PWM_SERVO_SET(i), map(motor_output.outputs_rpm[i], MIN_RPM, MAX_RPM, MIN_PWM, MAX_PWM));
+									//pwm = map(motor_output.outputs_rpm[i], MIN_RPM, MAX_RPM, MIN_PWM, MAX_PWM);
+//									if (count >= 195){
+//										warnx("PWM: %d", pwm);
+//									}
+									ioctl(pwm_fd, PWM_SERVO_SET(i), map(motor_output.outputs_rpm[i], MIN_RPM, MAX_RPM, MIN_PWM, MAX_PWM));  //TODO put "pwm" instead of map(...) for readibility
 								}
 						}else {
 							for(i = MOTORS_START; i < MOTORS_NUMBER; i++)
@@ -409,7 +414,7 @@ int unibo_motor_output_thread_main(int argc, char *argv[])
 						}
 					}
 				}
-				//count++;
+				count++;
 				/*for(i = MOTORS_START; i < MOTORS_NUMBER; i++)       //OLD
 				{
 #ifdef ATECH

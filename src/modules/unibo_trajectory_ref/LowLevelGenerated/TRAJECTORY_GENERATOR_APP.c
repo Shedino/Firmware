@@ -3,9 +3,9 @@
  *
  * Code generation for model "TRAJECTORY_GENERATOR_APP".
  *
- * Model version              : 1.4009
+ * Model version              : 1.4014
  * Simulink Coder version : 8.3 (R2012b) 20-Jul-2012
- * C source code generated on : Mon Oct 27 17:50:36 2014
+ * C source code generated on : Mon Feb 09 16:58:38 2015
  *
  * Target selection: grt.tlc
  * Note: GRT includes extra infrastructure and instrumentation for prototyping
@@ -32,21 +32,6 @@ ExternalOutputs_TRAJECTORY_GENE TRAJECTORY_GENERATOR_APP_Y;
 RT_MODEL_TRAJECTORY_GENERATOR_A TRAJECTORY_GENERATOR_APP_M_;
 RT_MODEL_TRAJECTORY_GENERATOR_A *const TRAJECTORY_GENERATOR_APP_M =
   &TRAJECTORY_GENERATOR_APP_M_;
-
-/*
- * Output and update for atomic system:
- *    '<S12>/pitch'
- *    '<S12>/roll'
- */
-void TRAJECTORY_GENERATOR_APP_pitch(int16_T rtu_in,
-  rtB_pitch_TRAJECTORY_GENERATOR_ *localB)
-{
-  /* MATLAB Function 'REFERENCES/Attitude & Thrust Generation/INPUTS/pitch': '<S16>:1' */
-  /* '<S16>:1:5' */
-  /* '<S16>:1:6' */
-  /* '<S16>:1:7' */
-  localB->angle = ((real_T)rtu_in - 512.0) * 0.0015339807878856412;
-}
 
 /*
  * Output and update for atomic system:
@@ -820,33 +805,33 @@ static void TRAJECTORY_GENERATOR_APP_output(void)
   /* MATLAB Function 'REFERENCES/Attitude & Thrust Generation/Euler2Quat': '<S11>:1' */
   /* '<S11>:1:5' */
   TRAJECTORY_GENERATOR_APP_B.q1[0] = cos
-    (TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn2) * cos
+    (TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn2 / 2.0) * cos
     (TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn2_e) * cos
-    (TRAJECTORY_GENERATOR_APP_B.X_REF_b) + sin
-    (TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn2) * sin
-    (TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn2_e) * sin
-    (TRAJECTORY_GENERATOR_APP_B.X_REF_b);
+    (TRAJECTORY_GENERATOR_APP_B.X_REF_b / 2.0) + sin
+    (TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn2 / 2.0) * sin
+    (TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn2_e / 2.0) * sin
+    (TRAJECTORY_GENERATOR_APP_B.X_REF_b / 2.0);
   TRAJECTORY_GENERATOR_APP_B.q1[1] = sin
-    (TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn2) * cos
-    (TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn2_e) * cos
-    (TRAJECTORY_GENERATOR_APP_B.X_REF_b) - cos
-    (TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn2) * sin
-    (TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn2_e) * sin
-    (TRAJECTORY_GENERATOR_APP_B.X_REF_b);
+    (TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn2 / 2.0) * cos
+    (TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn2_e / 2.0) * cos
+    (TRAJECTORY_GENERATOR_APP_B.X_REF_b / 2.0) - cos
+    (TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn2 / 2.0) * sin
+    (TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn2_e / 2.0) * sin
+    (TRAJECTORY_GENERATOR_APP_B.X_REF_b / 2.0);
   TRAJECTORY_GENERATOR_APP_B.q1[2] = cos
-    (TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn2) * sin
-    (TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn2_e) * cos
-    (TRAJECTORY_GENERATOR_APP_B.X_REF_b) + sin
-    (TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn2) * cos
-    (TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn2_e) * sin
-    (TRAJECTORY_GENERATOR_APP_B.X_REF_b);
+    (TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn2 / 2.0) * sin
+    (TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn2_e / 2.0) * cos
+    (TRAJECTORY_GENERATOR_APP_B.X_REF_b / 2.0) + sin
+    (TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn2 / 2.0) * cos
+    (TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn2_e / 2.0) * sin
+    (TRAJECTORY_GENERATOR_APP_B.X_REF_b / 2.0);
   TRAJECTORY_GENERATOR_APP_B.q1[3] = cos
-    (TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn2) * cos
-    (TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn2_e) * sin
-    (TRAJECTORY_GENERATOR_APP_B.X_REF_b) - sin
-    (TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn2) * sin
-    (TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn2_e) * cos
-    (TRAJECTORY_GENERATOR_APP_B.X_REF_b);
+    (TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn2 / 2.0) * cos
+    (TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn2_e / 2.0) * sin
+    (TRAJECTORY_GENERATOR_APP_B.X_REF_b / 2.0) - sin
+    (TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn2 / 2.0) * sin
+    (TRAJECTORY_GENERATOR_APP_B.DiscreteTransferFcn2_e / 2.0) * cos
+    (TRAJECTORY_GENERATOR_APP_B.X_REF_b / 2.0);
 
   /* '<S11>:1:10' */
   rtb_Sum1 = 2.2250738585072014E-308;
@@ -956,23 +941,29 @@ static void TRAJECTORY_GENERATOR_APP_output(void)
 
   /* MATLAB Function: '<S12>/thrust' incorporates:
    *  Inport: '<Root>/JOYSTICK'
+   *  Inport: '<Root>/MASS'
    */
   /* MATLAB Function 'REFERENCES/Attitude & Thrust Generation/INPUTS/thrust': '<S18>:1' */
   /* # */
   /* '<S18>:1:3' */
   /* '<S18>:1:4' */
-  /* da settare dinamicamente (2*m*g) */
+  /* '<S18>:1:5' */
+  rtb_Sum1 = 2.0 * TRAJECTORY_GENERATOR_APP_U.MASS * 9.81;
+
+  /* (2*m*g) */
   /* '<S18>:1:6' */
-  /* da settare dinamicamente */
+  rtb_Sum2_idx = TRAJECTORY_GENERATOR_APP_U.MASS * 9.81 / 7.0;
+
+  /* m*g/7 */
   /* '<S18>:1:9' */
-  rtb_Sum2_idx = -((real_T)TRAJECTORY_GENERATOR_APP_U.JOYSTICK[3] - 512.0) *
-    0.0229921875 + 11.772;
+  t = rtb_Sum1 / 2.0 / 512.0 * -((real_T)TRAJECTORY_GENERATOR_APP_U.JOYSTICK[3]
+    - 512.0) + rtb_Sum1 / 2.0;
 
   /* mg when stick is in the middle, 2*mg --> stick up, 0 --> stick down */
-  if (rtb_Sum2_idx < 1.9620000000000002) {
+  if (t < rtb_Sum2_idx) {
     /* '<S18>:1:10' */
     /* '<S18>:1:11' */
-    rtb_Sum2_idx = 1.9620000000000002;
+    t = rtb_Sum2_idx;
   }
 
   /* End of MATLAB Function: '<S12>/thrust' */
@@ -1197,7 +1188,7 @@ static void TRAJECTORY_GENERATOR_APP_output(void)
     /* Outport: '<Root>/REF_THRUST' */
     /* '<S4>:1:36' */
     /* '<S4>:1:37' */
-    TRAJECTORY_GENERATOR_APP_Y.REF_THRUST = rtb_Sum2_idx;
+    TRAJECTORY_GENERATOR_APP_Y.REF_THRUST = t;
     break;
 
    case 3U:
@@ -1429,14 +1420,22 @@ static void TRAJECTORY_GENERATOR_APP_output(void)
   /* MATLAB Function: '<S12>/pitch' incorporates:
    *  Inport: '<Root>/JOYSTICK'
    */
-  TRAJECTORY_GENERATOR_APP_pitch(TRAJECTORY_GENERATOR_APP_U.JOYSTICK[0],
-    &TRAJECTORY_GENERATOR_APP_B.sf_pitch);
+  /* MATLAB Function 'REFERENCES/Attitude & Thrust Generation/INPUTS/pitch': '<S16>:1' */
+  /* '<S16>:1:5' */
+  /* '<S16>:1:6' */
+  /* '<S16>:1:7' */
+  TRAJECTORY_GENERATOR_APP_B.angle_f = ((real_T)
+    TRAJECTORY_GENERATOR_APP_U.JOYSTICK[0] - 512.0) * -0.0015339807878856412;
 
   /* MATLAB Function: '<S12>/roll' incorporates:
    *  Inport: '<Root>/JOYSTICK'
    */
-  TRAJECTORY_GENERATOR_APP_pitch(TRAJECTORY_GENERATOR_APP_U.JOYSTICK[1],
-    &TRAJECTORY_GENERATOR_APP_B.sf_roll);
+  /* MATLAB Function 'REFERENCES/Attitude & Thrust Generation/INPUTS/roll': '<S17>:1' */
+  /* '<S17>:1:5' */
+  /* '<S17>:1:6' */
+  /* '<S17>:1:7' */
+  TRAJECTORY_GENERATOR_APP_B.angle = ((real_T)
+    TRAJECTORY_GENERATOR_APP_U.JOYSTICK[1] - 512.0) * 0.0015339807878856412;
 
   /* MATLAB Function: '<S12>/yaw_speed' incorporates:
    *  Inport: '<Root>/JOYSTICK'
@@ -2115,12 +2114,12 @@ static void TRAJECTORY_GENERATOR_APP_update(void)
 
   /* Update for DiscreteTransferFcn: '<S13>/Discrete Transfer Fcn' */
   TRAJECTORY_GENERATOR_APP_DWork.DiscreteTransferFcn_states_b =
-    TRAJECTORY_GENERATOR_APP_B.sf_pitch.angle - -0.81873075307798182 *
+    TRAJECTORY_GENERATOR_APP_B.angle_f - -0.81873075307798182 *
     TRAJECTORY_GENERATOR_APP_DWork.DiscreteTransferFcn_states_b;
 
   /* Update for DiscreteTransferFcn: '<S14>/Discrete Transfer Fcn' */
   TRAJECTORY_GENERATOR_APP_DWork.DiscreteTransferFcn_states_l =
-    TRAJECTORY_GENERATOR_APP_B.sf_roll.angle - -0.81873075307798182 *
+    TRAJECTORY_GENERATOR_APP_B.angle - -0.81873075307798182 *
     TRAJECTORY_GENERATOR_APP_DWork.DiscreteTransferFcn_states_l;
 
   /* Update for DiscreteTransferFcn: '<S24>/Discrete Transfer Fcn' */
@@ -2663,10 +2662,10 @@ RT_MODEL_TRAJECTORY_GENERATOR_A *TRAJECTORY_GENERATOR_APP(void)
   /* Initialize Sizes */
   TRAJECTORY_GENERATOR_APP_M->Sizes.numContStates = (0);/* Number of continuous states */
   TRAJECTORY_GENERATOR_APP_M->Sizes.numY = (31);/* Number of model outputs */
-  TRAJECTORY_GENERATOR_APP_M->Sizes.numU = (30);/* Number of model inputs */
+  TRAJECTORY_GENERATOR_APP_M->Sizes.numU = (31);/* Number of model inputs */
   TRAJECTORY_GENERATOR_APP_M->Sizes.sysDirFeedThru = (1);/* The model is direct feedthrough */
   TRAJECTORY_GENERATOR_APP_M->Sizes.numSampTimes = (2);/* Number of sample times */
-  TRAJECTORY_GENERATOR_APP_M->Sizes.numBlocks = (121);/* Number of blocks */
+  TRAJECTORY_GENERATOR_APP_M->Sizes.numBlocks = (122);/* Number of blocks */
   TRAJECTORY_GENERATOR_APP_M->Sizes.numBlockIO = (67);/* Number of block outputs */
   return TRAJECTORY_GENERATOR_APP_M;
 }
