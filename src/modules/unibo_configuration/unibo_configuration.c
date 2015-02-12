@@ -65,6 +65,7 @@ char* config_file_name="multirotor_configuration.mcf";
 char* config_file_path="/fs/microsd/multirotor_configuration.mcf";
 unsigned int read_line_length=110;
 unsigned int write_line_length=100;
+int module_mass[10];
 //int COL_string_length=-80;
 //int rot_ROW_string_length=-50;
 char line_format_string[8]="%-100s\n";
@@ -167,32 +168,65 @@ int unibo_configuration_main(int argc, char *argv[])
 		fclose(config_file_handle);
 		warnx("Done.");
 		disp_config();
-//
-//		config_file_handle=fopen(config_file_path,"r");
+
+		config_file_handle=fopen(config_file_path,"r");
+		do{
+			fgets(file_line_string1,read_line_length,config_file_handle);
+		}while(strstr(file_line_string1,"<TAB")==NULL);
+		sscanf(file_line_string1,"<TAB,%u>",&tab_num);
+		do{
+			do{
+				fgets(file_line_string1,read_line_length,config_file_handle);
+			}while(strstr(file_line_string1,"<COL")==NULL);
+		}while(strstr(file_line_string1,"payload")==NULL);
+//		puts(file_line_string1);
+		sscanf(file_line_string1,"<COL,%*s,%u,%*s>",&module_num);
 //		do{
 //			fgets(file_line_string1,read_line_length,config_file_handle);
-//		}while(strstr(file_line_string1,"<TAB")==NULL);
-//		sscanf(file_line_string1,"<TAB,%u>",&tab_num);
-//		do{
-//			do{
-//				fgets(file_line_string1,read_line_length,config_file_handle);
-//			}while(strstr(file_line_string1,"<COL")==NULL);
-//		}while(strstr(file_line_string1,"payload")==NULL);
-//		puts(file_line_string1);
-//		fclose(config_file_handle);
+//		}while(strstr(file_line_string1,argv[3])==NULL);
+		total_mass=0;
+		for(module_ind=0;module_ind<module_num;module_ind++){
+			do{
+				fgets(file_line_string1,read_line_length,config_file_handle);
+			}while(strstr(file_line_string1,"<ROW")==NULL);
+			sscanf(file_line_string1,"<ROW,%*s,%*s,%*s,%*s,%u>",&module_mass[module_ind]);
+//			printf("module mass: %u g\n",module_mass[module_ind]);
+			total_mass+=module_mass[module_ind];
+		}
+//		printf("total payload mass: %u g\n",total_mass);
+		do{
+			do{
+				fgets(file_line_string1,read_line_length,config_file_handle);
+//				puts(file_line_string1);
+			}while(strstr(file_line_string1,"<COL")==NULL);
+//			puts("OK");
+		}while(strstr(file_line_string1,"rotor")==NULL);
+		puts(file_line_string1);
+		sscanf(file_line_string1,"<COL,%*s,%u,%*s>",&module_num);
+		for(module_ind=0;module_ind<module_num;module_ind++){
+			do{
+				fgets(file_line_string1,read_line_length,config_file_handle);
+			}while(strstr(file_line_string1,"<ROW")==NULL);
+			puts(file_line_string1);
+			sscanf(file_line_string1,"<ROW,%*s,%*s,%*s,%*s,%u,%*s>",&module_mass[module_ind]);
+//			printf("module mass: %u g\n",module_mass[module_ind]);
+			total_mass+=module_mass[module_ind];
+		}
+		printf("total mass: %u g\n",total_mass);
+		fclose(config_file_handle);
 
 		/* this is not an error */
 		exit(0);
 	}
 
-	if (!strcmp(argv[1], "add")&(argc == 3)) {
+	if (!strcmp(argv[1], "add")) {
 		warnx("adding %s to configuration file ''%s'' ...",argv[2],config_file_name);
 		config_file_handle=fopen(config_file_path,"r+");
 		if(config_file_handle==NULL) {
 			usage("Command not executed: it was impossible to open the configuration file.");
 			exit(1);
 		}else{
-			if (!strcmp(argv[2], "rotor")) {
+			if (!strcmp(argv[2], "rotor")&(argc == 3)) {
 				do{
 					fgets(file_line_string1,read_line_length,config_file_handle);
 				}while(strstr(file_line_string1,"<TAB")==NULL);
@@ -215,7 +249,7 @@ int unibo_configuration_main(int argc, char *argv[])
 				sprintf(file_line_string1,"<ROW,%u,%s>",module_num+1,read_line_copy1);
 				fprintf(config_file_handle,line_format_string,file_line_string1);
 			}else{
-				if (!strcmp(argv[2],"payload")){
+				if (!strcmp(argv[2],"payload")&(argc == 4)){
 					do{
 						fgets(file_line_string1,read_line_length,config_file_handle);
 					}while(strstr(file_line_string1,"<TAB")==NULL);
@@ -259,13 +293,13 @@ int unibo_configuration_main(int argc, char *argv[])
 	}
 
 	if (!strcmp(argv[1], "remove")) {
-		warnx("removing rotor from configuration file ''%s'' ...",config_file_name);
+		warnx("removing %s from configuration file ''%s'' ...",argv[2],config_file_name);
 		config_file_handle=fopen(config_file_path,"r+");
 		if(config_file_handle==NULL) {
 			usage("Command not executed: it was impossible to open the configuration file.");
 			exit(1);
 		}else{
-			if (!strcmp(argv[2], "rotor")) {
+			if (!strcmp(argv[2], "rotor")&(argc == 3)) {
 				do{
 					fgets(file_line_string1,read_line_length,config_file_handle);
 				}while(strstr(file_line_string1,"<TAB")==NULL);
@@ -287,7 +321,7 @@ int unibo_configuration_main(int argc, char *argv[])
 				fseek(config_file_handle,-write_line_length-1,SEEK_CUR);
 				fprintf(config_file_handle,line_format_string," ");
 			}else{
-				if (!strcmp(argv[2], "payload")) {
+				if (!strcmp(argv[2], "payload")&(argc == 4)) {
 					do{
 						fgets(file_line_string1,read_line_length,config_file_handle);
 					}while(strstr(file_line_string1,"<TAB")==NULL);
@@ -305,16 +339,20 @@ int unibo_configuration_main(int argc, char *argv[])
 					do{
 						do{
 							fgets(file_line_string1,read_line_length,config_file_handle);
-						}while(strstr(file_line_string1,"<ROW")==NULL);
-					}while(strstr(file_line_string1,read_line_copy1)==NULL);
-					do{
-						sprintf(file_line_string1,line_format_string," ");
-						fgets(file_line_string1,read_line_length,config_file_handle);
-						fseek(config_file_handle,(-write_line_length-1)*2,SEEK_CUR);
-						fprintf(config_file_handle,"%-100s",file_line_string1);
-						fseek(config_file_handle,write_line_length+1,SEEK_CUR);
-					}while(strstr(file_line_string1,"<")!=NULL);
-					fprintf(config_file_handle,line_format_string," ");
+						}while(strstr(file_line_string1,"<ROW")==NULL&!feof(config_file_handle));
+					}while(strstr(file_line_string1,read_line_copy1)==NULL&!feof(config_file_handle));
+					if(!feof(config_file_handle)){
+						do{
+							sprintf(file_line_string1,line_format_string," ");
+							fgets(file_line_string1,read_line_length,config_file_handle);
+							fseek(config_file_handle,(-write_line_length-1)*2,SEEK_CUR);
+							fprintf(config_file_handle,"%-100s",file_line_string1);
+							fseek(config_file_handle,write_line_length+1,SEEK_CUR);
+						}while(strstr(file_line_string1,"<")!=NULL);
+						fprintf(config_file_handle,line_format_string," ");
+					}else{
+						usage("passive module not found");
+					}
 				}else{
 					usage("unrecognized command");
 					exit(1);
