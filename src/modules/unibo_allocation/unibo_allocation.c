@@ -64,6 +64,8 @@ char file_line_string1[110];
 unsigned int distance;
 int azimuth;
 int spin;
+int Ct;
+int Cq;
 char par2_name[20];
 char par3_name[20];
 char par4_name[20];
@@ -233,40 +235,44 @@ int unibo_allocation_thread_main(int argc, char *argv[])
 				fgets(file_line_string1,read_line_length,config_file_handle);
 			}while(strstr(file_line_string1,"<ROW")==NULL);
 			puts(file_line_string1);
-			sscanf(file_line_string1,"<ROW,%*u,%u,%u,%*s,%*s,%i,%*s>",&distance,&azimuth,&spin);
+			sscanf(file_line_string1,"<ROW,%*u,%u,%u,%*s,%*s,%u,%u,%u>",&distance,&azimuth,&spin,&Ct,&Cq);
+//			Ct=0.0000115;
+//			warnx("read Cq: %u",Cq);
 			ALLOCATION_U.r[module_ind]=(float)distance/1000.0f;
 			ALLOCATION_U.psi[module_ind]=(float)azimuth;
 			ALLOCATION_U.s[module_ind]=(float)spin;
-//			printf("module %u distance in mm: %u\n",module_ind,distance);
-//			printf("module %u distance in m: %4.2f\n",module_ind,(double)(((float)distance)/1000.0f));
-			warnx("module %u distance: %4.2f m\n",module_ind,(double)ALLOCATION_U.r[module_ind]);
-			warnx("module %u azimuth: %4.0f deg\n",module_ind,(double)ALLOCATION_U.psi[module_ind]);
-			warnx("module %u spin direction: %1.0f deg\n",module_ind,(double)ALLOCATION_U.s[module_ind]);
+			ALLOCATION_U.Ct[module_ind]=(double)Ct*1e-9;
+			ALLOCATION_U.Cq[module_ind]=(double)Cq*1e-12*100;
+			warnx("module %u distance: %4.2f m",module_ind+1,(double)ALLOCATION_U.r[module_ind]);
+			warnx("module %u azimuth: %1.0f deg",module_ind+1,(double)ALLOCATION_U.psi[module_ind]);
+			warnx("module %u spin direction: %1.0f",module_ind+1,(double)ALLOCATION_U.s[module_ind]);
+			warnx("module %u thrust coefficient: %.10f N/RPM2",module_ind+1,(double)ALLOCATION_U.Ct[module_ind]);
+			warnx("module %u torque coefficient: %.10f Nm/RPM2",module_ind+1,(double)ALLOCATION_U.Cq[module_ind]);
 		}
 
 		fclose(config_file_handle);
 		warnx("Done.");
 	}
 
-	for(module_ind=0;module_ind<4;module_ind++){
-		ALLOCATION_U.r[module_ind]=0.29;//curr_config.radius[module_ind];		//distanza dal baricentro
-//		warnx("module %u: r=%u",module_ind+1,(int)ALLOCATION_U.r[module_ind]);
-//		ALLOCATION_U.s[module_ind]=1;//curr_config.direction[module_ind];   //spin
-//		warnx("module %u: s=%d",module_ind+1,(int)ALLOCATION_U.s[module_ind]);
-//		warnx("module %u: Ct=%.5f",module_ind+1,(double)curr_config.thrust[module_ind]);
-		ALLOCATION_U.Ct[module_ind]=0.0000115/1000*9.81;//curr_config.thrust[module_ind];		//coefficienti aerodinamici di spinta
-//		warnx("module %u: Ct=%.5f",module_ind+1,(double)ALLOCATION_U.Ct[module_ind]);
-		ALLOCATION_U.Cq[module_ind]=0.00000000055;//curr_config.torque[module_ind];		//coefficienti aerodinamici di momento
-//		warnx("module %u: Cq=%.8f",module_ind+1,(double)ALLOCATION_U.Cq[module_ind]);
-	}
-	ALLOCATION_U.s[0]=-1;//curr_config.direction[module_ind];   //spin
-	ALLOCATION_U.s[1]=1;//curr_config.direction[module_ind];   //spin
-	ALLOCATION_U.s[2]=-1;//curr_config.direction[module_ind];   //spin
-	ALLOCATION_U.s[3]=1;//curr_config.direction[module_ind];   //spin
-	ALLOCATION_U.psi[0]=135;//azimuth
-	ALLOCATION_U.psi[1]=-135;//azimuth
-	ALLOCATION_U.psi[2]=-45;//azimuth
-	ALLOCATION_U.psi[3]=45;//azimuth
+//	for(module_ind=0;module_ind<4;module_ind++){
+//		ALLOCATION_U.r[module_ind]=0.29;//curr_config.radius[module_ind];		//distanza dal baricentro
+////		warnx("module %u: r=%u",module_ind+1,(int)ALLOCATION_U.r[module_ind]);
+////		ALLOCATION_U.s[module_ind]=1;//curr_config.direction[module_ind];   //spin
+////		warnx("module %u: s=%d",module_ind+1,(int)ALLOCATION_U.s[module_ind]);
+////		warnx("module %u: Ct=%.5f",module_ind+1,(double)curr_config.thrust[module_ind]);
+//		ALLOCATION_U.Ct[module_ind]=0.000011500/1000*9.81;//curr_config.thrust[module_ind];		//coefficienti aerodinamici di spinta
+////		warnx("module %u: Ct=%.5f",module_ind+1,(double)ALLOCATION_U.Ct[module_ind]);
+//		ALLOCATION_U.Cq[module_ind]=0.00000000055*100;//curr_config.torque[module_ind];		//coefficienti aerodinamici di momento
+////		warnx("module %u: Cq=%.8f",module_ind+1,(double)ALLOCATION_U.Cq[module_ind]);
+//	}
+//	ALLOCATION_U.s[0]=-1;//curr_config.direction[module_ind];   //spin
+//	ALLOCATION_U.s[1]=1;//curr_config.direction[module_ind];   //spin
+//	ALLOCATION_U.s[2]=-1;//curr_config.direction[module_ind];   //spin
+//	ALLOCATION_U.s[3]=1;//curr_config.direction[module_ind];   //spin
+//	ALLOCATION_U.psi[0]=135;//azimuth
+//	ALLOCATION_U.psi[1]=-135;//azimuth
+//	ALLOCATION_U.psi[2]=-45;//azimuth
+//	ALLOCATION_U.psi[3]=45;//azimuth
 
 //    x
 // 1  ^  2

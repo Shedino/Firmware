@@ -60,6 +60,7 @@ unsigned int module_ind=0;
 unsigned int str_ind;
 long int file_pos;
 unsigned int par_value;
+unsigned int total_mass;
 char* config_file_name="multirotor_configuration.mcf";
 char* config_file_path="/fs/microsd/multirotor_configuration.mcf";
 unsigned int read_line_length=110;
@@ -153,24 +154,38 @@ int unibo_configuration_main(int argc, char *argv[])
 		fprintf(config_file_handle,line_format_string,file_line_string1);
 		sprintf(file_line_string1,"<ROW,camera,20,0,10,70>");
 		fprintf(config_file_handle,line_format_string,file_line_string1);
-		sprintf(file_line_string1,"<COL,rotors,4,ID,distance[mm],azimuth[deg],height[mm],mass[g],spin,Ct[N/RPM^2],Cq[Nm/RPM^2]>");
+		sprintf(file_line_string1,"<COL,rotors,4,ID,distance[mm],azimuth[deg],height[mm],mass[g],spin,Ct[nN/RPM^2],Cq[nNmm/RPM^2]>");
 		fprintf(config_file_handle,line_format_string,file_line_string1);
-		sprintf(file_line_string1,"<ROW,1,290,135,20,100,-1,0.0000115,0.00000000055>");
+		sprintf(file_line_string1,"<ROW,1,290,135,20,100,-1,113,550>");
 		fprintf(config_file_handle,line_format_string,file_line_string1);
-		sprintf(file_line_string1,"<ROW,2,290,-135,20,100,1,0.0000115,0.00000000055>");
+		sprintf(file_line_string1,"<ROW,2,290,-135,20,100,1,113,550>");
 		fprintf(config_file_handle,line_format_string,file_line_string1);
-		sprintf(file_line_string1,"<ROW,3,290,-45,20,100,-1,0.0000115,0.00000000055>");
+		sprintf(file_line_string1,"<ROW,3,290,-45,20,100,-1,113,550>");
 		fprintf(config_file_handle,line_format_string,file_line_string1);
-		sprintf(file_line_string1,"<ROW,4,290,45,20,100,1,0.0000115,0.00000000055>");
+		sprintf(file_line_string1,"<ROW,4,290,45,20,100,1,113,550>");
 		fprintf(config_file_handle,line_format_string,file_line_string1);
 		fclose(config_file_handle);
 		warnx("Done.");
 		disp_config();
+//
+//		config_file_handle=fopen(config_file_path,"r");
+//		do{
+//			fgets(file_line_string1,read_line_length,config_file_handle);
+//		}while(strstr(file_line_string1,"<TAB")==NULL);
+//		sscanf(file_line_string1,"<TAB,%u>",&tab_num);
+//		do{
+//			do{
+//				fgets(file_line_string1,read_line_length,config_file_handle);
+//			}while(strstr(file_line_string1,"<COL")==NULL);
+//		}while(strstr(file_line_string1,"payload")==NULL);
+//		puts(file_line_string1);
+//		fclose(config_file_handle);
+
 		/* this is not an error */
 		exit(0);
 	}
 
-	if (!strcmp(argv[1], "add")) {
+	if (!strcmp(argv[1], "add")&(argc == 3)) {
 		warnx("adding %s to configuration file ''%s'' ...",argv[2],config_file_name);
 		config_file_handle=fopen(config_file_path,"r+");
 		if(config_file_handle==NULL) {
@@ -247,8 +262,8 @@ int unibo_configuration_main(int argc, char *argv[])
 		warnx("removing rotor from configuration file ''%s'' ...",config_file_name);
 		config_file_handle=fopen(config_file_path,"r+");
 		if(config_file_handle==NULL) {
-//			printf("%s\n",strerror(errno));
-			puts("no");
+			usage("Command not executed: it was impossible to open the configuration file.");
+			exit(1);
 		}else{
 			if (!strcmp(argv[2], "rotor")) {
 				do{
@@ -300,6 +315,9 @@ int unibo_configuration_main(int argc, char *argv[])
 						fseek(config_file_handle,write_line_length+1,SEEK_CUR);
 					}while(strstr(file_line_string1,"<")!=NULL);
 					fprintf(config_file_handle,line_format_string," ");
+				}else{
+					usage("unrecognized command");
+					exit(1);
 				}
 			}
 			fclose(config_file_handle);
@@ -313,8 +331,8 @@ int unibo_configuration_main(int argc, char *argv[])
 		warnx("updating %s %s in configuration file ''%s'' ...",argv[2],argv[3],config_file_name);
 		config_file_handle=fopen(config_file_path,"r+");
 		if(config_file_handle==NULL) {
-//			printf("%s\n",strerror(errno));
-			puts("no");
+			usage("Command not executed: it was impossible to open the configuration file.");
+			exit(1);
 		}else{
 			if (!strcmp(argv[2], "rotor")) {
 				do{
@@ -405,6 +423,9 @@ int unibo_configuration_main(int argc, char *argv[])
 												sprintf(file_line_string1,"<ROW,%u,%s,%s,%s,%s,%s,%s,%s>",module_ind+1,par1_name,par2_name,par3_name,par4_name,par5_name,par6_name,argv[4]);
 												fprintf(config_file_handle,line_format_string,file_line_string1);
 											}
+										}else{
+											usage("unrecognized command");
+											exit(1);
 										}
 									}
 								}
@@ -424,25 +445,18 @@ int unibo_configuration_main(int argc, char *argv[])
 						}while(strstr(file_line_string1,"<COL")==NULL);
 					}while(strstr(file_line_string1,"payload")==NULL);
 					sscanf(file_line_string1,"<COL,%*s,%u,%*s,%s,%s,%s,%s>",&module_num,par1_name,par2_name,par3_name,par4_name);
-//					puts(argv[3]);
-//					for(module_ind=0;module_ind<module_num;module_ind++){
 					do{
 						fgets(file_line_string1,read_line_length,config_file_handle);
 					}while(strstr(file_line_string1,argv[3])==NULL);
-//					puts(file_line_string1);
-//					}
 					if(strstr(par1_name,argv[4])!=NULL) {
-//						puts("e2");
 						sscanf(file_line_string1,"<ROW,%*s,%*s,%s>",read_line_copy1);
 						fseek(config_file_handle,-write_line_length-1,SEEK_CUR);
 						sprintf(file_line_string1,"<ROW,%s,%s,%s>",argv[3],argv[5],read_line_copy1);
 						fprintf(config_file_handle,line_format_string,file_line_string1);
 					}else{
-//						puts("ok");
 						if(strstr(par2_name,argv[4])!=NULL) {
 							sscanf(file_line_string1,"<ROW,%*s,%s,%*s,%s>",par1_name,read_line_copy1);
 							fseek(config_file_handle,-write_line_length-1,SEEK_CUR);
-//							printf(file_line_string1,"<ROW,%s,%s,%s,%s>",argv[3],par1_name,argv[5],read_line_copy1);
 							sprintf(file_line_string1,"<ROW,%s,%s,%s,%s>",argv[3],par1_name,argv[5],read_line_copy1);
 							fprintf(config_file_handle,line_format_string,file_line_string1);
 						}else{
@@ -457,10 +471,16 @@ int unibo_configuration_main(int argc, char *argv[])
 									fseek(config_file_handle,-write_line_length-1,SEEK_CUR);
 									sprintf(file_line_string1,"<ROW,%s,%s,%s,%s,%s>",argv[3],par1_name,par2_name,par3_name,argv[5]);
 									fprintf(config_file_handle,line_format_string,file_line_string1);
+								}else{
+									usage("unrecognized command");
+									exit(1);
 								}
 							}
 						}
 					}
+				}else{
+					usage("unrecognized command");
+					exit(1);
 				}
 			}
 			fclose(config_file_handle);
