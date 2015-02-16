@@ -39,7 +39,7 @@
 
 #include <stdio.h>
 #include <errno.h>
-#include <ALLOCATION.h>
+//#include <ALLOCATION.h>
 
 //#include <poll.h>
 //#include <uORB/topics/vehicle_attitude.h>
@@ -47,7 +47,7 @@
 
 /* Daemon libraries? */
 #include <systemlib/systemlib.h>
-//#include <mathlib/mathlib.h>
+#include <mathlib/mathlib.h>
 //#include <systemlib/err.h>
 
 /* Daemon variables */
@@ -215,6 +215,7 @@ int unibo_configuration_main(int argc, char *argv[])
 		}
 		printf("total mass: %u g\n",total_mass);
 		fclose(config_file_handle);
+		math::Vector<3>;
 //		math::Quaternion q(0, 0, 0, 0);
 
 		/* this is not an error */
