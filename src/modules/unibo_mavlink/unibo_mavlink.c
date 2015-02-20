@@ -641,7 +641,7 @@ int unibo_mavlink_thread_main(int argc, char *argv[])
 								break;
 							case MAVLINK_MSG_ID_RC_CHANNELS_OVERRIDE:
 								mavlink_msg_rc_channels_override_decode(&msg, &channels_overrided);
-								warnx("Pubblicato rc_override: %d %d %d", channels_overrided.chan1_raw, channels_overrided.chan2_raw, channels_overrided.chan3_raw);
+								//warnx("Pubblicato rc_override: %d %d %d", channels_overrided.chan1_raw, channels_overrided.chan2_raw, channels_overrided.chan3_raw);
 								break;
 							case MAVLINK_MSG_ID_RC_CHANNELS_SCALED:
 								mavlink_msg_rc_channels_scaled_decode(&msg, &unibo_rc);
