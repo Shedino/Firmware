@@ -417,7 +417,6 @@ int unibo_control_thread_main(int argc, char *argv[])
 //						(double)ahrs.q[1],
 //						(double)ahrs.q[2],
 //						(double)ahrs.q[3]);
-//					warnx(".");
 					txtcounter = 0;
 				}
 
@@ -513,9 +512,9 @@ int unibo_control_thread_main(int argc, char *argv[])
 					orb_copy(ORB_ID(unibo_vehicle_status),unibo_status_fd,&unibo_status);
 					Model_GS_U.FLIGHT_MODE = (int)unibo_status.flight_mode;
 
-//					Model_GS_U.PARAMETERS[3] = unibo_status.mass;      //mass
-//					Model_GS_U.PARAMETERS[23] = unibo_status.J[0];   //Jx=Jy
-//					Model_GS_U.PARAMETERS[24] = unibo_status.J[2];	//Jz
+//					Model_GS_U.PARAMETERS[1] = unibo_status.mass;      //mass
+//					Model_GS_U.PARAMETERS[21] = unibo_status.J[0];   //Jx=Jy
+//					Model_GS_U.PARAMETERS[22] = unibo_status.J[2];	//Jz
 
 					Model_GS_U.PARAMETERS[1] = temp_PAR.in2;      //mass      //TODO remove this coming from parameters and put values coming from allocation (unibo_status)
 					Model_GS_U.PARAMETERS[21] = temp_PAR.in22;   //Jx=Jy      //TODO revamp all parameters handle, separate M,J with others in simulink too
@@ -548,7 +547,7 @@ int unibo_control_thread_main(int argc, char *argv[])
 					//warnx("Optitrack from topic: %d %d %d\n",temp_opti.pos_x,temp_opti.pos_y,temp_opti.pos_z);
 					counter_opti_pack++;
 					if (counter_opti_pack>=200){
-						//warnx("Ricevuti 200 pacchetti OPTITRACK. X: %.3f - Y: %.3f - Z: %.3f", loc_pos.x, loc_pos.y, loc_pos.z);
+						//warnx("OPTITRACK X: %.3f - Y: %.3f - Z: %.3f", (double)loc_pos.x, (double)loc_pos.y, (double)loc_pos.z);
 						//warnx("Ricevuti 200 pacchetti OPTITRACK. VX: %.3f - VY: %.3f - VZ: %.3f", loc_pos.vx, loc_pos.vy, loc_pos.vz);
 						counter_opti_pack=0;
 					}
@@ -624,7 +623,9 @@ int unibo_control_thread_main(int argc, char *argv[])
 				counter_output++;
 
 				if (counter_output>=200){
-					//warnx("CONTROL thrust: %.3f Torques: %.3f %.3f %.3f", Model_GS_Y.U_F, Model_GS_Y.U_TAU[0], Model_GS_Y.U_TAU[1], Model_GS_Y.U_TAU[2]);
+					//warnx("POS: %.3f %.3f %.3f - REF: %.3f %.3f %.3f", Model_GS_Y.p_out[0], Model_GS_Y.p_out[1], Model_GS_Y.p_out[2], Model_GS_Y.ref_out[0], Model_GS_Y.ref_out[1], Model_GS_Y.ref_out[2]);
+					//warnx("KAPPA: %.3f %.3f %.3f", Model_GS_Y.kappa[0], Model_GS_Y.kappa[1], Model_GS_Y.kappa[2]);
+					warnx("CONTROL thrust: %.3f Torques: %.3f %.3f %.3f", Model_GS_Y.U_F, Model_GS_Y.U_TAU[0], Model_GS_Y.U_TAU[1], Model_GS_Y.U_TAU[2]);
 					counter_output = 0;
 				}
 

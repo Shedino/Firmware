@@ -566,7 +566,7 @@ int unibo_mavlink_thread_main(int argc, char *argv[])
 
 								orb_copy(ORB_ID(vehicle_local_position), loc_pos_sub_fd, &loc_pos);  //copy actual local_position for velocities
 								loc_pos.x = unibo_opti_mav.x * (float)cos(yawoffset*2.0f*pi/360.0f) - unibo_opti_mav.y * (float)sin(yawoffset*2.0f*pi/360.0f);          //Write to local position topic too
-								loc_pos.y = unibo_opti_mav.x * (float)sin(yawoffset*2.0f*pi/360.0f) - unibo_opti_mav.y * (float)cos(yawoffset*2.0f*pi/360.0f);
+								loc_pos.y = unibo_opti_mav.x * (float)sin(yawoffset*2.0f*pi/360.0f) + unibo_opti_mav.y * (float)cos(yawoffset*2.0f*pi/360.0f);
 								loc_pos.z = unibo_opti_mav.z;
 								loc_pos.v_z_valid = false;
 								loc_pos.timestamp = unibo_opti_mav.usec;

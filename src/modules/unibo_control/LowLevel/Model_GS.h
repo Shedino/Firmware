@@ -3,9 +3,9 @@
  *
  * Code generation for model "Model_GS".
  *
- * Model version              : 1.2507
+ * Model version              : 1.2512
  * Simulink Coder version : 8.3 (R2012b) 20-Jul-2012
- * C source code generated on : Tue Feb 10 15:56:39 2015
+ * C source code generated on : Mon Mar 02 12:50:03 2015
  *
  * Target selection: grt.tlc
  * Note: GRT includes extra infrastructure and instrumentation for prototyping
@@ -768,37 +768,39 @@
 
 /* Block signals (auto storage) */
 typedef struct {
-  real_T Sum[3];                       /* '<S7>/Sum' */
-  real_T reset;                        /* '<S5>/Reset from buttons' */
-  real_T p[3];                         /* '<S22>/parser' */
-  real_T q[4];                         /* '<S22>/parser' */
-  real_T Tstamp;                       /* '<S22>/parser' */
-  real_T normaP;                       /* '<S22>/parser' */
-  real_T dp[3];                        /* '<S22>/VELOCITY' */
-  real_T q1[4];                        /* '<S13>/Quaternion choice1' */
-  real_T h1;                           /* '<S8>/Attitude controller' */
-  real32_T dx1hat[3];                  /* '<S27>/High-Gain Observer' */
-  real32_T dx2hat[3];                  /* '<S27>/High-Gain Observer' */
+  real_T Sum[3];                       /* '<S8>/Sum' */
+  real_T p[3];                         /* '<S24>/parser' */
+  real_T q[4];                         /* '<S24>/parser' */
+  real_T Tstamp;                       /* '<S24>/parser' */
+  real_T normaP;                       /* '<S24>/parser' */
+  real_T dp[3];                        /* '<S24>/VELOCITY' */
+  real_T reset;                        /* '<S5>/Euler2Quat' */
+  real_T q1[4];                        /* '<S14>/Quaternion choice1' */
+  real_T h1;                           /* '<S9>/Attitude controller' */
+  real32_T dx1hat[3];                  /* '<S29>/High-Gain Observer' */
+  real32_T dx2hat[3];                  /* '<S29>/High-Gain Observer' */
+  uint32_T FM_out;                     /* '<S5>/Euler2Quat' */
 } BlockIO_Model_GS;
 
 /* Block states (auto storage) for system '<Root>' */
 typedef struct {
-  real_T BesselLPFdX_states[2];        /* '<S25>/Bessel LPF dX' */
-  real_T BesselLPFdY_states[2];        /* '<S25>/Bessel LPF dY' */
-  real_T BesselLPFdZ_states[2];        /* '<S25>/Bessel LPF dZ' */
-  real_T DiscreteTimeIntegrator1_DSTATE[3];/* '<S7>/Discrete-Time Integrator1' */
-  real_T Memory6_PreviousInput[3];     /* '<S22>/Memory6' */
-  real_T Memory5_PreviousInput[4];     /* '<S22>/Memory5' */
-  real_T Memory4_PreviousInput;        /* '<S22>/Memory4' */
-  real_T Memory3_PreviousInput;        /* '<S22>/Memory3' */
-  real_T Memory2_PreviousInput[4];     /* '<S13>/Memory2' */
-  real_T Memory_PreviousInput;         /* '<S8>/Memory' */
-  real_T Memory_PreviousInput_o[3];    /* '<S22>/Memory' */
-  real_T Memory1_PreviousInput;        /* '<S22>/Memory1' */
-  real_T Memory2_PreviousInput_k[3];   /* '<S22>/Memory2' */
-  real32_T x1hat_DSTATE[3];            /* '<S27>/x1hat' */
-  real32_T x2hat_DSTATE[3];            /* '<S27>/x2hat' */
-  int8_T DiscreteTimeIntegrator1_PrevRes;/* '<S7>/Discrete-Time Integrator1' */
+  real_T BesselLPFdX_states[2];        /* '<S27>/Bessel LPF dX' */
+  real_T BesselLPFdY_states[2];        /* '<S27>/Bessel LPF dY' */
+  real_T BesselLPFdZ_states[2];        /* '<S27>/Bessel LPF dZ' */
+  real_T DiscreteTimeIntegrator1_DSTATE[3];/* '<S8>/Discrete-Time Integrator1' */
+  real_T Memory6_PreviousInput[3];     /* '<S24>/Memory6' */
+  real_T Memory5_PreviousInput[4];     /* '<S24>/Memory5' */
+  real_T Memory4_PreviousInput;        /* '<S24>/Memory4' */
+  real_T Memory3_PreviousInput;        /* '<S24>/Memory3' */
+  real_T Memory2_PreviousInput[4];     /* '<S14>/Memory2' */
+  real_T Memory_PreviousInput;         /* '<S9>/Memory' */
+  real_T Memory_PreviousInput_o[3];    /* '<S24>/Memory' */
+  real_T Memory1_PreviousInput;        /* '<S24>/Memory1' */
+  real_T Memory2_PreviousInput_k[3];   /* '<S24>/Memory2' */
+  real32_T x1hat_DSTATE[3];            /* '<S29>/x1hat' */
+  real32_T x2hat_DSTATE[3];            /* '<S29>/x2hat' */
+  uint32_T Memory_PreviousInput_l;     /* '<S5>/Memory' */
+  int8_T DiscreteTimeIntegrator1_PrevRes;/* '<S8>/Discrete-Time Integrator1' */
 } D_Work_Model_GS;
 
 /* External inputs (root inport signals with auto storage) */
@@ -812,7 +814,7 @@ typedef struct {
   int32_T TIME_STAMP;                  /* '<Root>/TIME_STAMP' */
   real_T OPTITRACK[12];                /* '<Root>/OPTITRACK' */
   real_T VELOCITY[4];                  /* '<Root>/VELOCITY' */
-  int16_T FLIGHT_MODE;                 /* '<Root>/FLIGHT_MODE' */
+  uint32_T FLIGHT_MODE;                /* '<Root>/FLIGHT_MODE' */
   real_T REF_ATTITUDE[10];             /* '<Root>/REF_ATTITUDE' */
   real_T REF_THRUST;                   /* '<Root>/REF_THRUST' */
 } ExternalInputs_Model_GS;
@@ -822,6 +824,7 @@ typedef struct {
   real_T U_F;                          /* '<Root>/U_F' */
   real_T U_TAU[3];                     /* '<Root>/U_TAU' */
   int32_T STATE[12];                   /* '<Root>/STATE' */
+  real_T kappa[3];                     /* '<Root>/kappa' */
 } ExternalOutputs_Model_GS;
 
 /* Backward compatible GRT Identifiers */
@@ -978,31 +981,33 @@ extern RT_MODEL_Model_GS *const Model_GS_M;
  * '<S2>'   : 'Model_GS/LOW-LEVEL CONTROL/CONTROL'
  * '<S3>'   : 'Model_GS/LOW-LEVEL CONTROL/Flight_Modes_Handler'
  * '<S4>'   : 'Model_GS/LOW-LEVEL CONTROL/PARAM'
- * '<S5>'   : 'Model_GS/LOW-LEVEL CONTROL/STATE & REFERENCES'
- * '<S6>'   : 'Model_GS/LOW-LEVEL CONTROL/UAV_STATE'
- * '<S7>'   : 'Model_GS/LOW-LEVEL CONTROL/CONTROL/NON LINEAR CONTROL LAW'
- * '<S8>'   : 'Model_GS/LOW-LEVEL CONTROL/CONTROL/NON LINEAR CONTROL LAW/ControlleR'
- * '<S9>'   : 'Model_GS/LOW-LEVEL CONTROL/CONTROL/NON LINEAR CONTROL LAW/setpoint_conversion1'
- * '<S10>'  : 'Model_GS/LOW-LEVEL CONTROL/CONTROL/NON LINEAR CONTROL LAW/setpoint_conversion2'
- * '<S11>'  : 'Model_GS/LOW-LEVEL CONTROL/CONTROL/NON LINEAR CONTROL LAW/ControlleR/Abs(v*)'
- * '<S12>'  : 'Model_GS/LOW-LEVEL CONTROL/CONTROL/NON LINEAR CONTROL LAW/ControlleR/Attitude controller'
- * '<S13>'  : 'Model_GS/LOW-LEVEL CONTROL/CONTROL/NON LINEAR CONTROL LAW/ControlleR/DCM to consistent Quaternion '
- * '<S14>'  : 'Model_GS/LOW-LEVEL CONTROL/CONTROL/NON LINEAR CONTROL LAW/ControlleR/Feedforward generation'
- * '<S15>'  : 'Model_GS/LOW-LEVEL CONTROL/CONTROL/NON LINEAR CONTROL LAW/ControlleR/Flight Modes Handler'
- * '<S16>'  : 'Model_GS/LOW-LEVEL CONTROL/CONTROL/NON LINEAR CONTROL LAW/ControlleR/Position controller'
- * '<S17>'  : 'Model_GS/LOW-LEVEL CONTROL/CONTROL/NON LINEAR CONTROL LAW/ControlleR/R* from v* and psi*1'
- * '<S18>'  : 'Model_GS/LOW-LEVEL CONTROL/CONTROL/NON LINEAR CONTROL LAW/ControlleR/DCM to consistent Quaternion /DCM to quaternion '
- * '<S19>'  : 'Model_GS/LOW-LEVEL CONTROL/CONTROL/NON LINEAR CONTROL LAW/ControlleR/DCM to consistent Quaternion /Quaternion choice1'
- * '<S20>'  : 'Model_GS/LOW-LEVEL CONTROL/CONTROL/NON LINEAR CONTROL LAW/ControlleR/Feedforward generation/v* from p*, p'* and p''+'
- * '<S21>'  : 'Model_GS/LOW-LEVEL CONTROL/STATE & REFERENCES/Euler'
- * '<S22>'  : 'Model_GS/LOW-LEVEL CONTROL/STATE & REFERENCES/OPTITRACK'
- * '<S23>'  : 'Model_GS/LOW-LEVEL CONTROL/STATE & REFERENCES/Reset from buttons'
- * '<S24>'  : 'Model_GS/LOW-LEVEL CONTROL/STATE & REFERENCES/SELECTOR'
- * '<S25>'  : 'Model_GS/LOW-LEVEL CONTROL/STATE & REFERENCES/OPTITRACK/BESSEL FILTER'
- * '<S26>'  : 'Model_GS/LOW-LEVEL CONTROL/STATE & REFERENCES/OPTITRACK/VELOCITY'
- * '<S27>'  : 'Model_GS/LOW-LEVEL CONTROL/STATE & REFERENCES/OPTITRACK/dP Observer'
- * '<S28>'  : 'Model_GS/LOW-LEVEL CONTROL/STATE & REFERENCES/OPTITRACK/parser'
- * '<S29>'  : 'Model_GS/LOW-LEVEL CONTROL/STATE & REFERENCES/OPTITRACK/dP Observer/BESSEL FILTER'
- * '<S30>'  : 'Model_GS/LOW-LEVEL CONTROL/STATE & REFERENCES/OPTITRACK/dP Observer/High-Gain Observer'
+ * '<S5>'   : 'Model_GS/LOW-LEVEL CONTROL/ResetGenerator'
+ * '<S6>'   : 'Model_GS/LOW-LEVEL CONTROL/STATE & REFERENCES'
+ * '<S7>'   : 'Model_GS/LOW-LEVEL CONTROL/UAV_STATE'
+ * '<S8>'   : 'Model_GS/LOW-LEVEL CONTROL/CONTROL/NON LINEAR CONTROL LAW'
+ * '<S9>'   : 'Model_GS/LOW-LEVEL CONTROL/CONTROL/NON LINEAR CONTROL LAW/ControlleR'
+ * '<S10>'  : 'Model_GS/LOW-LEVEL CONTROL/CONTROL/NON LINEAR CONTROL LAW/setpoint_conversion1'
+ * '<S11>'  : 'Model_GS/LOW-LEVEL CONTROL/CONTROL/NON LINEAR CONTROL LAW/setpoint_conversion2'
+ * '<S12>'  : 'Model_GS/LOW-LEVEL CONTROL/CONTROL/NON LINEAR CONTROL LAW/ControlleR/Abs(v*)'
+ * '<S13>'  : 'Model_GS/LOW-LEVEL CONTROL/CONTROL/NON LINEAR CONTROL LAW/ControlleR/Attitude controller'
+ * '<S14>'  : 'Model_GS/LOW-LEVEL CONTROL/CONTROL/NON LINEAR CONTROL LAW/ControlleR/DCM to consistent Quaternion '
+ * '<S15>'  : 'Model_GS/LOW-LEVEL CONTROL/CONTROL/NON LINEAR CONTROL LAW/ControlleR/Feedforward generation'
+ * '<S16>'  : 'Model_GS/LOW-LEVEL CONTROL/CONTROL/NON LINEAR CONTROL LAW/ControlleR/Flight Modes Handler'
+ * '<S17>'  : 'Model_GS/LOW-LEVEL CONTROL/CONTROL/NON LINEAR CONTROL LAW/ControlleR/Position controller'
+ * '<S18>'  : 'Model_GS/LOW-LEVEL CONTROL/CONTROL/NON LINEAR CONTROL LAW/ControlleR/R* from v* and psi*1'
+ * '<S19>'  : 'Model_GS/LOW-LEVEL CONTROL/CONTROL/NON LINEAR CONTROL LAW/ControlleR/DCM to consistent Quaternion /DCM to quaternion '
+ * '<S20>'  : 'Model_GS/LOW-LEVEL CONTROL/CONTROL/NON LINEAR CONTROL LAW/ControlleR/DCM to consistent Quaternion /Quaternion choice1'
+ * '<S21>'  : 'Model_GS/LOW-LEVEL CONTROL/CONTROL/NON LINEAR CONTROL LAW/ControlleR/Feedforward generation/v* from p*, p'* and p''+'
+ * '<S22>'  : 'Model_GS/LOW-LEVEL CONTROL/ResetGenerator/Euler2Quat'
+ * '<S23>'  : 'Model_GS/LOW-LEVEL CONTROL/STATE & REFERENCES/Euler'
+ * '<S24>'  : 'Model_GS/LOW-LEVEL CONTROL/STATE & REFERENCES/OPTITRACK'
+ * '<S25>'  : 'Model_GS/LOW-LEVEL CONTROL/STATE & REFERENCES/Reset from buttons'
+ * '<S26>'  : 'Model_GS/LOW-LEVEL CONTROL/STATE & REFERENCES/SELECTOR'
+ * '<S27>'  : 'Model_GS/LOW-LEVEL CONTROL/STATE & REFERENCES/OPTITRACK/BESSEL FILTER'
+ * '<S28>'  : 'Model_GS/LOW-LEVEL CONTROL/STATE & REFERENCES/OPTITRACK/VELOCITY'
+ * '<S29>'  : 'Model_GS/LOW-LEVEL CONTROL/STATE & REFERENCES/OPTITRACK/dP Observer'
+ * '<S30>'  : 'Model_GS/LOW-LEVEL CONTROL/STATE & REFERENCES/OPTITRACK/parser'
+ * '<S31>'  : 'Model_GS/LOW-LEVEL CONTROL/STATE & REFERENCES/OPTITRACK/dP Observer/BESSEL FILTER'
+ * '<S32>'  : 'Model_GS/LOW-LEVEL CONTROL/STATE & REFERENCES/OPTITRACK/dP Observer/High-Gain Observer'
  */
 #endif                                 /* RTW_HEADER_Model_GS_h_ */

@@ -146,6 +146,7 @@ private:
 	int		_t_actuator_armed;
 	int		_arduino_counter;
 	int 	_read_arduino_counter;
+	float	_battery_voltage;
 	esc_status_s 		_esc;
 	unsigned int		_motor;
 	int    _px4mode;
@@ -205,6 +206,7 @@ ESC32_READER::ESC32_READER(int bus, const char *_device_path) :
 	_t_actuator_armed(-1),
 	_arduino_counter(0),
 	_read_arduino_counter(0),
+	_battery_voltage(0),
 	_motor(-1),
 	_t_outputs(0),
 	_t_esc_status(0),
@@ -400,7 +402,10 @@ ESC32_READER::task_main()
 				}
 				if (_arduino_counter>=100){
 					_arduino_counter = 0;
-					warnx("Speeds: %d - %d - %d - %d", _esc.esc[0].esc_rpm, _esc.esc[1].esc_rpm, _esc.esc[2].esc_rpm, _esc.esc[3].esc_rpm);
+					//warnx("Battery voltage: %.2f", (double)_battery_voltage);
+					//warnx("Speeds: %d - %d - %d - %d", _esc.esc[0].esc_rpm, _esc.esc[1].esc_rpm, _esc.esc[2].esc_rpm, _esc.esc[3].esc_rpm);
+					//warnx("Currents: %.1f - %.1f - %.1f - %.1f", (double)_esc.esc[0].esc_current, (double)_esc.esc[1].esc_current, (double)_esc.esc[2].esc_current, (double)_esc.esc[3].esc_current);
+					//warnx("Voltage: %.1f - %.1f - %.1f - %.1f", (double)_esc.esc[0].esc_voltage, (double)_esc.esc[1].esc_voltage, (double)_esc.esc[2].esc_voltage, (double)_esc.esc[3].esc_voltage);
 				}
 
 				/*temp_counter++;        //TODO remove to have full 200Hz
@@ -455,17 +460,24 @@ ESC32_READER::task_main()
 int
 ESC32_READER::read_arduino(unsigned int add)         //UNIBO
 {
-	uint8_t message[8] = { 0, 0, 0, 0, 0, 0, 0, 0 };
+	uint8_t message[26] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 	set_address(add);
-	if (OK == transfer(nullptr, 0, &message[0], 8)) {
-		uint16_t* speeds = (uint16_t*)message;
+	if (OK == transfer(nullptr, 0, &message[0], 26)) {
+		uint16_t* mess = (uint16_t*)message;
 		_esc.counter++;
-		_esc.esc[0].esc_rpm = speeds[0];
-		_esc.esc[1].esc_rpm = speeds[1];
-		_esc.esc[2].esc_rpm = speeds[2];
-		_esc.esc[3].esc_rpm = speeds[3];
-		//TODO add current, voltage, temperature,...
-		//TODO merge with single function to read/write
+		_esc.esc[0].esc_rpm = mess[0];
+		_esc.esc[1].esc_rpm = mess[1];
+		_esc.esc[2].esc_rpm = mess[2];
+		_esc.esc[3].esc_rpm = mess[3];
+		_esc.esc[0].esc_current = (float)mess[4]/10;         //current is in tenth of Ampere
+		_esc.esc[1].esc_current = (float)mess[5]/10;
+		_esc.esc[2].esc_current = (float)mess[6]/10;
+		_esc.esc[3].esc_current = (float)mess[7]/10;
+		_battery_voltage =  mess[12]/100;        // last 2 bytes of message is the voltage of the battery * 100
+		_esc.esc[0].esc_voltage = _battery_voltage*(float)mess[8]/100;   //mess[8..11] are duty cycles percent
+		_esc.esc[1].esc_voltage = _battery_voltage*(float)mess[9]/100;
+		_esc.esc[2].esc_voltage = _battery_voltage*(float)mess[10]/100;
+		_esc.esc[3].esc_voltage = _battery_voltage*(float)mess[11]/100;
 		_arduino_counter++;
 		return OK;
 	}

@@ -370,7 +370,7 @@ int unibo_motor_output_thread_main(int argc, char *argv[])
 
 				if (count >= 200){
 					count = 0;
-					warnx("MOTOR OUTPUT: Commanded RPM: %d %d %d %d", motor_output.outputs_rpm[0], motor_output.outputs_rpm[1], motor_output.outputs_rpm[2], motor_output.outputs_rpm[3]);
+					//warnx("MOTOR OUTPUT: Commanded RPM: %d %d %d %d", motor_output.outputs_rpm[0], motor_output.outputs_rpm[1], motor_output.outputs_rpm[2], motor_output.outputs_rpm[3]);
 				}
 				// lettura ORB
 				//warnx("Nuovo valore pwm: %d %d %d %d %d %d %d %d", pwm_values.outputs[0], pwm_values.outputs[1], pwm_values.outputs[2], pwm_values.outputs[3],pwm_values.outputs[4], pwm_values.outputs[5], pwm_values.outputs[6], pwm_values.outputs[7]);

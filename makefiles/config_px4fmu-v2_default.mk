@@ -83,8 +83,8 @@ MODULES		+= modules/gpio_led
 #MODULES		+= modules/attitude_estimator_ekf
 MODULES		+= modules/attitude_estimator_so3
 #MODULES		+= modules/ekf_att_pos_estimator
-#MODULES		+= modules/position_estimator_inav
-MODULES		+= examples/flow_position_estimator
+MODULES		+= modules/position_estimator_inav
+#MODULES		+= examples/flow_position_estimator
 
 #
 # Vehicle Control
@@ -139,7 +139,8 @@ MODULES		+= modules/unibo_control
 MODULES		+= modules/unibo_att_esti_ECF_s
 MODULES		+= modules/unibo_att_esti_ECF_c
 MODULES		+= modules/unibo_trajectory_ref
-MODULES		+= modules/unibo_INS
+#MODULES		+= modules/unibo_INS
+MODULES		+= modules/unibo_INAV
 MODULES		+= modules/ahrs_SO3_unibo
 MODULES     += modules/unibo_commander
 MODULES     += modules/unibo_allocation
