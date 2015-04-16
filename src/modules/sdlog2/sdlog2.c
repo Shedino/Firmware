@@ -1521,7 +1521,7 @@ int sdlog2_thread_main(int argc, char *argv[])
 			LOGBUFFER_WRITE_AND_COUNT(AIRS);
 		}
 
-		/* --- ESCs --- */
+		/* --- ESCs ---
 		if (copy_if_updated(ORB_ID(esc_status), subs.esc_sub, &buf.esc)) {
 			for (uint8_t i = 0; i < buf.esc.esc_count; i++) {
 				log_msg.msg_type = LOG_ESC_MSG;
@@ -1539,6 +1539,28 @@ int sdlog2_thread_main(int argc, char *argv[])
 				log_msg.body.log_ESC.esc_setpoint_raw = buf.esc.esc[i].esc_setpoint_raw;
 				LOGBUFFER_WRITE_AND_COUNT(ESC);
 			}
+		}*/
+
+		/* --- ESCs UNIBO ---*/
+		if (copy_if_updated(ORB_ID(esc_status), subs.esc_sub, &buf.esc)) {
+				log_msg.msg_type = LOG_ESC_MSG;
+				log_msg.body.log_ESC.esc_current1 = buf.esc.esc[0].esc_current;
+				log_msg.body.log_ESC.esc_rpm1 = buf.esc.esc[0].esc_rpm;
+				log_msg.body.log_ESC.esc_setpoint1 = buf.esc.esc[0].esc_setpoint;
+				log_msg.body.log_ESC.esc_volt1 = buf.esc.esc[0].esc_voltage;
+				log_msg.body.log_ESC.esc_current2 = buf.esc.esc[1].esc_current;
+				log_msg.body.log_ESC.esc_rpm2 = buf.esc.esc[1].esc_rpm;
+				log_msg.body.log_ESC.esc_setpoint2 = buf.esc.esc[1].esc_setpoint;
+				log_msg.body.log_ESC.esc_volt2 = buf.esc.esc[1].esc_voltage;
+				log_msg.body.log_ESC.esc_current3 = buf.esc.esc[2].esc_current;
+				log_msg.body.log_ESC.esc_rpm3 = buf.esc.esc[2].esc_rpm;
+				log_msg.body.log_ESC.esc_setpoint3 = buf.esc.esc[2].esc_setpoint;
+				log_msg.body.log_ESC.esc_volt3 = buf.esc.esc[2].esc_voltage;
+				//log_msg.body.log_ESC.esc_current4 = buf.esc.esc[3].esc_current;
+				//log_msg.body.log_ESC.esc_rpm4 = buf.esc.esc[3].esc_rpm;
+				//log_msg.body.log_ESC.esc_setpoint4 = buf.esc.esc[3].esc_setpoint;
+				//log_msg.body.log_ESC.esc_volt4 = buf.esc.esc[3].esc_voltage;
+				LOGBUFFER_WRITE_AND_COUNT(ESC);
 		}
 
 		/* --- GLOBAL VELOCITY SETPOINT --- */

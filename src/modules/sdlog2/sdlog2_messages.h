@@ -237,7 +237,7 @@ struct log_GPSP_s {
 	float pitch_min;
 };
 
-/* --- ESC - ESC STATE --- */
+/* --- ESC - ESC STATE ---
 #define LOG_ESC_MSG 18
 struct log_ESC_s {
 	uint16_t counter;
@@ -252,6 +252,27 @@ struct log_ESC_s {
 	float    esc_temperature;
 	float    esc_setpoint;
 	uint16_t esc_setpoint_raw;
+};*/
+
+/* --- ESC - ESC STATE --- */
+#define LOG_ESC_MSG 18
+struct log_ESC_s {
+	float esc_current1;
+	int32_t esc_rpm1;
+	float esc_setpoint1;
+	float esc_volt1;
+	float esc_current2;
+	int32_t esc_rpm2;
+	float esc_setpoint2;
+	float esc_volt2;
+	float esc_current3;
+	int32_t esc_rpm3;
+	float esc_setpoint3;
+	float esc_volt3;
+	//float esc_current4;
+	//int32_t esc_rpm4;
+	//float esc_setpoint4;
+	//float esc_volt4;
 };
 
 /* --- GVSP - GLOBAL VELOCITY SETPOINT --- */
@@ -452,7 +473,8 @@ static const struct log_format_s log_formats[] = {
 	LOG_FORMAT(FLOW, "hhfffBB",		"RawX,RawY,CompX,CompY,Dist,Q,SensID"),
 	LOG_FORMAT(GPOS, "LLfffffff",		"Lat,Lon,Alt,VelN,VelE,VelD,EPH,EPV,TALT"),
 	LOG_FORMAT(GPSP, "BLLffBfbf",		"NavState,Lat,Lon,Alt,Yaw,Type,LoitR,LoitDir,PitMin"),
-	LOG_FORMAT(ESC, "HBBBHHffiffH",		"count,nESC,Conn,N,Ver,Adr,Volt,Amp,RPM,Temp,SetP,SetPRAW"),
+	//LOG_FORMAT(ESC, "HBBBHHffiffH",		"count,nESC,Conn,N,Ver,Adr,Volt,Amp,RPM,Temp,SetP,SetPRAW"),
+	LOG_FORMAT(ESC, "fifffifffiff",		"curr1,rpm1,setP1,volt1,curr2,rpm2,setP2,volt2,curr3,rpm3,setP3,volt3"),
 	LOG_FORMAT(GVSP, "fff",			"VX,VY,VZ"),
 	LOG_FORMAT(BATT, "ffff",		"V,VFilt,C,Discharged"),
 	LOG_FORMAT(DIST, "ffB",			"Bottom,BottomRate,Flags"),

@@ -38,6 +38,7 @@
 #include <uORB/topics/motor_output.h>
 #include <uORB/topics/unibo_vehicle_status.h>
 #include <uORB/topics/safety.h>
+#include <uORB/topics/esc_status.h>
 
 #include <nuttx/i2c.h>
 #include <nuttx/mtd.h>
@@ -99,9 +100,11 @@ static void usage(const char *reason)
 	exit(1);
 }
 
-int map(int in, int in_low, int in_high, int out_low, int out_high)
+int32_t map(int32_t in, int32_t in_low, int32_t in_high, int32_t out_low, int32_t out_high)
 {
-	return (in-in_low)*(out_high-out_low)/(in_high-in_low)+out_low;
+	float temp;
+	temp = ((float)in-(float)in_low)*((float)out_high-(float)out_low)/((float)in_high-(float)in_low)+(float)out_low;
+	return (int32_t)temp;
 }
 
 // inizializzazione servo
@@ -289,6 +292,7 @@ int unibo_motor_output_thread_main(int argc, char *argv[])
 	uint16_t pwm;
 	struct pwm_output_values esc_actual_pwm;
 	int ret;
+	int16_t temp_pwm;
 
 	warnx("[unibo_motor_output] starting\n");
 	unibomo_thread_running = true;
@@ -404,7 +408,9 @@ int unibo_motor_output_thread_main(int argc, char *argv[])
 //									if (count >= 195){
 //										warnx("PWM: %d", pwm);
 //									}
-									ioctl(pwm_fd, PWM_SERVO_SET(i), map(motor_output.outputs_rpm[i], MIN_RPM, MAX_RPM, MIN_PWM, MAX_PWM));  //TODO put "pwm" instead of map(...) for readibility
+									temp_pwm = map(motor_output.outputs_rpm[i], MIN_RPM, MAX_RPM, MIN_PWM, MAX_PWM);
+									temp_pwm = (temp_pwm < PWM_PREFLIGHT) ? PWM_PREFLIGHT :  temp_pwm;
+									ioctl(pwm_fd, PWM_SERVO_SET(i), temp_pwm);  //TODO put "pwm" instead of map(...) for readibility
 								}
 						}else {
 							for(i = MOTORS_START; i < MOTORS_NUMBER; i++)

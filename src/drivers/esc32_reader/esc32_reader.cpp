@@ -103,6 +103,7 @@
 #define MAX_MOTORS 						8
 #define N_MOTORS 						4      //UNIBO
 #define BLCTRL_BASE_ADDR 				0x29
+#define SPIKE_RPM_DETECTOR				500  //difference in RPM to consider it as spike
 
 #define ESC_UORB_PUBLISH_DELAY			10000   //UNIBO CHANGE put at 100Hz
 #define DEVICE_ADDRESS 0x52  //UNIBO
@@ -148,6 +149,7 @@ private:
 	int 	_read_arduino_counter;
 	float	_battery_voltage;
 	esc_status_s 		_esc;
+	int32_t	_temp_rpm[4];
 	unsigned int		_motor;
 	int    _px4mode;
 	int    _frametype;
@@ -328,7 +330,7 @@ ESC32_READER::task_main()
 
 	/* subscribe to motor output topic */
 	int motor_output_fd = orb_subscribe(ORB_ID(motor_output));
-	struct motor_output_s pwm_values;
+	struct motor_output_s motor_output;
 
 	//struct pollfd fds[] = { { .fd = motor_output_fd, .events = POLLIN } };
 	pollfd fds[1];
@@ -338,6 +340,7 @@ ESC32_READER::task_main()
 	warnx("I2C reader starting");
 	uint16_t pwm_motors[N_MOTORS];
 
+	_esc.esc_count = N_MOTORS;
 	/* loop until killed */
 	while (!_task_should_exit) {
 
@@ -346,7 +349,7 @@ ESC32_READER::task_main()
 			if(fds[0].revents & POLLIN){
 				orb_check(motor_output_fd, &updated);
 				if (updated){
-					orb_copy(ORB_ID(motor_output), motor_output_fd, &pwm_values);
+					orb_copy(ORB_ID(motor_output), motor_output_fd, &motor_output);
 				}
 				_read_arduino_counter++;
 
@@ -396,7 +399,7 @@ ESC32_READER::task_main()
 				}*/
 
 				//warnx("esc_status: %d", esc_state_byte);
-				if (_read_arduino_counter>=2){   //TO LIMIT READING FREQUENCY (200Hz/2-->100 Hz) 200Hz is motor output topic //TODO use set_interval to the topic maybe
+				if (_read_arduino_counter>=4){   //TO LIMIT READING FREQUENCY (200Hz/4-->50 Hz) 200Hz is motor output topic //TODO use set_interval to the topic maybe
 					_read_arduino_counter = 0;
 					read_arduino(DEVICE_ADDRESS);
 				}
@@ -420,6 +423,9 @@ ESC32_READER::task_main()
 				}*/
 
 				esc = _esc;
+				for (int i=0; i<N_MOTORS; i++ ){
+					esc.esc[i].esc_setpoint = motor_output.outputs_rpm[i];
+				}
 				orb_publish(ORB_ID(esc_status), _t_esc_status, &esc);
 			}
 		}
@@ -461,25 +467,55 @@ int
 ESC32_READER::read_arduino(unsigned int add)         //UNIBO
 {
 	uint8_t message[26] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-	set_address(add);
+	//set_address(add);
 	if (OK == transfer(nullptr, 0, &message[0], 26)) {
 		uint16_t* mess = (uint16_t*)message;
 		_esc.counter++;
-		_esc.esc[0].esc_rpm = mess[0];
-		_esc.esc[1].esc_rpm = mess[1];
-		_esc.esc[2].esc_rpm = mess[2];
-		_esc.esc[3].esc_rpm = mess[3];
-		_esc.esc[0].esc_current = (float)mess[4]/10;         //current is in tenth of Ampere
-		_esc.esc[1].esc_current = (float)mess[5]/10;
-		_esc.esc[2].esc_current = (float)mess[6]/10;
-		_esc.esc[3].esc_current = (float)mess[7]/10;
-		_battery_voltage =  mess[12]/100;        // last 2 bytes of message is the voltage of the battery * 100
-		_esc.esc[0].esc_voltage = _battery_voltage*(float)mess[8]/100;   //mess[8..11] are duty cycles percent
-		_esc.esc[1].esc_voltage = _battery_voltage*(float)mess[9]/100;
-		_esc.esc[2].esc_voltage = _battery_voltage*(float)mess[10]/100;
-		_esc.esc[3].esc_voltage = _battery_voltage*(float)mess[11]/100;
+		//if ((mess[0]-_temp_rpm[0] < SPIKE_RPM_DETECTOR) && (mess[0]-_temp_rpm[0] > -SPIKE_RPM_DETECTOR)){
+			_esc.esc[0].esc_rpm = mess[0];
+		//}
+		//_temp_rpm[0] = mess[0];
+		//if ((mess[1]-_temp_rpm[1] < SPIKE_RPM_DETECTOR) && (mess[1]-_temp_rpm[1] > -SPIKE_RPM_DETECTOR)){
+			_esc.esc[1].esc_rpm = mess[1];
+		//}
+		//_temp_rpm[1] = mess[1];
+		//if ((mess[2]-_temp_rpm[2] < SPIKE_RPM_DETECTOR) && (mess[2]-_temp_rpm[2] > -SPIKE_RPM_DETECTOR)){
+			_esc.esc[2].esc_rpm = mess[2];
+		//}
+		//_temp_rpm[2] = mess[2];
+		//if ((mess[3]-_temp_rpm[3] < SPIKE_RPM_DETECTOR) && (mess[3]-_temp_rpm[3] > -SPIKE_RPM_DETECTOR)){
+			_esc.esc[3].esc_rpm = mess[3];
+		//}
+		//_temp_rpm[3] = mess[3];
+
+		_esc.esc[0].esc_current = (float)mess[4]/100;         //current is in tenth of Ampere (x100 it seems)
+		_esc.esc[1].esc_current = (float)mess[5]/100;
+		_esc.esc[2].esc_current = (float)mess[6]/100;
+		_esc.esc[3].esc_current = (float)mess[7]/100;
+		_battery_voltage =  (float)mess[12]/100;        // last 2 bytes of message is the voltage of the battery * 100
+		_esc.esc[0].esc_voltage = _battery_voltage*(float)mess[8]/1000;   //mess[8..11] are duty cycles percent (per 1000 actually I believe)
+		_esc.esc[1].esc_voltage = _battery_voltage*(float)mess[9]/1000;
+		_esc.esc[2].esc_voltage = _battery_voltage*(float)mess[10]/1000;
+		_esc.esc[3].esc_voltage = _battery_voltage*(float)mess[11]/1000;
 		_arduino_counter++;
 		return OK;
+	} else {
+		warnx("Failed to get ESC data via I2C");
+		_esc.counter++;
+		_esc.esc[0].esc_rpm = 0;
+		_esc.esc[1].esc_rpm = 0;
+		_esc.esc[2].esc_rpm = 0;
+		_esc.esc[3].esc_rpm = 0;
+		_esc.esc[0].esc_current = 0;         //current is in tenth of Ampere (x100 it seems)
+		_esc.esc[1].esc_current = 0;
+		_esc.esc[2].esc_current = 0;
+		_esc.esc[3].esc_current = 0;
+		_battery_voltage =  0;        // last 2 bytes of message is the voltage of the battery * 100
+		_esc.esc[0].esc_voltage = 0;   //mess[8..11] are duty cycles percent (per 1000 actually I believe)
+		_esc.esc[1].esc_voltage = 0;
+		_esc.esc[2].esc_voltage = 0;
+		_esc.esc[3].esc_voltage = 0;
+		_arduino_counter++;
 	}
 }
 
